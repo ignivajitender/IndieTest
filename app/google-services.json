@@ -1,0 +1,35 @@
+{
+  "project_info": {
+    "project_number": "7096718790",
+    "project_id": "App Framework"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:7096718790:android:3579e67e7690884f",
+        "android_client_info": {
+          "package_name": "com.igniva.indiecore"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAQUJKwWmpD214dw_1EXS7D1tHp8OP5sx4"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 1
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

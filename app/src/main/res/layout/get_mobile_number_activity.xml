@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/light_gray">
+
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/white">
+
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Contact Number"
+            android:gravity="center"
+            android:textColor="@color/blue"
+            android:textSize="20sp"
+            android:layout_centerInParent="true"/>
+        <LinearLayout
+            android:id="@+id/ll_next"
+            android:layout_width="wrap_content"
+            android:background="@color/white"
+            android:layout_alignParentRight="true"
+            android:layout_height="wrap_content">
+
+        <Button
+            android:id="@+id/btn_next"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Next"
+            android:textSize="15sp"
+            android:background="@color/white"
+            android:textColor="@color/blue"/>
+        </LinearLayout>
+    </RelativeLayout>
+
+
+
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/logo"
+        android:layout_gravity="center"
+        android:layout_marginTop="70dp"/>
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="40dp"
+        android:text="@string/enter_mobile_number_a"
+        android:layout_gravity="center"
+        android:textColor="@color/black"
+        android:gravity="center"/>
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="2dp"
+        android:text="@string/enter_mobile_number_b"
+        android:layout_gravity="center"
+        android:textColor="@color/black"
+        android:gravity="center"/>
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="10dp"
+        android:background="@drawable/edit_text_style">
+
+
+        <EditText
+            android:id="@+id/et_country_code"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="+44"
+            android:maxLength="3"
+            android:inputType="number"
+            android:background="@color/white"
+            android:layout_margin="5sp"
+            />
+
+        <View
+            android:layout_width="1dp"
+            android:layout_margin="10dp"
+            android:layout_height="match_parent"
+            android:background="@color/black"/>
+
+        <EditText
+            android:id="@+id/et_mobile_number"
+            android:layout_width="match_parent"
+            android:hint="Number"
+            android:inputType="phone"
+            android:layout_margin="5dp"
+            android:background="@color/white"
+            android:layout_height="wrap_content" />
+
+    </LinearLayout>
+
+
+</LinearLayout>
