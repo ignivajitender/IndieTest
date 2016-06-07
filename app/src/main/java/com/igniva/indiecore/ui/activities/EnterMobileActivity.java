@@ -10,36 +10,54 @@ import android.view.Window;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
-
+import android.support.v7.widget.Toolbar;
+import android.widget.TextView;
 import com.igniva.indiecore.R;
 import com.igniva.indiecore.utils.Validation;
 
 /**
  * Created by igniva-andriod-05 on 2/6/16.
  */
-public class EnterMobileActivity extends BaseActivity{
+public class EnterMobileActivity extends BaseActivity {
 
     private LinearLayout mLlTopNextEvent;
     private Button mButtonNext;
     String countryId;
     private EditText mEtMobileNumber, mEtCountryCode;
+    Toolbar mToolbar;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
-        requestWindowFeature(Window.FEATURE_NO_TITLE);
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.get_mobile_number_activity);
+        setContentView(R.layout.activity_enter_mobile);
+
+        initToolbar();
 
         setUpLayout();
         setDataInViewObjects();
+    }
+
+    void initToolbar() {
+        try {
+            mToolbar = (Toolbar) findViewById(R.id.toolbar);
+            TextView mTitle = (TextView) mToolbar.findViewById(R.id.toolbar_title);
+            mTitle.setText(getResources().getString(R.string.contact_number));
+            setSupportActionBar(mToolbar);
+            getSupportActionBar().setDisplayShowTitleEnabled(false);
+        } catch (Exception e) {
+            e.printStackTrace();
+            mToolbar = (Toolbar) findViewById(R.id.toolbar);
+        }
 
     }
+
 
     @Override
     protected void setUpLayout() {
 
 
         try {
+
 
 //        String locale = getApplicationContext().getResources().getConfiguration().locale.getCountry();
 
@@ -60,13 +78,13 @@ public class EnterMobileActivity extends BaseActivity{
         //mLlTopNextEvent.setOnClickListener(onClick());
 
         mButtonNext = (Button) findViewById(R.id.btn_next);
-       // mButtonNext.setOnClickListener(this);
+        // mButtonNext.setOnClickListener(this);
 
         mEtMobileNumber = (EditText) findViewById(R.id.et_mobile_number);
         mEtMobileNumber.requestFocus();
 
         mEtCountryCode = (EditText) findViewById(R.id.et_country_code);
-      //  mEtCountryCode.setText(countryId);
+        //  mEtCountryCode.setText(countryId);
 
     }
 
@@ -74,8 +92,7 @@ public class EnterMobileActivity extends BaseActivity{
     protected void setDataInViewObjects() {
 
 
-
-        if(Validation.isValidMobile(this,mEtCountryCode,mEtMobileNumber)){
+        if (Validation.isValidMobile(this, mEtCountryCode, mEtMobileNumber)) {
             Intent in = new Intent(EnterMobileActivity.this, OtpVerificationActivity.class);
             startActivity(in);
             finish();
