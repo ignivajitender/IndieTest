@@ -24,7 +24,6 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
 
-
         <activity
             android:screenOrientation="portrait"
             android:name=".ui.activities.SplashActivity"
@@ -43,12 +42,20 @@
             android:screenOrientation="portrait"
             android:label="@string/contact_number"/>
 
+        <activity
+            android:theme="@style/AppTheme"
+            android:name=".ui.activities.OtpVerificationActivity"
+            android:screenOrientation="portrait"
+            android:label="@string/contact_number"/>
+
+
+
+
         <meta-data
             android:name="com.google.android.gms.version"
             android:value="@integer/google_play_services_version" />
 
         <!-- GCM -->
-
         <receiver
             android:name="com.google.android.gms.gcm.GcmReceiver"
             android:exported="true"
@@ -79,7 +86,6 @@
             android:name="com.igniva.indiecore.utils.gcm.RegistrationIntentService"
             android:exported="false">
         </service>
-
         <!-- GCM END-->
 
     </application>

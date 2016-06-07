@@ -21,7 +21,6 @@ public class OtpVerificationActivity extends BaseActivity implements View.OnClic
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
-     requestWindowFeature(Window.FEATURE_NO_TITLE);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.otp_verification_activity);
     }

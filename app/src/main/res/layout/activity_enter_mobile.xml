@@ -1,104 +1,125 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/light_gray">
+    android:background="@color/light_gray"
+    android:orientation="vertical">
 
     <include layout="@layout/toolbar" />
 
     <RelativeLayout
-        android:visibility="gone"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/white">
+        android:background="@color/white"
+        android:visibility="gone">
 
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Contact Number"
+            android:layout_centerInParent="true"
             android:gravity="center"
+            android:text="Contact Number"
             android:textColor="@color/blue"
-            android:textSize="20sp"
-            android:layout_centerInParent="true"/>
+            android:textSize="20sp" />
+
         <LinearLayout
             android:id="@+id/ll_next"
             android:layout_width="wrap_content"
-            android:background="@color/white"
-            android:layout_alignParentRight="true"
-            android:layout_height="wrap_content">
-
-        <Button
-            android:id="@+id/btn_next"
-            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Next"
-            android:textSize="15sp"
-            android:background="@color/white"
-            android:textColor="@color/blue"/>
+            android:layout_alignParentRight="true"
+            android:background="@color/white">
+
+            <Button
+                android:id="@+id/btn_next"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@color/white"
+                android:text="Next"
+                android:textColor="@color/blue"
+                android:textSize="15sp" />
         </LinearLayout>
     </RelativeLayout>
 
 
-
-    <ImageView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:src="@drawable/logo"
-        android:layout_gravity="center"
-        android:layout_marginTop="70dp"/>
-
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="40dp"
+        android:layout_gravity="center"
+        android:layout_marginTop="30dp"
+        android:fontFamily="sans-serif"
+        android:gravity="center"
         android:text="@string/enter_mobile_number_a"
-        android:layout_gravity="center"
-        android:textColor="@color/black"
-        android:gravity="center"/>
+        android:textColor="@color/light_black"
+        android:textSize="17sp"
+        android:textStyle="normal" />
 
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="2dp"
-        android:text="@string/enter_mobile_number_b"
         android:layout_gravity="center"
-        android:textColor="@color/black"
-        android:gravity="center"/>
+        android:layout_marginTop="2dp"
+        android:fontFamily="sans-serif"
+        android:gravity="center"
+        android:text="@string/enter_mobile_number_b"
+        android:textColor="@color/light_black"
+        android:textSize="17sp"
+        android:textStyle="normal" />
 
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_margin="10dp"
-        android:background="@drawable/edit_text_style">
-
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
+        android:layout_marginTop="15dp"
+        android:background="@drawable/edit_text_style"
+        android:padding="7dp">
 
         <EditText
-            android:id="@+id/et_country_code"
+            android:focusableInTouchMode="false"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="+44"
-            android:maxLength="3"
-            android:inputType="number"
-            android:background="@color/white"
             android:layout_margin="5sp"
+            android:background="@color/white"
+            android:inputType="number"
+            android:maxLength="4"
+            android:text="+" />
+
+        <EditText
+            android:maxLines="1"
+            android:maxWidth="70dp"
+            android:layout_marginLeft="-3dp"
+            android:id="@+id/et_country_code"
+            android:layout_width="20dp"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="5dp"
+            android:layout_marginRight="5dp"
+            android:layout_marginTop="5dp"
+            android:background="@color/white"
+            android:hint="44444"
+            android:inputType="number"
+            android:maxLength="4"
+
             />
 
         <View
             android:layout_width="1dp"
-            android:layout_margin="10dp"
             android:layout_height="match_parent"
-            android:background="@color/black"/>
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            android:layout_marginTop="3dp"
+            android:background="#61000000" />
 
         <EditText
             android:id="@+id/et_mobile_number"
             android:layout_width="match_parent"
-            android:hint="Number"
-            android:inputType="phone"
+            android:layout_height="wrap_content"
             android:layout_margin="5dp"
             android:background="@color/white"
-            android:layout_height="wrap_content" />
+            android:hint="Number"
+            android:inputType="phone"
+            android:maxLength="10" />
 
     </LinearLayout>
 

@@ -20,14 +20,14 @@
 
     <!--getMobileNumberActivity-->
 
-    <string name="enter_mobile_number_a">Please confirm your country name and enter</string>
-    <string name="enter_mobile_number_b">your Mobile Number</string>
+    <string name="enter_mobile_number_a">Please confirm your country code and enter</string>
+    <string name="enter_mobile_number_b">your phone number</string>
     <string name="contact_number">Contact Number</string>
     <string name="next">Next</string>
 
 
     <!--OtpverificationActiviy-->
-    <string name="Sit_back_and_relax_a">Sit back and relax! While we verify your </string>
+    <string name="Sit_back_and_relax_a">Sit back and relax! while we verify your </string>
     <string name="Sit_back_and_relax_b">mobile number </string>
     <string name="please_enter_your_verification_code_below">Please enter your verification code below </string>
 
@@ -43,7 +43,6 @@
     <string name="create_profile">Create Profile</string>
 
     <array name="country_name">
-
         <item name="Afghanistan"></item>
         <item name="Aland Islands"></item>
         <item name="Albania"></item>
@@ -286,12 +285,10 @@
         <item name="Yemen"></item>
         <item name="Zambia"></item>
         <item name="Zimbabwe"></item>
-
     </array>
 
 
     <array name="country_code">
-
         <item name="93"></item>
         <item name= "358"></item>
         <item name= "355"></item>
@@ -534,8 +531,6 @@
         <item name= "967"></item>
         <item name= "260"></item>
         <item name= "263"></item>
-
-
     </array>
 
 

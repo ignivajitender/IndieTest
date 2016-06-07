@@ -13,6 +13,7 @@ import android.widget.LinearLayout;
 import android.support.v7.widget.Toolbar;
 import android.widget.TextView;
 import com.igniva.indiecore.R;
+import com.igniva.indiecore.utils.Utility;
 import com.igniva.indiecore.utils.Validation;
 
 /**
@@ -40,8 +41,18 @@ public class EnterMobileActivity extends BaseActivity {
     void initToolbar() {
         try {
             mToolbar = (Toolbar) findViewById(R.id.toolbar);
-            TextView mTitle = (TextView) mToolbar.findViewById(R.id.toolbar_title);
-            mTitle.setText(getResources().getString(R.string.contact_number));
+            TextView mTvTitle = (TextView) mToolbar.findViewById(R.id.toolbar_title);
+            mTvTitle.setText(getResources().getString(R.string.contact_number));
+            //
+            TextView mTvNext = (TextView) mToolbar.findViewById(R.id.toolbar_next);
+            mTvNext.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    //Utility.showToastMessageLong(EnterMobileActivity.this,"Next Clicked");
+                    startActivity(new Intent(EnterMobileActivity.this,OtpVerificationActivity.class));
+                }
+            });
+
             setSupportActionBar(mToolbar);
             getSupportActionBar().setDisplayShowTitleEnabled(false);
         } catch (Exception e) {

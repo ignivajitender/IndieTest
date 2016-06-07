@@ -21,4 +21,17 @@
         android:layout_gravity="center"
         android:text="Toolbar Title" />
 
+    <TextView
+        android:padding="10dp"
+        android:textSize="15sp"
+        android:fontFamily="sans-serif"
+        android:textStyle="normal"
+        android:textColor="@drawable/text_selector_next"
+        android:id="@+id/toolbar_next"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginRight="15dp"
+        android:layout_gravity="right"
+        android:text="Next" />
+
 </android.support.v7.widget.Toolbar>
