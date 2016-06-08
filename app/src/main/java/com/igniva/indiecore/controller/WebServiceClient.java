@@ -41,10 +41,19 @@ public class WebServiceClient {
     private static ProgressDialog progressDialog;
     private static ResponseHandlerListener mResponseHandlerListener;
 
+    /**
+     * Webservice Urls
+     */
+    public static final String HTTP_PROTOCOL = "http://";
+    public static final String HTTP_HOST_IP = "indiecorelive.ignivastaging.com/api/v1/";
+    public static final String HTTP_LOGIN = HTTP_PROTOCOL + HTTP_HOST_IP +"user/login";
+    public static final String HTTP_REGISTR = HTTP_PROTOCOL + HTTP_HOST_IP + "/users/register";
+    //
+    private final static String CONTENT_TYPE = "application/json";
+
     private enum HttpMethod {
         HTTP_GET, HTTP_POST, HTTP_PUT
     }
-
 
     public enum WebError {
         INVALID_CREDENTIALS, UNAUTHORIZED, PASSWORD_FORMAT_ERROR,
@@ -53,29 +62,16 @@ public class WebServiceClient {
         SAVE_FILE_ERROR, UNKNOWN, USER_ALREADY_EXISTS, NOT_FOUND
     }
 
-    private final static String CONTENT_TYPE = "application/json";
-
-    /**
-     * Webservice Urls
-     */
-    public static final String HTTP_PROTOCOL = "http://";
-    public static final String HTTP_HOST_IP = "scanapp.ignivastaging.com";
-    public static final String HTTP_LOGIN = HTTP_PROTOCOL + HTTP_HOST_IP + "/users/login?";
-    public static final String HTTP_REGISTR = HTTP_PROTOCOL + HTTP_HOST_IP + "/users/register";
-
-
     public WebServiceClient(Context context) {
         mContext = context;
     }
 
-
     public static void getLogin(final Context context, String payload, ResponseHandlerListener responseHandlerListener) {
-        url = HTTP_PROTOCOL + HTTP_HOST_IP + HTTP_LOGIN;
+        url = HTTP_LOGIN;
         method = HttpMethod.HTTP_POST;
         mResponseHandlerListener = responseHandlerListener;
         checkNetworkState(url, payload, method, context);
     }
-
 
     public static void signUpUser(final Context context, String payload, ResponseHandlerListener responseHandlerListener) {
         url = HTTP_LOGIN;
@@ -114,7 +110,7 @@ public class WebServiceClient {
         private final String mUrl;
         private final String mPayload;
         private final HttpMethod mMethod;
-        private  boolean isDisplayDialog=false;
+        private  boolean isDisplayDialog=true;
         private Context mContext;
 
         public CallWebserviceTask(String url, String _payload,
@@ -124,6 +120,9 @@ public class WebServiceClient {
             mPayload = _payload;
             mMethod = method;
             mContext = context;
+            Log.d(LOG_TAG,"url is "+url);
+            Log.d(LOG_TAG,"payload is "+_payload);
+
         }
 
         @Override
@@ -149,10 +148,10 @@ public class WebServiceClient {
             try {
                 url = new URL(mUrl);
                 HttpURLConnection connection = (HttpURLConnection) url.openConnection();
-                connection.setRequestProperty("Content-Type", "text/plain");
+                connection.setRequestProperty("Content-Type", "application/json");
                 connection.setRequestProperty("USER-AGENT", "Mozilla/5.0");
                 connection.setRequestProperty("ACCEPT-LANGUAGE", "en-US,en;0.5");
-                connection.setReadTimeout(10000);
+                connection.setReadTimeout(40000);
                 connection.setConnectTimeout(30000);
                 if (mMethod.equals(HttpMethod.HTTP_GET)) {
                     connection.setRequestMethod("GET");
@@ -160,7 +159,6 @@ public class WebServiceClient {
                     connection.setRequestMethod("POST");
                     connection.setDoInput(true);
                     connection.setDoOutput(true);
-
                 }
                 //
                 OutputStream os = connection.getOutputStream();

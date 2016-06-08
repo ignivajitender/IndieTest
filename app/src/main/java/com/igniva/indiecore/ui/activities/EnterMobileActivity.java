@@ -1,21 +1,24 @@
 package com.igniva.indiecore.ui.activities;
 
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
 import android.telephony.TelephonyManager;
 import android.view.View;
-import android.view.Window;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.support.v7.widget.Toolbar;
 import android.widget.TextView;
-
-import com.igniva.indiecore.R;
-import com.igniva.indiecore.utils.Utility;
+import com.igniva.indiecore.controller.WebServiceClient;
+import com.igniva.indiecore.model.ResponsePojo;
 import com.igniva.indiecore.utils.Validation;
+import com.igniva.indiecore.controller.WebServiceClient.WebError;
+import com.igniva.indiecore.controller.ResponseHandlerListener;
+import com.igniva.indiecore.controller.WebNotificationManager;
+import org.json.JSONObject;
+import com.igniva.indiecore.R;
 
 /**
  * Created by igniva-andriod-05 on 2/6/16.
@@ -29,12 +32,11 @@ public class EnterMobileActivity extends BaseActivity {
     Toolbar mToolbar;
 
     @Override
-    protected void onCreate(@Nullable Bundle savedInstanceState) {
+    protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_enter_mobile);
 
         initToolbar();
-
         setUpLayout();
         setDataInViewObjects();
     }
@@ -49,8 +51,8 @@ public class EnterMobileActivity extends BaseActivity {
             mTvNext.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    //Utility.showToastMessageLong(EnterMobileActivity.this,"Next Clicked");
-                    startActivity(new Intent(EnterMobileActivity.this, OtpVerificationActivity.class));
+                    validateMobileNumber();
+
                 }
             });
 
@@ -59,6 +61,22 @@ public class EnterMobileActivity extends BaseActivity {
         } catch (Exception e) {
             e.printStackTrace();
             mToolbar = (Toolbar) findViewById(R.id.toolbar);
+        }
+
+    }
+
+    private void validateMobileNumber() {
+
+        // TODO Validate Mobile Number
+        String payload=createPayload();
+        if (payload!=null) {
+            // Web service Call
+            // Step 1 - Register responsehandler
+            WebNotificationManager.registerResponseListener(responseHandlerListener);
+            // Step 2 - Webservice Call
+            WebServiceClient.getLogin(EnterMobileActivity.this, payload.toString(), responseHandlerListener);
+        }else{
+            // TODO show error dialog
         }
 
     }
@@ -136,20 +154,47 @@ public class EnterMobileActivity extends BaseActivity {
 
     @Override
     public void onClick(View v) {
-        switch (v.getId()) {
-
-            case R.id.ll_next:
-//                Intent intent= new Intent(EnterMobileActivity.this,OtpVerificationActivity.class);
-//                startActivity(intent);
-//                finish();
-                break;
-            case R.id.btn_next:
-
-                break;
-
-            default:
-                break;
-        }
 
     }
+
+    ResponseHandlerListener responseHandlerListener = new ResponseHandlerListener() {
+        @Override
+        public void onComplete(ResponsePojo result, WebError error, ProgressDialog mProgressDialog) {
+            // Always unregister
+            WebNotificationManager.unRegisterResponseListener(responseHandlerListener);
+            // check for error
+            if (error==null){
+                // start parsing
+                if (result.getSuccess().equalsIgnoreCase("true"))
+                startActivity(new Intent(EnterMobileActivity.this, OtpVerificationActivity.class));
+                else{
+                    // display error message
+                }
+            }else{
+                // display error dialog
+            }
+
+            // Always close the progressdialog
+            if (mProgressDialog!=null&&mProgressDialog.isShowing()){
+                mProgressDialog.dismiss();
+            }
+        }
+    };
+
+    public String createPayload(){
+        JSONObject payloadJson = null;
+        try {
+            payloadJson = new JSONObject();
+            payloadJson.put("deviceType", "android");
+            payloadJson.put("deviceToken", "2vgfwufhyiewjfkhwbs");
+            payloadJson.put("countryCode", "91");
+            payloadJson.put("mobileNo", "9056428478");
+            payloadJson.put("locale", "en");
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+        return  payloadJson.toString();
+    }
+
 }

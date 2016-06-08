@@ -8,7 +8,23 @@ public class ResponsePojo {
     private int status;
     private String description;
     private DataPojo data;
-    private ErrorPojo error;
+    private String success;
+    private String error;
+
+
+    public String getSuccess() {
+        return success;
+    }
+
+    public void setSuccess(String success) {
+        this.success = success;
+    }
+
+    public void setError(String error) {
+        this.error = error;
+    }
+
+
 
 
     public String getDescription() {
@@ -35,12 +51,6 @@ public class ResponsePojo {
         this.data = data;
     }
 
-    public ErrorPojo getError() {
-        return error;
-    }
 
-    public void setError(ErrorPojo error) {
-        this.error = error;
-    }
 
 }
