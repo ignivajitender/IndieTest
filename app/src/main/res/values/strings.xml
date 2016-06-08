@@ -30,18 +30,24 @@
     <string name="Sit_back_and_relax_a">Sit back and relax! while we verify your </string>
     <string name="Sit_back_and_relax_b">mobile number </string>
     <string name="please_enter_your_verification_code_below">Please enter your verification code below </string>
-
+    <string name="did_not_receive_code">Didn\'t receive verification code?</string>
+    <string name="resend_verification_code"><u>Resend verification code</u></string>
 
     <!--synContactActivity-->
 
     <string name="it_is_recommended_to_choose_a">It is recommended to choose badges </string>
     <string name="it_is_recommended_to_choose_b">to connect quicker and see who is </string>
     <string name="it_is_recommended_to_choose_c">using Indiecore </string>
+    <string name="contacts_sync">Sync Contacts</string>
+
 
 
     <!--creatyeProfieActivity-->
     <string name="create_profile">Create Profile</string>
-
+    <string name="first_name">First name</string>
+    <string name="last_name">Last name</string>
+    <string name="date_of_birth">Date of birth</string>
+    <string name="description">Description</string>
     <array name="country_name">
         <item name="Afghanistan"></item>
         <item name="Aland Islands"></item>

@@ -12,6 +12,7 @@ import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.support.v7.widget.Toolbar;
 import android.widget.TextView;
+
 import com.igniva.indiecore.R;
 import com.igniva.indiecore.utils.Utility;
 import com.igniva.indiecore.utils.Validation;
@@ -49,7 +50,7 @@ public class EnterMobileActivity extends BaseActivity {
                 @Override
                 public void onClick(View v) {
                     //Utility.showToastMessageLong(EnterMobileActivity.this,"Next Clicked");
-                    startActivity(new Intent(EnterMobileActivity.this,OtpVerificationActivity.class));
+                    startActivity(new Intent(EnterMobileActivity.this, OtpVerificationActivity.class));
                 }
             });
 
@@ -68,8 +69,6 @@ public class EnterMobileActivity extends BaseActivity {
 
 
         try {
-
-
 //        String locale = getApplicationContext().getResources().getConfiguration().locale.getCountry();
 
             TelephonyManager manager = (TelephonyManager) this.getSystemService(Context.TELEPHONY_SERVICE);

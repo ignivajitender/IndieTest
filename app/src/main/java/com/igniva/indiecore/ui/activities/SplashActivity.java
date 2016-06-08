@@ -38,27 +38,27 @@ public class SplashActivity extends BaseActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_splash);
 
-        setUpLayout();
+      //  setUpLayout();
 
 
-        Log.e(TAG,"Above GCM");
+     //   Log.e(TAG,"Above GCM");
         // GCM CODE
-        mRegistrationBroadcastReceiver = new BroadcastReceiver() {
-            @Override
-            public void onReceive(Context context, Intent intent) {
-                Log.e(TAG,"inside BroadcastReceiver ");
-//                mRegistrationProgressBar.setVisibility(ProgressBar.GONE);
-                SharedPreferences sharedPreferences =
-                        PreferenceManager.getDefaultSharedPreferences(context);
-                boolean sentToken = sharedPreferences
-                        .getBoolean(RegistrationIntentService.SENT_TOKEN_TO_SERVER, false);
-                if (sentToken) {
-//                    mInformationTextView.setText(getString(R.string.gcm_send_message));
-                } else {
-//                    mInformationTextView.setText(getString(R.string.token_error_message));
-                }
-            }
-        };
+//        mRegistrationBroadcastReceiver = new BroadcastReceiver() {
+//            @Override
+//            public void onReceive(Context context, Intent intent) {
+//                Log.e(TAG,"inside BroadcastReceiver ");
+////                mRegistrationProgressBar.setVisibility(ProgressBar.GONE);
+//                SharedPreferences sharedPreferences =
+//                        PreferenceManager.getDefaultSharedPreferences(context);
+//                boolean sentToken = sharedPreferences
+//                        .getBoolean(RegistrationIntentService.SENT_TOKEN_TO_SERVER, false);
+//                if (sentToken) {
+////                    mInformationTextView.setText(getString(R.string.gcm_send_message));
+//                } else {
+////                    mInformationTextView.setText(getString(R.string.token_error_message));
+//                }
+//            }
+//        };
 
         // Registering BroadcastReceiver
 //        registerReceiver();
