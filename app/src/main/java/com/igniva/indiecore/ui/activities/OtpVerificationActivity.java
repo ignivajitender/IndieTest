@@ -13,7 +13,6 @@ import android.view.Window;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
-
 import com.igniva.indiecore.R;
 import com.igniva.indiecore.controller.ResponseHandlerListener;
 import com.igniva.indiecore.controller.WebNotificationManager;
@@ -23,7 +22,6 @@ import com.igniva.indiecore.utils.Constants;
 import com.igniva.indiecore.utils.Log;
 import com.igniva.indiecore.utils.PreferenceHandler;
 import com.igniva.indiecore.utils.Utility;
-
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -204,13 +202,9 @@ public class OtpVerificationActivity extends BaseActivity {
     protected void setDataInViewObjects() {
 
         try {
-
             mOtpField.setText(receivedOtp);
-
             mOtpField.setSelection(receivedOtp.length());
-
         } catch (Exception e) {
-
             e.printStackTrace();
         }
 
@@ -227,7 +221,6 @@ public class OtpVerificationActivity extends BaseActivity {
     }
 
     public void updateOtp() {
-
         setDataInViewObjects();
     }
 
