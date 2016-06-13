@@ -12,10 +12,6 @@ public abstract class BaseActivity extends AppCompatActivity{
     protected abstract void setDataInViewObjects();
     protected abstract void onClick(View v);
 
-    // This is a test comitt
-    // This is a test committ from Studio
-    // From sid's system 7 june 12 pm
-    // From sir 's system 7 june 12:16pm
 
 
 

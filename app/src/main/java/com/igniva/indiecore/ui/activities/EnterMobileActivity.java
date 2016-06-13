@@ -11,13 +11,20 @@ import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.support.v7.widget.Toolbar;
 import android.widget.TextView;
+import android.widget.Toast;
+
 import com.igniva.indiecore.controller.WebServiceClient;
 import com.igniva.indiecore.model.ResponsePojo;
+import com.igniva.indiecore.utils.Constants;
+import com.igniva.indiecore.utils.Log;
+import com.igniva.indiecore.utils.Utility;
 import com.igniva.indiecore.utils.Validation;
 import com.igniva.indiecore.controller.WebServiceClient.WebError;
 import com.igniva.indiecore.controller.ResponseHandlerListener;
 import com.igniva.indiecore.controller.WebNotificationManager;
+
 import org.json.JSONObject;
+
 import com.igniva.indiecore.R;
 
 /**
@@ -27,7 +34,7 @@ public class EnterMobileActivity extends BaseActivity {
 
     private LinearLayout mLlTopNextEvent;
     private Button mButtonNext;
-    String countryId;
+    String countryId, mobileNumber;
     private EditText mEtMobileNumber, mEtCountryCode;
     Toolbar mToolbar;
 
@@ -47,6 +54,7 @@ public class EnterMobileActivity extends BaseActivity {
             TextView mTvTitle = (TextView) mToolbar.findViewById(R.id.toolbar_title);
             mTvTitle.setText(getResources().getString(R.string.contact_number));
             //
+
             TextView mTvNext = (TextView) mToolbar.findViewById(R.id.toolbar_next);
             mTvNext.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -65,43 +73,57 @@ public class EnterMobileActivity extends BaseActivity {
 
     }
 
+    /**
+     * To validate country code and mobile number fields and to execute login call
+     * @param
+     * @param
+     *
+     */
     private void validateMobileNumber() {
 
-        // TODO Validate Mobile Number
-        String payload=createPayload();
-        if (payload!=null) {
-            // Web service Call
-            // Step 1 - Register responsehandler
-            WebNotificationManager.registerResponseListener(responseHandlerListener);
-            // Step 2 - Webservice Call
-            WebServiceClient.getLogin(EnterMobileActivity.this, payload.toString(), responseHandlerListener);
-        }else{
-            // TODO show error dialog
-        }
+        try {
+            countryId = mEtCountryCode.getText().toString();
+            mobileNumber = mEtMobileNumber.getText().toString();
+            // TODO Validate Mobile Number
+            String payload = createPayload();
 
+            if (countryId.isEmpty()) {
+                Utility.showAlertDialog(Constants.COUNTRY_CODE_VALIDATION, this);
+                return;
+            } else if (mobileNumber.isEmpty()) {
+
+                Utility.showAlertDialog(Constants.MOBILE_NUMBER_VALIDATION, this);
+                return;
+            } else if(mobileNumber.length()<10) {
+                Utility.showAlertDialog(Constants.TEN_DIGIT_MOBILENUMBER_VALIDATION,this);
+                return;
+            }
+            else
+                {
+                    if (payload != null) {
+                        // Web service Call
+                        // Step 1 - Register responsehandler
+                        WebNotificationManager.registerResponseListener(responseHandlerListener);
+                        // Step 2 - Webservice Call
+                        WebServiceClient.getLogin(EnterMobileActivity.this, payload.toString(), responseHandlerListener);
+
+                        Log.e("EnterMobileActivity payload","------"+payload);
+                    } else {
+                        // TODO show error dialog
+                    }
+
+                }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
 
     @Override
     protected void setUpLayout() {
 
-
-        try {
-//        String locale = getApplicationContext().getResources().getConfiguration().locale.getCountry();
-
-            TelephonyManager manager = (TelephonyManager) this.getSystemService(Context.TELEPHONY_SERVICE);
-            if (manager.getSimState() != TelephonyManager.SIM_STATE_ABSENT) {
-
-                countryId = manager.getSimCountryIso().toUpperCase();
-
-            } else {
-
-
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
+try {
         mLlTopNextEvent = (LinearLayout) findViewById(R.id.ll_next);
         //mLlTopNextEvent.setOnClickListener(onClick());
 
@@ -113,47 +135,41 @@ public class EnterMobileActivity extends BaseActivity {
 
         mEtCountryCode = (EditText) findViewById(R.id.et_country_code);
         //  mEtCountryCode.setText(countryId);
+    } catch (Exception e){
 
+        e.printStackTrace();
+    }
     }
 
     @Override
     protected void setDataInViewObjects() {
-
-
-        if (Validation.isValidMobile(this, mEtCountryCode, mEtMobileNumber)) {
-            Intent in = new Intent(EnterMobileActivity.this, OtpVerificationActivity.class);
-            startActivity(in);
-            finish();
-        }
-
-//        if (countryCode.isEmpty()) {
-//            Utility.showAlertDialog("Please Enter Country Code!", mEtCountryCode, this);
-//            return;
-//        } else if (mobileNumber.isEmpty()) {
-//
-//            Utility.showAlertDialog("Please Enter Mobile Number!", mEtMobileNumber, this);
-//            return;
-//        } else {
-//
-//            Intent in = new Intent(EnterMobileActivity.this, OtpVerificationActivity.class);
-//            startActivity(in);
-//            finish();
-//        }
-    }
-
-    public void registerMobileNumber() {
         try {
+            String CountryID="";
+            String CountryZipCode="";
+            TelephonyManager manager = (TelephonyManager) this.getSystemService(Context.TELEPHONY_SERVICE);
+            if (manager.getSimState() != TelephonyManager.SIM_STATE_ABSENT) {
+                CountryID= manager.getSimCountryIso().toUpperCase();
+                String[] rl=this.getResources().getStringArray(R.array.CountryCodes);
+                for(int i=0;i<rl.length;i++){
+                    String[] g=rl[i].split(",");
+                    if(g[1].trim().equals(CountryID.trim())){
+                        CountryZipCode=g[0];
+                        break;  }
+                }
 
+                mEtCountryCode.setText(CountryZipCode);
 
+            }
         } catch (Exception e) {
             e.printStackTrace();
         }
 
-    }
 
+    }
 
     @Override
     public void onClick(View v) {
+
 
     }
 
@@ -163,38 +179,61 @@ public class EnterMobileActivity extends BaseActivity {
             // Always unregister
             WebNotificationManager.unRegisterResponseListener(responseHandlerListener);
             // check for error
-            if (error==null){
-                // start parsing
-                if (result.getSuccess().equalsIgnoreCase("true"))
-                startActivity(new Intent(EnterMobileActivity.this, OtpVerificationActivity.class));
-                else{
-                    // display error message
+            try {
+
+                if (error == null) {
+                    // start parsing
+                    if (result.getSuccess().equalsIgnoreCase("true")) {
+
+                        Intent in = new Intent(EnterMobileActivity.this, OtpVerificationActivity.class);
+                        Bundle bundle = new Bundle();
+                        bundle.putString(Constants.MOBILE_NO, mobileNumber);
+                        bundle.putString(Constants.COUNTRY_CODE, countryId);
+                        in.putExtras(bundle);
+                        startActivity(in);
+
+                    } else {
+
+                        Toast.makeText(getApplicationContext(), "Concurrent verifications to the same number are not allowed", Toast.LENGTH_LONG).show();
+                        // display error message
+                    }
+                } else {
+                    // display error dialog
+                    Toast.makeText(getApplicationContext(), "Some unknown error occurred, Please try again later.", Toast.LENGTH_LONG).show();
                 }
-            }else{
-                // display error dialog
-            }
+            } catch (Exception e){
+                Toast.makeText(getApplicationContext(), "Some unknown error occurred, Please try again later.", Toast.LENGTH_LONG).show();
+
+            e.printStackTrace();
+        }
 
             // Always close the progressdialog
-            if (mProgressDialog!=null&&mProgressDialog.isShowing()){
+            if (mProgressDialog != null && mProgressDialog.isShowing()) {
                 mProgressDialog.dismiss();
             }
         }
     };
 
-    public String createPayload(){
+    /**
+     * To build json to send with  login call
+     *
+     * @return
+     */
+
+    public String createPayload() {
         JSONObject payloadJson = null;
         try {
             payloadJson = new JSONObject();
             payloadJson.put("deviceType", "android");
-            payloadJson.put("deviceToken", "2vgfwufhyiewjfkhwbs");
-            payloadJson.put("countryCode", "91");
-            payloadJson.put("mobileNo", "9056428478");
+            payloadJson.put("deviceToken", "gcm id----2vgfwufhyiewjfkhwbs");
+            payloadJson.put("countryCode", countryId);
+            payloadJson.put("mobileNo", mobileNumber);
             payloadJson.put("locale", "en");
         } catch (Exception e) {
             e.printStackTrace();
             return null;
         }
-        return  payloadJson.toString();
+        return payloadJson.toString();
     }
 
 }

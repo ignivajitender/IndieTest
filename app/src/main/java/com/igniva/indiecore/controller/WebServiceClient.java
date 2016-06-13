@@ -47,8 +47,13 @@ public class WebServiceClient {
     public static final String HTTP_PROTOCOL = "http://";
     public static final String HTTP_HOST_IP = "indiecorelive.ignivastaging.com/api/v1/";
     public static final String HTTP_LOGIN = HTTP_PROTOCOL + HTTP_HOST_IP +"user/login";
+    public static final String HTTP_BADGES = HTTP_PROTOCOL + HTTP_HOST_IP +"badge/market";
     public static final String HTTP_REGISTR = HTTP_PROTOCOL + HTTP_HOST_IP + "/users/register";
-    //
+    public static  final String HTTP_CREATE_PROFILE=HTTP_PROTOCOL+HTTP_HOST_IP+"user/profile";
+    public static final String HTTP_VERIFY_OTP = HTTP_PROTOCOL + HTTP_HOST_IP + "user/verify";
+    public static final String HTTP_RESEND_OTP=HTTP_PROTOCOL+HTTP_HOST_IP+"user/control";
+    public static  final String HTTP_UPLOAD_IMAGE="http://indiecorelive.ignivastaging.com/files/upload";
+   //
     private final static String CONTENT_TYPE = "application/json";
 
     private enum HttpMethod {
@@ -73,13 +78,40 @@ public class WebServiceClient {
         checkNetworkState(url, payload, method, context);
     }
 
-    public static void signUpUser(final Context context, String payload, ResponseHandlerListener responseHandlerListener) {
-        url = HTTP_LOGIN;
-        url = "http://spplitt.ignivastaging.com/users/login";
+    public static void getBadges(final Context context, String payload, ResponseHandlerListener responseHandlerListener) {
+        url = HTTP_BADGES;
         method = HttpMethod.HTTP_POST;
         mResponseHandlerListener = responseHandlerListener;
         checkNetworkState(url, payload, method, context);
     }
+
+    public static void verifyOtp(final Context context,String payload,ResponseHandlerListener responseHandlerListener){
+
+        url=HTTP_VERIFY_OTP;
+        method=HttpMethod.HTTP_POST;
+        mResponseHandlerListener=responseHandlerListener;
+        checkNetworkState(url,payload,method,context);
+    }
+
+
+
+    public static void resendOTP(final Context context,String payload,ResponseHandlerListener responseHandlerListener){
+
+        url=HTTP_RESEND_OTP;
+        method=HttpMethod.HTTP_POST;
+        mResponseHandlerListener=responseHandlerListener;
+        checkNetworkState(url,payload,method,context);
+    }
+
+    public static void createProfile(final Context context,String payload,ResponseHandlerListener responseHandlerListener){
+
+        url=HTTP_CREATE_PROFILE;
+        method=HttpMethod.HTTP_POST;
+        mResponseHandlerListener=responseHandlerListener;
+        checkNetworkState(url,payload,method,context);
+    }
+
+
 
     /**
      * Check Available Network connection and make http call only if network is

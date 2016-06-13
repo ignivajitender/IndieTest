@@ -51,6 +51,10 @@ public class SyncContactsActivity extends  BaseActivity implements View.OnClickL
 
     @Override
     public void onClick(View v) {
-
+        switch (v.getId()) {
+            case R.id.tv_skip_step:
+                startActivity(new Intent(this,BadgesActivity.class));
+                break;
+        }
     }
 }

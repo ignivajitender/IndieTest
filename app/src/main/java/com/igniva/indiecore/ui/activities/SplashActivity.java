@@ -118,8 +118,13 @@ public class SplashActivity extends BaseActivity
 
     @Override
     protected void setUpLayout() {
-        mGetStarted=(ImageView) findViewById(R.id.im_getStarted);
-       // mGetStarted.setOnClickListener(this);
+        try {
+            mGetStarted = (ImageView) findViewById(R.id.im_getStarted);
+            // mGetStarted.setOnClickListener(this);
+        } catch (Exception e){
+
+            e.printStackTrace();
+        }
     }
 
     @Override
@@ -132,9 +137,16 @@ public class SplashActivity extends BaseActivity
         switch (v.getId()){
 
             case R.id.im_getStarted:
+                try {
                 Intent intent= new Intent(SplashActivity.this,EnterMobileActivity.class);
                 startActivity(intent);
                 finish();
+
+
+        } catch (Exception e){
+
+            e.printStackTrace();
+        }
                 break;
 
             default:
