@@ -9,6 +9,7 @@ import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+
 import com.igniva.indiecore.R;
 import com.igniva.indiecore.controller.ResponseHandlerListener;
 import com.igniva.indiecore.controller.WebNotificationManager;
@@ -17,27 +18,34 @@ import com.igniva.indiecore.model.BadgesPojo;
 import com.igniva.indiecore.model.ResponsePojo;
 import com.igniva.indiecore.ui.adapters.BadgesAdapter;
 import com.igniva.indiecore.utils.Log;
+import com.igniva.indiecore.utils.Utility;
+
 import org.json.JSONObject;
+
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 /**
  * Created by igniva-andriod-11 on 8/6/16.
  */
 public class BadgesActivity extends BaseActivity {
-    String LOG_TAG="BadgesActivity";
+    String LOG_TAG = "BadgesActivity";
     Toolbar mToolbar;
     private GridLayoutManager mGlayout;
     RecyclerView mRvBadges;
-    ArrayList<BadgesPojo> mBadgesList = new ArrayList<BadgesPojo>();
+    ArrayList<BadgesPojo> mBadgesList = null;
     LinearLayout mllNext, mLlPrevious;
-    int pageNumber = 1, badgeCount = 20, category = 0,mTotalBadgeCount=0;
+    int pageNumber = 1, badgeCount = 20, category = 0, mTotalBadgeCount = 0;
     BadgesAdapter mBadgesAdapter;
+
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_badges);
+        mBadgesList = new ArrayList<BadgesPojo>();
         //
         initToolbar();
         setUpLayout();
@@ -50,6 +58,8 @@ public class BadgesActivity extends BaseActivity {
             // Step 2 - Webservice Call
             WebServiceClient.getBadges(BadgesActivity.this, payload, responseHandlerListener);
         }
+
+
     }
 
     @Override
@@ -61,6 +71,7 @@ public class BadgesActivity extends BaseActivity {
         mllNext.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                mllNext.setEnabled(false);
                 updateNextBadges();
             }
         });
@@ -71,6 +82,8 @@ public class BadgesActivity extends BaseActivity {
                 updatePreviousBadges();
             }
         });
+        mLlPrevious.setVisibility(View.GONE);
+
         //
         mRvBadges.setHasFixedSize(true);
         mRvBadges.setLayoutManager(mGlayout);
@@ -79,12 +92,35 @@ public class BadgesActivity extends BaseActivity {
     @Override
     protected void setDataInViewObjects() {
         try {
+
+            // Remove duplicate items
+
+//            Set<BadgesPojo> set = new HashSet<BadgesPojo>();
+//            set.addAll(mBadgesList);
+//            mBadgesList.clear();
+//            mBadgesList.addAll(set);
+
+
             mBadgesAdapter = null;
             mRvBadges.setAdapter(mBadgesAdapter);
             //
-            mBadgesAdapter = new BadgesAdapter(BadgesActivity.this, mBadgesList, pageNumber*badgeCount,mTotalBadgeCount);
+            mBadgesAdapter = new BadgesAdapter(BadgesActivity.this, mBadgesList, pageNumber, badgeCount, mTotalBadgeCount);
             mRvBadges.setAdapter(mBadgesAdapter);
-        }catch (Exception e){
+            // show previous button
+            if (pageNumber > 1) {
+                mLlPrevious.setVisibility(View.VISIBLE);
+            }
+            // hide next button
+            if ((pageNumber * badgeCount) > mBadgesList.size()) {
+                mllNext.setVisibility(View.GONE);
+            } else {
+                mllNext.setVisibility(View.VISIBLE);
+            }
+
+            // Enable buttons
+            mllNext.setEnabled(true);
+
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
@@ -102,7 +138,13 @@ public class BadgesActivity extends BaseActivity {
             mTvTitle.setText(getResources().getString(R.string.badges));
             //
             TextView mTvNext = (TextView) mToolbar.findViewById(R.id.toolbar_next);
-            mTvNext.setVisibility(View.GONE);
+            mTvNext.setText("Done");
+            mTvNext.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Utility.showToastMessageShort(BadgesActivity.this, getResources().getString(R.string.coming_soon));
+                }
+            });
             //
             setSupportActionBar(mToolbar);
             getSupportActionBar().setDisplayShowTitleEnabled(false);
@@ -126,7 +168,7 @@ public class BadgesActivity extends BaseActivity {
             e.printStackTrace();
             return null;
         }
-        Log.d(LOG_TAG,"paload is "+payloadJson.toString());
+        Log.d(LOG_TAG, "paload is " + payloadJson.toString());
         return payloadJson.toString();
     }
 
@@ -140,7 +182,8 @@ public class BadgesActivity extends BaseActivity {
                 // start parsing
                 if (result.getSuccess().equalsIgnoreCase("true")) {
                     // display in grid
-                    mTotalBadgeCount=result.getTotal_badges();
+                    mTotalBadgeCount = result.getTotal_badges();
+                    if (mBadgesList.size()<mTotalBadgeCount)
                     mBadgesList.addAll(result.getBadges());
                     setDataInViewObjects();
                 } else {
@@ -154,32 +197,39 @@ public class BadgesActivity extends BaseActivity {
             if (mProgressDialog != null && mProgressDialog.isShowing()) {
                 mProgressDialog.dismiss();
             }
+
+
         }
     };
 
 
     void updateNextBadges() {
-
         pageNumber = pageNumber + 1;
-        badgeCount = badgeCount;
-
-        String payload = createPayload(pageNumber, badgeCount, category);
-        if (payload != null) {
-            // Web service Call
-            // Step 1 - Register responsehandler
-            WebNotificationManager.registerResponseListener(responseHandlerListener);
-            // Step 2 - Webservice Call
-            WebServiceClient.getBadges(BadgesActivity.this, payload, responseHandlerListener);
+        Log.d(LOG_TAG, "page no is  is " + pageNumber +" size of list "+ mBadgesList.size());
+        if (mBadgesList.size() > (pageNumber * badgeCount)||mBadgesList.size() ==mTotalBadgeCount) {
+            setDataInViewObjects();
+        } else {
+            String payload = createPayload(pageNumber, badgeCount, category);
+            if (payload != null) {
+                // Web service Call
+                // Step 1 - Register responsehandler
+                WebNotificationManager.registerResponseListener(responseHandlerListener);
+                // Step 2 - Webservice Call
+                WebServiceClient.getBadges(BadgesActivity.this, payload, responseHandlerListener);
+            }
         }
-
     }
 
     void updatePreviousBadges() {
+        pageNumber = pageNumber - 1;
+        if (pageNumber == 1) {
+            mLlPrevious.setVisibility(View.GONE);
+        }
+        if (pageNumber < 1) {
+            pageNumber = 1;
+            mLlPrevious.setVisibility(View.GONE);
 
-        pageNumber = pageNumber - 1 ;
-        if(pageNumber<1)
-            pageNumber=1;
+        }
         setDataInViewObjects();
-
     }
 }

@@ -26,9 +26,9 @@ public class BadgesAdapter extends RecyclerView.Adapter<BadgesAdapter.RecyclerVi
     private int mTotalBadgeCount;
     String LOG_TAG="BadgesAdapter";
 
-    public BadgesAdapter(Context context, ArrayList<BadgesPojo> itemList, int pageNo, int badgeCount) {
+    public BadgesAdapter(Context context, ArrayList<BadgesPojo> itemList, int pageNo,int badgePerPage,  int badgeCount) {
 
-        this.itemList = getBadges(itemList,pageNo,badgeCount);
+        this.itemList = getBadges(itemList,pageNo,badgePerPage,badgeCount);
         this.context = context;
         mTotalBadgeCount=badgeCount;
     }
@@ -68,37 +68,57 @@ public class BadgesAdapter extends RecyclerView.Adapter<BadgesAdapter.RecyclerVi
 
         @Override
         public void onClick(View view) {
-            Toast.makeText(view.getContext(), "Clicked badge Position = " + getPosition(), Toast.LENGTH_SHORT).show();
+            Toast.makeText(view.getContext(), R.string.coming_soon, Toast.LENGTH_SHORT).show();
         }
     }
 
 
-    public ArrayList<BadgesPojo> getBadges(ArrayList<BadgesPojo> originalList,int size, int totalBadgeCount){
-        ArrayList<BadgesPojo> badgesList=null;
+    public ArrayList<BadgesPojo> getBadges(ArrayList<BadgesPojo> originalList,int pageNumber,int badgePerPage, int totalBadgeCount) {
+        ArrayList<BadgesPojo> badgesList = null;
+
         // for first time
-        if (originalList.size()<21){
-            return originalList;
-        }else{
+//        if (originalList.size()<=badgePerPage){
+//            return originalList;
+//        }
+//
+        if (true) {
             badgesList = new ArrayList<BadgesPojo>();
+            Log.d(LOG_TAG, " total badge " + totalBadgeCount + " size " + pageNumber);
             // if list has still more items and equals to 20
-            Log.d(LOG_TAG," total badge "+totalBadgeCount +" size "+size);
-            if((size+20)<totalBadgeCount) {
+            if (totalBadgeCount > (pageNumber * badgePerPage)) {
+
 
                 int sizeOfList = originalList.size() - 1;
-                for (int i = 0; i < 20; i++) {
-                    badgesList.add(i, originalList.get(sizeOfList - i));
+                for (int i = 0; i < badgePerPage; i++) {
+                    badgesList.add(i, originalList.get(badgePerPage * (pageNumber - 1) + i));
                 }
-            }
-            // if list has items but less than 20
-             else{
-                int sizeOfList=totalBadgeCount%20;
-                for (int i = 0; i < sizeOfList; i++) {
-                    badgesList.add(i, originalList.get(sizeOfList - i));
+//                // case 1 , size is more than 20
+//                if (totalBadgeCount-(pageNumber*badgePerPage)>=badgePerPage){
+//                    int sizeOfList = originalList.size() - 1;
+//                    for (int i = 0; i < badgePerPage; i++) {
+//                        badgesList.add(i, originalList.get(badgePerPage + i));
+//                    }
+//                }
+//                // case 2 , size is lesser than 20
+//                else{
+//                    int sizeOfList = originalList.size() - 1;
+//                    for (int i = 0; i <= sizeOfList+1; i++) {
+//                        badgesList.add(i, originalList.get(sizeOfList - i));
+//                    }
+            } else {
+                int sizeOfList = (originalList.size()%((pageNumber-1)*badgePerPage))-1;
+
+                for (int i = 0; i <= sizeOfList; i++) {
+                    badgesList.add(i, originalList.get((originalList.size()-1)-i));
                 }
             }
         }
 
 
-        return  badgesList;
+            //  }
+
+
+            return badgesList;
+
     }
 }

@@ -9,6 +9,8 @@
     <string name="invalid_session">Invalid Session</string>
     <string name="logout_device">Your session has been expired, Please login again to continue.</string>
     <string name="please_wait">Please wait...</string>
+    <string name="coming_soon">Coming Soon</string>
+    <string name="unkb">Coming Soon</string>
 
 
     <!--splash-->
@@ -45,6 +47,8 @@
     <string name="previous">Previous</string>
     <string name="its_recommended">It is recommended to choose badges to find people of</string>
     <string name="same_choice">seme choice</string>
+    <string name="no_more_badges">No more badges available</string>
+
 
     <!--creatyeProfieActivity-->
     <string name="create_profile">Create Profile</string>
