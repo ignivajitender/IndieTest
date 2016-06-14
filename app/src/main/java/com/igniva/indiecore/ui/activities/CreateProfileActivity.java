@@ -125,11 +125,11 @@ public class CreateProfileActivity extends BaseActivity implements  AsyncResult 
         mIvProfileImage = (ImageView) findViewById(R.id.iv_profile);
         mIvCoverImage = (ImageView) findViewById(R.id.iv_cover_pic);
 
-        mTvMale = (TextView) findViewById(R.id.tv_male);
+        mTvMale = (TextView) findViewById(R.id.textView);
         mTvFemale = (TextView) findViewById(R.id.tv_female);
         mTvOther = (TextView) findViewById(R.id.tv_other);
 
-        mTvMale.setBackgroundColor(Color.parseColor("#1C6DCE"));
+        mTvMale.setBackgroundResource(R.drawable.left_rounded_corner_selected);
         mTvMale.setTextColor(Color.parseColor("#ffffff"));
 
 
@@ -401,7 +401,7 @@ public class CreateProfileActivity extends BaseActivity implements  AsyncResult 
                 selectImage();
                 break;
 
-            case R.id.tv_male:
+            case R.id.textView:
                 gender = "male";
                 mTvMale.setBackgroundResource(R.drawable.left_rounded_corner_selected);
                 mTvMale.setTextColor(Color.parseColor("#ffffff"));
@@ -415,24 +415,24 @@ public class CreateProfileActivity extends BaseActivity implements  AsyncResult 
                 break;
             case R.id.tv_female:
                 gender = "female";
-                mTvFemale.setBackgroundColor(Color.parseColor("#1C6DCE"));
+                mTvFemale.setBackgroundResource(R.drawable.rectangle_selected);
                 mTvFemale.setTextColor(Color.parseColor("#ffffff"));
 
-                mTvMale.setBackgroundColor(Color.parseColor("#ffffff"));
+                mTvMale.setBackgroundResource(R.drawable.left_rounded_corners);
                 mTvMale.setTextColor(Color.parseColor("#1C6DCE"));
 
-                mTvOther.setBackgroundColor(Color.parseColor("#ffffff"));
+                mTvOther.setBackgroundResource(R.drawable.right_rounded_corners);
                 mTvOther.setTextColor(Color.parseColor("#1C6DCE"));
                 break;
             case R.id.tv_other:
                 gender = "other";
-                mTvOther.setBackgroundColor(Color.parseColor("#1C6DCE"));
+                mTvOther.setBackgroundResource(R.drawable.right_rounded_corner_selected);
                 mTvOther.setTextColor(Color.parseColor("#ffffff"));
 
-                mTvFemale.setBackgroundColor(Color.parseColor("#ffffff"));
+                mTvFemale.setBackgroundResource(R.drawable.rectangle);
                 mTvFemale.setTextColor(Color.parseColor("#1C6DCE"));
 
-                mTvMale.setBackgroundColor(Color.parseColor("#ffffff"));
+                mTvMale.setBackgroundResource(R.drawable.left_rounded_corners);
                 mTvMale.setTextColor(Color.parseColor("#1C6DCE"));
                 break;
 
