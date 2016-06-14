@@ -246,7 +246,6 @@ public class WebServiceClient {
         @SuppressWarnings("unchecked")
         @Override
         protected void onPostExecute(Object[] result) {
-
             try {
                 // TODO handle Authtoken Expiration
                 if (((ResponsePojo) result[0]).getStatus() == 1000) {

@@ -14,6 +14,8 @@ import android.view.View;
 import android.view.Window;
 import android.view.animation.Animation;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
+
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
 import com.igniva.indiecore.R;
@@ -29,6 +31,7 @@ public class SplashActivity extends BaseActivity
     private Animation animFadein;
     private boolean isReceiverRegistered;
     private String TAG="SplashActivity";
+    LinearLayout mLlNext;
     private BroadcastReceiver mRegistrationBroadcastReceiver;
     private static final int PLAY_SERVICES_RESOLUTION_REQUEST = 9000;
 
@@ -38,7 +41,7 @@ public class SplashActivity extends BaseActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_splash);
 
-      //  setUpLayout();
+        setUpLayout();
 
 
      //   Log.e(TAG,"Above GCM");
@@ -119,7 +122,13 @@ public class SplashActivity extends BaseActivity
     @Override
     protected void setUpLayout() {
         try {
-            mGetStarted = (ImageView) findViewById(R.id.im_getStarted);
+            mLlNext = (LinearLayout) findViewById(R.id.ll_next_screen);
+            mLlNext.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    navigateNextScreen();
+                }
+            });
             // mGetStarted.setOnClickListener(this);
         } catch (Exception e){
 
@@ -137,20 +146,24 @@ public class SplashActivity extends BaseActivity
         switch (v.getId()){
 
             case R.id.im_getStarted:
-                try {
-                Intent intent= new Intent(SplashActivity.this,EnterMobileActivity.class);
-                startActivity(intent);
-                finish();
+
+                    navigateNextScreen();
 
 
-        } catch (Exception e){
-
-            e.printStackTrace();
-        }
-                break;
+          break;
 
             default:
                 break;
         }
+    }
+
+   void navigateNextScreen(){
+       try {
+           Intent intent = new Intent(SplashActivity.this, CreateProfileActivity.class);
+           startActivity(intent);
+           finish();
+       }catch (Exception e){
+           e.printStackTrace();
+       }
     }
 }
