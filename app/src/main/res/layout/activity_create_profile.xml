@@ -125,7 +125,7 @@
                             android:layout_height="match_parent"
                             android:layout_gravity="center_vertical"
                             android:layout_weight="1"
-                            android:background="@drawable/left_rounded_corners"
+                            android:background="@drawable/left_rounded_corner_selected"
                             android:gravity="center"
                             android:onClick="onClick"
                             android:text="Male"
