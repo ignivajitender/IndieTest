@@ -168,7 +168,14 @@ public class OtpVerificationActivity extends BaseActivity {
                         PreferenceHandler.writeString(OtpVerificationActivity.this, Constants.TOKEN, result.getToken());
                         PreferenceHandler.writeString(OtpVerificationActivity.this, Constants.USERID, result.getUserId());
 
-                        startActivity(new Intent(OtpVerificationActivity.this, CreateProfileActivity.class));
+                        Intent in = new Intent(OtpVerificationActivity.this, CreateProfileActivity.class);
+                        Bundle bundle = new Bundle();
+                        bundle.putString(Constants.FIRSTNAME, "");
+                        bundle.putString(Constants.LASTNAME, "");
+                        bundle.putString(Constants.DOB, "");
+                        bundle.putString(Constants.DESCRIPTION, "");
+                        in.putExtras(bundle);
+                        startActivity(in);
                     } else if (result.getSuccess().equalsIgnoreCase("true") && callId == 2) {
 
                         Toast.makeText(OtpVerificationActivity.this, "Verification code sent successfully", Toast.LENGTH_LONG).show();

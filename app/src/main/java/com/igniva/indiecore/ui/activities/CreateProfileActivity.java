@@ -118,22 +118,36 @@ public class CreateProfileActivity extends BaseActivity implements  AsyncResult 
     protected void setUpLayout() {
 
          cal = Calendar.getInstance();
+        try {
 
-        mEtFirstName = (EditText) findViewById(R.id.et_first_name);
-        mEtLastName = (EditText) findViewById(R.id.et_last_name);
-        mEtDescription = (EditText) findViewById(R.id.et_description);
-        mTvDateOfBirth = (TextView) findViewById(R.id.tv_dob);
+            mEtFirstName = (EditText) findViewById(R.id.et_first_name);
+            mEtLastName = (EditText) findViewById(R.id.et_last_name);
+            mEtDescription = (EditText) findViewById(R.id.et_description);
+            mTvDateOfBirth = (TextView) findViewById(R.id.tv_dob);
 
-        mIvProfileImage = (ImageView) findViewById(R.id.iv_profile);
-        mIvCoverImage = (ImageView) findViewById(R.id.iv_cover_pic);
+            mIvProfileImage = (ImageView) findViewById(R.id.iv_profile);
+            mIvCoverImage = (ImageView) findViewById(R.id.iv_cover_pic);
 
-        mTvMale = (TextView) findViewById(R.id.textView);
-        mTvFemale = (TextView) findViewById(R.id.tv_female);
-        mTvOther = (TextView) findViewById(R.id.tv_other);
+            mTvMale = (TextView) findViewById(R.id.textView);
+            mTvFemale = (TextView) findViewById(R.id.tv_female);
+            mTvOther = (TextView) findViewById(R.id.tv_other);
 
-        mTvMale.setBackgroundResource(R.drawable.left_rounded_corner_selected);
-        mTvMale.setTextColor(Color.parseColor("#ffffff"));
+            mTvMale.setBackgroundResource(R.drawable.left_rounded_corner_selected);
+            mTvMale.setTextColor(Color.parseColor("#ffffff"));
 
+            Bundle bundle = getIntent().getExtras();
+            String firstName = bundle.getString(Constants.FIRSTNAME);
+            String lastName = bundle.getString(Constants.LASTNAME);
+            String dateofBirth = bundle.getString(Constants.DOB);
+            String desc = bundle.getString(Constants.DESCRIPTION);
+
+            mEtFirstName.setText(firstName);
+            mEtLastName.setText(lastName);
+            mTvDateOfBirth.setText(dateofBirth);
+            mEtDescription.setText(desc);
+        }catch (Exception e){
+            e.printStackTrace();
+        }
 
     }
 
