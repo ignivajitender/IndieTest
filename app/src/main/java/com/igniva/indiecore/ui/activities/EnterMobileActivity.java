@@ -187,12 +187,27 @@ try {
 
                         // TODO check if test user
 
-                        Intent in = new Intent(EnterMobileActivity.this, OtpVerificationActivity.class);
-                        Bundle bundle = new Bundle();
-                        bundle.putString(Constants.MOBILE_NO, mobileNumber);
-                        bundle.putString(Constants.COUNTRY_CODE, countryId);
-                        in.putExtras(bundle);
-                        startActivity(in);
+                        if(result.getUserId()==null){
+                            Intent in = new Intent(EnterMobileActivity.this, OtpVerificationActivity.class);
+                            Bundle bundle = new Bundle();
+                            bundle.putString(Constants.MOBILE_NO, mobileNumber);
+                            bundle.putString(Constants.COUNTRY_CODE, countryId);
+                            in.putExtras(bundle);
+                            startActivity(in);
+
+                        } else {
+
+                            Intent in = new Intent(EnterMobileActivity.this, CreateProfileActivity.class);
+                            Bundle bundle = new Bundle();
+                            bundle.putString(Constants.FIRSTNAME, result.getProfile().getFirstName());
+                            bundle.putString(Constants.LASTNAME, result.getProfile().getLastName());
+                            bundle.putString(Constants.DOB, result.getProfile().getDob());
+                            bundle.putString(Constants.DESCRIPTION, result.getProfile().getDesc());
+                            in.putExtras(bundle);
+                            startActivity(in);
+                        }
+
+
 
                     } else {
 
