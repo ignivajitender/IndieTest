@@ -40,6 +40,8 @@ import org.apache.http.entity.mime.content.ContentBody;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.w3c.dom.Text;
+
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -405,10 +407,8 @@ public class CreateProfileActivity extends BaseActivity implements  AsyncResult 
                 gender = "male";
                 mTvMale.setBackgroundResource(R.drawable.left_rounded_corner_selected);
                 mTvMale.setTextColor(Color.parseColor("#ffffff"));
-
                 mTvFemale.setBackgroundResource(R.drawable.rectangle);
                 mTvFemale.setTextColor(Color.parseColor("#1C6DCE"));
-
                 mTvOther.setBackgroundResource(R.drawable.right_rounded_corners);
                 mTvOther.setTextColor(Color.parseColor("#1C6DCE"));
 
@@ -417,10 +417,8 @@ public class CreateProfileActivity extends BaseActivity implements  AsyncResult 
                 gender = "female";
                 mTvFemale.setBackgroundResource(R.drawable.rectangle_selected);
                 mTvFemale.setTextColor(Color.parseColor("#ffffff"));
-
                 mTvMale.setBackgroundResource(R.drawable.left_rounded_corners);
                 mTvMale.setTextColor(Color.parseColor("#1C6DCE"));
-
                 mTvOther.setBackgroundResource(R.drawable.right_rounded_corners);
                 mTvOther.setTextColor(Color.parseColor("#1C6DCE"));
                 break;
@@ -428,10 +426,8 @@ public class CreateProfileActivity extends BaseActivity implements  AsyncResult 
                 gender = "other";
                 mTvOther.setBackgroundResource(R.drawable.right_rounded_corner_selected);
                 mTvOther.setTextColor(Color.parseColor("#ffffff"));
-
                 mTvFemale.setBackgroundResource(R.drawable.rectangle);
                 mTvFemale.setTextColor(Color.parseColor("#1C6DCE"));
-
                 mTvMale.setBackgroundResource(R.drawable.left_rounded_corners);
                 mTvMale.setTextColor(Color.parseColor("#1C6DCE"));
                 break;
@@ -439,6 +435,31 @@ public class CreateProfileActivity extends BaseActivity implements  AsyncResult 
             default:
                 break;
         }
+    }
+
+    void updateUI(TextView male, TextView female, TextView other,String type){
+         int backgroudMale=0,backgroundFemale=0,backgroudOther=0;
+        int textColorMale=0,textColorFeMale=0,textColorOther=0;
+        switch (type){
+            case "male":
+
+                break;
+            case "female":
+                break;
+            case "other":
+                break;
+           default:
+                break;
+        }
+
+        // set color
+
+        mTvOther.setBackgroundResource(backgroudMale);
+        mTvOther.setTextColor(textColorMale);
+        mTvFemale.setBackgroundResource(backgroundFemale);
+        mTvFemale.setTextColor(textColorFeMale);
+        mTvMale.setBackgroundResource(backgroudOther);
+        mTvMale.setTextColor(textColorOther);
 
     }
 

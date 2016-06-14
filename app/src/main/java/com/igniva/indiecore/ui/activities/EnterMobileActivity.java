@@ -60,7 +60,6 @@ public class EnterMobileActivity extends BaseActivity {
                 @Override
                 public void onClick(View v) {
                     validateMobileNumber();
-
                 }
             });
 
@@ -193,6 +192,7 @@ try {
                         bundle.putString(Constants.COUNTRY_CODE, countryId);
                         in.putExtras(bundle);
                         startActivity(in);
+
 
                     } else {
 
