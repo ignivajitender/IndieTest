@@ -50,7 +50,7 @@ import java.util.Calendar;
 /**
  * Created by siddharth-05 on 3/6/16.
  */
-public class CreateProfileActivity extends BaseActivity implements View.OnClickListener, AsyncResult {
+public class CreateProfileActivity extends BaseActivity implements  AsyncResult {
 
     Toolbar mToolbar;
     private DatePicker datePicker;
@@ -403,13 +403,13 @@ public class CreateProfileActivity extends BaseActivity implements View.OnClickL
 
             case R.id.tv_male:
                 gender = "male";
-                mTvMale.setBackgroundColor(Color.parseColor("#1C6DCE"));
+                mTvMale.setBackgroundResource(R.drawable.left_rounded_corner_selected);
                 mTvMale.setTextColor(Color.parseColor("#ffffff"));
 
-                mTvFemale.setBackgroundColor(Color.parseColor("#ffffff"));
+                mTvFemale.setBackgroundResource(R.drawable.rectangle);
                 mTvFemale.setTextColor(Color.parseColor("#1C6DCE"));
 
-                mTvOther.setBackgroundColor(Color.parseColor("#ffffff"));
+                mTvOther.setBackgroundResource(R.drawable.right_rounded_corners);
                 mTvOther.setTextColor(Color.parseColor("#1C6DCE"));
 
                 break;

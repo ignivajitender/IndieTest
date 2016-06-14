@@ -159,7 +159,7 @@ public class SplashActivity extends BaseActivity
 
    void navigateNextScreen(){
        try {
-           Intent intent = new Intent(SplashActivity.this, BadgesActivity.class);
+           Intent intent = new Intent(SplashActivity.this, CreateProfileActivity.class);
            startActivity(intent);
            finish();
        }catch (Exception e){

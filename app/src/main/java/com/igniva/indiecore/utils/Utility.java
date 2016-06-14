@@ -119,7 +119,7 @@ public class Utility {
 		try {
 
 			AlertDialog.Builder builder = new AlertDialog.Builder(mContext,
-					R.style.AppTheme);
+					R.style.AppCompatAlertDialogStyle);
 			builder.setTitle(mContext.getResources().getString(R.string.no_internet_title));
 			builder.setMessage(mContext.getResources().getString(R.string.no_internet));
 			builder.setPositiveButton("OK", new OnClickListener() {
@@ -128,14 +128,14 @@ public class Utility {
 				public void onClick(DialogInterface dialog, int which) {
 
 					dialog.dismiss();
-					//((Activity) mContext).finish();
+					((Activity) mContext).finish();
 
 				}
 			});
 
 			builder.show();
 		} catch (Exception e) {
-			showToastMessageLong(mContext,
+			showToastMessageShort(mContext,
 					mContext.getResources().getString(R.string.no_internet));
 		}
 	}
