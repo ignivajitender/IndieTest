@@ -90,13 +90,14 @@
             android:maxWidth="70dp"
             android:layout_marginLeft="-3dp"
             android:id="@+id/et_country_code"
-            android:layout_width="20dp"
+            android:layout_width="30dp"
             android:layout_height="wrap_content"
             android:layout_marginBottom="5dp"
             android:layout_marginRight="5dp"
             android:layout_marginTop="5dp"
             android:background="@color/white"
-            android:hint="44444"
+            android:hint="44"
+            android:gravity="right"
             android:inputType="number"
             android:maxLength="4"
 
@@ -118,7 +119,7 @@
             android:background="@color/white"
             android:hint="Number"
             android:inputType="phone"
-            android:maxLength="10" />
+            android:maxLength="11" />
 
     </LinearLayout>
 

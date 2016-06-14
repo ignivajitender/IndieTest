@@ -174,6 +174,7 @@ public class OtpVerificationActivity extends BaseActivity {
                         bundle.putString(Constants.LASTNAME, "");
                         bundle.putString(Constants.DOB, "");
                         bundle.putString(Constants.DESCRIPTION, "");
+                        bundle.putString(Constants.GENDER, "");
                         in.putExtras(bundle);
                         startActivity(in);
                     } else if (result.getSuccess().equalsIgnoreCase("true") && callId == 2) {
