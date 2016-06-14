@@ -22,7 +22,6 @@ import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
-
 import com.igniva.indiecore.R;
 import com.igniva.indiecore.controller.ResponseHandlerListener;
 import com.igniva.indiecore.controller.WebNotificationManager;
@@ -34,7 +33,6 @@ import com.igniva.indiecore.utils.Log;
 import com.igniva.indiecore.utils.PreferenceHandler;
 import com.igniva.indiecore.utils.Utility;
 import com.igniva.indiecore.utils.WebServiceClientUploadImage;
-
 import org.apache.http.entity.mime.HttpMultipartMode;
 import org.apache.http.entity.mime.MultipartEntity;
 import org.apache.http.entity.mime.content.ByteArrayBody;
@@ -42,7 +40,6 @@ import org.apache.http.entity.mime.content.ContentBody;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -365,7 +362,7 @@ public class CreateProfileActivity extends BaseActivity implements View.OnClickL
             if (error == null) {
                 // start parsing
                 if (result.getSuccess().equalsIgnoreCase("true"))
-                    startActivity(new Intent(CreateProfileActivity.this, ContactSyncActivity.class));
+                    startActivity(new Intent(CreateProfileActivity.this, SyncContactsActivity.class));
                 else {
                     // display error message
                 }

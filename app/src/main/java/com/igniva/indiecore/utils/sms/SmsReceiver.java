@@ -1,4 +1,5 @@
 package com.igniva.indiecore.utils.sms;
+
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -7,16 +8,19 @@ import android.telephony.SmsMessage;
 import android.util.Log;
 
 import com.igniva.indiecore.ui.activities.OtpVerificationActivity;
+import com.igniva.indiecore.utils.Constants;
 
 /**
- * Created by Ravi on 09/07/15.
+ * Created by siddharth on 09/06/16.
  */
 public class SmsReceiver extends BroadcastReceiver {
     private static final String TAG = SmsReceiver.class.getSimpleName();
     public static final String OTP_DELIMITER = "code:";
+    Context mContext;
+
     @Override
     public void onReceive(Context context, Intent intent) {
-
+        mContext = context;
         final Bundle bundle = intent.getExtras();
         try {
             if (bundle != null) {
@@ -29,27 +33,30 @@ public class SmsReceiver extends BroadcastReceiver {
                     Log.e(TAG, "Received SMS: " + message + ", Sender: " + senderAddress);
 
                     // if the SMS is not from our gateway, ignore the message
-                    if (!(senderAddress.contains("WAYSMS")||senderAddress.equalsIgnoreCase("VM-VERIFY")||senderAddress.contains("bytwoo"))) {
-                        return;
-                    }
+                    if ((senderAddress.contains("VERIFY")) ||
+                            (senderAddress.equalsIgnoreCase("IM-VERIFY")) ||
+                            (senderAddress.contains("bytwoo")) ||
+                            (senderAddress.contains("WAYSMS"))) {
 
-//                    Indicore code: 8678. Valid for 5 minutes.
+//                          Indicore code: 8678. Valid for 5 minutes.
 
-                    if(message.contains("Indicore")){
+                           if (message.contains("Indiecore")) {
 
-                        OtpVerificationActivity.receivedOtp = getVerificationCode(message);
-                        Log.e(TAG, "OTP received: " + OtpVerificationActivity.receivedOtp);
+                            try {
+                                OtpVerificationActivity.receivedOtp = getVerificationCode(message);
+                                Log.e(TAG, "OTP received: " + OtpVerificationActivity.receivedOtp);
 
-                        try {
-                            OtpVerificationActivity.mOtpField.setText( OtpVerificationActivity.receivedOtp);
-                         //   new OtpVerificationActivity().updateOtp();
+                                //context.sendBroadcast(new Intent(OtpVerificationActivity.receivedOtp).putExtra(Constants.OTP_CODE,OtpVerificationActivity.receivedOtp));
+                                OtpVerificationActivity.mOtpField.setText(OtpVerificationActivity.receivedOtp);
+                                OtpVerificationActivity.mOtpField.setSelection(OtpVerificationActivity.receivedOtp.length());
+                                //   new OtpVerificationActivity().updateOtp();
 
-
-                        }catch (Exception e){
-
-                            e.printStackTrace();
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                            }
                         }
-
+                    } else {
+                        return;
                     }
 
                 }
@@ -68,13 +75,18 @@ public class SmsReceiver extends BroadcastReceiver {
      */
     private String getVerificationCode(String message) {
         String code = null;
-        int index = message.indexOf(OTP_DELIMITER);
+        try {
+            int index = message.indexOf(OTP_DELIMITER);
 
-        if (index != -1) {
-            int start = index + 6;
-            int length = 4;
-            code = message.substring(start, start + length);
-            return code;
+            if (index != -1) {
+                int start = index + 6;
+                int length = 4;
+                code = message.substring(start, start + length);
+                return code;
+            }
+        }catch (Exception e){
+            e.printStackTrace();
+            code="";
         }
 
         return code;

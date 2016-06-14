@@ -59,6 +59,8 @@
         android:layout_gravity="center"/>
 
     <TextView
+        android:id="@+id/tv_skip_step"
+        android:onClick="onClick"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Skip this step"
