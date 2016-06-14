@@ -17,6 +17,7 @@ import com.igniva.indiecore.controller.WebServiceClient;
 import com.igniva.indiecore.model.ResponsePojo;
 import com.igniva.indiecore.utils.Constants;
 import com.igniva.indiecore.utils.Log;
+import com.igniva.indiecore.utils.PreferenceHandler;
 import com.igniva.indiecore.utils.Utility;
 import com.igniva.indiecore.utils.Validation;
 import com.igniva.indiecore.controller.WebServiceClient.WebError;
@@ -195,13 +196,17 @@ try {
                             startActivity(in);
 
                         } else {
-
+                            // save in preferences
+                            PreferenceHandler.writeString(EnterMobileActivity.this, Constants.TOKEN, result.getToken());
+                            PreferenceHandler.writeString(EnterMobileActivity.this, Constants.USERID, result.getUserId());
+                            //
                             Intent in = new Intent(EnterMobileActivity.this, CreateProfileActivity.class);
                             Bundle bundle = new Bundle();
                             bundle.putString(Constants.FIRSTNAME, result.getProfile().getFirstName());
                             bundle.putString(Constants.LASTNAME, result.getProfile().getLastName());
                             bundle.putString(Constants.DOB, result.getProfile().getDob());
                             bundle.putString(Constants.DESCRIPTION, result.getProfile().getDesc());
+                            bundle.putString(Constants.GENDER, result.getProfile().getGender());
                             in.putExtras(bundle);
                             startActivity(in);
                         }

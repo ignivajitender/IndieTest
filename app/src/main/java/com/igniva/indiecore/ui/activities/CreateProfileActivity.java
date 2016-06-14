@@ -22,6 +22,7 @@ import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
+
 import com.igniva.indiecore.R;
 import com.igniva.indiecore.controller.ResponseHandlerListener;
 import com.igniva.indiecore.controller.WebNotificationManager;
@@ -33,6 +34,7 @@ import com.igniva.indiecore.utils.Log;
 import com.igniva.indiecore.utils.PreferenceHandler;
 import com.igniva.indiecore.utils.Utility;
 import com.igniva.indiecore.utils.WebServiceClientUploadImage;
+
 import org.apache.http.entity.mime.HttpMultipartMode;
 import org.apache.http.entity.mime.MultipartEntity;
 import org.apache.http.entity.mime.content.ByteArrayBody;
@@ -52,7 +54,7 @@ import java.util.Calendar;
 /**
  * Created by siddharth-05 on 3/6/16.
  */
-public class CreateProfileActivity extends BaseActivity implements  AsyncResult {
+public class CreateProfileActivity extends BaseActivity implements AsyncResult {
 
     Toolbar mToolbar;
     private DatePicker datePicker;
@@ -78,6 +80,7 @@ public class CreateProfileActivity extends BaseActivity implements  AsyncResult 
         setContentView(R.layout.activity_create_profile);
         initToolbar();
         setUpLayout();
+        setDataInViewObjects();
     }
 
     void initToolbar() {
@@ -117,7 +120,7 @@ public class CreateProfileActivity extends BaseActivity implements  AsyncResult 
     @Override
     protected void setUpLayout() {
 
-         cal = Calendar.getInstance();
+        cal = Calendar.getInstance();
         try {
 
             mEtFirstName = (EditText) findViewById(R.id.et_first_name);
@@ -135,17 +138,7 @@ public class CreateProfileActivity extends BaseActivity implements  AsyncResult 
             mTvMale.setBackgroundResource(R.drawable.left_rounded_corner_selected);
             mTvMale.setTextColor(Color.parseColor("#ffffff"));
 
-            Bundle bundle = getIntent().getExtras();
-            String firstName = bundle.getString(Constants.FIRSTNAME);
-            String lastName = bundle.getString(Constants.LASTNAME);
-            String dateofBirth = bundle.getString(Constants.DOB);
-            String desc = bundle.getString(Constants.DESCRIPTION);
-
-            mEtFirstName.setText(firstName);
-            mEtLastName.setText(lastName);
-            mTvDateOfBirth.setText(dateofBirth);
-            mEtDescription.setText(desc);
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
 
@@ -161,7 +154,7 @@ public class CreateProfileActivity extends BaseActivity implements  AsyncResult 
 
                 int month = monthOfYear + 1;
                 mTvDateOfBirth.setText(dayOfMonth + "/" + month + "/" + year);
-                mYear=year;
+                mYear = year;
 
 
             }
@@ -177,7 +170,7 @@ public class CreateProfileActivity extends BaseActivity implements  AsyncResult 
         final CharSequence[] items = {"Take Photo", "Choose from Library",
                 "Cancel"};
         AlertDialog.Builder builder = new AlertDialog.Builder(CreateProfileActivity.this, R.style.AppCompatAlertDialogStyle);
-        builder.setTitle("Add Photo!");
+        builder.setTitle("Upload Image");
         builder.setItems(items, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int item) {
@@ -193,6 +186,14 @@ public class CreateProfileActivity extends BaseActivity implements  AsyncResult 
                 } else if (items[item].equals("Cancel")) {
                     dialog.dismiss();
                 }
+            }
+
+        });
+
+        builder.setPositiveButton("Cancel", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.dismiss();
             }
         });
         builder.show();
@@ -220,7 +221,7 @@ public class CreateProfileActivity extends BaseActivity implements  AsyncResult 
                     else if (userChoosenTask.equals("Choose from Library"))
                         galleryIntent();
                 } else {
-//code for deny
+                    //code for deny
                 }
                 break;
         }
@@ -248,10 +249,7 @@ public class CreateProfileActivity extends BaseActivity implements  AsyncResult 
             }
         }
         if (PIC_INDEX_CODE == 2) {
-
             Uri tempUri = getImageUri(getApplicationContext(), bm);
-
-
             uploadBitmapAsMultipart(bm);
             mIvCoverImage.setImageBitmap(bm);
         } else {
@@ -311,10 +309,10 @@ public class CreateProfileActivity extends BaseActivity implements  AsyncResult 
             String lastName = mEtLastName.getText().toString().trim();
             String description = mEtDescription.getText().toString().trim();
 
-            int a=cal.get(Calendar.YEAR);
-            int b= mYear;
+            int a = cal.get(Calendar.YEAR);
+            int b = mYear;
 
-            int ageCal = (a-b);
+            int ageCal = (a - b);
 
             if (firstName.length() == 0) {
                 Utility.showAlertDialog(Constants.ENTER_FIRST_NAME, this);
@@ -339,17 +337,17 @@ public class CreateProfileActivity extends BaseActivity implements  AsyncResult 
                 JSONObject json = null;
                 try {
                     json = new JSONObject();
-                    json.put(Constants.TOKEN, PreferenceHandler.readString(CreateProfileActivity.this,Constants.TOKEN,""));
-                    json.put(Constants.USERID, PreferenceHandler.readString(CreateProfileActivity.this,Constants.USERID,""));
+                    json.put(Constants.TOKEN, PreferenceHandler.readString(CreateProfileActivity.this, Constants.TOKEN, ""));
+                    json.put(Constants.USERID, PreferenceHandler.readString(CreateProfileActivity.this, Constants.USERID, ""));
                     json.put(Constants.FIRSTNAME, firstName);
                     json.put(Constants.LASTNAME, lastName);
                     json.put(Constants.GENDER, gender);
                     json.put(Constants.DOB, mTvDateOfBirth.getText().toString().trim());
                     json.put(Constants.DESCRIPTION, description);
-                    if(!profileImageUrl.isEmpty()) {
+                    if (!profileImageUrl.isEmpty()) {
                         json.put(Constants.PROFILEPIC, profileImageUrl);
                     }
-                    if(!CoverImageUrl.isEmpty()) {
+                    if (!CoverImageUrl.isEmpty()) {
                         json.put(Constants.COVERPIC, CoverImageUrl);
                     }
                     WebNotificationManager.registerResponseListener(responseHandlerListener);
@@ -363,7 +361,7 @@ public class CreateProfileActivity extends BaseActivity implements  AsyncResult 
                 }
             }
 
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
@@ -395,6 +393,37 @@ public class CreateProfileActivity extends BaseActivity implements  AsyncResult 
 
     @Override
     protected void setDataInViewObjects() {
+
+        try {
+
+            Bundle bundle = getIntent().getExtras();
+            String firstName = bundle.getString(Constants.FIRSTNAME);
+            String lastName = bundle.getString(Constants.LASTNAME);
+            String dateOfBirth = bundle.getString(Constants.DOB);
+            String desc = bundle.getString(Constants.DESCRIPTION);
+            String gender = bundle.getString(Constants.GENDER);
+
+            mEtFirstName.setText(firstName);
+            mEtLastName.setText(lastName);
+            mTvDateOfBirth.setText(dateOfBirth);
+            mEtDescription.setText(desc);
+            //
+            if(gender.length()>0){
+                if(gender.equalsIgnoreCase("male")){
+                    mTvMale.performClick();
+                }else if (gender.equalsIgnoreCase("female")){
+                    mTvFemale.performClick();
+                } else{
+                    mTvOther.performClick();
+                }
+
+
+            }
+
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
 
     }
 
@@ -451,10 +480,10 @@ public class CreateProfileActivity extends BaseActivity implements  AsyncResult 
         }
     }
 
-    void updateUI(TextView male, TextView female, TextView other,String type){
-         int backgroudMale=0,backgroundFemale=0,backgroudOther=0;
-        int textColorMale=0,textColorFeMale=0,textColorOther=0;
-        switch (type){
+    void updateUI(TextView male, TextView female, TextView other, String type) {
+        int backgroudMale = 0, backgroundFemale = 0, backgroudOther = 0;
+        int textColorMale = 0, textColorFeMale = 0, textColorOther = 0;
+        switch (type) {
             case "male":
 
                 break;
@@ -462,7 +491,7 @@ public class CreateProfileActivity extends BaseActivity implements  AsyncResult 
                 break;
             case "other":
                 break;
-           default:
+            default:
                 break;
         }
 
