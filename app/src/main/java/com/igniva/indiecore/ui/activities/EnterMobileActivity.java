@@ -185,6 +185,8 @@ try {
                     // start parsing
                     if (result.getSuccess().equalsIgnoreCase("true")) {
 
+                        // TODO check if test user
+
                         Intent in = new Intent(EnterMobileActivity.this, OtpVerificationActivity.class);
                         Bundle bundle = new Bundle();
                         bundle.putString(Constants.MOBILE_NO, mobileNumber);

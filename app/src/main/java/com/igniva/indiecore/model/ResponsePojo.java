@@ -8,7 +8,6 @@ import java.util.ArrayList;
 public class ResponsePojo {
 
     private int status;
-    private DataPojo data;
     private String description;
     private String success;
     private ArrayList<BadgesPojo> badges;
@@ -16,6 +15,31 @@ public class ResponsePojo {
     private int friends_invited;
     private String error;
     private String userId;
+    private String token;
+    private String newUser;
+    private ProfilePojo profile;
+
+    public String getNewUser() {
+        return newUser;
+    }
+
+    public void setNewUser(String newUser) {
+        this.newUser = newUser;
+    }
+
+    public ProfilePojo getProfile() {
+        return profile;
+    }
+
+    public void setProfile(ProfilePojo profile) {
+        this.profile = profile;
+    }
+
+
+
+
+
+
 
     public String getToken() {
         return token;
@@ -32,11 +56,6 @@ public class ResponsePojo {
     public void setUserId(String userId) {
         this.userId = userId;
     }
-
-    private String token;
-
-
-
     public int getTotal_badges() {
         return total_badges;
     }
@@ -83,11 +102,6 @@ public class ResponsePojo {
     public void setStatus(int status) {
         this.status = status;
     }
-    public DataPojo getData() {
-        return data;
-    }
-    public void setData(DataPojo data) {
-        this.data = data;
-    }
+
 
 }

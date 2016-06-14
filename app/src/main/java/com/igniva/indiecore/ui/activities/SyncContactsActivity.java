@@ -42,7 +42,7 @@ public class SyncContactsActivity extends  BaseActivity implements View.OnClickL
         try {
             mToolbar = (Toolbar) findViewById(R.id.toolbar);
             TextView mTvTitle = (TextView) mToolbar.findViewById(R.id.toolbar_title);
-            mTvTitle.setText(getResources().getString(R.string.contact_number));
+            mTvTitle.setText(getResources().getString(R.string.contacts_sync));
             //
             TextView mTvNext = (TextView) mToolbar.findViewById(R.id.toolbar_next);
             mTvNext.setVisibility(View.GONE);
