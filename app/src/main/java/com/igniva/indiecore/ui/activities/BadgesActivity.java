@@ -1,6 +1,7 @@
 package com.igniva.indiecore.ui.activities;
 
 import android.app.ProgressDialog;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.GridLayoutManager;
@@ -144,7 +145,7 @@ public class BadgesActivity extends BaseActivity {
             mTvNext.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    Utility.showToastMessageShort(BadgesActivity.this, getResources().getString(R.string.coming_soon));
+                    startActivity(new Intent(BadgesActivity.this,MyBadgesActivity.class));
                 }
             });
             //

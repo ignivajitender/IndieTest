@@ -82,9 +82,7 @@ public class Permissions {
             // Pre-Marshmallow
             res = true;
         }
-
-
-        return res;
+       return res;
     }
 
 }

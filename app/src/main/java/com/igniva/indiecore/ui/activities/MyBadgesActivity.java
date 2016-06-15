@@ -50,7 +50,7 @@ public class MyBadgesActivity extends BaseActivity{
             mTvNext.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    Utility.showToastMessageShort(MybadgesActivity.this, getResources().getString(R.string.coming_soon));
+                    Utility.showToastMessageShort(MyBadgesActivity.this, getResources().getString(R.string.coming_soon));
                 }
             });
             //
