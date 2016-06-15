@@ -81,9 +81,10 @@ public class SyncContactsActivity extends  BaseActivity implements View.OnClickL
             while (phones.moveToNext()) {
                 String name = phones.getString(phones.getColumnIndex(ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME));
                 phoneNumber = phones.getString(phones.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER));
-                mNumbers.add(phoneNumber);
+                mNumbers.add(phoneNumber.trim());
             }
             Log.e("List of contacts", "" + mNumbers.toString());
+          //  System.out.println(Arrays.toString(ids.toArray()).replace("[","").replace(" ", "").replace("]", ""));
             phones.close();
         }catch (Exception e){
             e.printStackTrace();
@@ -102,13 +103,16 @@ public class SyncContactsActivity extends  BaseActivity implements View.OnClickL
             syncPayload= new JSONObject();
                 syncPayload.put(Constants.TOKEN, PreferenceHandler.readString(SyncContactsActivity.this, Constants.TOKEN, ""));
                 syncPayload.put(Constants.USERID,PreferenceHandler.readString(SyncContactsActivity.this, Constants.USERID, ""));
-                syncPayload.put(Constants.NUMBER,mNumbers);
 
-                WebNotificationManager.registerResponseListener(responseListner);
-                WebServiceClient.syncContacts(this,syncPayload.toString(),responseListner);
+               String mNumber=mNumbers.toString().substring(1,mNumbers.toString().length()-1);
+
+                syncPayload.put(Constants.NUMBER,mNumber);
+
+             //   WebNotificationManager.registerResponseListener(responseListner);
+               // WebServiceClient.syncContacts(this,syncPayload.toString(),responseListner);
 
 
-                Log.e("SyncContactList","----------"+mNumbers.toString());
+                Log.e("SyncContactList","----------"+mNumber);
 
             }
         }catch (Exception e){

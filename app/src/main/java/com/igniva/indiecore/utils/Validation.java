@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
+import android.widget.TextView;
 
 import java.util.ArrayList;
 import java.util.regex.Matcher;
@@ -22,7 +23,7 @@ public class Validation {
     }
 
     public static boolean isValidPassword(String passsword) {
-        boolean isValid=false;
+        boolean isValid = false;
         //TODO to check the validation of a password
         return isValid;
     }
@@ -45,13 +46,13 @@ public class Validation {
 //    }
 
 
-    public static boolean isValidMobile(Context context,EditText countryCode, EditText mobileNumber) {
+    public static boolean isValidMobile(Context context, EditText countryCode, EditText mobileNumber) {
         boolean isValid = false;
-        if (!isNullorEmpty(countryCode)&&!isNullorEmpty(mobileNumber)) {
+        if (!isNullorEmpty(countryCode) && !isNullorEmpty(mobileNumber)) {
             String mCountryCode = countryCode.getText().toString();
             String mMobileNumber = mobileNumber.getText().toString();
             return true;
-        }else{
+        } else {
             return isValid;
         }
 //        }else{
@@ -69,7 +70,6 @@ public class Validation {
 //            return false;
 //        }
     }
-
 
 
     /**
@@ -137,12 +137,69 @@ public class Validation {
      * @param editText
      * @return status of edittext
      */
-    public static boolean isNullorEmpty(EditText editText){
-        if (editText==null||editText.length()<1)
+    public static boolean isNullorEmpty(EditText editText) {
+        if (editText == null || editText.length() < 1)
             return true;
         else
             return false;
+    }
 
+
+    /*
+    * To check the fields of create profile whether empty or not
+    *
+    *
+    * */
+    static String createProfile(Activity activity, EditText firstname, EditText lastname, TextView dateofbirth, EditText desc) {
+
+        String firstName = null;
+        String lastName = null;
+        String dateOfBirth = null;
+        String description = null;
+
+        firstName = firstname.getText().toString();
+        lastName = lastname.getText().toString();
+        dateOfBirth = dateofbirth.getText().toString();
+        description = desc.getText().toString();
+
+        if (FieldValidators.isNullOrEmpty(firstname)
+                && FieldValidators.isNullOrEmpty(lastname) && dateOfBirth.isEmpty() && FieldValidators.isNullOrEmpty(desc)) {
+            Utility.showToastMessageLong(activity, "Please enter all fields");
+            firstname.setFocusable(true);
+            lastname.requestFocus();
+            return null;
+
+        } else if (FieldValidators.isNullOrEmpty(firstname)) {
+            // ArrayList<EditText> textFields1 = new ArrayList<EditText>();
+            Utility.showToastMessageLong(activity, "Please enter first name");
+            firstname.setFocusable(true);
+            InputMethodManager imm = (InputMethodManager) activity
+                    .getSystemService(Context.INPUT_METHOD_SERVICE);
+            imm.showSoftInput(firstname, InputMethodManager.SHOW_IMPLICIT);
+            firstname.requestFocus();
+        } else if (FieldValidators.isNullOrEmpty(lastname)) {
+            Utility.showToastMessageLong(activity, "Please enter last name");
+            firstname.setFocusable(true);
+            InputMethodManager imm = (InputMethodManager) activity
+                    .getSystemService(Context.INPUT_METHOD_SERVICE);
+            imm.showSoftInput(firstname, InputMethodManager.SHOW_IMPLICIT);
+            lastname.requestFocus();
+
+        } else if (dateOfBirth.isEmpty()) {
+
+            Utility.showAlertDialog("Please choose your date of birth", activity);
+        } else if (FieldValidators.isNullOrEmpty(desc)) {
+
+            Utility.showToastMessageLong(activity, "Please enter description");
+            desc.setFocusable(true);
+            InputMethodManager imm = (InputMethodManager) activity
+                    .getSystemService(Context.INPUT_METHOD_SERVICE);
+            imm.showSoftInput(firstname, InputMethodManager.SHOW_IMPLICIT);
+            desc.requestFocus();
+        }else {
+            return "validated";
+        }
+        return null;
     }
 
 
