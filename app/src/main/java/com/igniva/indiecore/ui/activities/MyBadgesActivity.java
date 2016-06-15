@@ -12,7 +12,7 @@ import com.igniva.indiecore.utils.Utility;
 /**
  * Created by igniva-andriod-11 on 15/6/16.
  */
-public class MybadgesActivity extends BaseActivity{
+public class MyBadgesActivity extends BaseActivity{
     Toolbar mToolbar;
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
