@@ -34,6 +34,7 @@ import com.igniva.indiecore.utils.Log;
 import com.igniva.indiecore.utils.PreferenceHandler;
 import com.igniva.indiecore.utils.Utility;
 import com.igniva.indiecore.utils.WebServiceClientUploadImage;
+import com.igniva.indiecore.utils.imageloader.ImageLoader;
 
 import org.apache.http.entity.mime.HttpMultipartMode;
 import org.apache.http.entity.mime.MultipartEntity;
@@ -49,6 +50,9 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.net.URI;
+import java.net.URL;
+import java.net.URLEncoder;
 import java.util.Calendar;
 
 /**
@@ -247,7 +251,6 @@ public class CreateProfileActivity extends BaseActivity implements AsyncResult {
             }
         }
         if (PIC_INDEX_CODE == 2) {
-            Uri tempUri = getImageUri(getApplicationContext(), bm);
             uploadBitmapAsMultipart(bm);
             mIvCoverImage.setImageBitmap(bm);
         } else {
@@ -340,7 +343,9 @@ public class CreateProfileActivity extends BaseActivity implements AsyncResult {
                     json.put(Constants.FIRSTNAME, firstName);
                     json.put(Constants.LASTNAME, lastName);
                     json.put(Constants.GENDER, gender);
-                    json.put(Constants.DOB, mTvDateOfBirth.getText().toString().trim());
+//                    json.put(Constants.DOB, URLEncoder.encode(mTvDateOfBirth.getText().toString(),"UTF-8"));
+                    json.put(Constants.DOB, mTvDateOfBirth.getText().toString());
+
                     json.put(Constants.DESCRIPTION, description);
                     if (!profileImageUrl.isEmpty()) {
                         json.put(Constants.PROFILEPIC, profileImageUrl);
@@ -400,6 +405,8 @@ public class CreateProfileActivity extends BaseActivity implements AsyncResult {
             String dateOfBirth = bundle.getString(Constants.DOB);
             String desc = bundle.getString(Constants.DESCRIPTION);
             String gender = bundle.getString(Constants.GENDER);
+            String profilePicUrl=WebServiceClient.HTTP_STAGING+bundle.getString(Constants.PROFILEPIC);
+            String coverPic= WebServiceClient.HTTP_STAGING+bundle.getString(Constants.COVERPIC);
 
             mEtFirstName.setText(firstName);
             mEtLastName.setText(lastName);
@@ -415,6 +422,20 @@ public class CreateProfileActivity extends BaseActivity implements AsyncResult {
                     mTvOther.performClick();
                 }
 
+
+                ImageLoader imageLoader=new ImageLoader(CreateProfileActivity.this);
+
+                if(profilePicUrl!=null){
+
+                    Log.e("Url Profile Image",""+profilePicUrl);
+                    imageLoader.DisplayImage(profilePicUrl,mIvProfileImage);
+
+                }
+                if(coverPic!=null) {
+                    Log.e("Url cover Image",""+coverPic);
+
+                    imageLoader.DisplayImage(coverPic, mIvCoverImage);
+                }
 
             }
 
@@ -478,45 +499,24 @@ public class CreateProfileActivity extends BaseActivity implements AsyncResult {
         }
     }
 
-    void updateUI(TextView male, TextView female, TextView other, String type) {
-        int backgroudMale = 0, backgroundFemale = 0, backgroudOther = 0;
-        int textColorMale = 0, textColorFeMale = 0, textColorOther = 0;
-        switch (type) {
-            case "male":
-
-                break;
-            case "female":
-                break;
-            case "other":
-                break;
-            default:
-                break;
-        }
-
-        // set color
-
-        mTvOther.setBackgroundResource(backgroudMale);
-        mTvOther.setTextColor(textColorMale);
-        mTvFemale.setBackgroundResource(backgroundFemale);
-        mTvFemale.setTextColor(textColorFeMale);
-        mTvMale.setBackgroundResource(backgroudOther);
-        mTvMale.setTextColor(textColorOther);
-
-    }
 
     private void uploadBitmapAsMultipart(Bitmap myBitmap) {
+        ContentBody contentPart=null;
         try {
+
+            Uri uri = getImageUri(this,myBitmap);
+            String imagePath=getRealPathFromURI(uri);
             String url = WebServiceClient.HTTP_UPLOAD_IMAGE;
             ByteArrayOutputStream bos = new ByteArrayOutputStream();
-//            if (filename.endsWith(".png"))
-//                myBitmap.compress(Bitmap.CompressFormat.PNG, 80, bos);
-//            else if (filename.endsWith(".jpeg") || filename.endsWith(".jpg"))
-//                myBitmap.compress(Bitmap.CompressFormat.JPEG, 100, bos);
-//            else
-            myBitmap.compress(Bitmap.CompressFormat.JPEG, 100, bos);
+            if (imagePath.endsWith(".png")) {
+                myBitmap.compress(Bitmap.CompressFormat.PNG, 80, bos);
+                contentPart = new ByteArrayBody(bos.toByteArray(), "Image.png");
+            }
+            else {
+                myBitmap.compress(Bitmap.CompressFormat.JPEG, 100, bos);
+                contentPart = new ByteArrayBody(bos.toByteArray(), "Image.jpg");
+            }
 
-
-            ContentBody contentPart = new ByteArrayBody(bos.toByteArray(), "Image.jpg");
             MultipartEntity reqEntity = new MultipartEntity(HttpMultipartMode.BROWSER_COMPATIBLE);
             reqEntity.addPart("fileToUpload", contentPart);
             new WebServiceClientUploadImage(CreateProfileActivity.this, this, url, reqEntity, 3).execute();

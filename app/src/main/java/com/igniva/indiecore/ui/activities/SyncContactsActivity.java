@@ -20,6 +20,7 @@ import com.igniva.indiecore.controller.WebServiceClient;
 import com.igniva.indiecore.model.ResponsePojo;
 import com.igniva.indiecore.utils.Constants;
 import com.igniva.indiecore.utils.Log;
+import com.igniva.indiecore.utils.PreferenceHandler;
 import com.igniva.indiecore.utils.Utility;
 
 import org.json.JSONObject;
@@ -29,7 +30,7 @@ import java.util.ArrayList;
 public class SyncContactsActivity extends  BaseActivity implements View.OnClickListener{
 
     Toolbar mToolbar;
-    ArrayList<String> mNumbers;
+    ArrayList<String> mNumbers= null;
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -80,9 +81,7 @@ public class SyncContactsActivity extends  BaseActivity implements View.OnClickL
             while (phones.moveToNext()) {
                 String name = phones.getString(phones.getColumnIndex(ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME));
                 phoneNumber = phones.getString(phones.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER));
-
                 mNumbers.add(phoneNumber);
-
             }
             Log.e("List of contacts", "" + mNumbers.toString());
             phones.close();
@@ -93,7 +92,6 @@ public class SyncContactsActivity extends  BaseActivity implements View.OnClickL
 
     public void syncContacts(){
 
-        getAllContacts();
         JSONObject syncPayload=null;
         try {
             if (mNumbers.size() == 0) {
@@ -102,8 +100,8 @@ public class SyncContactsActivity extends  BaseActivity implements View.OnClickL
                 return;
             } else {
             syncPayload= new JSONObject();
-                syncPayload.put(Constants.TOKEN,"a5s3qIXm3qX-RSlbwZBlyRSOgTpCCSJc9gbvHxT5Vx8");
-                syncPayload.put(Constants.USERID,"Y77qed6yd7gzfZoXM");
+                syncPayload.put(Constants.TOKEN, PreferenceHandler.readString(SyncContactsActivity.this, Constants.TOKEN, ""));
+                syncPayload.put(Constants.USERID,PreferenceHandler.readString(SyncContactsActivity.this, Constants.USERID, ""));
                 syncPayload.put(Constants.NUMBER,mNumbers);
 
                 WebNotificationManager.registerResponseListener(responseListner);
@@ -122,6 +120,8 @@ public class SyncContactsActivity extends  BaseActivity implements View.OnClickL
     ResponseHandlerListener responseListner= new ResponseHandlerListener() {
         @Override
         public void onComplete(ResponsePojo result, WebServiceClient.WebError error, ProgressDialog mProgressDialog) {
+
+            WebNotificationManager.unRegisterResponseListener(responseListner);
 
             try {
 
@@ -163,6 +163,7 @@ public class SyncContactsActivity extends  BaseActivity implements View.OnClickL
                 break;
 
             case R.id.iv_syncbtn:
+                getAllContacts();
                 syncContacts();
                 break;
         }

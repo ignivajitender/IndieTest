@@ -207,6 +207,8 @@ try {
                             bundle.putString(Constants.DOB, result.getProfile().getDob());
                             bundle.putString(Constants.DESCRIPTION, result.getProfile().getDesc());
                             bundle.putString(Constants.GENDER, result.getProfile().getGender());
+                            bundle.putString(Constants.PROFILEPIC,result.getProfile().getProfilePic());
+                            bundle.putString(Constants.COVERPIC,result.getProfile().getCoverPic());
                             in.putExtras(bundle);
                             startActivity(in);
                         }
