@@ -171,14 +171,14 @@ public class CreateProfileActivity extends BaseActivity implements AsyncResult {
 
 
     private void selectImage() {
-        final CharSequence[] items = {"Take Photo", "Choose from Library",
-                "Cancel"};
+        final CharSequence[] items = {"Take Photo", "Choose from Library"
+                };
         AlertDialog.Builder builder = new AlertDialog.Builder(CreateProfileActivity.this, R.style.AppCompatAlertDialogStyle);
         builder.setTitle("Upload Image");
         builder.setItems(items, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int item) {
-                boolean result = Utility.checkPermission(CreateProfileActivity.this);
+                boolean result = true;
                 if (items[item].equals("Take Photo")) {
                     userChoosenTask = "Take Photo";
                     if (result)
@@ -187,8 +187,6 @@ public class CreateProfileActivity extends BaseActivity implements AsyncResult {
                     userChoosenTask = "Choose from Library";
                     if (result)
                         galleryIntent();
-                } else if (items[item].equals("Cancel")) {
-                    dialog.dismiss();
                 }
             }
 
@@ -407,8 +405,8 @@ public class CreateProfileActivity extends BaseActivity implements AsyncResult {
             String dateOfBirth = bundle.getString(Constants.DOB);
             String desc = bundle.getString(Constants.DESCRIPTION);
             String gender = bundle.getString(Constants.GENDER);
-            String profilePicUrl=WebServiceClient.HTTP_STAGING+bundle.getString(Constants.PROFILEPIC);
-            String coverPic= WebServiceClient.HTTP_STAGING+bundle.getString(Constants.COVERPIC);
+            String profilePicUrl=bundle.getString(Constants.PROFILEPIC);
+            String coverPic= bundle.getString(Constants.COVERPIC);
 
             mEtFirstName.setText(firstName);
             mEtLastName.setText(lastName);
@@ -428,15 +426,12 @@ public class CreateProfileActivity extends BaseActivity implements AsyncResult {
                 ImageLoader imageLoader=new ImageLoader(CreateProfileActivity.this);
 
                 if(profilePicUrl!=null){
-
                     Log.e("Url Profile Image",""+profilePicUrl);
-                    imageLoader.DisplayImage(profilePicUrl,mIvProfileImage);
-
+                    imageLoader.DisplayImage(WebServiceClient.HTTP_STAGING+profilePicUrl,mIvProfileImage);
                 }
                 if(coverPic!=null) {
                     Log.e("Url cover Image",""+coverPic);
-
-                    imageLoader.DisplayImage(coverPic, mIvCoverImage);
+                    imageLoader.DisplayImage(WebServiceClient.HTTP_STAGING+coverPic, mIvCoverImage);
                 }
 
             }
@@ -521,7 +516,16 @@ public class CreateProfileActivity extends BaseActivity implements AsyncResult {
 
             MultipartEntity reqEntity = new MultipartEntity(HttpMultipartMode.BROWSER_COMPATIBLE);
             reqEntity.addPart("fileToUpload", contentPart);
-            new WebServiceClientUploadImage(CreateProfileActivity.this, this, url, reqEntity, 3).execute();
+
+            if (Utility.isInternetConnection(CreateProfileActivity.this)) {
+                new WebServiceClientUploadImage(CreateProfileActivity.this, this, url, reqEntity, 3).execute();
+            } else {
+                // open dialog here
+                new Utility().showNoInternetDialog((Activity) CreateProfileActivity.this);
+
+            }
+
+
 
         } catch (Exception e) {
             e.printStackTrace();

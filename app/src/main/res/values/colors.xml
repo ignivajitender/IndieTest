@@ -10,6 +10,8 @@
     <!--  General Colors -->
     <color name="white">#FFFFFF</color>
     <color name="black">#000000</color>
+    <color name="blue_clicked">#3d92ff</color>
+    <color name="text_color">#2559a4</color>
     <color name="blue">#1C6DCE</color>\
     <color name="light_gray">#EFEFF4</color>
     <color name="light_black">#77000000</color>

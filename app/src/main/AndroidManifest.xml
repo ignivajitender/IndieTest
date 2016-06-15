@@ -8,13 +8,10 @@
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.RECEIVE_SMS" />
     <uses-permission android:name="android.permission.READ_SMS" />
-    <permission android:name="android.permission.READ_EXTERNAL_STORAGE" android:protectionLevel="signature"/>
-    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
     <permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" android:protectionLevel="signature"/>
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
-    <!--GCM PERMISSIONS   -->
     <uses-permission android:name="android.permission.READ_CONTACTS"/>
     <uses-permission android:name="android.permission.WRITE_CONTACTS"/>
+    <!--GCM PERMISSIONS   -->
     <uses-permission android:name="android.permission.WAKE_LOCK" />
     <permission
         android:name="com.igniva.indiecore.permission.C2D_MESSAGE"
@@ -54,7 +51,6 @@
             android:theme="@style/AppTheme"
             android:name=".ui.activities.OtpVerificationActivity"
             android:screenOrientation="portrait"
-            android:windowSoftInputMode="stateHidden"
             android:label="@string/contact_number"/>
 
         <activity
@@ -76,6 +72,12 @@
             android:screenOrientation="portrait"
             android:windowSoftInputMode="stateHidden"
             android:label="@string/badges"/>
+        <activity
+            android:theme="@style/AppTheme"
+            android:name=".ui.activities.MyBadgesActivity"
+            android:screenOrientation="portrait"
+            android:label="@string/badges"/>
+
 
         <meta-data
             android:name="com.google.android.gms.version"

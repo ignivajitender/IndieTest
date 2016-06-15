@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.os.Handler;
 import android.preference.PreferenceManager;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.AppCompatActivity;
@@ -43,7 +44,6 @@ public class SplashActivity extends BaseActivity
 
         setUpLayout();
 
-
      //   Log.e(TAG,"Above GCM");
         // GCM CODE
 //        mRegistrationBroadcastReceiver = new BroadcastReceiver() {
@@ -72,6 +72,13 @@ public class SplashActivity extends BaseActivity
 //            startService(intent);
 //        }
 //       //  String gcmId= PreferenceHandler.readString(this,PreferenceHandler.PREF_KEY_GCMID,"");
+
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                navigateNextScreen();
+            }
+        },1500);
     }
 
 
@@ -146,10 +153,7 @@ public class SplashActivity extends BaseActivity
         switch (v.getId()){
 
             case R.id.im_getStarted:
-
-                    navigateNextScreen();
-
-
+                    //navigateNextScreen();
           break;
 
             default:

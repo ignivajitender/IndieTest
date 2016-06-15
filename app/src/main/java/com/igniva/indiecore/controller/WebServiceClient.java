@@ -46,7 +46,7 @@ public class WebServiceClient {
      */
     public static final String HTTP_PROTOCOL = "http://";
     public static final String HTTP_HOST_IP = "indiecorelive.ignivastaging.com/api/v1/";
-    public static final String HTTP_STAGING="http://indiecorelive.ignivastaging.com";
+    public static final String HTTP_STAGING=HTTP_PROTOCOL+"indiecorelive.ignivastaging.com";
     public static final String HTTP_LOGIN = HTTP_PROTOCOL + HTTP_HOST_IP +"user/login";
     public static final String HTTP_BADGES = HTTP_PROTOCOL + HTTP_HOST_IP +"badge/market";
     public static final String HTTP_REGISTR = HTTP_PROTOCOL + HTTP_HOST_IP + "/users/register";

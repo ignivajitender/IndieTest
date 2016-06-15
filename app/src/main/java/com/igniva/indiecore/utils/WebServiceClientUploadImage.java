@@ -97,10 +97,9 @@ public class WebServiceClientUploadImage extends
                 }
             }
 
-        } catch (SocketException e) {
+        } catch (Exception e) {
             e.printStackTrace();
-        }catch (Exception e) {
-            e.printStackTrace();
+            return "";
         }
 
         return builder.toString();

@@ -2,12 +2,13 @@
 <android.support.v7.widget.Toolbar xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/toolbar"
+    android:elevation="2dp"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:background="@color/white"
     android:minHeight="?attr/actionBarSize"
     app:navigationContentDescription="@string/abc_action_bar_up_description"
-    app:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
+    android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
     app:titleTextColor="@color/black">
 
     <TextView
