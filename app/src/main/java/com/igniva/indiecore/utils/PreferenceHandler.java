@@ -14,6 +14,7 @@ public class PreferenceHandler {
 	public static final int MODE = Context.MODE_PRIVATE;
 	public static final String PREF_KEY_LOGIN = "PREF_KEY_LOGIN";
 	public static final String PREF_KEY_USER_ID = "PREF_KEY_USER_ID";
+	public static final String PREF_KEY_USER_TOKEN="PREF_KEY_USER_TOKEN";
 	public static final String PREF_KEY_USER_NAME = "PREF_KEY_USER_NAME";
 	public static final String PREF_KEY_USER_EMAIL = "PREF_KEY_USER_EMAIL";
 	public static final String PREF_KEY_USER_MOBILE = "PREF_KEY_USER_MOBILE";

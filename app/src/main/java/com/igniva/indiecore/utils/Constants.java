@@ -29,6 +29,9 @@ public class Constants {
 
     public static final String LOCALE = "locale";
 
+
+
+
     public static final String TOKEN="token";
     public static final String USERID="userId";
     public static final String FIRSTNAME="firstName";
@@ -39,6 +42,13 @@ public class Constants {
     public static final String COVERPIC="coverPic";
     public static final String PROFILEPIC="profilePic";
     public static final String NUMBER="numbers";
+    public static final String PAGE="page";
+    public static final String LIMIT="limit";
+    public static final String CATEGORY="category";
+    public static final String DEVICETYPE="deviceType";
+    public static final String DEVICETOKEN="deviceToken";
+    public static final String COUNTRYCODE="countryCode";
+    public static final String MOBILENUMBER="mobileNo";
 
 
 

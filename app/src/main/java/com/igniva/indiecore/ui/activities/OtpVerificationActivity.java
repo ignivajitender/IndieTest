@@ -165,8 +165,8 @@ public class OtpVerificationActivity extends BaseActivity {
 //                    {"token":"HtliAtfS4QTqoCedriJAZi_zOLE5dAfFhl36qwGoa3w","userId":"x6hzRHQYwTKESKLaj",
 //                            "newUser":false,"profile":{},"badges":[],"badgeLimit":10,"success":true,"error":null}
 
-                        PreferenceHandler.writeString(OtpVerificationActivity.this, Constants.TOKEN, result.getToken());
-                        PreferenceHandler.writeString(OtpVerificationActivity.this, Constants.USERID, result.getUserId());
+                        PreferenceHandler.writeString(OtpVerificationActivity.this, PreferenceHandler.PREF_KEY_USER_TOKEN, result.getToken());
+                        PreferenceHandler.writeString(OtpVerificationActivity.this, PreferenceHandler.PREF_KEY_USER_ID, result.getUserId());
 
                         Intent in = new Intent(OtpVerificationActivity.this, CreateProfileActivity.class);
                         Bundle bundle = new Bundle();

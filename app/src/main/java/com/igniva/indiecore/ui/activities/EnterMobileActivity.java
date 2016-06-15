@@ -197,8 +197,8 @@ try {
 
                         } else {
                             // save in preferences
-                            PreferenceHandler.writeString(EnterMobileActivity.this, Constants.TOKEN, result.getToken());
-                            PreferenceHandler.writeString(EnterMobileActivity.this, Constants.USERID, result.getUserId());
+                            PreferenceHandler.writeString(EnterMobileActivity.this, PreferenceHandler.PREF_KEY_USER_TOKEN, result.getToken());
+                            PreferenceHandler.writeString(EnterMobileActivity.this, PreferenceHandler.PREF_KEY_USER_ID, result.getUserId());
                             //
                             Intent in = new Intent(EnterMobileActivity.this, CreateProfileActivity.class);
                             Bundle bundle = new Bundle();
@@ -218,15 +218,15 @@ try {
 
                     } else {
 
-                        Toast.makeText(getApplicationContext(), "Concurrent verifications to the same number are not allowed", Toast.LENGTH_LONG).show();
+                        Toast.makeText(getApplicationContext(),getResources().getString(R.string.concurrent_verification_message), Toast.LENGTH_LONG).show();
                         // display error message
                     }
                 } else {
                     // display error dialog
-                    Toast.makeText(getApplicationContext(), "Some unknown error occurred, Please try again later.", Toast.LENGTH_LONG).show();
+                    Toast.makeText(getApplicationContext(),getResources().getString(R.string.some_unknown_error), Toast.LENGTH_LONG).show();
                 }
             } catch (Exception e){
-                Toast.makeText(getApplicationContext(), "Some unknown error occurred, Please try again later.", Toast.LENGTH_LONG).show();
+                Toast.makeText(getApplicationContext(),getResources().getString(R.string.some_unknown_error), Toast.LENGTH_LONG).show();
 
             e.printStackTrace();
         }
@@ -248,11 +248,11 @@ try {
         JSONObject payloadJson = null;
         try {
             payloadJson = new JSONObject();
-            payloadJson.put("deviceType", "android");
-            payloadJson.put("deviceToken", "gcm id----2vgfwufhyiewjfkhwbs");
-            payloadJson.put("countryCode", countryId);
-            payloadJson.put("mobileNo", mobileNumber);
-            payloadJson.put("locale", "en");
+            payloadJson.put(Constants.DEVICETYPE, "android");
+            payloadJson.put(Constants.DEVICETOKEN, "gcm id----2vgfwufhyiewjfkhwbs");
+            payloadJson.put(Constants.COUNTRY_CODE, countryId);
+            payloadJson.put(Constants.MOBILE_NO, mobileNumber);
+            payloadJson.put(Constants.LOCALE, "en");
         } catch (Exception e) {
             e.printStackTrace();
             return null;

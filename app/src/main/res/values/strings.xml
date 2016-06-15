@@ -26,6 +26,8 @@
     <string name="enter_mobile_number_b">your phone number</string>
     <string name="contact_number">Contact Number</string>
     <string name="next">Next</string>
+    <string name="concurrent_verification_message">Concurrent verifications to the same number are not allowed</string>
+    <string name="some_unknown_error">Some unknown error occurred, Please try again later.</string>
 
 
     <!--OtpverificationActiviy-->
@@ -41,6 +43,9 @@
     <string name="it_is_recommended_to_choose_b">to connect quicker and see who is </string>
     <string name="it_is_recommended_to_choose_c">using Indiecore </string>
     <string name="contacts_sync">Sync Contacts</string>
+    <string name="contact_sync_successful">Contact syncing done successfully</string>
+    <string name="contact_sync_failure">Error in contact syncing</string>
+    <string name="no_contact_to_sync">No Contacts to Sync</string>
 
     <!--BadgesPojo Activity-->
     <string name="badges">Badges</string>
@@ -59,6 +64,11 @@
     <string name="enter_first_name">Enter first name</string>
     <string name="enter_last_name">Enter last name</string>
     <string name="enter_description">Description(240 character max)</string>
+    <string name="take_photo">Take Photo</string>
+    <string name="choose_from_gallary">Choose From Gallary</string>
+    <string name="upload_image">Upload Image</string>
+    <string name="cancal">Cancal</string>
+
 
     <!--Country-->
     <array name="country_name">

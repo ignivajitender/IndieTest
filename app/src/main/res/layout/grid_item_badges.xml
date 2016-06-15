@@ -6,7 +6,7 @@
     android:orientation="vertical">
 
 
-    <ImageView
+    <com.igniva.indiecore.utils.CircularImageView
         android:id="@+id/iv_badge"
         android:layout_width="70dp"
         android:layout_height="70dp"

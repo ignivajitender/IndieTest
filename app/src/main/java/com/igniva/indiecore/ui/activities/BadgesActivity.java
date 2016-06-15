@@ -162,11 +162,11 @@ public class BadgesActivity extends BaseActivity {
         JSONObject payloadJson = null;
         try {
             payloadJson = new JSONObject();
-            payloadJson.put("token", PreferenceHandler.readString(BadgesActivity.this, Constants.TOKEN, ""));
-            payloadJson.put("userId", PreferenceHandler.readString(BadgesActivity.this, Constants.USERID, ""));
-            payloadJson.put("page", page + "");
-            payloadJson.put("limit", limit + "");
-            payloadJson.put("category", category + "");
+            payloadJson.put(Constants.TOKEN, PreferenceHandler.readString(BadgesActivity.this, PreferenceHandler.PREF_KEY_USER_TOKEN, ""));
+            payloadJson.put(Constants.USERID, PreferenceHandler.readString(BadgesActivity.this, PreferenceHandler.PREF_KEY_USER_ID, ""));
+            payloadJson.put(Constants.PAGE, page + "");
+            payloadJson.put(Constants.LIMIT, limit + "");
+            payloadJson.put(Constants.CATEGORY, category + "");
         } catch (Exception e) {
             e.printStackTrace();
             return null;

@@ -31,6 +31,7 @@ public class SyncContactsActivity extends  BaseActivity implements View.OnClickL
 
     Toolbar mToolbar;
     ArrayList<String> mNumbers= null;
+    private static  final String COUNTRY_PREFIX="91";
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -81,10 +82,16 @@ public class SyncContactsActivity extends  BaseActivity implements View.OnClickL
             while (phones.moveToNext()) {
                 String name = phones.getString(phones.getColumnIndex(ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME));
                 phoneNumber = phones.getString(phones.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER));
-                mNumbers.add(phoneNumber.trim());
+                String phnNumber=phoneNumber.replace(" ","");
+
+                if(phnNumber.length()==10){
+
+                  phnNumber=COUNTRY_PREFIX+phnNumber;
+
+                }
+                mNumbers.add(phnNumber);
             }
             Log.e("List of contacts", "" + mNumbers.toString());
-          //  System.out.println(Arrays.toString(ids.toArray()).replace("[","").replace(" ", "").replace("]", ""));
             phones.close();
         }catch (Exception e){
             e.printStackTrace();
@@ -97,19 +104,19 @@ public class SyncContactsActivity extends  BaseActivity implements View.OnClickL
         try {
             if (mNumbers.size() == 0) {
 
-                Utility.showAlertDialog("No cOntact available for sync", this);
+                Utility.showAlertDialog(getResources().getString(R.string.no_contact_to_sync), this);
                 return;
             } else {
             syncPayload= new JSONObject();
-                syncPayload.put(Constants.TOKEN, PreferenceHandler.readString(SyncContactsActivity.this, Constants.TOKEN, ""));
-                syncPayload.put(Constants.USERID,PreferenceHandler.readString(SyncContactsActivity.this, Constants.USERID, ""));
+                syncPayload.put(Constants.TOKEN, PreferenceHandler.readString(SyncContactsActivity.this, PreferenceHandler.PREF_KEY_USER_TOKEN, ""));
+                syncPayload.put(Constants.USERID,PreferenceHandler.readString(SyncContactsActivity.this, PreferenceHandler.PREF_KEY_USER_ID, ""));
 
                String mNumber=mNumbers.toString().substring(1,mNumbers.toString().length()-1);
 
                 syncPayload.put(Constants.NUMBER,mNumber);
 
-             //   WebNotificationManager.registerResponseListener(responseListner);
-               // WebServiceClient.syncContacts(this,syncPayload.toString(),responseListner);
+                WebNotificationManager.registerResponseListener(responseListner);
+                WebServiceClient.syncContacts(this,syncPayload.toString(),responseListner);
 
 
                 Log.e("SyncContactList","----------"+mNumber);
@@ -133,13 +140,13 @@ public class SyncContactsActivity extends  BaseActivity implements View.OnClickL
                     // start parsing
                     if (result.getSuccess().equalsIgnoreCase("true")) {
 
-                        Toast.makeText(getApplicationContext(),"Contacts sync successfully",Toast.LENGTH_LONG).show();
+                        Toast.makeText(getApplicationContext(),getResources().getString(R.string.contact_sync_successful),Toast.LENGTH_LONG).show();
                         startActivity(new Intent(SyncContactsActivity.this,BadgesActivity.class));
 
                     }
                 } else {
 
-                    Toast.makeText(getApplicationContext(),"error syncing contacts",Toast.LENGTH_LONG).show();
+                    Toast.makeText(getApplicationContext(),getResources().getString(R.string.contact_sync_failure),Toast.LENGTH_LONG).show();
 
                 }
 

@@ -157,7 +157,7 @@ public class CreateProfileActivity extends BaseActivity implements AsyncResult {
             public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
 
                 int month = monthOfYear + 1;
-                mTvDateOfBirth.setText(dayOfMonth + "/" + month + "/" + year);
+                mTvDateOfBirth.setText(month + "/" + dayOfMonth + "/" + year);
                 mYear = year;
 
 
@@ -171,20 +171,20 @@ public class CreateProfileActivity extends BaseActivity implements AsyncResult {
 
 
     private void selectImage() {
-        final CharSequence[] items = {"Take Photo", "Choose from Library"
+        final CharSequence[] items = {getResources().getString(R.string.take_photo),getResources().getString(R.string.choose_from_gallary)
                 };
         AlertDialog.Builder builder = new AlertDialog.Builder(CreateProfileActivity.this, R.style.AppCompatAlertDialogStyle);
-        builder.setTitle("Upload Image");
+        builder.setTitle(getResources().getString(R.string.upload_image));
         builder.setItems(items, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int item) {
                 boolean result = true;
-                if (items[item].equals("Take Photo")) {
-                    userChoosenTask = "Take Photo";
+                if (items[item].equals(getResources().getString(R.string.take_photo))) {
+                    userChoosenTask = getResources().getString(R.string.take_photo);
                     if (result)
                         cameraIntent();
-                } else if (items[item].equals("Choose from Library")) {
-                    userChoosenTask = "Choose from Library";
+                } else if (items[item].equals(getResources().getString(R.string.choose_from_gallary))) {
+                    userChoosenTask = getResources().getString(R.string.choose_from_gallary);
                     if (result)
                         galleryIntent();
                 }
@@ -192,7 +192,7 @@ public class CreateProfileActivity extends BaseActivity implements AsyncResult {
 
         });
 
-        builder.setPositiveButton("Cancel", new DialogInterface.OnClickListener() {
+        builder.setPositiveButton(getResources().getString(R.string.cancal), new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 dialog.dismiss();
@@ -218,9 +218,9 @@ public class CreateProfileActivity extends BaseActivity implements AsyncResult {
         switch (requestCode) {
             case Utility.MY_PERMISSIONS_REQUEST_READ_EXTERNAL_STORAGE:
                 if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    if (userChoosenTask.equals("Take Photo"))
+                    if (userChoosenTask.equals(getResources().getString(R.string.take_photo)))
                         cameraIntent();
-                    else if (userChoosenTask.equals("Choose from Library"))
+                    else if (userChoosenTask.equals(getResources().getString(R.string.choose_from_gallary)))
                         galleryIntent();
                 } else {
                     //code for deny
@@ -338,8 +338,8 @@ public class CreateProfileActivity extends BaseActivity implements AsyncResult {
                 JSONObject json = null;
                 try {
                     json = new JSONObject();
-                    json.put(Constants.TOKEN, PreferenceHandler.readString(CreateProfileActivity.this, Constants.TOKEN, ""));
-                    json.put(Constants.USERID, PreferenceHandler.readString(CreateProfileActivity.this, Constants.USERID, ""));
+                    json.put(Constants.TOKEN, PreferenceHandler.readString(CreateProfileActivity.this, PreferenceHandler.PREF_KEY_USER_TOKEN, ""));
+                    json.put(Constants.USERID, PreferenceHandler.readString(CreateProfileActivity.this, PreferenceHandler.PREF_KEY_USER_ID, ""));
                     json.put(Constants.FIRSTNAME, firstName);
                     json.put(Constants.LASTNAME, lastName);
                     json.put(Constants.GENDER, gender);
@@ -537,19 +537,6 @@ public class CreateProfileActivity extends BaseActivity implements AsyncResult {
 
 
         if (PIC_INDEX_CODE == 2) {
-
-
-//            {
-//                "files": [
-//                {
-//                    "fileId": "8ZTJw2a3b887rBhbx",
-//                        "url": "/data/files/uploads/8ZTJw2a3b887rBhbx/1465541669565-sidd.jpg"
-//                }
-//                ],
-//                "success": true,
-//                    "error": null
-//            }
-
 
             try {
                 JSONObject jsonObject = new JSONObject(result.toString());
