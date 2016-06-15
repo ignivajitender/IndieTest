@@ -43,7 +43,6 @@ public class SplashActivity extends BaseActivity
 
         setUpLayout();
 
-
      //   Log.e(TAG,"Above GCM");
         // GCM CODE
 //        mRegistrationBroadcastReceiver = new BroadcastReceiver() {
@@ -146,10 +145,7 @@ public class SplashActivity extends BaseActivity
         switch (v.getId()){
 
             case R.id.im_getStarted:
-
                     navigateNextScreen();
-
-
           break;
 
             default:

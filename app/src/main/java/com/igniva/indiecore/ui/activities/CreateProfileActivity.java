@@ -167,8 +167,8 @@ public class CreateProfileActivity extends BaseActivity implements AsyncResult {
 
 
     private void selectImage() {
-        final CharSequence[] items = {"Take Photo", "Choose from Library",
-                "Cancel"};
+        final CharSequence[] items = {"Take Photo", "Choose from Library"
+                };
         AlertDialog.Builder builder = new AlertDialog.Builder(CreateProfileActivity.this, R.style.AppCompatAlertDialogStyle);
         builder.setTitle("Upload Image");
         builder.setItems(items, new DialogInterface.OnClickListener() {
@@ -183,8 +183,6 @@ public class CreateProfileActivity extends BaseActivity implements AsyncResult {
                     userChoosenTask = "Choose from Library";
                     if (result)
                         galleryIntent();
-                } else if (items[item].equals("Cancel")) {
-                    dialog.dismiss();
                 }
             }
 

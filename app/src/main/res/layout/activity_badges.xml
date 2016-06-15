@@ -43,7 +43,6 @@
 
 
     <RelativeLayout
-        android:gravity="center_horizontal"
         android:id="@+id/rl_bottom_bar"
         android:layout_alignParentBottom="true"
         android:layout_gravity="bottom"

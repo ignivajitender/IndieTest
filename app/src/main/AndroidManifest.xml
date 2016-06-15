@@ -69,6 +69,12 @@
             android:name=".ui.activities.BadgesActivity"
             android:screenOrientation="portrait"
             android:label="@string/badges"/>
+        <activity
+            android:theme="@style/AppTheme"
+            android:name=".ui.activities.MybadgesActivity"
+            android:screenOrientation="portrait"
+            android:label="@string/badges"/>
+
 
         <meta-data
             android:name="com.google.android.gms.version"

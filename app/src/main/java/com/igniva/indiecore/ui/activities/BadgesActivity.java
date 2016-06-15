@@ -17,7 +17,9 @@ import com.igniva.indiecore.controller.WebServiceClient;
 import com.igniva.indiecore.model.BadgesPojo;
 import com.igniva.indiecore.model.ResponsePojo;
 import com.igniva.indiecore.ui.adapters.BadgesAdapter;
+import com.igniva.indiecore.utils.Constants;
 import com.igniva.indiecore.utils.Log;
+import com.igniva.indiecore.utils.PreferenceHandler;
 import com.igniva.indiecore.utils.Utility;
 
 import org.json.JSONObject;
@@ -159,8 +161,8 @@ public class BadgesActivity extends BaseActivity {
         JSONObject payloadJson = null;
         try {
             payloadJson = new JSONObject();
-            payloadJson.put("token", "a5s3qIXm3qX-RSlbwZBlyRSOgTpCCSJc9gbvHxT5Vx8");
-            payloadJson.put("userId", "Y77qed6yd7gzfZoXM");
+            payloadJson.put("token", PreferenceHandler.readString(BadgesActivity.this, Constants.TOKEN, ""));
+            payloadJson.put("userId", PreferenceHandler.readString(BadgesActivity.this, Constants.USERID, ""));
             payloadJson.put("page", page + "");
             payloadJson.put("limit", limit + "");
             payloadJson.put("category", category + "");
