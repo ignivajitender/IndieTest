@@ -32,7 +32,8 @@ public class SyncContactsActivity extends  BaseActivity implements View.OnClickL
     Toolbar mToolbar;
     ArrayList<String> mNumbers= null;
     private int numberLength;
-    private static  final String COUNTRY_PREFIX="91";
+    private String mCountryCode;
+    private  String COUNTRY_PREFIX="";
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -65,9 +66,11 @@ public class SyncContactsActivity extends  BaseActivity implements View.OnClickL
 
 
         mNumbers= new ArrayList<String>();
-        Intent mIntent= getIntent();
-        numberLength=mIntent.getIntExtra(Constants.NUMBER_LENGTH,0);
+        Bundle bundle=getIntent().getExtras();
+        numberLength=bundle.getInt(Constants.NUMBER_LENGTH,0);
+        mCountryCode=bundle.getString(Constants.COUNTRY_CODE);
 
+        COUNTRY_PREFIX=mCountryCode;
 
     }
 

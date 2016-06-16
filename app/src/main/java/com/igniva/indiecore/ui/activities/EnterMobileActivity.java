@@ -212,6 +212,7 @@ public class EnterMobileActivity extends BaseActivity {
                             bundle.putString(Constants.PROFILEPIC,result.getProfile().getProfilePic());
                             bundle.putString(Constants.COVERPIC,result.getProfile().getCoverPic());
                             bundle.putInt(Constants.NUMBER_LENGTH,mobileNumber.length());
+                            bundle.putString(Constants.COUNTRY_CODE,countryId);
                             in.putExtras(bundle);
                             startActivity(in);
                         }

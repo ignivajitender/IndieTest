@@ -181,6 +181,7 @@ public class OtpVerificationActivity extends BaseActivity {
                         bundle.putString(Constants.PROFILEPIC,"");
                         bundle.putString(Constants.COVERPIC,"");
                         bundle.putInt(Constants.NUMBER_LENGTH,numberLength);
+                        bundle.putString(Constants.COUNTRY_CODE,mCountryId);
                         in.putExtras(bundle);
                         startActivity(in);
                     } else if (result.getSuccess().equalsIgnoreCase("true") && callId == 2) {

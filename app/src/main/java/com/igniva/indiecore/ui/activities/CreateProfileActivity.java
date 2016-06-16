@@ -71,6 +71,7 @@ public class CreateProfileActivity extends BaseActivity implements AsyncResult {
     public static final int REQUEST_CAMERA = 100;
     public static final int SELECT_FILE = 200;
     private String userChoosenTask = "";
+    private String mCountryCode;
     private int PIC_INDEX_CODE = 0;
     private int numberLenth;
     Calendar cal;
@@ -381,7 +382,10 @@ public class CreateProfileActivity extends BaseActivity implements AsyncResult {
                 // start parsing
                 if (result.getSuccess().equalsIgnoreCase("true")) {
                     Intent intent = new Intent(CreateProfileActivity.this, SyncContactsActivity.class);
-                    intent.putExtra(Constants.NUMBER_LENGTH,numberLenth);
+                    Bundle bundle= new Bundle();
+                    bundle.putInt(Constants.NUMBER_LENGTH,numberLenth);
+                    bundle.putString(Constants.COUNTRY_CODE,mCountryCode);
+                    intent.putExtras(bundle);
                     startActivity(intent);
                 }
                 else {
@@ -412,6 +416,8 @@ public class CreateProfileActivity extends BaseActivity implements AsyncResult {
             String profilePicUrl=bundle.getString(Constants.PROFILEPIC);
             String coverPic= bundle.getString(Constants.COVERPIC);
             numberLenth=bundle.getInt(Constants.NUMBER_LENGTH);
+            mCountryCode=bundle.getString(Constants.COUNTRY_CODE);
+
 
             mEtFirstName.setText(firstName);
             mEtLastName.setText(lastName);

@@ -47,8 +47,6 @@ public class Constants {
     public static final String CATEGORY="category";
     public static final String DEVICETYPE="deviceType";
     public static final String DEVICETOKEN="deviceToken";
-    public static final String COUNTRYCODE="countryCode";
-    public static final String MOBILENUMBER="mobileNo";
 
 
 
