@@ -12,7 +12,7 @@ public class Constants {
     public static  final String COUNTRY_CODE_VALIDATION="Please enter your country code";
     public static  final String MOBILE_NUMBER_VALIDATION="Please enter your mobile number";
     public static  final String TEN_DIGIT_MOBILENUMBER_VALIDATION="Please enter a valid mobile number of 10 digits";
-
+    public static  final String NUMBER_LENGTH="NUMBER_LENGTH";
     public static final String OTP_NOT_VALID = "Please enter otp code you have just received or resquest a new otp";
 
 
