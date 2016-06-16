@@ -123,7 +123,7 @@ public class EnterMobileActivity extends BaseActivity {
     @Override
     protected void setUpLayout() {
 
-try {
+          try {
         mLlTopNextEvent = (LinearLayout) findViewById(R.id.ll_next);
         //mLlTopNextEvent.setOnClickListener(onClick());
 
@@ -192,6 +192,8 @@ try {
                             Bundle bundle = new Bundle();
                             bundle.putString(Constants.MOBILE_NO, mobileNumber);
                             bundle.putString(Constants.COUNTRY_CODE, countryId);
+                            bundle.putInt(Constants.NUMBER_LENGTH,mobileNumber.length());
+
                             in.putExtras(bundle);
                             startActivity(in);
 
@@ -209,11 +211,10 @@ try {
                             bundle.putString(Constants.GENDER, result.getProfile().getGender());
                             bundle.putString(Constants.PROFILEPIC,result.getProfile().getProfilePic());
                             bundle.putString(Constants.COVERPIC,result.getProfile().getCoverPic());
+                            bundle.putInt(Constants.NUMBER_LENGTH,mobileNumber.length());
                             in.putExtras(bundle);
                             startActivity(in);
                         }
-
-
 
 
                     } else {

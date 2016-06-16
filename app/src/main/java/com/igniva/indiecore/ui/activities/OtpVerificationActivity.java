@@ -34,6 +34,7 @@ public class OtpVerificationActivity extends BaseActivity {
     public static String receivedOtp = "";
     public int callId = 0;
     private String mMobileNumber, mCountryId;
+    private int numberLength;
     MyReceiver receiver;
     ProgressDialog progressDialog=null;
 
@@ -59,6 +60,8 @@ public class OtpVerificationActivity extends BaseActivity {
             Bundle bundle = getIntent().getExtras();
             mMobileNumber = bundle.getString(Constants.MOBILE_NO);
             mCountryId = bundle.getString(Constants.COUNTRY_CODE);
+            numberLength= bundle.getInt(Constants.NUMBER_LENGTH);
+
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -177,6 +180,7 @@ public class OtpVerificationActivity extends BaseActivity {
                         bundle.putString(Constants.GENDER, "");
                         bundle.putString(Constants.PROFILEPIC,"");
                         bundle.putString(Constants.COVERPIC,"");
+                        bundle.putInt(Constants.NUMBER_LENGTH,numberLength);
                         in.putExtras(bundle);
                         startActivity(in);
                     } else if (result.getSuccess().equalsIgnoreCase("true") && callId == 2) {

@@ -72,6 +72,7 @@ public class CreateProfileActivity extends BaseActivity implements AsyncResult {
     public static final int SELECT_FILE = 200;
     private String userChoosenTask = "";
     private int PIC_INDEX_CODE = 0;
+    private int numberLenth;
     Calendar cal;
     String profileImageUrl = "";
     String CoverImageUrl = "";
@@ -378,8 +379,11 @@ public class CreateProfileActivity extends BaseActivity implements AsyncResult {
             // check for error
             if (error == null) {
                 // start parsing
-                if (result.getSuccess().equalsIgnoreCase("true"))
-                    startActivity(new Intent(CreateProfileActivity.this, SyncContactsActivity.class));
+                if (result.getSuccess().equalsIgnoreCase("true")) {
+                    Intent intent = new Intent(CreateProfileActivity.this, SyncContactsActivity.class);
+                    intent.putExtra(Constants.NUMBER_LENGTH,numberLenth);
+                    startActivity(intent);
+                }
                 else {
                     // display error message
                 }
@@ -407,6 +411,7 @@ public class CreateProfileActivity extends BaseActivity implements AsyncResult {
             String gender = bundle.getString(Constants.GENDER);
             String profilePicUrl=bundle.getString(Constants.PROFILEPIC);
             String coverPic= bundle.getString(Constants.COVERPIC);
+            numberLenth=bundle.getInt(Constants.NUMBER_LENGTH);
 
             mEtFirstName.setText(firstName);
             mEtLastName.setText(lastName);
