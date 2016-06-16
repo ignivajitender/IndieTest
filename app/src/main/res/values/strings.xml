@@ -68,8 +68,12 @@
     <string name="choose_from_gallary">Choose From Gallary</string>
     <string name="upload_image">Upload Image</string>
     <string name="cancal">Cancal</string>
+ 
+    
+    <!--badgeDetailsActivity-->
 
-
+    <string name="Badge_name">Badge Name</string>
+    <string name="Badge_detail_activity">Badge Detail Activity</string>
     <!--Country-->
     <array name="country_name">
         <item name="Afghanistan"></item>

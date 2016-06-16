@@ -1,6 +1,7 @@
 package com.igniva.indiecore.ui.adapters;
 
 import android.content.Context;
+import android.content.Intent;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -11,6 +12,8 @@ import android.widget.Toast;
 
 import com.igniva.indiecore.R;
 import com.igniva.indiecore.model.BadgesPojo;
+import com.igniva.indiecore.ui.activities.BadgeDetailActivity;
+import com.igniva.indiecore.ui.activities.BadgesActivity;
 import com.igniva.indiecore.utils.Log;
 import com.igniva.indiecore.utils.imageloader.ImageLoader;
 
@@ -26,7 +29,7 @@ public class BadgesAdapter extends RecyclerView.Adapter<BadgesAdapter.RecyclerVi
     private int mTotalBadgeCount;
     String LOG_TAG="BadgesAdapter";
 
-    public BadgesAdapter(Context context, ArrayList<BadgesPojo> itemList, int pageNo,int badgePerPage,  int badgeCount) {
+    public BadgesAdapter(Context context, ArrayList<BadgesPojo> itemList, int pageNo,int badgePerPage,  int badgeCount ) {
 
         this.itemList = getBadges(itemList,pageNo,badgePerPage,badgeCount);
         this.context = context;
@@ -42,11 +45,44 @@ public class BadgesAdapter extends RecyclerView.Adapter<BadgesAdapter.RecyclerVi
     }
 
     @Override
-    public void onBindViewHolder(RecyclerViewHolders holder, int position) {
+    public void onBindViewHolder(RecyclerViewHolders holder, final int position) {
         ImageLoader imageLoader=new ImageLoader(context);
         holder.mTvBadgeName.setText(itemList.get(position).getName());
         imageLoader.DisplayImage(itemList.get(position).getIcon(),holder.mIvBadgeIcon);
+
+        holder.mIvActivateBadge.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                Toast.makeText(context,"position is "+(position)+"this is icon click",Toast.LENGTH_SHORT).show();
+
+
+            }
+        });
         //holder.mIvBadgeIcon.setImageResource(itemList.get(position).getIcon());
+
+
+        holder.mIvBadgeIcon.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Toast.makeText(context,"position is "+(itemList.get(position).getName()),Toast.LENGTH_SHORT).show();
+
+                BadgesPojo obj= new BadgesPojo(itemList.get(position).getName(),itemList.get(position).getIcon(),itemList.get(position).getDescription());
+
+
+                // Creating an intent to open the activity StudentViewActivity
+                Intent intent = new Intent(context, BadgeDetailActivity.class);
+
+                // Passing data as a parecelable object to StudentViewActivity
+                intent.putExtra("BadgeData",obj);
+
+                // Opening the activity
+                context.startActivity(intent);
+                Toast.makeText(context, "Recycle Click" +(position+((BadgesActivity.pageNumber-1)*BadgesActivity.badgeCount)), Toast.LENGTH_SHORT).show();
+            }
+        });
+
+
     }
 
     @Override
@@ -58,17 +94,35 @@ public class BadgesAdapter extends RecyclerView.Adapter<BadgesAdapter.RecyclerVi
 
         public TextView mTvBadgeName;
         public ImageView mIvBadgeIcon;
+        public ImageView mIvActivateBadge;
 
-        public RecyclerViewHolders(View itemView) {
+        public RecyclerViewHolders(final View itemView) {
             super(itemView);
             itemView.setOnClickListener(this);
             mTvBadgeName = (TextView)itemView.findViewById(R.id.tv_badge_name);
             mIvBadgeIcon = (ImageView)itemView.findViewById(R.id.iv_badge);
+            mIvActivateBadge=(ImageView) itemView.findViewById(R.id.iv_badge_selected);
+
+
+
+//            mIvBadgeIcon.setOnClickListener(new View.OnClickListener() {
+//                @Override
+//                public void onClick(View v) {
+//
+//                    BadgesPojo badgesPojo= new BadgesPojo()
+//                    Intent intent= new Intent(context, BadgeDetailActivity.class);
+//
+//                    context.startActivity(intent);
+//                }
+//            });
         }
 
         @Override
         public void onClick(View view) {
-            Toast.makeText(view.getContext(), R.string.coming_soon, Toast.LENGTH_SHORT).show();
+
+
+
+//            Toast.makeText(view.getContext(), R.string.coming_soon, Toast.LENGTH_SHORT).show();
         }
     }
 
