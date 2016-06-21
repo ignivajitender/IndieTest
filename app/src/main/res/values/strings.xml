@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">IndieCore</string>
+    <string name="app_name">Indiecore</string>
 
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
@@ -22,7 +22,7 @@
 
     <!--getMobileNumberActivity-->
 
-    <string name="enter_mobile_number_a">Please, confirm your country code and enter</string>
+    <string name="enter_mobile_number_a">Please confirm your country code and enter</string>
     <string name="enter_mobile_number_b">your phone number</string>
     <string name="contact_number">Contact Number</string>
     <string name="next">Next</string>
@@ -51,7 +51,7 @@
     <string name="badges">Badges</string>
     <string name="previous">Previous</string>
     <string name="its_recommended">It is recommended to choose badges to find people of</string>
-    <string name="same_choice">seme choice</string>
+    <string name="same_choice">same choice</string>
     <string name="no_more_badges">No more badges available</string>
 
 
@@ -68,6 +68,7 @@
     <string name="choose_from_gallary">Choose From Gallary</string>
     <string name="upload_image">Upload Image</string>
     <string name="cancel">Cancel</string>
+    <string name="name_validation">abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ</string>
  
     
     <!--badgeDetailsActivity-->
@@ -79,6 +80,7 @@
     <!--inviteFriensActivity-->
 
     <string name="invite_friends">Invite Friends</string>
+    <string name="no_thanks">No thanks</string>
     <!--Country-->
     <array name="country_name">
         <item name="Afghanistan"></item>

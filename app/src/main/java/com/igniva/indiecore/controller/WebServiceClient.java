@@ -16,15 +16,18 @@ import java.net.URLEncoder;
 import java.util.ArrayList;
 
 import com.igniva.indiecore.R;
+import com.igniva.indiecore.utils.AsyncResult;
 import com.igniva.indiecore.utils.Utility;
 
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.os.AsyncTask;
+import android.os.StrictMode;
 
 import com.google.gson.Gson;
 
+import org.apache.http.entity.mime.MultipartEntity;
 import org.json.JSONObject;
 
 import com.igniva.indiecore.utils.Log;
@@ -275,6 +278,120 @@ public class WebServiceClient {
             }
         }
     }
+
+
+    /**
+     * General Async task to call Webservices
+     */
+    private static class UploadImgaeWTask extends
+            AsyncTask<Void, Void, Object[]> {
+
+        private final String mUrl;
+        private  boolean isDisplayDialog=true;
+        private Context mContext;
+        MultipartEntity mReqEntity;
+        StringBuilder builder;
+        //
+        public UploadImgaeWTask(Context mContext,String urlString, MultipartEntity reqEntity) {
+            this.mUrl=urlString;
+            this.mReqEntity=reqEntity;
+            this.mContext=mContext;
+        }
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            if (isDisplayDialog) {
+                progressDialog = ProgressDialog.show(mContext, "", mContext
+                                .getResources().getString(R.string.please_wait), true,
+                        false);
+                // progressDialog.setCancelable(true);
+            }
+        }
+
+        @Override
+        protected Object[] doInBackground(Void... vParams) {
+
+            ResponsePojo responsePojo = null;
+            WebError error = null;
+            try {
+                if (android.os.Build.VERSION.SDK_INT > 9) {
+                    StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
+                    StrictMode.setThreadPolicy(policy);
+                }
+
+                URL url = new URL(mUrl);
+                HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+                conn.setReadTimeout(10000);
+                conn.setConnectTimeout(15000);
+                conn.setRequestMethod("POST");
+                conn.setUseCaches(false);
+                conn.setDoInput(true);
+                conn.setDoOutput(true);
+
+                conn.setRequestProperty("Connection", "Keep-Alive");
+                conn.addRequestProperty("Content-length", mReqEntity.getContentLength() + "");
+                conn.addRequestProperty(mReqEntity.getContentType().getName(), mReqEntity.getContentType().getValue());
+                OutputStream os = conn.getOutputStream();
+                mReqEntity.writeTo(conn.getOutputStream());
+                os.close();
+                conn.connect();
+                if (conn.getResponseCode() == HttpURLConnection.HTTP_OK) {
+                    BufferedReader reader = null;
+                    builder = new StringBuilder();
+                    try {
+                        reader = new BufferedReader(new InputStreamReader(conn.getInputStream()));
+                        String line = "";
+                        while ((line = reader.readLine()) != null) {
+                            builder.append(line);
+                        }
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    } finally {
+                        if (reader != null) {
+                            try {
+                                reader.close();
+                            } catch (IOException e) {
+                                e.printStackTrace();
+                                error = WebError.UNKNOWN;
+                            }
+                        }
+                    }
+                }
+
+            } catch (Exception e) {
+                error = WebError.UNKNOWN;
+                e.printStackTrace();
+            }
+
+            return new Object[]{responsePojo, error};
+        }
+
+        @SuppressWarnings("unchecked")
+        @Override
+        protected void onPostExecute(Object[] result) {
+            try {
+                // TODO handle Authtoken Expiration
+                if (((ResponsePojo) result[0]).getStatus() == 1000) {
+                    WebNotificationManager.unRegisterResponseListener(mResponseHandlerListener);
+                    progressDialog.dismiss();
+                    // Show Logout Dialog , on click of OK redirect to Login screen
+                } else {
+                    //
+                    WebNotificationManager.onResponseCallReturned(
+                            (ResponsePojo) result[0], (WebError) result[1],
+                            progressDialog);
+                }
+            } catch (Exception e) {
+                WebNotificationManager.onResponseCallReturned(
+                        (ResponsePojo) result[0], (WebError) result[1],
+                        progressDialog);
+            }
+        }
+    }
+
+
+
 
 
 }
