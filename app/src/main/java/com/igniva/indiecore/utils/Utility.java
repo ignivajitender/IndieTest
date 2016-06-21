@@ -224,6 +224,7 @@ public class Utility {
 
 		AlertDialog alert11 = builder1.create();
 		alert11.show();
+
 	}
 //	public static boolean checkPermission(final Context context)
 //	{
