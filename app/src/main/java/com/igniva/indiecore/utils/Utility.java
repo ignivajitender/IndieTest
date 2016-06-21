@@ -13,6 +13,7 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.DialogInterface.OnClickListener;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
@@ -24,6 +25,7 @@ import android.widget.Toast;
 
 import com.igniva.indiecore.Manifest;
 import com.igniva.indiecore.R;
+import com.igniva.indiecore.ui.activities.InviteContactActivity;
 
 public class Utility {
 
@@ -172,6 +174,51 @@ public class Utility {
 			public void onClick(DialogInterface dialog, int id) {
 				dialog.dismiss();
 
+			}
+		});
+
+		AlertDialog alert11 = builder1.create();
+		alert11.show();
+	}
+
+	public static void showAlertDialogGetBadge(String message, Context context){
+		AlertDialog.Builder builder1 = new AlertDialog.Builder(context,R.style.AppCompatAlertDialogStyle);
+		builder1.setMessage( message);
+		builder1.setCancelable(true);
+		builder1.setPositiveButton("OK", new OnClickListener() {
+			public void onClick(DialogInterface dialog, int id) {
+
+
+			}
+		});
+
+		builder1.setNegativeButton("No thanks", new OnClickListener() {
+			@Override
+			public void onClick(DialogInterface dialog, int which) {
+				dialog.dismiss();
+			}
+		});
+
+		AlertDialog alert11 = builder1.create();
+		alert11.show();
+	}
+
+
+	public static void showAlertDialogInviteAndBuy(String message, final Context context){
+		AlertDialog.Builder builder1 = new AlertDialog.Builder(context,R.style.AppCompatAlertDialogStyle);
+		builder1.setMessage( message);
+		builder1.setCancelable(true);
+		builder1.setPositiveButton("BUY", new OnClickListener() {
+			public void onClick(DialogInterface dialog, int id) {
+				dialog.dismiss();
+
+
+			}
+		}); builder1.setNegativeButton("INVITE", new OnClickListener() {
+			@Override
+			public void onClick(DialogInterface dialog, int which) {
+          Intent intent = new Intent(context, InviteContactActivity.class);
+				context.startActivity(intent);
 			}
 		});
 

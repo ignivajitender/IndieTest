@@ -3,7 +3,6 @@ package com.igniva.indiecore.ui.activities;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Movie;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.GridLayoutManager;
@@ -14,7 +13,6 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.igniva.indiecore.R;
 import com.igniva.indiecore.controller.ResponseHandlerListener;
@@ -31,9 +29,6 @@ import com.igniva.indiecore.utils.Utility;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
 
 /**
  * Created by igniva-andriod-11 on 8/6/16.
@@ -45,8 +40,10 @@ public class BadgesActivity extends BaseActivity {
     RecyclerView mRvBadges;
     ArrayList<BadgesPojo> mBadgesList = null;
     LinearLayout mllNext, mLlPrevious;
-    public static int   pageNumber = 1, badgeCount = 20, category = 0, mTotalBadgeCount = 0;
+    public static int pageNumber = 1, badgeCount = 20, category = 0, mTotalBadgeCount = 0;
     BadgesAdapter mBadgesAdapter;
+    public  ArrayList<String> mSelectedBadgeIds= new ArrayList<String>();
+
 
 
     @Override
@@ -137,7 +134,7 @@ public class BadgesActivity extends BaseActivity {
             mBadgesAdapter = null;
             mRvBadges.setAdapter(mBadgesAdapter);
             //
-            mBadgesAdapter = new BadgesAdapter(BadgesActivity.this, mBadgesList, pageNumber, badgeCount, mTotalBadgeCount);
+            mBadgesAdapter = new BadgesAdapter(BadgesActivity.this, mBadgesList, pageNumber, badgeCount, mTotalBadgeCount,mSelectedBadgeIds);
             mRvBadges.setAdapter(mBadgesAdapter);
             // show previous button
             if (pageNumber > 1) {
@@ -175,7 +172,9 @@ public class BadgesActivity extends BaseActivity {
             mTvNext.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    startActivity(new Intent(BadgesActivity.this,MyBadgesActivity.class));
+//                    startActivity(new Intent(BadgesActivity.this, MyBadgesActivity.class));
+
+                    Utility.showToastMessageShort(BadgesActivity.this,mSelectedBadgeIds.toString());
                 }
             });
             //
@@ -206,6 +205,33 @@ public class BadgesActivity extends BaseActivity {
     }
 
 
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+
+        mBadgesAdapter.onActivityResult(requestCode, resultCode, data);
+//        mBadgesAdapter.notifyDataSetChanged();
+    }
+
+
+
+    public String createPayload() {
+        JSONObject payload = null;
+//        PARAMETER: token, userId, type, badgeIds (should be in CSV format. for eg. 1,4,5,8)
+        try {
+            payload.put(Constants.TOKEN, PreferenceHandler.readString(this, PreferenceHandler.PREF_KEY_USER_TOKEN, ""));
+            payload.put(Constants.USERID, PreferenceHandler.readString(this, PreferenceHandler.PREF_KEY_USER_ID, ""));
+            payload.put(Constants.TYPE, "");
+            payload.put(Constants.BADGEIDS, "");
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+        Log.d(LOG_TAG, "paload(GET BADGES) is " + payload.toString());
+
+        return payload.toString();
+    }
+
+
     ResponseHandlerListener responseHandlerListener = new ResponseHandlerListener() {
         @Override
         public void onComplete(ResponsePojo result, WebServiceClient.WebError error, ProgressDialog mProgressDialog) {
@@ -216,8 +242,8 @@ public class BadgesActivity extends BaseActivity {
                 if (result.getSuccess().equalsIgnoreCase("true")) {
                     // display in grid
                     mTotalBadgeCount = result.getTotal_badges();
-                    if (mBadgesList.size()<mTotalBadgeCount)
-                    mBadgesList.addAll(result.getBadges());
+                    if (mBadgesList.size() < mTotalBadgeCount)
+                        mBadgesList.addAll(result.getBadges());
                     setDataInViewObjects();
                 } else {
                     // display error message
@@ -238,8 +264,8 @@ public class BadgesActivity extends BaseActivity {
 
     void updateNextBadges() {
         pageNumber = pageNumber + 1;
-        Log.d(LOG_TAG, "page no is  is " + pageNumber +" size of list "+ mBadgesList.size());
-        if (mBadgesList.size() > (pageNumber * badgeCount)||mBadgesList.size() ==mTotalBadgeCount) {
+        Log.d(LOG_TAG, "page no is  is " + pageNumber + " size of list " + mBadgesList.size());
+        if (mBadgesList.size() > (pageNumber * badgeCount) || mBadgesList.size() == mTotalBadgeCount) {
             setDataInViewObjects();
         } else {
             String payload = createPayload(pageNumber, badgeCount, category);

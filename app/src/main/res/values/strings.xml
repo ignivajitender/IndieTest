@@ -74,6 +74,11 @@
 
     <string name="Badge_name">Badge Name</string>
     <string name="Badge_detail_activity">Badge Detail Activity</string>
+
+
+    <!--inviteFriensActivity-->
+
+    <string name="invite_friends">Invite Friends</string>
     <!--Country-->
     <array name="country_name">
         <item name="Afghanistan"></item>
