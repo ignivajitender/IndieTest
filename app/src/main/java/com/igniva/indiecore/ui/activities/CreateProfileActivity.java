@@ -194,7 +194,7 @@ public class CreateProfileActivity extends BaseActivity implements AsyncResult {
 
         });
 
-        builder.setPositiveButton(getResources().getString(R.string.cancal), new DialogInterface.OnClickListener() {
+        builder.setPositiveButton(getResources().getString(R.string.cancel), new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 dialog.dismiss();
@@ -579,17 +579,5 @@ public class CreateProfileActivity extends BaseActivity implements AsyncResult {
 
     }
 
-
-    private class Url {
-        public String getUrl() {
-            return url;
-        }
-
-        public void setUrl(String url) {
-            this.url = url;
-        }
-
-        private String url;
-    }
 
 }

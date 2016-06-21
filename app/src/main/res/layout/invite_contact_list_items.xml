@@ -24,7 +24,7 @@
                 android:layout_width="70dp"
                 android:layout_height="70dp"
                 android:layout_centerVertical="true"
-                android:src="@drawable/ic_menu_send" />
+                android:src="@drawable/default_user" />
 
             <TextView
                 android:id="@+id/tv_contact_name"

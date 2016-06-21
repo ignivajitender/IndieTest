@@ -67,7 +67,7 @@
     <string name="take_photo">Take Photo</string>
     <string name="choose_from_gallary">Choose From Gallary</string>
     <string name="upload_image">Upload Image</string>
-    <string name="cancal">Cancal</string>
+    <string name="cancel">Cancel</string>
  
     
     <!--badgeDetailsActivity-->
