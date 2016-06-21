@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:recyclerviewfastscroller="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <include
+        android:id="@+id/toolbar"
+        layout="@layout/toolbar" />
+
+    <LinearLayout
+        android:layout_below="@+id/toolbar"
+        android:id="@+id/ll_Search"
+        android:background="@color/light_gray"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            android:layout_marginBottom="7dp"
+            android:layout_marginTop="7dp"
+            android:padding="3dp"
+            android:background="@color/white"
+            android:layout_height="wrap_content">
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_gravity="center"
+                android:padding="7dp"
+                android:src="@drawable/search_icon"/>
+
+            <View
+                android:layout_width="2dp"
+                android:layout_height="match_parent"
+                android:background="@color/light_gray"
+                android:layout_marginTop="3dp"
+                android:layout_marginBottom="3dp"/>
+        <EditText
+            android:id="@+id/et_search"
+            android:layout_gravity="center_vertical"
+            android:layout_width="match_parent"
+            android:padding="8dp"
+            android:background="@color/transparent"
+            android:layout_height="wrap_content"
+            android:hint="Search.."/>
+        </LinearLayout>
+    </LinearLayout>
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/recyclerView"
+        android:layout_below="@+id/ll_Search"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        />
+
+    <!--<xyz.danoz.recyclerviewfastscroller.vertical.VerticalRecyclerViewFastScroller-->
+        <!--android:id="@+id/fast_scroller"-->
+        <!--android:layout_width="100dp"-->
+        <!--android:layout_height="match_parent"-->
+        <!--android:layout_alignParentRight="true"-->
+        <!--/>-->
+
+</RelativeLayout>

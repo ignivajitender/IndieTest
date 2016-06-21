@@ -1,9 +1,10 @@
 package com.igniva.indiecore.model;
 
+import java.io.Serializable;
+
 /**
- * Created by igniva-andriod-11 on 10/6/16.
- */
-public class BadgesPojo {
+ * Created by igniva-andriod-05 on 17/6/16.
+ */public class BadgesPojo implements Serializable {
 
     private String category;
     private String sku;
@@ -12,6 +13,7 @@ public class BadgesPojo {
     private String badgeId;
     private String name;
     private String description;
+    private boolean isSelected;
 
     public String getCategory() {
         return category;
@@ -23,6 +25,14 @@ public class BadgesPojo {
 
     public String getSku() {
         return sku;
+    }
+
+    public boolean isSelected() {
+        return isSelected;
+    }
+
+    public void setSelected(boolean selected) {
+        isSelected = selected;
     }
 
     public void setSku(String sku) {
@@ -68,7 +78,5 @@ public class BadgesPojo {
     public void setDescription(String description) {
         this.description = description;
     }
-
-
-
 }
+

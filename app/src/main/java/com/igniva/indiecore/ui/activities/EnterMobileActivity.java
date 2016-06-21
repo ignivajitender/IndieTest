@@ -131,10 +131,12 @@ public class EnterMobileActivity extends BaseActivity {
         // mButtonNext.setOnClickListener(this);
 
         mEtMobileNumber = (EditText) findViewById(R.id.et_mobile_number);
+              mEtMobileNumber.setText("9816428478");
         mEtMobileNumber.requestFocus();
 
         mEtCountryCode = (EditText) findViewById(R.id.et_country_code);
         //  mEtCountryCode.setText(countryId);
+              mEtCountryCode.setText("91");
     } catch (Exception e){
 
         e.printStackTrace();
