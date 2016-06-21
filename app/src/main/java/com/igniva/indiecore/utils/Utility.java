@@ -124,7 +124,7 @@ public class Utility {
 					R.style.AppCompatAlertDialogStyle);
 			builder.setTitle(mContext.getResources().getString(R.string.no_internet_title));
 			builder.setMessage(mContext.getResources().getString(R.string.no_internet));
-			builder.setPositiveButton("OK", new OnClickListener() {
+			builder.setPositiveButton(android.R.string.ok, new OnClickListener() {
 
 				@Override
 				public void onClick(DialogInterface dialog, int which) {
@@ -146,7 +146,7 @@ public class Utility {
                     R.style.AppTheme);
             builder.setTitle(mContext.getResources().getString(R.string.invalid_session));
             builder.setMessage(mContext.getResources().getString(R.string.logout_device));
-            builder.setPositiveButton("OK", new OnClickListener() {
+            builder.setPositiveButton(android.R.string.ok, new OnClickListener() {
 
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
@@ -170,13 +170,12 @@ public class Utility {
 		AlertDialog.Builder builder1 = new AlertDialog.Builder(context);
 		builder1.setMessage( message);
 		builder1.setCancelable(true);
-		builder1.setPositiveButton("OK", new OnClickListener() {
+		builder1.setPositiveButton(android.R.string.ok, new OnClickListener() {
 			public void onClick(DialogInterface dialog, int id) {
 				dialog.dismiss();
 
 			}
 		});
-
 		AlertDialog alert11 = builder1.create();
 		alert11.show();
 	}
@@ -185,14 +184,14 @@ public class Utility {
 		AlertDialog.Builder builder1 = new AlertDialog.Builder(context,R.style.AppCompatAlertDialogStyle);
 		builder1.setMessage( message);
 		builder1.setCancelable(true);
-		builder1.setPositiveButton("OK", new OnClickListener() {
+		builder1.setPositiveButton(android.R.string.ok, new OnClickListener() {
 			public void onClick(DialogInterface dialog, int id) {
 
 
 			}
 		});
 
-		builder1.setNegativeButton("No thanks", new OnClickListener() {
+		builder1.setNegativeButton(context.getResources().getString(R.string.no_thanks), new OnClickListener() {
 			@Override
 			public void onClick(DialogInterface dialog, int which) {
 				dialog.dismiss();
@@ -226,35 +225,5 @@ public class Utility {
 		alert11.show();
 
 	}
-//	public static boolean checkPermission(final Context context)
-//	{
-//		int currentAPIVersion = Build.VERSION.SDK_INT;
-//		if(currentAPIVersion>= Build.VERSION_CODES.M)
-//		{
-//			if (ContextCompat.checkSelfPermission(context, Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
-//				if (ActivityCompat.shouldShowRequestPermissionRationale((Activity) context, Manifest.permission.READ_EXTERNAL_STORAGE)) {
-//					AlertDialog.Builder alertBuilder = new AlertDialog.Builder(context);
-//					alertBuilder.setCancelable(true);
-//					alertBuilder.setTitle("Permission necessary");
-//					alertBuilder.setMessage("External storage permission is necessary");
-//					alertBuilder.setPositiveButton(android.R.string.yes, new OnClickListener() {
-//						@TargetApi(Build.VERSION_CODES.JELLY_BEAN)
-//						public void onClick(DialogInterface dialog, int which) {
-//							ActivityCompat.requestPermissions((Activity) context, new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, MY_PERMISSIONS_REQUEST_READ_EXTERNAL_STORAGE);
-//						}
-//					});
-//					AlertDialog alert = alertBuilder.create();
-//					alert.show();
-//				} else {
-//					ActivityCompat.requestPermissions((Activity) context, new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, MY_PERMISSIONS_REQUEST_READ_EXTERNAL_STORAGE);
-//				}
-//				return false;
-//			} else {
-//				return true;
-//			}
-//		} else {
-//			return true;
-//		}
-//	}
 
 }

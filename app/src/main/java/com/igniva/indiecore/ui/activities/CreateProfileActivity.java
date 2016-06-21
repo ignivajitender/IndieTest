@@ -43,16 +43,12 @@ import org.apache.http.entity.mime.content.ContentBody;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.w3c.dom.Text;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.net.URI;
-import java.net.URL;
-import java.net.URLEncoder;
 import java.util.Calendar;
 
 /**
@@ -93,7 +89,7 @@ public class CreateProfileActivity extends BaseActivity implements AsyncResult {
         try {
             mToolbar = (Toolbar) findViewById(R.id.toolbar);
             TextView mTvTitle = (TextView) mToolbar.findViewById(R.id.toolbar_title);
-            mTvTitle.setText(getResources().getString(R.string.contact_number));
+            mTvTitle.setText(getResources().getString(R.string.create_profile));
             //
             TextView mTvNext = (TextView) mToolbar.findViewById(R.id.toolbar_next);
             mTvNext.setOnClickListener(new View.OnClickListener() {
@@ -194,7 +190,7 @@ public class CreateProfileActivity extends BaseActivity implements AsyncResult {
 
         });
 
-        builder.setPositiveButton(getResources().getString(R.string.cancal), new DialogInterface.OnClickListener() {
+        builder.setPositiveButton(getResources().getString(R.string.cancel), new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 dialog.dismiss();

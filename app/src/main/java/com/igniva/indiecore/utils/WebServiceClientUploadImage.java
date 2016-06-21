@@ -5,11 +5,8 @@ import android.content.Context;
 import android.os.AsyncTask;
 import android.os.StrictMode;
 import android.util.Log;
-
 import com.igniva.indiecore.R;
-
 import org.apache.http.entity.mime.MultipartEntity;
-
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
