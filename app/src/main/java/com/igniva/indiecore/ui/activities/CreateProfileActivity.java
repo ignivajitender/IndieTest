@@ -310,15 +310,16 @@ public class CreateProfileActivity extends BaseActivity implements AsyncResult {
             String description = mEtDescription.getText().toString().trim();
             String dob = mTvDateOfBirth.getText().toString();
 
-            int dobLength = dob.length();
+            int ageCal = 0;
+            if (!dob.isEmpty()) {
+                int dobLength = dob.length();
+                String afterSubString = dob.substring(dobLength - 4);
+                int b = Integer.parseInt(afterSubString);
 
-            String afterSubString = dob.substring(dobLength - 4);
-            int b = Integer.parseInt(afterSubString);
+                int a = cal.get(Calendar.YEAR);
 
-            int a = cal.get(Calendar.YEAR);
-
-            int ageCal = (a - b);
-
+                ageCal = (a - b);
+            }
             if (firstName.length() == 0) {
                 Utility.showAlertDialog(Constants.ENTER_FIRST_NAME, this);
                 return;
@@ -351,11 +352,11 @@ public class CreateProfileActivity extends BaseActivity implements AsyncResult {
                     json.put(Constants.DOB, mTvDateOfBirth.getText().toString());
 
                     json.put(Constants.DESCRIPTION, description);
-                    if (!PreferenceHandler.readString(this,PreferenceHandler.PROFILE_PIC_URL,"").isEmpty()) {
-                        json.put(Constants.PROFILEPIC,PreferenceHandler.readString(this,PreferenceHandler.PROFILE_PIC_URL,""));
+                    if (!PreferenceHandler.readString(this, PreferenceHandler.PROFILE_PIC_URL, "").isEmpty()) {
+                        json.put(Constants.PROFILEPIC, PreferenceHandler.readString(this, PreferenceHandler.PROFILE_PIC_URL, ""));
                     }
-                    if (!PreferenceHandler.readString(this,PreferenceHandler.COVER_PIC_URL,"").isEmpty()) {
-                        json.put(Constants.COVERPIC,PreferenceHandler.readString(this,PreferenceHandler.COVER_PIC_URL,""));
+                    if (!PreferenceHandler.readString(this, PreferenceHandler.COVER_PIC_URL, "").isEmpty()) {
+                        json.put(Constants.COVERPIC, PreferenceHandler.readString(this, PreferenceHandler.COVER_PIC_URL, ""));
                     }
                     WebNotificationManager.registerResponseListener(responseHandlerListener);
 
@@ -464,7 +465,9 @@ public class CreateProfileActivity extends BaseActivity implements AsyncResult {
             case R.id.iv_datepicker:
                 getDateOfBirth();
                 break;
-
+            case R.id.tv_dob:
+                getDateOfBirth();
+                break;
 
             case R.id.iv_camerabtn_profile_pic:
                 PIC_INDEX_CODE = 1;
@@ -555,7 +558,7 @@ public class CreateProfileActivity extends BaseActivity implements AsyncResult {
                 JSONArray file = jsonObject.getJSONArray("files");
                 JSONObject obj = file.getJSONObject(0);
                 CoverImageUrl = obj.optString("url");
-                PreferenceHandler.writeString(this,PreferenceHandler.COVER_PIC_URL,CoverImageUrl);
+                PreferenceHandler.writeString(this, PreferenceHandler.COVER_PIC_URL, CoverImageUrl);
                 Log.e("coverImage", "" + CoverImageUrl);
             } catch (Exception e) {
 
@@ -570,7 +573,7 @@ public class CreateProfileActivity extends BaseActivity implements AsyncResult {
                 JSONArray file = jsonObject.getJSONArray("files");
                 JSONObject obj = file.getJSONObject(0);
                 profileImageUrl = obj.optString("url");
-                PreferenceHandler.writeString(this,PreferenceHandler.PROFILE_PIC_URL,profileImageUrl);
+                PreferenceHandler.writeString(this, PreferenceHandler.PROFILE_PIC_URL, profileImageUrl);
                 Log.e("profileImage", "" + profileImageUrl);
 
             } catch (Exception e) {

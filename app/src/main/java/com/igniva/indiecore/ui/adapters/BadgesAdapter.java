@@ -54,9 +54,9 @@ public class BadgesAdapter extends RecyclerView.Adapter<BadgesAdapter.RecyclerVi
 
     @Override
     public void onBindViewHolder(final RecyclerViewHolders holder, final int position) {
-        final ImageLoader imageLoader=new ImageLoader(context);
+//        final ImageLoader imageLoader=new ImageLoader(context);
         holder.mTvBadgeName.setText(itemList.get(position).getName());
-        imageLoader.DisplayImage(itemList.get(position).getIcon(),holder.mIvBadgeIcon);
+//        imageLoader.DisplayImage(itemList.get(position).getIcon(),holder.mIvBadgeIcon);
 
         //
         if(itemList.get(position).isSelected()==true){
