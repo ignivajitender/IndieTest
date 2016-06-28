@@ -18,6 +18,7 @@ import com.igniva.indiecore.R;
 import com.igniva.indiecore.controller.ResponseHandlerListener;
 import com.igniva.indiecore.controller.WebNotificationManager;
 import com.igniva.indiecore.controller.WebServiceClient;
+import com.igniva.indiecore.db.BadgesDb;
 import com.igniva.indiecore.model.BadgesPojo;
 import com.igniva.indiecore.model.ResponsePojo;
 import com.igniva.indiecore.ui.adapters.BadgesAdapter;
@@ -28,7 +29,9 @@ import com.igniva.indiecore.utils.Utility;
 
 import org.json.JSONObject;
 
+import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by igniva-andriod-11 on 8/6/16.
@@ -42,15 +45,17 @@ public class BadgesActivity extends BaseActivity {
     LinearLayout mllNext, mLlPrevious;
     public static int pageNumber = 1, badgeCount = 20, category = 0, mTotalBadgeCount = 0;
     BadgesAdapter mBadgesAdapter;
-    public  ArrayList<String> mSelectedBadgeIds= new ArrayList<String>();
-
+    public ArrayList<BadgesPojo> mSelectedBadgeIds = new ArrayList<BadgesPojo>();
+    private BadgesDb dbBadges;
 
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_badges);
+
         mBadgesList = new ArrayList<BadgesPojo>();
+        pageNumber = 1;
         //
         initToolbar();
         setUpLayout();
@@ -64,7 +69,6 @@ public class BadgesActivity extends BaseActivity {
             WebServiceClient.getBadges(BadgesActivity.this, payload, responseHandlerListener);
         }
 
-
     }
 
     @Override
@@ -73,30 +77,7 @@ public class BadgesActivity extends BaseActivity {
         mGlayout = new GridLayoutManager(BadgesActivity.this, 4);
         mRvBadges = (RecyclerView) findViewById(R.id.recycler_view);
 
-//        mRvBadges.addOnItemTouchListener(new ClickListener.RecyclerTouchListener(getApplicationContext(), mRvBadges, new ClickListener() {
-//            @Override
-//            public void onClick(View view, int position) {
-//
-//                switch (view.getId()){
-//
-//                    case R.id.iv_badge:
-//
-//
-//                        break;
-//                    default:
-//                        break;
-//
-//
-//
-//                }
-//
-//            }
-//
-//            @Override
-//            public void onLongClick(View view, int position) {
-//
-//            }
-//        }));
+
         mllNext = (LinearLayout) findViewById(R.id.ll_next);
         mllNext.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -123,18 +104,11 @@ public class BadgesActivity extends BaseActivity {
     protected void setDataInViewObjects() {
         try {
 
-            // Remove duplicate items
-
-//            Set<BadgesPojo> set = new HashSet<BadgesPojo>();
-//            set.addAll(mBadgesList);
-//            mBadgesList.clear();
-//            mBadgesList.addAll(set);
-
 
             mBadgesAdapter = null;
             mRvBadges.setAdapter(mBadgesAdapter);
             //
-            mBadgesAdapter = new BadgesAdapter(BadgesActivity.this, mBadgesList, pageNumber, badgeCount, mTotalBadgeCount,mSelectedBadgeIds);
+            mBadgesAdapter = new BadgesAdapter(BadgesActivity.this, mBadgesList, pageNumber, badgeCount, mTotalBadgeCount, mSelectedBadgeIds);
             mRvBadges.setAdapter(mBadgesAdapter);
             // show previous button
             if (pageNumber > 1) {
@@ -172,9 +146,14 @@ public class BadgesActivity extends BaseActivity {
             mTvNext.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-//                    startActivity(new Intent(BadgesActivity.this, MyBadgesActivity.class));
+              Log.e("","------Done");
 
-                    Utility.showToastMessageShort(BadgesActivity.this,mSelectedBadgeIds.toString());
+                    insertRecords();
+                    getSelectedBadgesList();
+                    Intent intent= new Intent(BadgesActivity.this,MyBadgesActivity.class);
+                    intent.putExtra("Badges", mBadgesList);
+                    startActivity(intent);
+//                    mySelectedBadges();
                 }
             });
             //
@@ -213,22 +192,51 @@ public class BadgesActivity extends BaseActivity {
     }
 
 
-
     public String createPayload() {
         JSONObject payload = null;
 //        PARAMETER: token, userId, type, badgeIds (should be in CSV format. for eg. 1,4,5,8)
         try {
+            payload = new JSONObject();
             payload.put(Constants.TOKEN, PreferenceHandler.readString(this, PreferenceHandler.PREF_KEY_USER_TOKEN, ""));
             payload.put(Constants.USERID, PreferenceHandler.readString(this, PreferenceHandler.PREF_KEY_USER_ID, ""));
-            payload.put(Constants.TYPE, "");
-            payload.put(Constants.BADGEIDS, "");
+            payload.put(Constants.TYPE, "general");
+           String ids="";
+            for (int i=0;i<mSelectedBadgeIds.size();i++){
+                ids=ids+","+mSelectedBadgeIds.get(i).getBadgeId();
+            }
+            ids=ids.substring(1);
+            payload.put(Constants.BADGEIDS, ids);
+
         } catch (Exception e) {
             e.printStackTrace();
             return null;
         }
-        Log.d(LOG_TAG, "paload(GET BADGES) is " + payload.toString());
+        Log.d(LOG_TAG, " payload is " + payload.toString());
 
         return payload.toString();
+    }
+
+
+    public void mySelectedBadges() {
+        try {
+            String payload = createPayload();
+
+            payload = payload.replace("[", "");
+            payload = payload.replace("]", "");
+            if (payload != null) {
+                // Web service Call
+                // Step 1 - Register responsehandler
+                Log.d(LOG_TAG, "--" + payload);
+                WebNotificationManager.registerResponseListener(responseHandler);
+                // Step 2 - Webservice Call
+                WebServiceClient.userselectedBadges(BadgesActivity.this, payload, responseHandler);
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+
     }
 
 
@@ -257,9 +265,59 @@ public class BadgesActivity extends BaseActivity {
                 mProgressDialog.dismiss();
             }
 
+        }
+    };
+
+    ResponseHandlerListener responseHandler = new ResponseHandlerListener() {
+        @Override
+        public void onComplete(ResponsePojo result, WebServiceClient.WebError error, ProgressDialog mProgressDialog) {
+            WebNotificationManager.unRegisterResponseListener(responseHandlerListener);
+
+            if (error == null) {
+                if(result.getSuccess().equals("true")){
+
+                    insertRecords();
+                    Intent intnet= new Intent(BadgesActivity.this,MyBadgesActivity.class);
+                    startActivity(intnet);
+
+                }else {
+
+                    Utility.showAlertDialog(result.getError_text(),BadgesActivity.this);
+                }
+//                {"user":{"badgeLimit":10,"selectedBadgeCount":10,"badgesGot":1},"success":true,"error":null}
+//                {"user":{"badgeLimit":10,"selectedBadgeCount":5,"badgesGot":5},"success":true,"error":null}
+//                {"success":false,"error":10,"error_text":"Your selected badge count is greater."}
+
+
+            } else {
+                Utility.showAlertDialog("Some server error Occurred!",BadgesActivity.this);
+
+
+            }
+            if (mProgressDialog != null && mProgressDialog.isShowing()) {
+                mProgressDialog.dismiss();
+            }
 
         }
     };
+
+
+    public ArrayList<BadgesPojo> getSelectedBadgesList() {
+        ArrayList<BadgesPojo> selectedBadgesList = new ArrayList<BadgesPojo>();
+        selectedBadgesList=mSelectedBadgeIds;
+        return selectedBadgesList;
+    }
+
+
+    public void insertRecords() {
+        dbBadges = new BadgesDb(this);
+
+        ArrayList<BadgesPojo> selectedBadgesList = new ArrayList<BadgesPojo>();
+        selectedBadgesList=mSelectedBadgeIds;
+//        ArrayList<BadgesPojo> mTotalBadges=new ArrayList<BadgesPojo>();
+        dbBadges.insertAllBadges(selectedBadgesList);
+
+    }
 
 
     void updateNextBadges() {

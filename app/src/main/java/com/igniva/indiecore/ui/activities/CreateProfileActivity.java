@@ -22,6 +22,7 @@ import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.igniva.indiecore.R;
 import com.igniva.indiecore.controller.ResponseHandlerListener;
@@ -74,6 +75,7 @@ public class CreateProfileActivity extends BaseActivity implements AsyncResult {
     String profileImageUrl = "";
     String CoverImageUrl = "";
     String gender = "male";
+    String LOG_TAG = "CreateProfileActivity";
     CreateProfileActivity mCreateProfile;
 
     @Override
@@ -146,7 +148,6 @@ public class CreateProfileActivity extends BaseActivity implements AsyncResult {
 
     }
 
-
     public void DateDialog() {
 
         DatePickerDialog.OnDateSetListener listener = new DatePickerDialog.OnDateSetListener() {
@@ -169,8 +170,8 @@ public class CreateProfileActivity extends BaseActivity implements AsyncResult {
 
 
     private void selectImage() {
-        final CharSequence[] items = {getResources().getString(R.string.take_photo),getResources().getString(R.string.choose_from_gallary)
-                };
+        final CharSequence[] items = {getResources().getString(R.string.take_photo), getResources().getString(R.string.choose_from_gallary)
+        };
         AlertDialog.Builder builder = new AlertDialog.Builder(CreateProfileActivity.this, R.style.AppCompatAlertDialogStyle);
         builder.setTitle(getResources().getString(R.string.upload_image));
         builder.setItems(items, new DialogInterface.OnClickListener() {
@@ -307,9 +308,14 @@ public class CreateProfileActivity extends BaseActivity implements AsyncResult {
             String firstName = mEtFirstName.getText().toString().trim();
             String lastName = mEtLastName.getText().toString().trim();
             String description = mEtDescription.getText().toString().trim();
+            String dob = mTvDateOfBirth.getText().toString();
+
+            int dobLength = dob.length();
+
+            String afterSubString = dob.substring(dobLength - 4);
+            int b = Integer.parseInt(afterSubString);
 
             int a = cal.get(Calendar.YEAR);
-            int b = mYear;
 
             int ageCal = (a - b);
 
@@ -345,11 +351,11 @@ public class CreateProfileActivity extends BaseActivity implements AsyncResult {
                     json.put(Constants.DOB, mTvDateOfBirth.getText().toString());
 
                     json.put(Constants.DESCRIPTION, description);
-                    if (!profileImageUrl.isEmpty()) {
-                        json.put(Constants.PROFILEPIC, profileImageUrl);
+                    if (!PreferenceHandler.readString(this,PreferenceHandler.PROFILE_PIC_URL,"").isEmpty()) {
+                        json.put(Constants.PROFILEPIC,PreferenceHandler.readString(this,PreferenceHandler.PROFILE_PIC_URL,""));
                     }
-                    if (!CoverImageUrl.isEmpty()) {
-                        json.put(Constants.COVERPIC, CoverImageUrl);
+                    if (!PreferenceHandler.readString(this,PreferenceHandler.COVER_PIC_URL,"").isEmpty()) {
+                        json.put(Constants.COVERPIC,PreferenceHandler.readString(this,PreferenceHandler.COVER_PIC_URL,""));
                     }
                     WebNotificationManager.registerResponseListener(responseHandlerListener);
 
@@ -378,16 +384,18 @@ public class CreateProfileActivity extends BaseActivity implements AsyncResult {
                 // start parsing
                 if (result.getSuccess().equalsIgnoreCase("true")) {
                     Intent intent = new Intent(CreateProfileActivity.this, SyncContactsActivity.class);
-                    Bundle bundle= new Bundle();
-                    bundle.putInt(Constants.NUMBER_LENGTH,numberLenth);
-                    bundle.putString(Constants.COUNTRY_CODE,mCountryCode);
+                    Bundle bundle = new Bundle();
+                    bundle.putInt(Constants.NUMBER_LENGTH, numberLenth);
+                    bundle.putString(Constants.COUNTRY_CODE, mCountryCode);
                     intent.putExtras(bundle);
                     startActivity(intent);
-                }
-                else {
+                } else {
                     // display error message
+                    Toast.makeText(CreateProfileActivity.this, "Error in update", Toast.LENGTH_SHORT).show();
+
                 }
             } else {
+                Toast.makeText(CreateProfileActivity.this, "Error in update", Toast.LENGTH_SHORT).show();
                 // display error dialog
             }
 
@@ -409,10 +417,10 @@ public class CreateProfileActivity extends BaseActivity implements AsyncResult {
             String dateOfBirth = bundle.getString(Constants.DOB);
             String desc = bundle.getString(Constants.DESCRIPTION);
             String gender = bundle.getString(Constants.GENDER);
-            String profilePicUrl=bundle.getString(Constants.PROFILEPIC);
-            String coverPic= bundle.getString(Constants.COVERPIC);
-            numberLenth=bundle.getInt(Constants.NUMBER_LENGTH);
-            mCountryCode=bundle.getString(Constants.COUNTRY_CODE);
+            String profilePicUrl = bundle.getString(Constants.PROFILEPIC);
+            String coverPic = bundle.getString(Constants.COVERPIC);
+            numberLenth = bundle.getInt(Constants.NUMBER_LENGTH);
+            mCountryCode = bundle.getString(Constants.COUNTRY_CODE);
 
 
             mEtFirstName.setText(firstName);
@@ -420,25 +428,24 @@ public class CreateProfileActivity extends BaseActivity implements AsyncResult {
             mTvDateOfBirth.setText(dateOfBirth);
             mEtDescription.setText(desc);
             //
-            if(gender.length()>0){
-                if(gender.equalsIgnoreCase("male")){
+            if (gender.length() > 0) {
+                if (gender.equalsIgnoreCase("male")) {
                     mTvMale.performClick();
-                }else if (gender.equalsIgnoreCase("female")){
+                } else if (gender.equalsIgnoreCase("female")) {
                     mTvFemale.performClick();
-                } else{
+                } else {
                     mTvOther.performClick();
                 }
 
+                ImageLoader imageLoader = new ImageLoader(CreateProfileActivity.this);
 
-                ImageLoader imageLoader=new ImageLoader(CreateProfileActivity.this);
-
-                if(profilePicUrl!=null){
-                    Log.e("Url Profile Image",""+profilePicUrl);
-                    imageLoader.DisplayImage(WebServiceClient.HTTP_STAGING+profilePicUrl,mIvProfileImage);
+                if (profilePicUrl != null) {
+                    Log.e("Url Profile Image", "" + profilePicUrl);
+                    imageLoader.DisplayImage(WebServiceClient.HTTP_STAGING + profilePicUrl, mIvProfileImage);
                 }
-                if(coverPic!=null) {
-                    Log.e("Url cover Image",""+coverPic);
-                    imageLoader.DisplayImage(WebServiceClient.HTTP_STAGING+coverPic, mIvCoverImage);
+                if (coverPic != null) {
+                    Log.e("Url cover Image", "" + coverPic);
+                    imageLoader.DisplayImage(WebServiceClient.HTTP_STAGING + coverPic, mIvCoverImage);
                 }
 
             }
@@ -505,18 +512,17 @@ public class CreateProfileActivity extends BaseActivity implements AsyncResult {
 
 
     private void uploadBitmapAsMultipart(Bitmap myBitmap) {
-        ContentBody contentPart=null;
+        ContentBody contentPart = null;
         try {
 
-            Uri uri = getImageUri(this,myBitmap);
-            String imagePath=getRealPathFromURI(uri);
+            Uri uri = getImageUri(this, myBitmap);
+            String imagePath = getRealPathFromURI(uri);
             String url = WebServiceClient.HTTP_UPLOAD_IMAGE;
             ByteArrayOutputStream bos = new ByteArrayOutputStream();
             if (imagePath.endsWith(".png")) {
                 myBitmap.compress(Bitmap.CompressFormat.PNG, 80, bos);
                 contentPart = new ByteArrayBody(bos.toByteArray(), "Image.png");
-            }
-            else {
+            } else {
                 myBitmap.compress(Bitmap.CompressFormat.JPEG, 100, bos);
                 contentPart = new ByteArrayBody(bos.toByteArray(), "Image.jpg");
             }
@@ -531,7 +537,6 @@ public class CreateProfileActivity extends BaseActivity implements AsyncResult {
                 new Utility().showNoInternetDialog((Activity) CreateProfileActivity.this);
 
             }
-
 
 
         } catch (Exception e) {
@@ -550,6 +555,7 @@ public class CreateProfileActivity extends BaseActivity implements AsyncResult {
                 JSONArray file = jsonObject.getJSONArray("files");
                 JSONObject obj = file.getJSONObject(0);
                 CoverImageUrl = obj.optString("url");
+                PreferenceHandler.writeString(this,PreferenceHandler.COVER_PIC_URL,CoverImageUrl);
                 Log.e("coverImage", "" + CoverImageUrl);
             } catch (Exception e) {
 
@@ -564,6 +570,7 @@ public class CreateProfileActivity extends BaseActivity implements AsyncResult {
                 JSONArray file = jsonObject.getJSONArray("files");
                 JSONObject obj = file.getJSONObject(0);
                 profileImageUrl = obj.optString("url");
+                PreferenceHandler.writeString(this,PreferenceHandler.PROFILE_PIC_URL,profileImageUrl);
                 Log.e("profileImage", "" + profileImageUrl);
 
             } catch (Exception e) {

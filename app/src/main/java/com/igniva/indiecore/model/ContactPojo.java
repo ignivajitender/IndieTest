@@ -1,5 +1,7 @@
 package com.igniva.indiecore.model;
 
+import android.graphics.Bitmap;
+
 /**
  * Created by igniva-andriod-05 on 17/6/16.
  */
@@ -9,6 +11,16 @@ public class ContactPojo {
     private String contactNumber;
     private String contactIcon;
     private boolean isSelected;
+
+    public boolean isHasImage() {
+        return hasImage;
+    }
+
+    public void setHasImage(boolean hasImage) {
+        this.hasImage = hasImage;
+    }
+
+    private boolean hasImage;
 
 
     public boolean isSelected() {

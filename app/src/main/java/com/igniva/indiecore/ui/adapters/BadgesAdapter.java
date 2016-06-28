@@ -33,11 +33,10 @@ public class BadgesAdapter extends RecyclerView.Adapter<BadgesAdapter.RecyclerVi
     private int mTotalBadgeCount;
     public static  final int REQUEST_CODE=500;
     String LOG_TAG="BadgesAdapter";
-    private ArrayList<String> mSelectedBadgeIds= new ArrayList<String>();
+    private ArrayList<BadgesPojo> mSelectedBadgeIds= new ArrayList<BadgesPojo>();
 
 
-    public BadgesAdapter(Context context, ArrayList<BadgesPojo> itemList, int pageNo,int badgePerPage,  int badgeCount,ArrayList<String> mSelectedBadgeIds ) {
-
+    public BadgesAdapter(Context context, ArrayList<BadgesPojo> itemList, int pageNo,int badgePerPage,  int badgeCount,ArrayList<BadgesPojo> mSelectedBadgeIds ) {
         this.itemList = getBadges(itemList,pageNo,badgePerPage,badgeCount);
         this.context = context;
         mTotalBadgeCount=badgeCount;
@@ -62,7 +61,7 @@ public class BadgesAdapter extends RecyclerView.Adapter<BadgesAdapter.RecyclerVi
         //
         if(itemList.get(position).isSelected()==true){
 
-          Log.d("","");
+            Log.d("","");
             Log.d("","");
 
             holder.mIvActivateBadge.setImageResource(R.drawable.tick_badge);
@@ -72,33 +71,38 @@ public class BadgesAdapter extends RecyclerView.Adapter<BadgesAdapter.RecyclerVi
             @Override
             public void onClick(View v) {
 
+
                 if(itemList.get(position).isSelected()){
-                    return;
-                }
+                    holder.mIvActivateBadge.setImageResource(R.drawable.get_badge);
+                    itemList.get(position).setSelected(false);
+                    itemList.get(position).setIsSelectedAsMyBadge(0);
+                    itemList.get(position).setIsPremium(0);
+                    removeBadgeIds(position);
+                }else
 
            if(mSelectedBadgeIds.size()<10) {
                holder.mIvActivateBadge.setImageResource(R.drawable.tick_badge);
                itemList.get(position).setSelected(true);
+               itemList.get(position).setIsSelectedAsMyBadge(1);
+               itemList.get(position).setIsPremium(1);
+
                addSelectedBadgeIds(position);
            } else {
-
                Utility.showAlertDialogInviteAndBuy("You can Select maximum 10 badges free,to get more either invite friends or purchase",context);
                return;
 
 
            }
-//                mSelectedBadgeIds.add(itemList.get(position).getBadgeId());
-
 
             }
         });
-        //holder.mIvBadgeIcon.setImageResource(itemList.get(position).getIcon());
 
 
-        holder.mIvBadgeIcon.setOnClickListener(new View.OnClickListener() {
+                holder.mIvBadgeIcon.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Toast.makeText(context,"position is "+(itemList.get(position).getName()),Toast.LENGTH_SHORT).show();
+
+
 
                 //BadgesPojo obj= new BadgesPojo(itemList.get(position).getName(),itemList.get(position).getIcon(),itemList.get(position).getDescription());
 
@@ -117,10 +121,6 @@ public class BadgesAdapter extends RecyclerView.Adapter<BadgesAdapter.RecyclerVi
             }
         });
 
-
-
-
-
     }
 
     public  void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -136,6 +136,8 @@ public class BadgesAdapter extends RecyclerView.Adapter<BadgesAdapter.RecyclerVi
             if (mSelectedBadgeIds.size()<10) {
 
                 itemList.get(pos).setSelected(true);
+                itemList.get(pos).setIsSelectedAsMyBadge(1);
+                itemList.get(pos).setIsPremium(0);
                 addSelectedBadgeIds(pos);
 
 //            mSelectedBadgeIds.add(itemList.get(pos).getBadgeId());
@@ -153,11 +155,13 @@ public class BadgesAdapter extends RecyclerView.Adapter<BadgesAdapter.RecyclerVi
 
 
     public void addSelectedBadgeIds(int postion){
-
         if(!mSelectedBadgeIds.contains(itemList.get(postion).getBadgeId())){
-
-            mSelectedBadgeIds.add(itemList.get(postion).getBadgeId());
+            mSelectedBadgeIds.add(itemList.get(postion));
         }
+    }
+    public void removeBadgeIds(int postion){
+
+            mSelectedBadgeIds.remove(itemList.get(postion));
     }
 
 

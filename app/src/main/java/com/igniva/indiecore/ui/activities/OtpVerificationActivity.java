@@ -12,6 +12,7 @@ import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
+
 import com.igniva.indiecore.R;
 import com.igniva.indiecore.controller.ResponseHandlerListener;
 import com.igniva.indiecore.controller.WebNotificationManager;
@@ -36,7 +37,7 @@ public class OtpVerificationActivity extends BaseActivity {
     private String mMobileNumber, mCountryId;
     private int numberLength;
     MyReceiver receiver;
-    ProgressDialog progressDialog=null;
+    ProgressDialog progressDialog = null;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -47,7 +48,7 @@ public class OtpVerificationActivity extends BaseActivity {
 
         setUpLayout();
         //receiver = new MyReceiver(); // Create the receiver
-       // registerReceiver(receiver, new IntentFilter("some.action")); // Register receiver
+        // registerReceiver(receiver, new IntentFilter("some.action")); // Register receiver
 
 
     }
@@ -60,7 +61,7 @@ public class OtpVerificationActivity extends BaseActivity {
             Bundle bundle = getIntent().getExtras();
             mMobileNumber = bundle.getString(Constants.MOBILE_NO);
             mCountryId = bundle.getString(Constants.COUNTRY_CODE);
-            numberLength= bundle.getInt(Constants.NUMBER_LENGTH);
+            numberLength = bundle.getInt(Constants.NUMBER_LENGTH);
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -178,10 +179,10 @@ public class OtpVerificationActivity extends BaseActivity {
                         bundle.putString(Constants.DOB, "");
                         bundle.putString(Constants.DESCRIPTION, "");
                         bundle.putString(Constants.GENDER, "");
-                        bundle.putString(Constants.PROFILEPIC,"");
-                        bundle.putString(Constants.COVERPIC,"");
-                        bundle.putInt(Constants.NUMBER_LENGTH,numberLength);
-                        bundle.putString(Constants.COUNTRY_CODE,mCountryId);
+                        bundle.putString(Constants.PROFILEPIC, "");
+                        bundle.putString(Constants.COVERPIC, "");
+                        bundle.putInt(Constants.NUMBER_LENGTH, numberLength);
+                        bundle.putString(Constants.COUNTRY_CODE, mCountryId);
                         in.putExtras(bundle);
                         startActivity(in);
                     } else if (result.getSuccess().equalsIgnoreCase("true") && callId == 2) {
@@ -200,7 +201,7 @@ public class OtpVerificationActivity extends BaseActivity {
 
                     }
                 }
-            }catch (Exception e){
+            } catch (Exception e) {
                 e.printStackTrace();
                 Toast.makeText(getApplicationContext(), "Some unknown error occurred, Please try again later.", Toast.LENGTH_LONG).show();
 
@@ -272,7 +273,7 @@ public class OtpVerificationActivity extends BaseActivity {
             runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
-                     progressDialog = ProgressDialog.show(OtpVerificationActivity.this, "", OtpVerificationActivity.this
+                    progressDialog = ProgressDialog.show(OtpVerificationActivity.this, "", OtpVerificationActivity.this
                                     .getResources().getString(R.string.please_wait), true,
                             false);
 

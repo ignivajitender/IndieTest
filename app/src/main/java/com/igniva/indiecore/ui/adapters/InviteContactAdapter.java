@@ -67,6 +67,8 @@ public class InviteContactAdapter extends RecyclerView.Adapter<InviteContactAdap
         if (filteredData.get(position).getContactIcon() != null) {
 
             holder.mContactImage.setImageURI(Uri.EMPTY.parse(filteredData.get(position).getContactIcon()));
+        }else{
+            holder.mContactImage.setImageResource(R.drawable.default_user);
         }
 
 
@@ -97,15 +99,19 @@ public class InviteContactAdapter extends RecyclerView.Adapter<InviteContactAdap
                     }
 
                 }
-                else {
+                else if(InviteContactActivity.mSelectedContacts.size()<10) {
                     filteredData.get(position).setSelected(true);
                     InviteContactActivity.mSelectedContactName.add(filteredData.get(position).getContactName());
-                   InviteContactActivity.mSelectedContacts.add(filteredData.get(position).getContactNumber());
+                      InviteContactActivity.mSelectedContacts.add(filteredData.get(position).getContactNumber());
                     Log.e("selected Contacts",""+InviteContactActivity.mSelectedContacts+InviteContactActivity.mSelectedContacts.size());
                     Log.e("selected Contacts name",""+InviteContactActivity.mSelectedContactName);
 
                     holder.mTicked.setChecked(true);
 
+                } else {
+
+                    Utility.showAlertDialog("You canot send sms to more than 10 peoples at the same time ",context);
+                    return;
                 }
 
 

@@ -8,17 +8,58 @@
     >
 
     <include
-        android:id="@+id/toolbar"
-        layout="@layout/toolbar" />
+        android:id="@+id/toolbar_with_icon"
+        layout="@layout/toolbar_with_image_at_right" />
 
-
+<LinearLayout
+    android:id="@+id/ll_tabs"
+    android:layout_below="@+id/toolbar_with_icon"
+    android:orientation="horizontal"
+    android:layout_marginLeft="20dp"
+    android:layout_marginRight="20dp"
+    android:layout_marginTop="20dp"
+    android:layout_width="match_parent"
+    android:background="@drawable/simple_border_line_style"
+    android:layout_height="wrap_content">
     <TextView
-        android:textSize="21sp"
+        android:id="@+id/tv_my_badge"
+        android:textSize="15sp"
         android:layout_centerHorizontal="true"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/coming_soon"
-        android:layout_centerVertical="true"
+        android:layout_width="0dp"
+        android:padding="4dp"
+        android:layout_margin="1dp"
+        android:onClick="onClick"
+        android:textColor="@color/white"
+        android:layout_weight="1"
+        android:background="@color/blue_clicked"
+        android:gravity="center"
+        android:layout_height="match_parent"
+        android:text="@string/my_badges"
     />
+    <TextView
+        android:id="@+id/tv_badge_market"
+        android:textSize="15sp"
+        android:layout_centerHorizontal="true"
+        android:layout_width="0dp"
+        android:layout_weight="1"
+        android:gravity="center"
+        android:layout_margin="1dp"
+        android:onClick="onClick"
+        android:padding="4dp"
+        android:textColor="@color/blue_clicked"
+        android:layout_height="match_parent"
+        android:text="@string/badge_market"
+        />
+</LinearLayout>
+
+
+    <android.support.v7.widget.RecyclerView
+        android:layout_below="@+id/ll_tabs"
+        android:id="@+id/recycler_view_activity_mybadges"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:scrollbars="vertical" />
+
 
 </RelativeLayout>

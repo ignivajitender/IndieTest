@@ -14,6 +14,37 @@ import java.io.Serializable;
     private String name;
     private String description;
     private boolean isSelected;
+    private int isSelectedAsMyBadge;
+    private int isPremium;
+    private int iSActive;
+
+
+    public int getiSActive() {
+        return iSActive;
+    }
+
+    public void setiSActive(int iSActive) {
+        this.iSActive = iSActive;
+    }
+
+    public int getIsPremium() {
+        return isPremium;
+    }
+
+    public void setIsPremium(int isPremium) {
+        this.isPremium = isPremium;
+    }
+
+    public int getIsSelectedAsMyBadge() {
+        return isSelectedAsMyBadge;
+    }
+
+    public void setIsSelectedAsMyBadge(int isSelectedAsMyBadge) {
+        this.isSelectedAsMyBadge = isSelectedAsMyBadge;
+    }
+
+
+
 
     public String getCategory() {
         return category;
@@ -26,7 +57,11 @@ import java.io.Serializable;
     public String getSku() {
         return sku;
     }
+public BadgesPojo(String some, String some1, String some2, int s, String some3, String some4, int  s1) {
+    }
+    public BadgesPojo(){
 
+    }
     public boolean isSelected() {
         return isSelected;
     }

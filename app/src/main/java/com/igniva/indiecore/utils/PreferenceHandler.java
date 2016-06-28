@@ -19,6 +19,8 @@ public class PreferenceHandler {
 	public static final String PREF_KEY_USER_EMAIL = "PREF_KEY_USER_EMAIL";
 	public static final String PREF_KEY_USER_MOBILE = "PREF_KEY_USER_MOBILE";
 	public static final String PREF_KEY_GCMID = "PREF_KEY_GCMID";
+	public static  final String PROFILE_PIC_URL="PROFILE_PIC_URL";
+	public static  final String COVER_PIC_URL="COVER_PIC_URL";
 
 	public static void writeBoolean(Context context, String key, boolean value) {
 		getEditor(context).putBoolean(key, value).commit();

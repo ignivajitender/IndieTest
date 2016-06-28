@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <android.support.v7.widget.Toolbar xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:id="@+id/toolbar"
+    android:id="@+id/toolbar_with_imgicon"
     android:elevation="2dp"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
@@ -16,23 +16,20 @@
         android:fontFamily="sans-serif"
         android:textStyle="normal"
         android:textColor="@color/black"
-        android:id="@+id/toolbar_title"
+        android:id="@+id/toolbar_title_img"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:text="Toolbar Title" />
 
-    <TextView
+    <ImageView
         android:padding="10dp"
-        android:textSize="15sp"
-        android:fontFamily="sans-serif"
-        android:textStyle="normal"
-        android:textColor="@drawable/text_selector_next"
-        android:id="@+id/toolbar_next"
+        android:id="@+id/toolbar_img"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:src="@drawable/in_app"
         android:layout_marginRight="15dp"
         android:layout_gravity="right"
-        android:text="Next" />
+         />
 
 </android.support.v7.widget.Toolbar>

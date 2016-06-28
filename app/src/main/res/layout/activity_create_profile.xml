@@ -183,7 +183,7 @@
                             android:hint="@string/enter_first_name"
                             android:imeOptions="actionNext"
                             android:maxLines="1"
-                            android:digits="@string/name_validation"
+                            android:digits="ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz~#^|$%*!@/()-' \:;,?{}=!$^';,?×÷{}€£¥₩%~`¤♡♥_|《》¡¿°•○●□■◇◆♧♣▲▼▶◀↑↓←→☆★▪:-);-):-D:-(:'(:"
                             android:singleLine="true"
                             android:textSize="14sp"
                             android:textStyle="italic" />
@@ -205,8 +205,8 @@
                             android:background="@color/transparent"
                             android:gravity="center"
                             android:hint="@string/enter_last_name"
+                            android:digits="ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz~#^ |$%*!@/()-'\:;,?{}=!$^';,?×÷{}€£¥₩%~`¤♡♥_|《》¡¿°•○●□■◇◆♧♣▲▼▶◀↑↓←→☆★▪:-);-):-D:-(:'(:"
                             android:maxLines="1"
-                            android:digits="@string/name_validation"
                             android:singleLine="true"
                             android:textSize="14sp"
                             android:textStyle="italic" />
@@ -266,10 +266,11 @@
                             android:layout_marginTop="3dp"
                             android:background="@color/transparent"
                             android:gravity="center"
+                            android:inputType="textMultiLine"
                             android:hint="@string/enter_description"
                             android:imeOptions="actionDone"
                             android:maxLength="240"
-                            android:maxLines="4"
+                            android:maxLines="5"
                             android:textSize="14sp"
                             android:textStyle="italic" />
                     </LinearLayout>

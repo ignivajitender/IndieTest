@@ -21,6 +21,7 @@ import com.igniva.indiecore.utils.Utility;
 
 import android.app.Activity;
 import android.app.ProgressDialog;
+import android.content.ContentResolver;
 import android.content.Context;
 import android.os.AsyncTask;
 import android.os.StrictMode;
@@ -58,6 +59,8 @@ public class WebServiceClient {
     public static final String HTTP_RESEND_OTP=HTTP_PROTOCOL+HTTP_HOST_IP+"user/control";
     public static  final String HTTP_UPLOAD_IMAGE=HTTP_STAGING+"/files/upload";
     public static final String HTTP_SYNC_CONTACTS=HTTP_PROTOCOL+HTTP_HOST_IP+"user/sync";
+    public static final String  HTTP_SELECTED_BADGES=HTTP_PROTOCOL+HTTP_HOST_IP+"badge/get";
+    public  static  final String HTTP_ON_OFF_BADGES=HTTP_PROTOCOL+HTTP_HOST_IP+"badge/onoff";
    //
     private final static String CONTENT_TYPE = "application/json";
 
@@ -98,6 +101,14 @@ public class WebServiceClient {
         checkNetworkState(url,payload,method,context);
     }
 
+    public static void userselectedBadges(final Context context,String payload,ResponseHandlerListener responselistener){
+
+        url=HTTP_SELECTED_BADGES;
+        method=HttpMethod.HTTP_POST;
+        mResponseHandlerListener=mResponseHandlerListener;
+        checkNetworkState(url,payload,method,context);
+    }
+
 
 
     public static void resendOTP(final Context context,String payload,ResponseHandlerListener responseHandlerListener){
@@ -123,6 +134,13 @@ public class WebServiceClient {
         mResponseHandlerListener=responseHandlerListener;
         checkNetworkState(url,payload,method,context);
     }
+ public static void onOffMyBadges(final Context context,String payload,ResponseHandlerListener responseHandlerListener){
+
+     url=HTTP_ON_OFF_BADGES;
+     method=HttpMethod.HTTP_POST;
+     mResponseHandlerListener=mResponseHandlerListener;
+     checkNetworkState(url,payload,method,context);
+ }
 
 
 

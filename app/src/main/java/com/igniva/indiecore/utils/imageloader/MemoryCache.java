@@ -19,7 +19,7 @@ public class MemoryCache {
 	private long size = 0;
 
 	// max memory cache folder used to download images in bytes
-	private long limit = 1000000;
+	private long limit = 10000000;
 
 	public MemoryCache() {
 

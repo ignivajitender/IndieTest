@@ -1,10 +1,16 @@
 package com.igniva.indiecore.ui.activities;
 
+import android.content.ContentResolver;
+import android.content.ContentUris;
 import android.content.Intent;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
+import android.content.res.AssetFileDescriptor;
 import android.database.Cursor;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.provider.ContactsContract;
 import android.support.annotation.Nullable;
@@ -15,14 +21,21 @@ import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.gms.appindexing.Action;
+import com.google.android.gms.appindexing.AppIndex;
+import com.google.android.gms.common.api.GoogleApiClient;
 import com.igniva.indiecore.R;
 import com.igniva.indiecore.model.ContactPojo;
 import com.igniva.indiecore.ui.adapters.InviteContactAdapter;
 import com.igniva.indiecore.utils.Log;
 
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 
 /**
@@ -38,6 +51,11 @@ public class InviteContactActivity extends BaseActivity {
     ContactPojo obj;
     public static ArrayList<String> mSelectedContacts = new ArrayList<String>();
     public static ArrayList<String> mSelectedContactName = new ArrayList<String>();
+    /**
+     * ATTENTION: This was auto-generated to implement the App Indexing API.
+     * See https://g.co/AppIndexing/AndroidStudio for more information.
+     */
+    private GoogleApiClient client;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -46,6 +64,9 @@ public class InviteContactActivity extends BaseActivity {
         initToolbar();
         setUpLayout();
         setDataInViewObjects();
+        // ATTENTION: This was auto-generated to implement the App Indexing API.
+        // See https://g.co/AppIndexing/AndroidStudio for more information.
+        client = new GoogleApiClient.Builder(this).addApi(AppIndex.API).build();
     }
 
 
@@ -118,7 +139,7 @@ public class InviteContactActivity extends BaseActivity {
                 }
             });
 
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
@@ -154,32 +175,44 @@ public class InviteContactActivity extends BaseActivity {
 
         try {
             String phoneNumber = null;
+            InputStream bm=null;
+            String name=null;
+            String image_uri=null;
             Cursor phones = null;
-            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.JELLY_BEAN) {
+            String contactID;
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
 //                phones = getContentResolver().query(ContactsContract.CommonDataKinds.Phone.CONTENT_URI, null, null, null,null);
                 phones = getContentResolver().query(ContactsContract.CommonDataKinds.Phone.CONTENT_URI, null, null, null, ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME + " ASC");
 //
 
             }
             while (phones.moveToNext()) {
+                image_uri=null;
                 mContatctPojo = new ContactPojo();
-                String name = phones.getString(phones.getColumnIndex(ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME));
+               name = phones.getString(phones.getColumnIndex(ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME));
                 phoneNumber = phones.getString(phones.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER));
                 String phnNumber = phoneNumber.replace(" ", "");
                 phnNumber = phnNumber.replace("-", "");
+                 mContatctPojo.setHasImage(false);
 
-                String image_uri = phones.getString(phones.getColumnIndex(ContactsContract.CommonDataKinds.Phone.PHOTO_URI));
+                contactID = phones.getString(phones.getColumnIndex(ContactsContract.Contacts._ID));
+
+//                 bm=getPhotoThumbnailInputStream(contactID);
+//            Bitmap    b = BitmapFactory.decodeStream(bm);
+
+                image_uri = phones.getString(phones.getColumnIndex(ContactsContract.CommonDataKinds.Phone.PHOTO_URI));
 
                 if (image_uri != null) {
-                    mContatctPojo.setContactIcon(image_uri);
+                   mContatctPojo.setContactIcon(image_uri);
+                    mContatctPojo.setHasImage(true);
                 }
 
                 mContatctPojo.setContactName(name);
                 mContatctPojo.setContactNumber(phnNumber);
+
                 mContatctPojo.setSelected(false);
 
                 mContactList.add(mContatctPojo);
-
 
             }
             Log.e("List of contacts", "" + mContactList.size());
@@ -189,19 +222,20 @@ public class InviteContactActivity extends BaseActivity {
         }
     }
 
-
     public void sendInviteSms() {
-
+        String mNumber = "";
         try {
-            String mNumber = mSelectedContacts.toString();
-            mNumber.replace(",", ";");
-            mNumber.replace("[","");
-            mNumber.replace("]","");
+            mNumber = mSelectedContacts.toString();
+
+            if (!Build.MANUFACTURER.contains("Samsung")) {
+                mNumber = mNumber.replace(",", ";");
+            }
+            mNumber = mNumber.replace("]", "");
+            mNumber = mNumber.replace("[", "");
             Log.e("Passed contacts", "++" + mNumber);
-            Log.e("pASSEDLIST SIZE", "" + mSelectedContacts.size());
-            Uri smsToContacts = Uri.parse("smsto:" + mNumber);
-            Intent intent = new Intent(
-                    android.content.Intent.ACTION_SENDTO, smsToContacts);
+            Log.e("PASSED LIST SIZE", "" + mSelectedContacts.size());
+            Uri smsToContacts = Uri.parse("sms to:" + Uri.encode(mNumber));
+            Intent intent = new Intent(Intent.ACTION_SENDTO, smsToContacts);
             String message = "hello..please download this amazing app from.www.google-playstore/indiecore/";
             // message = message.replace("%s", StoresMessage.m_storeName);
             intent.putExtra("sms_body", message);
@@ -209,6 +243,7 @@ public class InviteContactActivity extends BaseActivity {
 
         } catch (Exception e) {
             e.printStackTrace();
+            Toast.makeText(getApplicationContext(), "Some error occured", Toast.LENGTH_SHORT).show();
 
         }
 
@@ -239,4 +274,44 @@ public class InviteContactActivity extends BaseActivity {
 
     }
 
+
+//    @Override
+//    public void onStart() {
+//        super.onStart();
+//
+//        // ATTENTION: This was auto-generated to implement the App Indexing API.
+//        // See https://g.co/AppIndexing/AndroidStudio for more information.
+//        client.connect();
+//        Action viewAction = Action.newAction(
+//                Action.TYPE_VIEW, // TODO: choose an action type.
+//                "InviteContact Page", // TODO: Define a title for the content shown.
+//                // TODO: If you have web page content that matches this app activity's content,
+//                // make sure this auto-generated web page URL is correct.
+//                // Otherwise, set the URL to null.
+//                Uri.parse("http://host/path"),
+//                // TODO: Make sure this auto-generated app URL is correct.
+//                Uri.parse("android-app://com.igniva.indiecore.ui.activities/http/host/path")
+//        );
+//        AppIndex.AppIndexApi.start(client, viewAction);
+//    }
+//
+//    @Override
+//    public void onStop() {
+//        super.onStop();
+//
+//        // ATTENTION: This was auto-generated to implement the App Indexing API.
+//        // See https://g.co/AppIndexing/AndroidStudio for more information.
+//        Action viewAction = Action.newAction(
+//                Action.TYPE_VIEW, // TODO: choose an action type.
+//                "InviteContact Page", // TODO: Define a title for the content shown.
+//                // TODO: If you have web page content that matches this app activity's content,
+//                // make sure this auto-generated web page URL is correct.
+//                // Otherwise, set the URL to null.
+//                Uri.parse("http://host/path"),
+//                // TODO: Make sure this auto-generated app URL is correct.
+//                Uri.parse("android-app://com.igniva.indiecore.ui.activities/http/host/path")
+//        );
+//        AppIndex.AppIndexApi.end(client, viewAction);
+//        client.disconnect();
+//    }
 }

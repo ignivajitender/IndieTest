@@ -13,7 +13,7 @@ public class Constants {
     public static  final String MOBILE_NUMBER_VALIDATION="Please enter your mobile number";
     public static  final String TEN_DIGIT_MOBILENUMBER_VALIDATION="Please enter a valid mobile number of 10 digits";
     public static  final String NUMBER_LENGTH="NUMBER_LENGTH";
-    public static final String OTP_NOT_VALID = "Please enter otp code you have just received or resquest a new otp";
+    public static final String OTP_NOT_VALID = "Please enter OTP code you have just received or request a new OTP";
 
 
     //    jsonDataKey
@@ -50,6 +50,10 @@ public class Constants {
     public static final String DEVICETOKEN="deviceToken";
     public static  final String TYPE="type";
     public static  final String BADGEIDS="badgeIds";
+    public static final String BADGEID="badgeId";
+    public static  final String ACTIVE="active";
+    public static  final String SELECTED_BADGEIDS="selectedBadgeids";
+
 
 
 
@@ -57,6 +61,6 @@ public class Constants {
     public static  final String ENTER_LAST_NAME="Please enter your last name";
     public static  final String ENTER_DOB="Please enter your Date of Birth";
     public static  final String ENTER_DESCRIPTION="Please enter description";
-    public static  final String AGE_SHOULD_BE_EIGHTEENPLUS="Being below 18 you can not create account with Indiecore";
+    public static  final String AGE_SHOULD_BE_EIGHTEENPLUS="You must be aged 18 years or over to register with Indiecore.";
 
 }

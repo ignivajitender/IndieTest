@@ -19,6 +19,16 @@ public class ResponsePojo {
     private String newUser;
     private ProfilePojo profile;
 
+    public String getError_text() {
+        return error_text;
+    }
+
+    public void setError_text(String error_text) {
+        this.error_text = error_text;
+    }
+
+    private String error_text;
+
     public String getNewUser() {
         return newUser;
     }

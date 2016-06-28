@@ -15,7 +15,7 @@
 
     <!--splash-->
     <string name="get_started">Get Started Now</string>
-    <string name="Real_Check_Ins">Real check Ins for real people</string>
+    <string name="Real_Check_Ins">Real check-ins for real people</string>
     <string name="Create_chat_rooms_at_a">Create chat rooms at places nearby and find people</string>
     <string name="Create_chat_rooms_at_b">with similar experiences and interests</string>
 
@@ -68,7 +68,7 @@
     <string name="choose_from_gallary">Choose From Gallary</string>
     <string name="upload_image">Upload Image</string>
     <string name="cancel">Cancel</string>
-    <string name="name_validation">abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ</string>
+    <!--<string name="name_validation">abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ</string>-->
  
     
     <!--badgeDetailsActivity-->
@@ -81,6 +81,11 @@
 
     <string name="invite_friends">Invite Friends</string>
     <string name="no_thanks">No thanks</string>
+
+    <!--myBadges-->
+    <string name="my_badges">My Badges</string>
+    <string name="badge_market">Badges Market</string>
+
     <!--Country-->
     <array name="country_name">
         <item name="Afghanistan"></item>
