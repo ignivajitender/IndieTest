@@ -1,26 +1,18 @@
 package com.igniva.indiecore.ui.adapters;
 
-import android.app.Activity;
 import android.content.Context;
-import android.content.Intent;
-import android.os.Bundle;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.igniva.indiecore.R;
 import com.igniva.indiecore.model.BadgesPojo;
-import com.igniva.indiecore.ui.activities.BadgeDetailActivity;
-import com.igniva.indiecore.ui.activities.BadgesActivity;
 import com.igniva.indiecore.ui.activities.MyBadgesActivity;
-import com.igniva.indiecore.utils.Constants;
-import com.igniva.indiecore.utils.Log;
-import com.igniva.indiecore.utils.Utility;
-import com.igniva.indiecore.utils.imageloader.ImageLoader;
 
 import java.util.ArrayList;
 
@@ -29,7 +21,7 @@ import java.util.ArrayList;
  */
 public class MyBadgesAdapter extends RecyclerView.Adapter<MyBadgesAdapter.RecyclerViewHolders> {
 
-    private Context context;
+    private Context mContext;
     private int mTotalBadgeCount;
     public static final int REQUEST_CODE = 500;
     String LOG_TAG = "BadgesAdapter";
@@ -38,7 +30,7 @@ public class MyBadgesAdapter extends RecyclerView.Adapter<MyBadgesAdapter.Recycl
 
     public MyBadgesAdapter(Context context, ArrayList<BadgesPojo> mSelectedBadgeIds) {
 
-        this.context = context;
+        this.mContext = context;
         this.mSelectedBadgeIds = mSelectedBadgeIds;
 
     }
@@ -53,14 +45,22 @@ public class MyBadgesAdapter extends RecyclerView.Adapter<MyBadgesAdapter.Recycl
 
     @Override
     public void onBindViewHolder(final RecyclerViewHolders holder, final int position) {
-        final ImageLoader imageLoader = new ImageLoader(context);
+       // final ImageLoader imageLoader = new ImageLoader(mContext);
         holder.mTvMyBadgeName.setText(mSelectedBadgeIds.get(position).getName());
-        imageLoader.DisplayImage(mSelectedBadgeIds.get(position).getIcon(), holder.mIvMyBadgeIcon);
 
-        if (mSelectedBadgeIds.get(position).getiSActive() == 0) {
+        // Glide Implementation
+        Glide.with(mContext).load(mSelectedBadgeIds.get(position).getIcon())
+                .thumbnail(1f)
+                .crossFade()
+                .diskCacheStrategy(DiskCacheStrategy.ALL)
+                .into(holder.mIvMyBadgeIcon);
+        //
+
+       // imageLoader.DisplayImage(mSelectedBadgeIds.get(position).getIcon(), holder.mIvMyBadgeIcon);
+
+        if (mSelectedBadgeIds.get(position).getIsSelectedAsMyBadge() == 0) {
             holder.mIvOnOffBadge.setImageResource(R.drawable.badge_off);
         } else {
-
             holder.mIvOnOffBadge.setImageResource(R.drawable.badge_on);
         }
 
@@ -89,7 +89,7 @@ public class MyBadgesAdapter extends RecyclerView.Adapter<MyBadgesAdapter.Recycl
 //        holder.mIvBadgeIcon.setOnClickListener(new View.OnClickListener() {
 //            @Override
 //            public void onClick(View view) {
-//                Toast.makeText(context,"position is "+(itemList.get(position).getName()),Toast.LENGTH_SHORT).show();
+//                Toast.makeText(mContext,"position is "+(itemList.get(position).getName()),Toast.LENGTH_SHORT).show();
 //
 //                //BadgesPojo obj= new BadgesPojo(itemList.get(position).getName(),itemList.get(position).getIcon(),itemList.get(position).getDescription());
 //
@@ -97,14 +97,14 @@ public class MyBadgesAdapter extends RecyclerView.Adapter<MyBadgesAdapter.Recycl
 //                bundle.putInt(Constants.POSITION,position);
 //                bundle.putSerializable("badgePojo",itemList.get(position));
 //                // Creating an intent to open the activity StudentViewActivity
-//                Intent intent = new Intent(context, BadgeDetailActivity.class);
+//                Intent intent = new Intent(mContext, BadgeDetailActivity.class);
 //
 //                // Passing data as a parecelable object to StudentViewActivity
 //               // intent.putExtra("BadgeData",itemList.get(position));
 //                intent.putExtras(bundle);
 //                // Opening the activity
-//                ((Activity) context).startActivityForResult(intent,REQUEST_CODE);
-//                Toast.makeText(context, "Recycle Click" +(position+((BadgesActivity.pageNumber-1)*BadgesActivity.badgeCount)), Toast.LENGTH_SHORT).show();
+//                ((Activity) mContext).startActivityForResult(intent,REQUEST_CODE);
+//                Toast.makeText(mContext, "Recycle Click" +(position+((BadgesActivity.pageNumber-1)*BadgesActivity.badgeCount)), Toast.LENGTH_SHORT).show();
 //            }
 //        });
 
