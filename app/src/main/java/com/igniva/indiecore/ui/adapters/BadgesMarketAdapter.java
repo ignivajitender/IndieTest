@@ -46,27 +46,40 @@ public class BadgesMarketAdapter extends RecyclerView.Adapter<BadgesMarketAdapte
 
     @Override
     public void onBindViewHolder(final RecyclerViewHolders holder, final int position) {
-        holder.mTvMyBadgeName.setText(mBadgeMarketList.get(position).getName());
-        Glide.with(mContext).load(mBadgeMarketList.get(position).getIcon())
-                .thumbnail(1f)
-                .crossFade()
-                .diskCacheStrategy(DiskCacheStrategy.ALL)
-                .into(holder.mIvMyBadgeIcon);
+
+        try {
+
+
+            holder.mTvMyBadgeName.setText(mBadgeMarketList.get(position).getName());
+            Glide.with(mContext).load(mBadgeMarketList.get(position).getIcon())
+                    .thumbnail(1f)
+                    .crossFade()
+                    .diskCacheStrategy(DiskCacheStrategy.ALL)
+                    .into(holder.mIvMyBadgeIcon);
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+
 
                  holder.mIvGetThisBadge.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                try {
 
-                if (mBadgeMarketList.get(position).isSelected()) {
-                    holder.mIvGetThisBadge.setImageResource(R.drawable.get_badge);
+
+                    if (mBadgeMarketList.get(position).isSelected()) {
+                        holder.mIvGetThisBadge.setImageResource(R.drawable.get_badge);
 //                    MyBadgesActivity.selectedBadgeId= mBadgeMarketList.get(position).getBadgeId();
-                    mBadgeMarketList.get(position).setSelected(false);
-                } else {
+                        mBadgeMarketList.get(position).setSelected(false);
+                    } else {
 
-                    holder.mIvGetThisBadge.setImageResource(R.drawable.tick_badge);
+                        holder.mIvGetThisBadge.setImageResource(R.drawable.tick_badge);
 //                    mBadgeMarketList.get(position).setiSActive(0);
-                      mBadgeMarketList.get(position).setSelected(true);
+                        mBadgeMarketList.get(position).setSelected(true);
 
+                    }
+                }catch (Exception e){
+                    e.printStackTrace();
                 }
 
             }
@@ -114,10 +127,14 @@ public class BadgesMarketAdapter extends RecyclerView.Adapter<BadgesMarketAdapte
         public RecyclerViewHolders(final View itemView) {
             super(itemView);
             itemView.setOnClickListener(this);
-            mTvMyBadgeName = (TextView) itemView.findViewById(R.id.tv_badge_name_badge_market);
-            mIvMyBadgeIcon = (ImageView) itemView.findViewById(R.id.iv_badge_icon_badge_market);
-            mIvGetThisBadge = (ImageView) itemView.findViewById(R.id.iv_get_this_badge_badge_market);
+            try {
 
+                mTvMyBadgeName = (TextView) itemView.findViewById(R.id.tv_badge_name_badge_market);
+                mIvMyBadgeIcon = (ImageView) itemView.findViewById(R.id.iv_badge_icon_badge_market);
+                mIvGetThisBadge = (ImageView) itemView.findViewById(R.id.iv_get_this_badge_badge_market);
+            }catch (Exception e){
+                e.printStackTrace();
+            }
 
         }
 

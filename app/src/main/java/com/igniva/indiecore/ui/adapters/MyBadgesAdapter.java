@@ -47,41 +47,51 @@ public class MyBadgesAdapter extends RecyclerView.Adapter<MyBadgesAdapter.Recycl
     public void onBindViewHolder(final RecyclerViewHolders holder, final int position) {
        // final ImageLoader imageLoader = new ImageLoader(mContext);
 
-        holder.mTvMyBadgeName.setText(mSelectedBadgeIds.get(position).getName());
+try {
 
-        // Glide Implementation
-        Glide.with(mContext).load(mSelectedBadgeIds.get(position).getIcon())
-                .thumbnail(1f)
-                .crossFade()
-                .diskCacheStrategy(DiskCacheStrategy.ALL)
-                .into(holder.mIvMyBadgeIcon);
-        //
 
-       // imageLoader.DisplayImage(mSelectedBadgeIds.get(position).getIcon(), holder.mIvMyBadgeIcon);
+    holder.mTvMyBadgeName.setText(mSelectedBadgeIds.get(position).getName());
 
-        if (mSelectedBadgeIds.get(position).getIsSelectedAsMyBadge() == 0) {
-            holder.mIvOnOffBadge.setImageResource(R.drawable.badge_off);
-        } else {
-            holder.mIvOnOffBadge.setImageResource(R.drawable.badge_on);
-        }
+    // Glide Implementation
+    Glide.with(mContext).load(mSelectedBadgeIds.get(position).getIcon())
+            .thumbnail(1f)
+            .crossFade()
+            .diskCacheStrategy(DiskCacheStrategy.ALL)
+            .into(holder.mIvMyBadgeIcon);
+    //
+
+    // imageLoader.DisplayImage(mSelectedBadgeIds.get(position).getIcon(), holder.mIvMyBadgeIcon);
+
+    if (mSelectedBadgeIds.get(position).getIsSelectedAsMyBadge() == 0) {
+        holder.mIvOnOffBadge.setImageResource(R.drawable.badge_off);
+    } else {
+        holder.mIvOnOffBadge.setImageResource(R.drawable.badge_on);
+    }
+}catch (Exception e){
+    e.printStackTrace();
+}
 
         holder.mIvOnOffBadge.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+try {
 
-                if (mSelectedBadgeIds.get(position).getiSActive() == 0) {
-                    holder.mIvOnOffBadge.setImageResource(R.drawable.badge_on);
-                    mSelectedBadgeIds.get(position).setiSActive(1);
-                    MyBadgesActivity.active=1;
-                    MyBadgesActivity.selectedBadgeId=mSelectedBadgeIds.get(position).getBadgeId();
-                } else {
 
-                    holder.mIvOnOffBadge.setImageResource(R.drawable.badge_off);
-                    mSelectedBadgeIds.get(position).setiSActive(0);
-                    MyBadgesActivity.active=0;
-                    MyBadgesActivity.selectedBadgeId="";
-                }
+    if (mSelectedBadgeIds.get(position).getiSActive() == 0) {
+        holder.mIvOnOffBadge.setImageResource(R.drawable.badge_on);
+        mSelectedBadgeIds.get(position).setiSActive(1);
+        MyBadgesActivity.active = 1;
+        MyBadgesActivity.selectedBadgeId = mSelectedBadgeIds.get(position).getBadgeId();
+    } else {
 
+        holder.mIvOnOffBadge.setImageResource(R.drawable.badge_off);
+        mSelectedBadgeIds.get(position).setiSActive(0);
+        MyBadgesActivity.active = 0;
+        MyBadgesActivity.selectedBadgeId = "";
+    }
+}catch (Exception e){
+    e.printStackTrace();
+}
             }
         });
 //        //holder.mIvBadgeIcon.setImageResource(itemList.get(position).getIcon());

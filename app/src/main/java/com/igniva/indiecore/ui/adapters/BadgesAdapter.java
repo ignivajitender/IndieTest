@@ -24,6 +24,7 @@ import com.igniva.indiecore.utils.Utility;
 import com.igniva.indiecore.utils.imageloader.ImageLoader;
 
 import java.util.ArrayList;
+import java.util.concurrent.ExecutionException;
 
 /**
  * Created by igniva-andriod-11 on 10/6/16.
@@ -57,52 +58,61 @@ public class BadgesAdapter extends RecyclerView.Adapter<BadgesAdapter.RecyclerVi
     @Override
     public void onBindViewHolder(final RecyclerViewHolders holder, final int position) {
         //final ImageLoader imageLoader=new ImageLoader(mContext);
-        holder.mTvBadgeName.setText(itemList.get(position).getName());
-        //imageLoader.DisplayImage(itemList.get(position).getIcon(),holder.mIvBadgeIcon);
-        // Glide Implementation
-        Glide.with(mContext).load(itemList.get(position).getIcon())
-                .thumbnail(1f)
-                .crossFade()
-                .diskCacheStrategy(DiskCacheStrategy.ALL)
-                .into(holder.mIvBadgeIcon);
-        //
+        try {
 
-        //
-        if(itemList.get(position).isSelected()==true){
 
-            Log.d("","");
-            Log.d("","");
+            holder.mTvBadgeName.setText(itemList.get(position).getName());
+            //imageLoader.DisplayImage(itemList.get(position).getIcon(),holder.mIvBadgeIcon);
+            // Glide Implementation
+            Glide.with(mContext).load(itemList.get(position).getIcon())
+                    .thumbnail(1f)
+                    .crossFade()
+                    .diskCacheStrategy(DiskCacheStrategy.ALL)
+                    .into(holder.mIvBadgeIcon);
+            //
 
-            holder.mIvActivateBadge.setImageResource(R.drawable.tick_badge);
+            //
+            if (itemList.get(position).isSelected() == true) {
+
+                Log.d("", "");
+                Log.d("", "");
+
+                holder.mIvActivateBadge.setImageResource(R.drawable.tick_badge);
+            }
+        }catch (Exception e){
+            e.printStackTrace();
         }
 
         holder.mIvActivateBadge.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
-
-                if(itemList.get(position).isSelected()){
-                    holder.mIvActivateBadge.setImageResource(R.drawable.get_badge);
-                    itemList.get(position).setSelected(false);
-                    itemList.get(position).setIsSelectedAsMyBadge(0);
-                    itemList.get(position).setIsPremium(0);
-                    removeBadgeIds(position);
-                }else
-
-           if(mSelectedBadgeIds.size()<10) {
-               holder.mIvActivateBadge.setImageResource(R.drawable.tick_badge);
-               itemList.get(position).setSelected(true);
-               itemList.get(position).setIsSelectedAsMyBadge(1);
-               itemList.get(position).setIsPremium(1);
-
-               addSelectedBadgeIds(position);
-           } else {
-               Utility.showAlertDialogInviteAndBuy("You can Select maximum 10 badges free,to get more either invite friends or purchase", mContext);
-               return;
+try {
 
 
-           }
+    if (itemList.get(position).isSelected()) {
+        holder.mIvActivateBadge.setImageResource(R.drawable.get_badge);
+        itemList.get(position).setSelected(false);
+        itemList.get(position).setIsSelectedAsMyBadge(0);
+        itemList.get(position).setIsPremium(0);
+        removeBadgeIds(position);
+    } else if (mSelectedBadgeIds.size() < 10) {
+        holder.mIvActivateBadge.setImageResource(R.drawable.tick_badge);
+        itemList.get(position).setSelected(true);
+        itemList.get(position).setIsSelectedAsMyBadge(1);
+        itemList.get(position).setIsPremium(1);
 
+        addSelectedBadgeIds(position);
+    } else {
+        Utility.showAlertDialogInviteAndBuy("You can Select maximum 10 badges free,to get more either invite friends or purchase", mContext);
+        return;
+
+
+    }
+
+}catch (Exception e){
+    e.printStackTrace();
+}
             }
         });
 
@@ -111,22 +121,26 @@ public class BadgesAdapter extends RecyclerView.Adapter<BadgesAdapter.RecyclerVi
             @Override
             public void onClick(View view) {
 
+                try {
 
 
-                //BadgesPojo obj= new BadgesPojo(itemList.get(position).getName(),itemList.get(position).getIcon(),itemList.get(position).getDescription());
+                    //BadgesPojo obj= new BadgesPojo(itemList.get(position).getName(),itemList.get(position).getIcon(),itemList.get(position).getDescription());
 
-                Bundle bundle=new Bundle();
-                bundle.putInt(Constants.POSITION,position);
-                bundle.putSerializable("badgePojo",itemList.get(position));
-                // Creating an intent to open the activity StudentViewActivity
-                Intent intent = new Intent(mContext, BadgeDetailActivity.class);
+                    Bundle bundle = new Bundle();
+                    bundle.putInt(Constants.POSITION, position);
+                    bundle.putSerializable("badgePojo", itemList.get(position));
+                    // Creating an intent to open the activity StudentViewActivity
+                    Intent intent = new Intent(mContext, BadgeDetailActivity.class);
 
-                // Passing data as a parecelable object to StudentViewActivity
-               // intent.putExtra("BadgeData",itemList.get(position));
-                intent.putExtras(bundle);
-                // Opening the activity
-                ((Activity) mContext).startActivityForResult(intent,REQUEST_CODE);
-                Toast.makeText(mContext, "Recycle Click" +(position+((BadgesActivity.pageNumber-1)*BadgesActivity.badgeCount)), Toast.LENGTH_SHORT).show();
+                    // Passing data as a parecelable object to StudentViewActivity
+                    // intent.putExtra("BadgeData",itemList.get(position));
+                    intent.putExtras(bundle);
+                    // Opening the activity
+                    ((Activity) mContext).startActivityForResult(intent, REQUEST_CODE);
+                    Toast.makeText(mContext, "Recycle Click" + (position + ((BadgesActivity.pageNumber - 1) * BadgesActivity.badgeCount)), Toast.LENGTH_SHORT).show();
+                }catch (Exception e){
+                    e.printStackTrace();
+                }
             }
         });
 
@@ -135,31 +149,36 @@ public class BadgesAdapter extends RecyclerView.Adapter<BadgesAdapter.RecyclerVi
     public  void onActivityResult(int requestCode, int resultCode, Intent data) {
         Log.d("MyAdapter", "onActivityResult");
         // check if the request code is same as what is passed  here it is 2
-        if(resultCode==2) {
-            String badgeId = data.getStringExtra(Constants.BADGEIDS);
-            int pos = data.getIntExtra(Constants.POSITION, 0);
 
-            if(itemList.get(pos).isSelected()){
-                return;
-            }
-            if (mSelectedBadgeIds.size()<10) {
+        try {
 
-                itemList.get(pos).setSelected(true);
-                itemList.get(pos).setIsSelectedAsMyBadge(1);
-                itemList.get(pos).setIsPremium(0);
-                addSelectedBadgeIds(pos);
+            if (resultCode == 2) {
+                String badgeId = data.getStringExtra(Constants.BADGEIDS);
+                int pos = data.getIntExtra(Constants.POSITION, 0);
+
+                if (itemList.get(pos).isSelected()) {
+                    return;
+                }
+                if (mSelectedBadgeIds.size() < 10) {
+
+                    itemList.get(pos).setSelected(true);
+                    itemList.get(pos).setIsSelectedAsMyBadge(1);
+                    itemList.get(pos).setIsPremium(0);
+                    addSelectedBadgeIds(pos);
 
 //            mSelectedBadgeIds.add(itemList.get(pos).getBadgeId());
-                this.notifyDataSetChanged();
-                //itemList.get()
-            }else {
+                    this.notifyDataSetChanged();
+                    //itemList.get()
+                } else {
 
-                Utility.showAlertDialogInviteAndBuy("You can Select maximum 10 badges free,to get more either invite friends or purchase", mContext);
-                 return;
+                    Utility.showAlertDialogInviteAndBuy("You can Select maximum 10 badges free,to get more either invite friends or purchase", mContext);
+                    return;
+                }
             }
+
+        }catch (Exception e){
+            e.printStackTrace();
         }
-
-
     }
 
 
@@ -189,10 +208,15 @@ public class BadgesAdapter extends RecyclerView.Adapter<BadgesAdapter.RecyclerVi
         public RecyclerViewHolders(final View itemView) {
             super(itemView);
             itemView.setOnClickListener(this);
-            mTvBadgeName = (TextView)itemView.findViewById(R.id.tv_badge_name);
-            mIvBadgeIcon = (ImageView)itemView.findViewById(R.id.iv_badge);
-            mIvActivateBadge=(ImageView) itemView.findViewById(R.id.iv_badge_selected);
+            try {
 
+
+                mTvBadgeName = (TextView) itemView.findViewById(R.id.tv_badge_name);
+                mIvBadgeIcon = (ImageView) itemView.findViewById(R.id.iv_badge);
+                mIvActivateBadge = (ImageView) itemView.findViewById(R.id.iv_badge_selected);
+            }catch (Exception e){
+                e.printStackTrace();
+            }
 
 
 //            mIvBadgeIcon.setOnClickListener(new View.OnClickListener() {
