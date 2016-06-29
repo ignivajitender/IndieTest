@@ -73,38 +73,39 @@ public class BadgesActivity extends BaseActivity {
 
     @Override
     protected void setUpLayout() {
+        try {
+            mGlayout = new GridLayoutManager(BadgesActivity.this, 4);
+            mRvBadges = (RecyclerView) findViewById(R.id.recycler_view);
 
-        mGlayout = new GridLayoutManager(BadgesActivity.this, 4);
-        mRvBadges = (RecyclerView) findViewById(R.id.recycler_view);
 
+            mllNext = (LinearLayout) findViewById(R.id.ll_next);
+            mllNext.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    mllNext.setEnabled(false);
+                    updateNextBadges();
+                }
+            });
+            mLlPrevious = (LinearLayout) findViewById(R.id.ll_previous);
+            mLlPrevious.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    updatePreviousBadges();
+                }
+            });
+            mLlPrevious.setVisibility(View.GONE);
 
-        mllNext = (LinearLayout) findViewById(R.id.ll_next);
-        mllNext.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                mllNext.setEnabled(false);
-                updateNextBadges();
-            }
-        });
-        mLlPrevious = (LinearLayout) findViewById(R.id.ll_previous);
-        mLlPrevious.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                updatePreviousBadges();
-            }
-        });
-        mLlPrevious.setVisibility(View.GONE);
-
-        //
-        mRvBadges.setHasFixedSize(true);
-        mRvBadges.setLayoutManager(mGlayout);
+            //
+            mRvBadges.setHasFixedSize(true);
+            mRvBadges.setLayoutManager(mGlayout);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
     protected void setDataInViewObjects() {
         try {
-
-
             mBadgesAdapter = null;
             mRvBadges.setAdapter(mBadgesAdapter);
             //
@@ -146,12 +147,12 @@ public class BadgesActivity extends BaseActivity {
             mTvNext.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-              Log.e("","------Done");
+                    Log.e("", "------Done");
 
                     insertRecords();
                     getSelectedBadgesList();
-                    Intent intent= new Intent(BadgesActivity.this,DashBoardActivity.class);
-                   // intent.putExtra("Badges", mBadgesList);
+                    Intent intent = new Intent(BadgesActivity.this, DashBoardActivity.class);
+                    // intent.putExtra("Badges", mBadgesList);
                     startActivity(intent);
 //                    mySelectedBadges();
                 }
@@ -200,11 +201,11 @@ public class BadgesActivity extends BaseActivity {
             payload.put(Constants.TOKEN, PreferenceHandler.readString(this, PreferenceHandler.PREF_KEY_USER_TOKEN, ""));
             payload.put(Constants.USERID, PreferenceHandler.readString(this, PreferenceHandler.PREF_KEY_USER_ID, ""));
             payload.put(Constants.TYPE, "general");
-           String ids="";
-            for (int i=0;i<mSelectedBadgeIds.size();i++){
-                ids=ids+","+mSelectedBadgeIds.get(i).getBadgeId();
+            String ids = "";
+            for (int i = 0; i < mSelectedBadgeIds.size(); i++) {
+                ids = ids + "," + mSelectedBadgeIds.get(i).getBadgeId();
             }
-            ids=ids.substring(1);
+            ids = ids.substring(1);
             payload.put(Constants.BADGEIDS, ids);
 
         } catch (Exception e) {
@@ -274,15 +275,15 @@ public class BadgesActivity extends BaseActivity {
             WebNotificationManager.unRegisterResponseListener(responseHandlerListener);
 
             if (error == null) {
-                if(result.getSuccess().equals("true")){
+                if (result.getSuccess().equals("true")) {
 
                     insertRecords();
-                    Intent intnet= new Intent(BadgesActivity.this,MyBadgesActivity.class);
+                    Intent intnet = new Intent(BadgesActivity.this, MyBadgesActivity.class);
                     startActivity(intnet);
 
-                }else {
+                } else {
 
-                    Utility.showAlertDialog(result.getError_text(),BadgesActivity.this);
+                    Utility.showAlertDialog(result.getError_text(), BadgesActivity.this);
                 }
 //                {"user":{"badgeLimit":10,"selectedBadgeCount":10,"badgesGot":1},"success":true,"error":null}
 //                {"user":{"badgeLimit":10,"selectedBadgeCount":5,"badgesGot":5},"success":true,"error":null}
@@ -290,7 +291,7 @@ public class BadgesActivity extends BaseActivity {
 
 
             } else {
-                Utility.showAlertDialog("Some server error Occurred!",BadgesActivity.this);
+                Utility.showAlertDialog("Some server error Occurred!", BadgesActivity.this);
 
 
             }
@@ -304,18 +305,21 @@ public class BadgesActivity extends BaseActivity {
 
     public ArrayList<BadgesPojo> getSelectedBadgesList() {
         ArrayList<BadgesPojo> selectedBadgesList = new ArrayList<BadgesPojo>();
-        selectedBadgesList=mSelectedBadgeIds;
+        selectedBadgesList = mSelectedBadgeIds;
         return selectedBadgesList;
     }
 
 
     public void insertRecords() {
+        try{
         dbBadges = new BadgesDb(this);
-
         ArrayList<BadgesPojo> selectedBadgesList = new ArrayList<BadgesPojo>();
-        selectedBadgesList=mSelectedBadgeIds;
+        selectedBadgesList = mSelectedBadgeIds;
 //        ArrayList<BadgesPojo> mTotalBadges=new ArrayList<BadgesPojo>();
         dbBadges.insertAllBadges(selectedBadgesList);
+        }catch (Exception e){
+            e.printStackTrace();
+        }
 
     }
 

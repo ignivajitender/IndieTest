@@ -70,10 +70,15 @@ public class BadgeDetailActivity extends BaseActivity {
 
     @Override
     protected void setUpLayout() {
-        mBadgeIcon = (ImageView) findViewById(R.id.iv_badge_icon);
-        mBadgeName = (TextView) findViewById(R.id.tv_badge_name);
-        mBadgeDesc = (TextView) findViewById(R.id.tv_badge_desc);
-        mGetThisBadge = (ImageView) findViewById(R.id.btn_get_this_badge);
+        try {
+            mBadgeIcon = (ImageView) findViewById(R.id.iv_badge_icon);
+            mBadgeName = (TextView) findViewById(R.id.tv_badge_name);
+            mBadgeDesc = (TextView) findViewById(R.id.tv_badge_desc);
+            mGetThisBadge = (ImageView) findViewById(R.id.btn_get_this_badge);
+        }catch (Exception e){
+e.printStackTrace();
+        }
+
 
     }
 
@@ -115,30 +120,33 @@ public class BadgeDetailActivity extends BaseActivity {
 
             case R.id.btn_get_this_badge:
 
-                AlertDialog.Builder builder1 = new AlertDialog.Builder(this,R.style.AppCompatAlertDialogStyle);
-                builder1.setMessage("Do you want to add this badge to your list");
-                builder1.setCancelable(true);
-                builder1.setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int id) {
-                        dialog.dismiss();
-                        Intent intent=new Intent();
-                        intent.putExtra(Constants.BADGEIDS,badgeId);
-                        intent.putExtra(Constants.POSITION,bundle.getInt(Constants.POSITION));
-                        setResult(2,intent);
-                        finish();//finishing activity
-                    }
-                });
+                try {
+                    AlertDialog.Builder builder1 = new AlertDialog.Builder(this, R.style.AppCompatAlertDialogStyle);
+                    builder1.setMessage("Do you want to add this badge to your list");
+                    builder1.setCancelable(true);
+                    builder1.setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int id) {
+                            dialog.dismiss();
+                            Intent intent = new Intent();
+                            intent.putExtra(Constants.BADGEIDS, badgeId);
+                            intent.putExtra(Constants.POSITION, bundle.getInt(Constants.POSITION));
+                            setResult(2, intent);
+                            finish();//finishing activity
+                        }
+                    });
 
-                builder1.setNegativeButton(getResources().getString(R.string.no_thanks), new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        dialog.dismiss();
-                    }
-                });
+                    builder1.setNegativeButton(getResources().getString(R.string.no_thanks), new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            dialog.dismiss();
+                        }
+                    });
 
-                AlertDialog alert11 = builder1.create();
-                alert11.show();
-
+                    AlertDialog alert11 = builder1.create();
+                    alert11.show();
+                }catch (Exception e){
+                    e.printStackTrace();
+                }
 
                // Utility.showAlertDialogGetBadge("Do you want to add this badge to your list",this);
 

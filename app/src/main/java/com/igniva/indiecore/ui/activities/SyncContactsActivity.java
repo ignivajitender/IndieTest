@@ -63,7 +63,7 @@ public class SyncContactsActivity extends  BaseActivity implements View.OnClickL
 
     @Override
     protected void setUpLayout() {
-
+try{
 
         mNumbers= new ArrayList<String>();
         Bundle bundle=getIntent().getExtras();
@@ -71,7 +71,9 @@ public class SyncContactsActivity extends  BaseActivity implements View.OnClickL
         mCountryCode=bundle.getString(Constants.COUNTRY_CODE);
 
         COUNTRY_PREFIX=mCountryCode;
-
+}catch (Exception e){
+    e.printStackTrace();
+}
     }
 
     @Override

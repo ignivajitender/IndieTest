@@ -73,6 +73,8 @@ public class MyBadgesActivity extends BaseActivity {
 
     @Override
     protected void setUpLayout() {
+
+        try{
         mTVMyBadegs = (TextView) findViewById(R.id.tv_my_badge);
         mTVBadgesMArket = (TextView) findViewById(R.id.tv_badge_market);
         mGlMAnager = new GridLayoutManager(MyBadgesActivity.this, 4);
@@ -117,12 +119,15 @@ public class MyBadgesActivity extends BaseActivity {
                 }
             }
         });
+        }catch (Exception e){
+            e.printStackTrace();
+        }
 
     }
 
     @Override
     protected void setDataInViewObjects() {
-
+try{
         if (buttonIndex == 1) {
 
             if (mSelectedBadgesList.size() < 1) {
@@ -160,6 +165,9 @@ public class MyBadgesActivity extends BaseActivity {
 //            mRvMyBadges.setAdapter(mBadgeMarketAdpter);
 
         }
+}catch (Exception e){
+    e.printStackTrace();
+}
     }
 
     @Override
@@ -198,6 +206,7 @@ public class MyBadgesActivity extends BaseActivity {
     }
 
     public void getMyBadges() {
+        try{
         db_badges = new BadgesDb(this);
         mSelectedBadgesList = db_badges.retrieveSelectedBadges();
         Log.e("", "" + mSelectedBadgesList.toString());
@@ -206,6 +215,9 @@ public class MyBadgesActivity extends BaseActivity {
             int count = 40 - mSelectedBadgesList.size();
             for (int i = 0; i < count; i++)
                 mSelectedBadgesList.add(new BadgesPojo());
+        }
+        }catch (Exception e){
+            e.printStackTrace();
         }
     }
 
@@ -283,10 +295,14 @@ public class MyBadgesActivity extends BaseActivity {
 
 
     void updateBadgesMarket() {
+        try{
         mBadgeMarketAdpter = null;
         Log.e(LOG_TAG, "setting bin adpter" + mBadgeMarketList.size());
         mBadgeMarketAdpter = new BadgesMarketAdapter(MyBadgesActivity.this, mBadgeMarketList);
         mRvMyBadges.setAdapter(mBadgeMarketAdpter);
+        }catch (Exception e){
+            e.printStackTrace();
+        }
     }
 
     public void getBadgeMarketBadges() {

@@ -113,11 +113,14 @@ public class CreateProfileActivity extends BaseActivity implements AsyncResult {
 
     public void getDateOfBirth() {
 
-
+try{
         mDay = cal.get(Calendar.DAY_OF_MONTH);
         mMonth = cal.get(Calendar.MONTH);
         mYear = cal.get(Calendar.YEAR);
         DateDialog();
+    }catch (Exception e){
+        e.printStackTrace();
+    }
     }
 
 
@@ -170,6 +173,7 @@ public class CreateProfileActivity extends BaseActivity implements AsyncResult {
 
 
     private void selectImage() {
+        try{
         final CharSequence[] items = {getResources().getString(R.string.take_photo), getResources().getString(R.string.choose_from_gallary)
         };
         AlertDialog.Builder builder = new AlertDialog.Builder(CreateProfileActivity.this, R.style.AppCompatAlertDialogStyle);
@@ -198,18 +202,30 @@ public class CreateProfileActivity extends BaseActivity implements AsyncResult {
             }
         });
         builder.show();
+        }catch (Exception e){
+            e.printStackTrace();
+        }
     }
 
     private void cameraIntent() {
+        try{
         Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
         startActivityForResult(intent, REQUEST_CAMERA);
+        }catch (Exception e){
+            e.printStackTrace();
+        }
     }
 
     private void galleryIntent() {
+        try{
         Intent intent = new Intent();
         intent.setType("image/*");
         intent.setAction(Intent.ACTION_GET_CONTENT);//
         startActivityForResult(Intent.createChooser(intent, "Select File"), SELECT_FILE);
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+
     }
 
     @Override
@@ -259,6 +275,7 @@ public class CreateProfileActivity extends BaseActivity implements AsyncResult {
     }
 
     public Uri getImageUri(Context inContext, Bitmap inImage) {
+
         ByteArrayOutputStream bytes = new ByteArrayOutputStream();
         inImage.compress(Bitmap.CompressFormat.JPEG, 100, bytes);
         String path = MediaStore.Images.Media.insertImage(inContext.getContentResolver(), inImage, "Title", null);
