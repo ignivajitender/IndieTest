@@ -59,63 +59,69 @@ public class InviteContactAdapter extends RecyclerView.Adapter<InviteContactAdap
 
     @Override
     public void onBindViewHolder(final RecyclerViewHolders holder, final int position) {
-        final ImageLoader imageLoader = new ImageLoader(context);
-        holder.mContactName.setText(filteredData.get(position).getContactName());
-//        holder.mContactNumber.setText(itemList.get(position).getContactNumber());
-        //    holder.mContactImage.setImageResource(R.drawable.circle_arrow);
+        try {
 
-        if (filteredData.get(position).getContactIcon() != null) {
+            holder.mContactName.setText(filteredData.get(position).getContactName());
+//
 
-            holder.mContactImage.setImageURI(Uri.EMPTY.parse(filteredData.get(position).getContactIcon()));
-        }else{
-            holder.mContactImage.setImageResource(R.drawable.default_user);
-        }
+            if (filteredData.get(position).getContactIcon() != null) {
+
+                holder.mContactImage.setImageURI(Uri.EMPTY.parse(filteredData.get(position).getContactIcon()));
+            } else {
+                holder.mContactImage.setImageResource(R.drawable.default_user);
+            }
 
 
-        if(filteredData.get(position).isSelected()==false){
+            if (filteredData.get(position).isSelected() == false) {
 
-            holder.mTicked.setChecked(false);
-        }else {
+                holder.mTicked.setChecked(false);
+            } else {
 
-            holder.mTicked.setChecked(true);
+                holder.mTicked.setChecked(true);
+            }
+        }catch (Exception e){
+            e.printStackTrace();
         }
 
         holder.mCardView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                try {
 
-                Utility.showToastMessageShort((Activity) context, "Clicked position is "+position);
 
-                if (holder.mTicked.isChecked()) {
-                   holder.mTicked.setChecked(false);
-                    filteredData.get(position).setSelected(false);
-                    if(InviteContactActivity.mSelectedContacts.contains(filteredData.get(position).getContactNumber())){
+                    Utility.showToastMessageShort((Activity) context, "Clicked position is " + position);
 
-                        InviteContactActivity.mSelectedContacts.remove((filteredData).get(position).getContactNumber().trim());
-                        InviteContactActivity.mSelectedContactName.remove(filteredData.get(position).getContactName());
-                        Log.e("selected Contacts after remove",""+InviteContactActivity.mSelectedContacts+InviteContactActivity.mSelectedContacts.size());
-                        Log.e("selected Contacts name after remove",""+InviteContactActivity.mSelectedContactName);
+                    if (holder.mTicked.isChecked()) {
+                        holder.mTicked.setChecked(false);
+                        filteredData.get(position).setSelected(false);
+                        if (InviteContactActivity.mSelectedContacts.contains(filteredData.get(position).getContactNumber())) {
 
+                            InviteContactActivity.mSelectedContacts.remove((filteredData).get(position).getContactNumber().trim());
+                            InviteContactActivity.mSelectedContactName.remove(filteredData.get(position).getContactName());
+                            Log.e("selected Contacts after remove", "" + InviteContactActivity.mSelectedContacts + InviteContactActivity.mSelectedContacts.size());
+                            Log.e("selected Contacts name after remove", "" + InviteContactActivity.mSelectedContactName);
+
+                        }
+
+                    } else if (InviteContactActivity.mSelectedContacts.size() < 10) {
+                        filteredData.get(position).setSelected(true);
+                        InviteContactActivity.mSelectedContactName.add(filteredData.get(position).getContactName());
+                        InviteContactActivity.mSelectedContacts.add(filteredData.get(position).getContactNumber().trim());
+                        Log.e("selected Contacts", "" + InviteContactActivity.mSelectedContacts + InviteContactActivity.mSelectedContacts.size());
+                        Log.e("selected Contacts name", "" + InviteContactActivity.mSelectedContactName);
+
+                        holder.mTicked.setChecked(true);
+
+                    } else {
+
+                        Utility.showAlertDialog("You canot send sms to more than 10 peoples at the same time ", context);
+                        return;
                     }
 
+
+                }catch (Exception e){
+                    e.printStackTrace();
                 }
-                else if(InviteContactActivity.mSelectedContacts.size()<10) {
-                    filteredData.get(position).setSelected(true);
-                    InviteContactActivity.mSelectedContactName.add(filteredData.get(position).getContactName());
-                      InviteContactActivity.mSelectedContacts.add(filteredData.get(position).getContactNumber().trim());
-                    Log.e("selected Contacts",""+InviteContactActivity.mSelectedContacts+InviteContactActivity.mSelectedContacts.size());
-                    Log.e("selected Contacts name",""+InviteContactActivity.mSelectedContactName);
-
-                    holder.mTicked.setChecked(true);
-
-                } else {
-
-                    Utility.showAlertDialog("You canot send sms to more than 10 peoples at the same time ",context);
-                    return;
-                }
-
-
-
             }
         });
 
@@ -179,7 +185,6 @@ public class InviteContactAdapter extends RecyclerView.Adapter<InviteContactAdap
     private class ItemFilter extends Filter {
         @Override
         protected FilterResults performFiltering(CharSequence constraint) {
-
             String filterString = constraint.toString().toLowerCase();
 
             FilterResults results = new FilterResults();
