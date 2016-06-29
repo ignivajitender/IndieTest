@@ -40,7 +40,6 @@ public class Utility {
 		boolean HaveConnectedMobile = false;
 
 		try {
-
 			ConnectivityManager cm = (ConnectivityManager) context
 					.getSystemService(Context.CONNECTIVITY_SERVICE);
 			NetworkInfo ni = cm.getActiveNetworkInfo();
@@ -187,7 +186,6 @@ public class Utility {
 		builder1.setPositiveButton(android.R.string.ok, new OnClickListener() {
 			public void onClick(DialogInterface dialog, int id) {
 
-
 			}
 		});
 
@@ -211,7 +209,6 @@ public class Utility {
 			public void onClick(DialogInterface dialog, int id) {
 				dialog.dismiss();
 
-
 			}
 		}); builder1.setNegativeButton("INVITE", new OnClickListener() {
 			@Override
@@ -223,7 +220,6 @@ public class Utility {
 
 		AlertDialog alert11 = builder1.create();
 		alert11.show();
-
 	}
 
 }
