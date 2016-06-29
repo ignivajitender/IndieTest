@@ -95,7 +95,7 @@ public class MyBadgesActivity extends BaseActivity {
 
     @Override
     protected void setDataInViewObjects() {
-
+        mSelectedBadgesList = new ArrayList<BadgesPojo>();
         if (buttonIndex == 1) {
 
             if (mSelectedBadgesList.size()<1){
@@ -132,6 +132,7 @@ public class MyBadgesActivity extends BaseActivity {
 //            Log.e(LOG_TAG,"setting bin adpter"+mBadgeMarketList.size());
 //            mBadgeMarketAdpter = new BadgesMarketAdapter(MyBadgesActivity.this, mBadgeMarketList);
 //            mRvMyBadges.setAdapter(mBadgeMarketAdpter);
+
         }
     }
 
