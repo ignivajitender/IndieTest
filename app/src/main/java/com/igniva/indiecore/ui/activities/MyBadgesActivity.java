@@ -51,6 +51,8 @@ public class MyBadgesActivity extends BaseActivity {
     int buttonIndex = 1;
     public int mPageNumber = 1, mBadgeCount = 20, category = 0, mTotalBadgeCount = 0;
 
+    int pastVisiblesItems, visibleItemCount, totalItemCount;
+    boolean isLoading;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -78,27 +80,52 @@ public class MyBadgesActivity extends BaseActivity {
         mRvMyBadges.setHasFixedSize(true);
         mRvMyBadges.setLayoutManager(mGlMAnager);
 
-       mRvMyBadges.addOnScrollListener(new RecyclerView.OnScrollListener() {
-           @Override
-           public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
-               super.onScrollStateChanged(recyclerView, newState);
-           }
+        mRvMyBadges.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
+                super.onScrollStateChanged(recyclerView, newState);
+            }
 
-           @Override
-           public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
-               super.onScrolled(recyclerView, dx, dy);
-               Log.d(LOG_TAG," dx is "+dx+" dy is "+dy);
-           }
-       });
+            @Override
+            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+                super.onScrolled(recyclerView, dx, dy);
+                Log.d(LOG_TAG, " dx is " + dx + " dy is " + dy);
+
+                if (buttonIndex == 2) {
+                    if (dy > 0) //check for scroll down
+                    {
+                        visibleItemCount = mGlMAnager.getChildCount();
+                        totalItemCount = mGlMAnager.getItemCount();
+                        pastVisiblesItems = mGlMAnager.findFirstVisibleItemPosition();
+
+
+                        if (!isLoading) {
+
+                            Log.d(LOG_TAG, " visibleItemCount " + visibleItemCount + " pastVisiblesItems " + pastVisiblesItems + " totalItemCount " + totalItemCount);
+                            if ((visibleItemCount + pastVisiblesItems) >= totalItemCount) {
+                                isLoading = true;
+                                //Do pagination.. i.e. fetch new data
+                                if (mBadgeMarketList.size() < 1) {
+                                    findViewById(R.id.btn_load_more).performClick();
+                                }
+                                if (mBadgeMarketList.size() < mTotalBadgeCount) {
+                                    findViewById(R.id.btn_load_more).performClick();
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        });
 
     }
 
     @Override
     protected void setDataInViewObjects() {
-        mSelectedBadgesList = new ArrayList<BadgesPojo>();
+
         if (buttonIndex == 1) {
 
-            if (mSelectedBadgesList.size()<1){
+            if (mSelectedBadgesList.size() < 1) {
                 getMyBadges();
             }
 
@@ -116,11 +143,10 @@ public class MyBadgesActivity extends BaseActivity {
             if (mBadgeMarketList.size() < 1) {
                 // Service Call
                 getBadgeMarketBadges();
-            }  else {
+            } else {
                 // Display content only
                 updateBadgesMarket();
             }
-
 
 
 //            else if (mBadgeMarketList.size() < mTotalBadgeCount) {
@@ -172,7 +198,6 @@ public class MyBadgesActivity extends BaseActivity {
     }
 
     public void getMyBadges() {
-
         db_badges = new BadgesDb(this);
         mSelectedBadgesList = db_badges.retrieveSelectedBadges();
         Log.e("", "" + mSelectedBadgesList.toString());
@@ -193,19 +218,13 @@ public class MyBadgesActivity extends BaseActivity {
     public void onOffBadges() {
         try {
             String payload = createPayload();
-
             if (payload != null) {
-
                 WebNotificationManager.registerResponseListener(responseListner);
                 WebServiceClient.onOffMyBadges(this, payload, responseListner);
-
             }
-
         } catch (Exception e) {
             e.printStackTrace();
         }
-
-
     }
 
     ResponseHandlerListener responseListner = new ResponseHandlerListener() {
@@ -301,6 +320,7 @@ public class MyBadgesActivity extends BaseActivity {
 
                     Log.e(LOG_TAG, "" + mBadgeMarketList.size());
                     updateBadgesMarket();
+                    isLoading = false;
 
                 }
             }

@@ -150,8 +150,8 @@ public class BadgesActivity extends BaseActivity {
 
                     insertRecords();
                     getSelectedBadgesList();
-                    Intent intent= new Intent(BadgesActivity.this,MyBadgesActivity.class);
-                    intent.putExtra("Badges", mBadgesList);
+                    Intent intent= new Intent(BadgesActivity.this,DashBoardActivity.class);
+                   // intent.putExtra("Badges", mBadgesList);
                     startActivity(intent);
 //                    mySelectedBadges();
                 }
