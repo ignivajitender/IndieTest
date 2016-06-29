@@ -45,12 +45,6 @@ public class ResponsePojo {
         this.profile = profile;
     }
 
-
-
-
-
-
-
     public String getToken() {
         return token;
     }

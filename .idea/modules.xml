@@ -2,7 +2,6 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/IndieCore.iml" filepath="$PROJECT_DIR$/IndieCore.iml" />
       <module fileurl="file://$PROJECT_DIR$/IndieTest14June.iml" filepath="$PROJECT_DIR$/IndieTest14June.iml" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
     </modules>

@@ -17,6 +17,16 @@ import java.io.Serializable;
     private int isSelectedAsMyBadge;
     private int isPremium;
     private int iSActive;
+    private int sr_no;
+
+    public int getSr_no() {
+        return sr_no;
+    }
+
+    public void setSr_no(int sr_no) {
+        this.sr_no = sr_no;
+    }
+
 
 
     public int getiSActive() {

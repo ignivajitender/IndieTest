@@ -12,6 +12,8 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.igniva.indiecore.R;
 import com.igniva.indiecore.model.BadgesPojo;
 import com.igniva.indiecore.ui.activities.BadgeDetailActivity;
@@ -29,7 +31,7 @@ import java.util.ArrayList;
 public class BadgesAdapter extends RecyclerView.Adapter<BadgesAdapter.RecyclerViewHolders> {
 
     private ArrayList<BadgesPojo> itemList;
-    private Context context;
+    private Context mContext;
     private int mTotalBadgeCount;
     public static  final int REQUEST_CODE=500;
     String LOG_TAG="BadgesAdapter";
@@ -38,7 +40,7 @@ public class BadgesAdapter extends RecyclerView.Adapter<BadgesAdapter.RecyclerVi
 
     public BadgesAdapter(Context context, ArrayList<BadgesPojo> itemList, int pageNo,int badgePerPage,  int badgeCount,ArrayList<BadgesPojo> mSelectedBadgeIds ) {
         this.itemList = getBadges(itemList,pageNo,badgePerPage,badgeCount);
-        this.context = context;
+        this.mContext = context;
         mTotalBadgeCount=badgeCount;
         this.mSelectedBadgeIds=mSelectedBadgeIds;
 
@@ -54,9 +56,16 @@ public class BadgesAdapter extends RecyclerView.Adapter<BadgesAdapter.RecyclerVi
 
     @Override
     public void onBindViewHolder(final RecyclerViewHolders holder, final int position) {
-//        final ImageLoader imageLoader=new ImageLoader(context);
+        //final ImageLoader imageLoader=new ImageLoader(mContext);
         holder.mTvBadgeName.setText(itemList.get(position).getName());
-//        imageLoader.DisplayImage(itemList.get(position).getIcon(),holder.mIvBadgeIcon);
+        //imageLoader.DisplayImage(itemList.get(position).getIcon(),holder.mIvBadgeIcon);
+        // Glide Implementation
+        Glide.with(mContext).load(itemList.get(position).getIcon())
+                .thumbnail(1f)
+                .crossFade()
+                .diskCacheStrategy(DiskCacheStrategy.ALL)
+                .into(holder.mIvBadgeIcon);
+        //
 
         //
         if(itemList.get(position).isSelected()==true){
@@ -88,7 +97,7 @@ public class BadgesAdapter extends RecyclerView.Adapter<BadgesAdapter.RecyclerVi
 
                addSelectedBadgeIds(position);
            } else {
-               Utility.showAlertDialogInviteAndBuy("You can Select maximum 10 badges free,to get more either invite friends or purchase",context);
+               Utility.showAlertDialogInviteAndBuy("You can Select maximum 10 badges free,to get more either invite friends or purchase", mContext);
                return;
 
 
@@ -110,14 +119,14 @@ public class BadgesAdapter extends RecyclerView.Adapter<BadgesAdapter.RecyclerVi
                 bundle.putInt(Constants.POSITION,position);
                 bundle.putSerializable("badgePojo",itemList.get(position));
                 // Creating an intent to open the activity StudentViewActivity
-                Intent intent = new Intent(context, BadgeDetailActivity.class);
+                Intent intent = new Intent(mContext, BadgeDetailActivity.class);
 
                 // Passing data as a parecelable object to StudentViewActivity
                // intent.putExtra("BadgeData",itemList.get(position));
                 intent.putExtras(bundle);
                 // Opening the activity
-                ((Activity) context).startActivityForResult(intent,REQUEST_CODE);
-                Toast.makeText(context, "Recycle Click" +(position+((BadgesActivity.pageNumber-1)*BadgesActivity.badgeCount)), Toast.LENGTH_SHORT).show();
+                ((Activity) mContext).startActivityForResult(intent,REQUEST_CODE);
+                Toast.makeText(mContext, "Recycle Click" +(position+((BadgesActivity.pageNumber-1)*BadgesActivity.badgeCount)), Toast.LENGTH_SHORT).show();
             }
         });
 
@@ -145,7 +154,7 @@ public class BadgesAdapter extends RecyclerView.Adapter<BadgesAdapter.RecyclerVi
                 //itemList.get()
             }else {
 
-                Utility.showAlertDialogInviteAndBuy("You can Select maximum 10 badges free,to get more either invite friends or purchase",context);
+                Utility.showAlertDialogInviteAndBuy("You can Select maximum 10 badges free,to get more either invite friends or purchase", mContext);
                  return;
             }
         }
@@ -191,9 +200,9 @@ public class BadgesAdapter extends RecyclerView.Adapter<BadgesAdapter.RecyclerVi
 //                public void onClick(View v) {
 //
 //                    BadgesPojo badgesPojo= new BadgesPojo()
-//                    Intent intent= new Intent(context, BadgeDetailActivity.class);
+//                    Intent intent= new Intent(mContext, BadgeDetailActivity.class);
 //
-//                    context.startActivity(intent);
+//                    mContext.startActivity(intent);
 //                }
 //            });
         }

@@ -44,8 +44,8 @@ public class BadgesDb extends SQLiteOpenHelper {
     public static String createBadgeTable() {
 
         return "CREATE TABLE " + TABLE_BADGES
-                + "(" + S_NO + " INTEGER PRIMARY KEY AUTOINCREMENT," + BADGE_ID + " TEXT,"
-                + BADGE_NAME + " TEXT," + BADGE_DESC + " TEXT," + BADGE_ICON + " TEXT,"
+                + "(" +BADGE_ID +  " TEXT PRIMARY KEY,"+ S_NO + " INTEGER NOT NULL," +
+                BADGE_NAME + " TEXT," + BADGE_DESC + " TEXT," + BADGE_ICON + " TEXT,"
                 + IS_PREMIUM + " INTEGER," + BADGE_PRICE + " REAL,"
                 + BADGE_SKU + " TEXT," + IS_SELECTED + " INTEGER" + ")";
     }
@@ -69,6 +69,7 @@ public class BadgesDb extends SQLiteOpenHelper {
     public void insertSingleBadge(SQLiteDatabase db, BadgesPojo badges) {
         try {
             ContentValues values = new ContentValues();
+            values.put(S_NO,1);
             values.put(BADGE_ID, badges.getBadgeId()); // Contact Phone Number
             values.put(BADGE_NAME, badges.getName());
             values.put(BADGE_DESC, badges.getDescription());
@@ -76,7 +77,7 @@ public class BadgesDb extends SQLiteOpenHelper {
             values.put(IS_PREMIUM, badges.getIsPremium());
             values.put(BADGE_PRICE, badges.getPrice());
             values.put(BADGE_SKU, badges.getSku());
-            values.put(IS_SELECTED, badges.getIsSelectedAsMyBadge());
+            values.put(IS_SELECTED, 1);
             // Inserting Single Row
             db.insert(TABLE_BADGES, null, values);
         } catch (Exception e) {
@@ -133,7 +134,8 @@ public class BadgesDb extends SQLiteOpenHelper {
                 for (int i = 0; i < cursor.getCount(); i++) {
                     cursor.moveToNext();
                     badgeModel = new BadgesPojo();
-                    badgeModel.setBadgeId(cursor.getString(1));
+                    badgeModel.setBadgeId(cursor.getString(0));
+                    badgeModel.setSr_no(cursor.getInt(1));
                     badgeModel.setName(cursor.getString(2));
                     badgeModel.setDescription(cursor.getString(3));
                     badgeModel.setIcon(cursor.getString(4));
@@ -141,7 +143,6 @@ public class BadgesDb extends SQLiteOpenHelper {
                     badgeModel.setPrice(cursor.getString(6));
                     badgeModel.setSku(cursor.getString(7));
                     badgeModel.setIsSelectedAsMyBadge(8);
-
                     myBadgesList.add(badgeModel);
                 }
             }
