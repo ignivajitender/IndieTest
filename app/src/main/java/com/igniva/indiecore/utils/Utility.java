@@ -9,7 +9,6 @@ import java.util.regex.Pattern;
 
 import android.annotation.TargetApi;
 import android.app.Activity;
-import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.DialogInterface.OnClickListener;
@@ -20,6 +19,7 @@ import android.net.NetworkInfo;
 import android.os.Build;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
+import android.support.v7.app.AlertDialog;
 import android.widget.EditText;
 import android.widget.Toast;
 
@@ -198,6 +198,13 @@ public class Utility {
 
 		AlertDialog alert11 = builder1.create();
 		alert11.show();
+	}
+
+	public static AlertDialog.Builder showAlertDialogOkNoThanks(String message, Context context){
+		AlertDialog.Builder builder1 = new AlertDialog.Builder(context,R.style.AppCompatAlertDialogStyle);
+		builder1.setMessage( message);
+		builder1.setCancelable(true);
+		return builder1;
 	}
 
 

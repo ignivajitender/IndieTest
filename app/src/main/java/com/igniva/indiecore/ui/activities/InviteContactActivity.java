@@ -32,6 +32,7 @@ import com.igniva.indiecore.R;
 import com.igniva.indiecore.model.ContactPojo;
 import com.igniva.indiecore.ui.adapters.InviteContactAdapter;
 import com.igniva.indiecore.utils.Log;
+import com.igniva.indiecore.utils.Utility;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
@@ -225,6 +226,12 @@ public class InviteContactActivity extends BaseActivity {
     public void sendInviteSms() {
         String mNumber = "";
         try {
+
+            if(mSelectedContacts.size()<10){
+
+                Utility.showAlertDialog("You need to invite atleast ten people to get more badges",this);
+                return;
+            }
             mNumber = mSelectedContacts.toString();
 
             if (!Build.MANUFACTURER.contains("Samsung")) {
@@ -263,29 +270,29 @@ public class InviteContactActivity extends BaseActivity {
     }
 
 
-    public void onClickWhatsApp(View view) {
-
-        PackageManager pm = getPackageManager();
-        try {
-
-            Intent waIntent = new Intent(Intent.ACTION_SEND);
-            waIntent.setType("text/plain");
-            String text = "YOUR TEXT HERE";
-
-            PackageInfo info = pm.getPackageInfo("com.whatsapp", PackageManager.GET_META_DATA);
-            //Check if package exists or not. If not then code
-            //in catch block will be called
-            waIntent.setPackage("com.whatsapp");
-
-            waIntent.putExtra(Intent.EXTRA_TEXT, text);
-            startActivity(Intent.createChooser(waIntent, "Share with"));
-
-        } catch (PackageManager.NameNotFoundException e) {
-            Toast.makeText(this, "WhatsApp not Installed", Toast.LENGTH_SHORT)
-                    .show();
-        }
-
-    }
+//    public void onClickWhatsApp(View view) {
+//
+//        PackageManager pm = getPackageManager();
+//        try {
+//
+//            Intent waIntent = new Intent(Intent.ACTION_SEND);
+//            waIntent.setType("text/plain");
+//            String text = "YOUR TEXT HERE";
+//
+//            PackageInfo info = pm.getPackageInfo("com.whatsapp", PackageManager.GET_META_DATA);
+//            //Check if package exists or not. If not then code
+//            //in catch block will be called
+//            waIntent.setPackage("com.whatsapp");
+//
+//            waIntent.putExtra(Intent.EXTRA_TEXT, text);
+//            startActivity(Intent.createChooser(waIntent, "Share with"));
+//
+//        } catch (PackageManager.NameNotFoundException e) {
+//            Toast.makeText(this, "WhatsApp not Installed", Toast.LENGTH_SHORT)
+//                    .show();
+//        }
+//
+//    }
 
 
 //    @Override

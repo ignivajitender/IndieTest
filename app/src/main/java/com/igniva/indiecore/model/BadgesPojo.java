@@ -19,6 +19,16 @@ import java.io.Serializable;
     private int iSActive;
     private int sr_no;
 
+    public boolean isNewUser() {
+        return newUser;
+    }
+
+    public void setNewUser(boolean newUser) {
+        this.newUser = newUser;
+    }
+
+    private boolean newUser;
+
     public int getSr_no() {
         return sr_no;
     }

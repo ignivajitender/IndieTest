@@ -34,16 +34,16 @@ public class BadgesAdapter extends RecyclerView.Adapter<BadgesAdapter.RecyclerVi
     private ArrayList<BadgesPojo> itemList;
     private Context mContext;
     private int mTotalBadgeCount;
-    public static  final int REQUEST_CODE=500;
-    String LOG_TAG="BadgesAdapter";
-    private ArrayList<BadgesPojo> mSelectedBadgeIds= new ArrayList<BadgesPojo>();
+    public static final int REQUEST_CODE = 500;
+    String LOG_TAG = "BadgesAdapter";
+    private ArrayList<BadgesPojo> mSelectedBadgeIds = new ArrayList<BadgesPojo>();
 
 
-    public BadgesAdapter(Context context, ArrayList<BadgesPojo> itemList, int pageNo,int badgePerPage,  int badgeCount,ArrayList<BadgesPojo> mSelectedBadgeIds ) {
-        this.itemList = getBadges(itemList,pageNo,badgePerPage,badgeCount);
+    public BadgesAdapter(Context context, ArrayList<BadgesPojo> itemList, int pageNo, int badgePerPage, int badgeCount, ArrayList<BadgesPojo> mSelectedBadgeIds) {
+        this.itemList = getBadges(itemList, pageNo, badgePerPage, badgeCount);
         this.mContext = context;
-        mTotalBadgeCount=badgeCount;
-        this.mSelectedBadgeIds=mSelectedBadgeIds;
+        mTotalBadgeCount = badgeCount;
+        this.mSelectedBadgeIds = mSelectedBadgeIds;
 
     }
 
@@ -79,7 +79,7 @@ public class BadgesAdapter extends RecyclerView.Adapter<BadgesAdapter.RecyclerVi
 
                 holder.mIvActivateBadge.setImageResource(R.drawable.tick_badge);
             }
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
 
@@ -87,37 +87,37 @@ public class BadgesAdapter extends RecyclerView.Adapter<BadgesAdapter.RecyclerVi
             @Override
             public void onClick(View v) {
 
-try {
+                try {
 
 
-    if (itemList.get(position).isSelected()) {
-        holder.mIvActivateBadge.setImageResource(R.drawable.get_badge);
-        itemList.get(position).setSelected(false);
-        itemList.get(position).setIsSelectedAsMyBadge(0);
-        itemList.get(position).setIsPremium(0);
-        removeBadgeIds(position);
-    } else if (mSelectedBadgeIds.size() < 10) {
-        holder.mIvActivateBadge.setImageResource(R.drawable.tick_badge);
-        itemList.get(position).setSelected(true);
-        itemList.get(position).setIsSelectedAsMyBadge(1);
-        itemList.get(position).setIsPremium(1);
+                    if (itemList.get(position).isSelected()) {
+                        holder.mIvActivateBadge.setImageResource(R.drawable.get_badge);
+                        itemList.get(position).setSelected(false);
+                        itemList.get(position).setIsSelectedAsMyBadge(0);
+                        itemList.get(position).setIsPremium(0);
+                        removeBadgeIds(position);
+                    } else if (mSelectedBadgeIds.size() < 10) {
+                        holder.mIvActivateBadge.setImageResource(R.drawable.tick_badge);
+                        itemList.get(position).setSelected(true);
+                        itemList.get(position).setIsSelectedAsMyBadge(1);
+                        itemList.get(position).setIsPremium(1);
 
-        addSelectedBadgeIds(position);
-    } else {
-        Utility.showAlertDialogInviteAndBuy("You can Select maximum 10 badges free,to get more either invite friends or purchase", mContext);
-        return;
+                        addSelectedBadgeIds(position);
+                    } else {
+                        Utility.showAlertDialogInviteAndBuy("You can Select maximum 10 badges free,to get more either invite friends or purchase", mContext);
+                        return;
 
 
-    }
+                    }
 
-}catch (Exception e){
-    e.printStackTrace();
-}
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
             }
         });
 
 
-                holder.mIvBadgeIcon.setOnClickListener(new View.OnClickListener() {
+        holder.mIvBadgeIcon.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
 
@@ -137,8 +137,8 @@ try {
                     intent.putExtras(bundle);
                     // Opening the activity
                     ((Activity) mContext).startActivityForResult(intent, REQUEST_CODE);
-                   // Toast.makeText(mContext, "Recycle Click" + (position + ((BadgesActivity.pageNumber - 1) * BadgesActivity.badgeCount)), Toast.LENGTH_SHORT).show();
-                }catch (Exception e){
+                    // Toast.makeText(mContext, "Recycle Click" + (position + ((BadgesActivity.pageNumber - 1) * BadgesActivity.badgeCount)), Toast.LENGTH_SHORT).show();
+                } catch (Exception e) {
                     e.printStackTrace();
                 }
             }
@@ -146,7 +146,7 @@ try {
 
     }
 
-    public  void onActivityResult(int requestCode, int resultCode, Intent data) {
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
         Log.d("MyAdapter", "onActivityResult");
         // check if the request code is same as what is passed  here it is 2
 
@@ -171,27 +171,27 @@ try {
                     //itemList.get()
                 } else {
 
-                    Utility.showAlertDialogInviteAndBuy("You can Select maximum 10 badges free,to get more either invite friends or purchase", mContext);
+                    Utility.showAlertDialogInviteAndBuy("You can select maximum 10 badges free, to get more either invite friends or purchase", mContext);
                     return;
                 }
             }
 
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
 
-    public void addSelectedBadgeIds(int postion){
-        if(!mSelectedBadgeIds.contains(itemList.get(postion).getBadgeId())){
+    public void addSelectedBadgeIds(int postion) {
+        if (!mSelectedBadgeIds.contains(itemList.get(postion).getBadgeId())) {
             mSelectedBadgeIds.add(itemList.get(postion));
         }
     }
-    public void removeBadgeIds(int postion){
 
-            mSelectedBadgeIds.remove(itemList.get(postion));
+    public void removeBadgeIds(int postion) {
+
+        mSelectedBadgeIds.remove(itemList.get(postion));
     }
-
 
 
     @Override
@@ -199,7 +199,7 @@ try {
         return this.itemList.size();
     }
 
-    public class RecyclerViewHolders extends RecyclerView.ViewHolder implements View.OnClickListener{
+    public class RecyclerViewHolders extends RecyclerView.ViewHolder implements View.OnClickListener {
 
         public TextView mTvBadgeName;
         public ImageView mIvBadgeIcon;
@@ -214,7 +214,7 @@ try {
                 mTvBadgeName = (TextView) itemView.findViewById(R.id.tv_badge_name);
                 mIvBadgeIcon = (ImageView) itemView.findViewById(R.id.iv_badge);
                 mIvActivateBadge = (ImageView) itemView.findViewById(R.id.iv_badge_selected);
-            }catch (Exception e){
+            } catch (Exception e) {
                 e.printStackTrace();
             }
 
@@ -235,13 +235,12 @@ try {
         public void onClick(View view) {
 
 
-
 //            Toast.makeText(view.getContext(), R.string.coming_soon, Toast.LENGTH_SHORT).show();
         }
     }
 
 
-    public ArrayList<BadgesPojo> getBadges(ArrayList<BadgesPojo> originalList,int pageNumber,int badgePerPage, int totalBadgeCount) {
+    public ArrayList<BadgesPojo> getBadges(ArrayList<BadgesPojo> originalList, int pageNumber, int badgePerPage, int totalBadgeCount) {
         ArrayList<BadgesPojo> badgesList = null;
 
         // for first time
@@ -274,19 +273,19 @@ try {
 //                        badgesList.add(i, originalList.get(sizeOfList - i));
 //                    }
             } else {
-                int sizeOfList = (originalList.size()%((pageNumber-1)*badgePerPage))-1;
+                int sizeOfList = (originalList.size() % ((pageNumber - 1) * badgePerPage)) - 1;
 
                 for (int i = 0; i <= sizeOfList; i++) {
-                    badgesList.add(i, originalList.get((originalList.size()-1)-i));
+                    badgesList.add(i, originalList.get((originalList.size() - 1) - i));
                 }
             }
         }
 
 
-            //  }
+        //  }
 
 
-            return badgesList;
+        return badgesList;
 
     }
 }

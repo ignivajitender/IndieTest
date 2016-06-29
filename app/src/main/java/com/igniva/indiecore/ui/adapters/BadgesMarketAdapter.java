@@ -1,18 +1,27 @@
 package com.igniva.indiecore.ui.adapters;
 
+import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
+import android.os.Bundle;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.igniva.indiecore.R;
 import com.igniva.indiecore.model.BadgesPojo;
+import com.igniva.indiecore.ui.activities.BadgeDetailActivity;
+import com.igniva.indiecore.ui.activities.BadgesActivity;
 import com.igniva.indiecore.ui.activities.MyBadgesActivity;
+import com.igniva.indiecore.utils.Constants;
+import com.igniva.indiecore.utils.Log;
+import com.igniva.indiecore.utils.Utility;
 import com.igniva.indiecore.utils.imageloader.ImageLoader;
 
 import java.util.ArrayList;
@@ -69,7 +78,7 @@ public class BadgesMarketAdapter extends RecyclerView.Adapter<BadgesMarketAdapte
 
                     if (mBadgeMarketList.get(position).isSelected()) {
                         holder.mIvGetThisBadge.setImageResource(R.drawable.get_badge);
-//                    MyBadgesActivity.selectedBadgeId= mBadgeMarketList.get(position).getBadgeId();
+//                     MyBadgesActivity.selectedBadgeId= mBadgeMarketList.get(position).getBadgeId();
                         mBadgeMarketList.get(position).setSelected(false);
                     } else {
 
@@ -86,28 +95,29 @@ public class BadgesMarketAdapter extends RecyclerView.Adapter<BadgesMarketAdapte
         });
 //        //holder.mIvBadgeIcon.setImageResource(itemList.get(position).getIcon());
 //
-//
-//        holder.mIvBadgeIcon.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//                Toast.makeText(context,"position is "+(itemList.get(position).getName()),Toast.LENGTH_SHORT).show();
+
+        holder.mIvMyBadgeIcon.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+
+                Toast.makeText(mContext,"Coming Soon",Toast.LENGTH_SHORT).show();
 //
 //                //BadgesPojo obj= new BadgesPojo(itemList.get(position).getName(),itemList.get(position).getIcon(),itemList.get(position).getDescription());
 //
 //                Bundle bundle=new Bundle();
 //                bundle.putInt(Constants.POSITION,position);
-//                bundle.putSerializable("badgePojo",itemList.get(position));
+//                bundle.putSerializable("badgePojo",mBadgeMarketList.get(position));
 //                // Creating an intent to open the activity StudentViewActivity
-//                Intent intent = new Intent(context, BadgeDetailActivity.class);
+//                Intent intent = new Intent(mContext, BadgeDetailActivity.class);
 //
 //                // Passing data as a parecelable object to StudentViewActivity
 //               // intent.putExtra("BadgeData",itemList.get(position));
 //                intent.putExtras(bundle);
 //                // Opening the activity
-//                ((Activity) context).startActivityForResult(intent,REQUEST_CODE);
-//                Toast.makeText(context, "Recycle Click" +(position+((BadgesActivity.mPageNumber-1)*BadgesActivity.mBadgeCount)), Toast.LENGTH_SHORT).show();
-//            }
-//        });
+//                ((Activity) mContext).startActivityForResult(intent,REQUEST_CODE);
+            }
+        });
 
 
     }
@@ -142,6 +152,19 @@ public class BadgesMarketAdapter extends RecyclerView.Adapter<BadgesMarketAdapte
         public void onClick(View view) {
 
 
+        }
+    }
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        Log.d("MyAdapter", "onActivityResult");
+        // check if the request code is same as what is passed  here it is 2
+
+        try {
+
+
+
+
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 

@@ -2,9 +2,11 @@ package com.igniva.indiecore.ui.activities;
 
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
@@ -147,14 +149,36 @@ public class BadgesActivity extends BaseActivity {
             mTvNext.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    Log.e("", "------Done");
 
-                    insertRecords();
-                    getSelectedBadgesList();
-                    Intent intent = new Intent(BadgesActivity.this, DashBoardActivity.class);
-                    // intent.putExtra("Badges", mBadgesList);
-                    startActivity(intent);
-//                    mySelectedBadges();
+
+                    if(mSelectedBadgeIds.size()>0){
+                    Log.e("", "------Done");
+                    AlertDialog.Builder builder=Utility.showAlertDialogOkNoThanks("Are you sure you want to add these badge(s)",BadgesActivity.this);
+                    builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            getSelectedBadgesList();
+                            mySelectedBadges();
+                        }
+                    });
+                    builder.setNegativeButton("No Thanks", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+
+                        }
+                    });
+                    builder.create().show();}
+                    else {
+
+                        Utility.showToastMessageShort(BadgesActivity.this,"Please select atleast one badge");
+                        return;
+                    }
+
+
+
+//                    Intent intent = new Intent(BadgesActivity.this, DashBoardActivity.class);
+//                    // intent.putExtra("Badges", mBadgesList);
+//                    startActivity(intent);
                 }
             });
             //
@@ -272,18 +296,22 @@ public class BadgesActivity extends BaseActivity {
     ResponseHandlerListener responseHandler = new ResponseHandlerListener() {
         @Override
         public void onComplete(ResponsePojo result, WebServiceClient.WebError error, ProgressDialog mProgressDialog) {
-            WebNotificationManager.unRegisterResponseListener(responseHandlerListener);
+            WebNotificationManager.unRegisterResponseListener(responseHandler);
 
             if (error == null) {
                 if (result.getSuccess().equals("true")) {
 
+
+                    Utility.showToastMessageShort(BadgesActivity.this,"Badge(s) added successfully");
                     insertRecords();
-                    Intent intnet = new Intent(BadgesActivity.this, MyBadgesActivity.class);
+                    Intent intnet = new Intent(BadgesActivity.this, DashBoardActivity.class);
                     startActivity(intnet);
 
                 } else {
 
                     Utility.showAlertDialog(result.getError_text(), BadgesActivity.this);
+
+
                 }
 //                {"user":{"badgeLimit":10,"selectedBadgeCount":10,"badgesGot":1},"success":true,"error":null}
 //                {"user":{"badgeLimit":10,"selectedBadgeCount":5,"badgesGot":5},"success":true,"error":null}

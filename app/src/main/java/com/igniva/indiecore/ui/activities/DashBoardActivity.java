@@ -21,6 +21,7 @@ public class DashBoardActivity extends BaseActivity {
 
     AHBottomNavigation bottomNavigation;
     Toolbar mToolbar;
+    TextView mTvTitle;
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -38,7 +39,7 @@ public class DashBoardActivity extends BaseActivity {
     void initToolbar() {
         try {
             mToolbar = (Toolbar) findViewById(R.id.toolbar_with_icon);
-            TextView mTvTitle = (TextView) mToolbar.findViewById(R.id.toolbar_title_img);
+             mTvTitle = (TextView) mToolbar.findViewById(R.id.toolbar_title_img);
             mTvTitle.setText(getResources().getString(R.string.my_badges));
             //
             ImageView mTvNext = (ImageView) mToolbar.findViewById(R.id.toolbar_img);
@@ -109,12 +110,22 @@ public class DashBoardActivity extends BaseActivity {
                 // Do something cool here...
                 switch (position){
                     case 0:
-                        item1.setDrawable(R.drawable.check_in_selected);
+                        mTvTitle.setText("Check In");
                         break;
                     case 1:
-
+                    mTvTitle.setText("Contacts");
                         break;
-
+                    case 2:
+                        mTvTitle.setText("Chats");
+                        break;
+                    case 3:
+                        mTvTitle.setText("Messages");
+                        break;
+                    case 4:
+                        mTvTitle.setText("Settings");
+                        break;
+      default:
+    break;
                 }
                 return true;
             }

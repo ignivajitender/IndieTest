@@ -1,6 +1,7 @@
 package com.igniva.indiecore.ui.activities;
 
 import android.app.ProgressDialog;
+import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -36,9 +37,10 @@ import java.util.ArrayList;
  */
 public class MyBadgesActivity extends BaseActivity {
     Toolbar mToolbar;
-    private TextView mTVMyBadegs, mTVBadgesMArket;
+    private TextView mTVMyBadegs, mTVBadgesMArket, mTvDone;
     private RecyclerView mRvMyBadges;
     private GridLayoutManager mGlMAnager;
+    private ImageView mTvNext;
     MyBadgesAdapter mMyBadgeAdapter;
     BadgesMarketAdapter mBadgeMarketAdpter;
     Bundle bundle;
@@ -64,6 +66,9 @@ public class MyBadgesActivity extends BaseActivity {
 
         initToolbar();
         setUpLayout();
+        if (getIntent().hasExtra("CLICKED")) {
+            buttonIndex = 2;
+        }
         setDataInViewObjects();
 
         Log.e("", "" + mSelectedBadgesList.toString());
@@ -74,100 +79,111 @@ public class MyBadgesActivity extends BaseActivity {
     @Override
     protected void setUpLayout() {
 
-        try{
-        mTVMyBadegs = (TextView) findViewById(R.id.tv_my_badge);
-        mTVBadgesMArket = (TextView) findViewById(R.id.tv_badge_market);
-        mGlMAnager = new GridLayoutManager(MyBadgesActivity.this, 4);
-        mRvMyBadges = (RecyclerView) findViewById(R.id.recycler_view_activity_mybadges);
-        mRvMyBadges.setHasFixedSize(true);
-        mRvMyBadges.setLayoutManager(mGlMAnager);
+        try {
+            mTVMyBadegs = (TextView) findViewById(R.id.tv_my_badge);
+            mTVBadgesMArket = (TextView) findViewById(R.id.tv_badge_market);
+            mGlMAnager = new GridLayoutManager(MyBadgesActivity.this, 4);
+            mRvMyBadges = (RecyclerView) findViewById(R.id.recycler_view_activity_mybadges);
+            mRvMyBadges.setHasFixedSize(true);
+            mRvMyBadges.setLayoutManager(mGlMAnager);
 
-        mRvMyBadges.addOnScrollListener(new RecyclerView.OnScrollListener() {
-            @Override
-            public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
-                super.onScrollStateChanged(recyclerView, newState);
-            }
+            mRvMyBadges.addOnScrollListener(new RecyclerView.OnScrollListener() {
+                @Override
+                public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
+                    super.onScrollStateChanged(recyclerView, newState);
+                }
 
-            @Override
-            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
-                super.onScrolled(recyclerView, dx, dy);
-                Log.d(LOG_TAG, " dx is " + dx + " dy is " + dy);
+                @Override
+                public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+                    super.onScrolled(recyclerView, dx, dy);
+                    Log.d(LOG_TAG, " dx is " + dx + " dy is " + dy);
 
-                if (buttonIndex == 2) {
-                    if (dy > 0) //check for scroll down
-                    {
-                        visibleItemCount = mGlMAnager.getChildCount();
-                        totalItemCount = mGlMAnager.getItemCount();
-                        pastVisiblesItems = mGlMAnager.findFirstVisibleItemPosition();
+                    if (buttonIndex == 2) {
+                        if (dy > 0) //check for scroll down
+                        {
+                            visibleItemCount = mGlMAnager.getChildCount();
+                            totalItemCount = mGlMAnager.getItemCount();
+                            pastVisiblesItems = mGlMAnager.findFirstVisibleItemPosition();
 
 
-                        if (!isLoading) {
+                            if (!isLoading) {
 
-                            Log.d(LOG_TAG, " visibleItemCount " + visibleItemCount + " pastVisiblesItems " + pastVisiblesItems + " totalItemCount " + totalItemCount);
-                            if ((visibleItemCount + pastVisiblesItems) >= totalItemCount) {
-                                isLoading = true;
-                                //Do pagination.. i.e. fetch new data
-                                if (mBadgeMarketList.size() < 1) {
-                                    findViewById(R.id.btn_load_more).performClick();
-                                }
-                                if (mBadgeMarketList.size() < mTotalBadgeCount) {
-                                    findViewById(R.id.btn_load_more).performClick();
+                                Log.d(LOG_TAG, " visibleItemCount " + visibleItemCount + " pastVisiblesItems " + pastVisiblesItems + " totalItemCount " + totalItemCount);
+                                if ((visibleItemCount + pastVisiblesItems) >= totalItemCount) {
+                                    isLoading = true;
+                                    //Do pagination.. i.e. fetch new data
+                                    if (mBadgeMarketList.size() < 1) {
+                                        findViewById(R.id.btn_load_more).performClick();
+                                    }
+                                    if (mBadgeMarketList.size() < mTotalBadgeCount) {
+                                        findViewById(R.id.btn_load_more).performClick();
+                                    }
                                 }
                             }
                         }
                     }
                 }
-            }
-        });
-        }catch (Exception e){
+            });
+        } catch (Exception e) {
             e.printStackTrace();
         }
 
     }
 
     @Override
+    protected void onNewIntent(Intent intent) {
+        super.onNewIntent(intent);
+        buttonIndex = 2;
+        setDataInViewObjects();
+
+    }
+
+    @Override
     protected void setDataInViewObjects() {
-try{
-        if (buttonIndex == 1) {
+        try {
+            if (buttonIndex == 1) {
 
-            if (mSelectedBadgesList.size() < 1) {
-                getMyBadges();
+                mTvNext.setVisibility(View.VISIBLE);
+                mTvDone.setVisibility(View.GONE);
+                mTVMyBadegs.setTextColor(Color.parseColor("#FFFFFF"));
+                mTVMyBadegs.setBackgroundColor(Color.parseColor("#4598E8"));
+
+                mTVBadgesMArket.setTextColor(Color.parseColor("#4598E8"));
+                mTVBadgesMArket.setBackgroundColor(Color.parseColor("#FFFFFF"));
+                if (mSelectedBadgesList.size() < 1) {
+                    getMyBadges();
+                }
+
+                mMyBadgeAdapter = null;
+                mRvMyBadges.setAdapter(mMyBadgeAdapter);
+                //
+                Log.e("", "set in adapter" + mSelectedBadgesList.size());
+                mMyBadgeAdapter = new MyBadgesAdapter(MyBadgesActivity.this, mSelectedBadgesList);
+                mRvMyBadges.setAdapter(mMyBadgeAdapter);
+                // Hide Load More Button
+                findViewById(R.id.btn_load_more).setVisibility(View.GONE);
+            } else if (buttonIndex == 2) {
+                mTvNext.setVisibility(View.GONE);
+                mTvDone.setVisibility(View.VISIBLE);
+                mTVMyBadegs.setTextColor(Color.parseColor("#4598E8"));
+                mTVMyBadegs.setBackgroundColor(Color.parseColor("#FFFFFF"));
+
+                mTVBadgesMArket.setTextColor(Color.parseColor("#FFFFFF"));
+                mTVBadgesMArket.setBackgroundColor(Color.parseColor("#4598E8"));
+                //findViewById(R.id.btn_load_more).setVisibility(View.VISIBLE);
+                if (mBadgeMarketList.size() < 1) {
+                    // Service Call
+                    getBadgeMarketBadges();
+                } else {
+                    // Display content only
+                    updateBadgesMarket();
+                }
+
+
             }
-
-            mMyBadgeAdapter = null;
-            mRvMyBadges.setAdapter(mMyBadgeAdapter);
-            //
-            Log.e("", "set in adapter" + mSelectedBadgesList.size());
-            mMyBadgeAdapter = new MyBadgesAdapter(MyBadgesActivity.this, mSelectedBadgesList);
-            mRvMyBadges.setAdapter(mMyBadgeAdapter);
-            // Hide Load More Button
-            findViewById(R.id.btn_load_more).setVisibility(View.GONE);
-        } else if (buttonIndex == 2) {
-
-            findViewById(R.id.btn_load_more).setVisibility(View.VISIBLE);
-            if (mBadgeMarketList.size() < 1) {
-                // Service Call
-                getBadgeMarketBadges();
-            } else {
-                // Display content only
-                updateBadgesMarket();
-            }
-
-
-//            else if (mBadgeMarketList.size() < mTotalBadgeCount) {
-//                // Service Call
-//                getBadgeMarketBadges();
-//            }
-
-//            mBadgeMarketAdpter = null;
-//            Log.e(LOG_TAG,"setting bin adpter"+mBadgeMarketList.size());
-//            mBadgeMarketAdpter = new BadgesMarketAdapter(MyBadgesActivity.this, mBadgeMarketList);
-//            mRvMyBadges.setAdapter(mBadgeMarketAdpter);
-
+        } catch (Exception e) {
+            e.printStackTrace();
         }
-}catch (Exception e){
-    e.printStackTrace();
-}
     }
 
     @Override
@@ -177,21 +193,15 @@ try{
             case R.id.tv_my_badge:
                 buttonIndex = 1;
 
-                setDataInViewObjects();
-                mTVMyBadegs.setTextColor(Color.parseColor("#FFFFFF"));
-                mTVMyBadegs.setBackgroundColor(Color.parseColor("#4598E8"));
 
-                mTVBadgesMArket.setTextColor(Color.parseColor("#4598E8"));
-                mTVBadgesMArket.setBackgroundColor(Color.parseColor("#FFFFFF"));
+                setDataInViewObjects();
+
                 break;
             case R.id.tv_badge_market:
                 buttonIndex = 2;
-                setDataInViewObjects();
-                mTVMyBadegs.setTextColor(Color.parseColor("#4598E8"));
-                mTVMyBadegs.setBackgroundColor(Color.parseColor("#FFFFFF"));
 
-                mTVBadgesMArket.setTextColor(Color.parseColor("#FFFFFF"));
-                mTVBadgesMArket.setBackgroundColor(Color.parseColor("#4598E8"));
+                setDataInViewObjects();
+
                 break;
             case R.id.btn_load_more:
                 mPageNumber += 1;
@@ -206,17 +216,21 @@ try{
     }
 
     public void getMyBadges() {
-        try{
-        db_badges = new BadgesDb(this);
-        mSelectedBadgesList = db_badges.retrieveSelectedBadges();
-        Log.e("", "" + mSelectedBadgesList.toString());
-        Log.e("", "" + mSelectedBadgesList.size());
-        if (mSelectedBadgesList.size() < 40) {
-            int count = 40 - mSelectedBadgesList.size();
-            for (int i = 0; i < count; i++)
-                mSelectedBadgesList.add(new BadgesPojo());
-        }
-        }catch (Exception e){
+        try {
+            db_badges = new BadgesDb(this);
+            mSelectedBadgesList = db_badges.retrieveSelectedBadges();
+            Log.e("", "" + mSelectedBadgesList.toString());
+            Log.e("", "" + mSelectedBadgesList.size());
+            if (mSelectedBadgesList.size() < 10) {
+                int count = 10 - mSelectedBadgesList.size();
+                for (int i = 0; i < count; i++) {
+                    BadgesPojo badgesPojo = new BadgesPojo();
+                    badgesPojo.setIsSelectedAsMyBadge(0);
+                    //
+                    mSelectedBadgesList.add(badgesPojo);
+                }
+            }
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
@@ -274,10 +288,19 @@ try{
     void initToolbar() {
         try {
             mToolbar = (Toolbar) findViewById(R.id.toolbar_with_icon);
+
+            mTvDone = (TextView) findViewById(R.id.toolbar_done);
+            mTvDone.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Utility.showToastMessageShort(MyBadgesActivity.this, getResources().getString(R.string.coming_soon));
+
+                }
+            });
             TextView mTvTitle = (TextView) mToolbar.findViewById(R.id.toolbar_title_img);
             mTvTitle.setText(getResources().getString(R.string.my_badges));
             //
-            ImageView mTvNext = (ImageView) mToolbar.findViewById(R.id.toolbar_img);
+            mTvNext = (ImageView) mToolbar.findViewById(R.id.toolbar_img);
             mTvNext.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -295,12 +318,12 @@ try{
 
 
     void updateBadgesMarket() {
-        try{
-        mBadgeMarketAdpter = null;
-        Log.e(LOG_TAG, "setting bin adpter" + mBadgeMarketList.size());
-        mBadgeMarketAdpter = new BadgesMarketAdapter(MyBadgesActivity.this, mBadgeMarketList);
-        mRvMyBadges.setAdapter(mBadgeMarketAdpter);
-        }catch (Exception e){
+        try {
+            mBadgeMarketAdpter = null;
+            Log.e(LOG_TAG, "setting bin adpter" + mBadgeMarketList.size());
+            mBadgeMarketAdpter = new BadgesMarketAdapter(MyBadgesActivity.this, mBadgeMarketList);
+            mRvMyBadges.setAdapter(mBadgeMarketAdpter);
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
@@ -321,7 +344,7 @@ try{
     ResponseHandlerListener responseHandlerListner = new ResponseHandlerListener() {
         @Override
         public void onComplete(ResponsePojo result, WebServiceClient.WebError error, ProgressDialog mProgressDialog) {
-
+            WebNotificationManager.unRegisterResponseListener(responseHandlerListner);
             if (error == null) {
                 if (result.getSuccess().equalsIgnoreCase("true")) {
                     mTotalBadgeCount = result.getTotal_badges();

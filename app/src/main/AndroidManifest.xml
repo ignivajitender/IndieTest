@@ -83,6 +83,7 @@
         <activity
             android:theme="@style/AppTheme"
             android:name=".ui.activities.MyBadgesActivity"
+            android:launchMode="singleTask"
             android:screenOrientation="portrait"
             android:label="@string/badges"/>
 
