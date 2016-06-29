@@ -18,14 +18,12 @@ import com.igniva.indiecore.controller.WebServiceClient;
 import com.igniva.indiecore.db.BadgesDb;
 import com.igniva.indiecore.model.BadgesPojo;
 import com.igniva.indiecore.model.ResponsePojo;
-import com.igniva.indiecore.ui.adapters.BadgesAdapter;
 import com.igniva.indiecore.ui.adapters.BadgesMarketAdapter;
 import com.igniva.indiecore.ui.adapters.MyBadgesAdapter;
 import com.igniva.indiecore.utils.Constants;
 import com.igniva.indiecore.utils.Log;
 import com.igniva.indiecore.utils.PreferenceHandler;
 import com.igniva.indiecore.utils.Utility;
-import com.igniva.indiecore.utils.imageloader.ImageLoader;
 
 import org.json.JSONObject;
 
@@ -42,7 +40,7 @@ public class MyBadgesActivity extends BaseActivity {
     MyBadgesAdapter mMyBadgeAdapter;
     BadgesMarketAdapter mBadgeMarketAdpter;
     Bundle bundle;
-    ArrayList<BadgesPojo> selectedBadges = null;
+    ArrayList<BadgesPojo> mSelectedBadgesList = null;
     ArrayList<BadgesPojo> badgeMarketList = null;
     private BadgesDb db_badges;
     public static int active = 0;
@@ -60,8 +58,8 @@ public class MyBadgesActivity extends BaseActivity {
         setUpLayout();
         setDataInViewObjects();
 
-        Log.e("", "" + selectedBadges.toString());
-        Log.e("", "" + selectedBadges.size());
+        Log.e("", "" + mSelectedBadgesList.toString());
+        Log.e("", "" + mSelectedBadgesList.size());
     }
 
     @Override
@@ -81,14 +79,14 @@ public class MyBadgesActivity extends BaseActivity {
 
     @Override
     protected void setDataInViewObjects() {
-        selectedBadges = new ArrayList<BadgesPojo>();
+        mSelectedBadgesList = new ArrayList<BadgesPojo>();
         if (buttonIndex == 1) {
             getMyBadges();
             mMyBadgeAdapter = null;
             mRvMyBadges.setAdapter(mMyBadgeAdapter);
             //
-            Log.e("", "set in adapter" + selectedBadges.size());
-            mMyBadgeAdapter = new MyBadgesAdapter(MyBadgesActivity.this, selectedBadges);
+            Log.e("", "set in adapter" + mSelectedBadgesList.size());
+            mMyBadgeAdapter = new MyBadgesAdapter(MyBadgesActivity.this, mSelectedBadgesList);
             mRvMyBadges.setAdapter(mMyBadgeAdapter);
         } else if (buttonIndex == 2) {
             badgeMarketList = new ArrayList<BadgesPojo>();
@@ -126,7 +124,10 @@ public class MyBadgesActivity extends BaseActivity {
                 mTVBadgesMArket.setTextColor(Color.parseColor("#FFFFFF"));
                 mTVBadgesMArket.setBackgroundColor(Color.parseColor("#4598E8"));
                 break;
+            case R.id.btn_load_more:
 
+
+                break;
             default:
 
                 break;
@@ -137,9 +138,14 @@ public class MyBadgesActivity extends BaseActivity {
     public void getMyBadges() {
 
         db_badges = new BadgesDb(this);
-        selectedBadges = db_badges.retrieveSelectedBadges();
-        Log.e("", "" + selectedBadges.toString());
-        Log.e("", "" + selectedBadges.size());
+        mSelectedBadgesList = db_badges.retrieveSelectedBadges();
+        Log.e("", "" + mSelectedBadgesList.toString());
+        Log.e("", "" + mSelectedBadgesList.size());
+        if(mSelectedBadgesList.size()<40){
+            int count=40-mSelectedBadgesList.size();
+            for (int i=0;i<count;i++)
+            mSelectedBadgesList.add(new BadgesPojo());
+        }
     }
 
     /*

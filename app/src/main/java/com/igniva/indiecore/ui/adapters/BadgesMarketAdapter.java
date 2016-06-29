@@ -8,6 +8,8 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.igniva.indiecore.R;
 import com.igniva.indiecore.model.BadgesPojo;
 import com.igniva.indiecore.ui.activities.MyBadgesActivity;
@@ -20,16 +22,16 @@ import java.util.ArrayList;
  */
 public class BadgesMarketAdapter extends RecyclerView.Adapter<BadgesMarketAdapter.RecyclerViewHolders> {
 
-    private Context context;
+    private Context mContext;
     private int mTotalBadgeCount;
     public static final int REQUEST_CODE = 500;
     String LOG_TAG = "BadgesAdapter";
     private ArrayList<BadgesPojo> mBadgeMarketList;
 
 
-    public BadgesMarketAdapter(Context context, ArrayList<BadgesPojo> mSelectedBadgeIds) {
+    public BadgesMarketAdapter(Context mContext, ArrayList<BadgesPojo> mSelectedBadgeIds) {
 
-        this.context = context;
+        this.mContext = mContext;
         this.mBadgeMarketList = mSelectedBadgeIds;
 
     }
@@ -44,32 +46,27 @@ public class BadgesMarketAdapter extends RecyclerView.Adapter<BadgesMarketAdapte
 
     @Override
     public void onBindViewHolder(final RecyclerViewHolders holder, final int position) {
-        final ImageLoader imageLoader = new ImageLoader(context);
         holder.mTvMyBadgeName.setText(mBadgeMarketList.get(position).getName());
-        imageLoader.DisplayImage(mBadgeMarketList.get(position).getIcon(), holder.mIvMyBadgeIcon);
+        Glide.with(mContext).load(mBadgeMarketList.get(position).getIcon())
+                .thumbnail(1f)
+                .crossFade()
+                .diskCacheStrategy(DiskCacheStrategy.ALL)
+                .into(holder.mIvMyBadgeIcon);
 
-        if (mBadgeMarketList.get(position).getiSActive() == 0) {
-            holder.mIvGetThisBadge.setImageResource(R.drawable.badge_off);
-        } else {
-
-            holder.mIvGetThisBadge.setImageResource(R.drawable.badge_on);
-        }
-
-        holder.mIvGetThisBadge.setOnClickListener(new View.OnClickListener() {
+                 holder.mIvGetThisBadge.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
-                if (mBadgeMarketList.get(position).getiSActive() == 0) {
-                    holder.mIvGetThisBadge.setImageResource(R.drawable.badge_on);
-                    mBadgeMarketList.get(position).setiSActive(1);
-                    MyBadgesActivity.active=1;
-                    MyBadgesActivity.selectedBadgeId= mBadgeMarketList.get(position).getBadgeId();
+                if (mBadgeMarketList.get(position).isSelected()) {
+                    holder.mIvGetThisBadge.setImageResource(R.drawable.get_badge);
+//                    MyBadgesActivity.selectedBadgeId= mBadgeMarketList.get(position).getBadgeId();
+                    mBadgeMarketList.get(position).setSelected(false);
                 } else {
 
-                    holder.mIvGetThisBadge.setImageResource(R.drawable.badge_off);
-                    mBadgeMarketList.get(position).setiSActive(0);
-                    MyBadgesActivity.active=0;
-                    MyBadgesActivity.selectedBadgeId="";
+                    holder.mIvGetThisBadge.setImageResource(R.drawable.tick_badge);
+//                    mBadgeMarketList.get(position).setiSActive(0);
+                      mBadgeMarketList.get(position).setSelected(true);
+
                 }
 
             }

@@ -91,7 +91,7 @@ public class InviteContactAdapter extends RecyclerView.Adapter<InviteContactAdap
                     filteredData.get(position).setSelected(false);
                     if(InviteContactActivity.mSelectedContacts.contains(filteredData.get(position).getContactNumber())){
 
-                        InviteContactActivity.mSelectedContacts.remove((filteredData).get(position).getContactNumber());
+                        InviteContactActivity.mSelectedContacts.remove((filteredData).get(position).getContactNumber().trim());
                         InviteContactActivity.mSelectedContactName.remove(filteredData.get(position).getContactName());
                         Log.e("selected Contacts after remove",""+InviteContactActivity.mSelectedContacts+InviteContactActivity.mSelectedContacts.size());
                         Log.e("selected Contacts name after remove",""+InviteContactActivity.mSelectedContactName);
@@ -102,7 +102,7 @@ public class InviteContactAdapter extends RecyclerView.Adapter<InviteContactAdap
                 else if(InviteContactActivity.mSelectedContacts.size()<10) {
                     filteredData.get(position).setSelected(true);
                     InviteContactActivity.mSelectedContactName.add(filteredData.get(position).getContactName());
-                      InviteContactActivity.mSelectedContacts.add(filteredData.get(position).getContactNumber());
+                      InviteContactActivity.mSelectedContacts.add(filteredData.get(position).getContactNumber().trim());
                     Log.e("selected Contacts",""+InviteContactActivity.mSelectedContacts+InviteContactActivity.mSelectedContacts.size());
                     Log.e("selected Contacts name",""+InviteContactActivity.mSelectedContactName);
 

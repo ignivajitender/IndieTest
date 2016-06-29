@@ -16,6 +16,7 @@
     <color name="light_gray">#EFEFF4</color>
     <color name="light_black">#77000000</color>
     <color name="transparent">#00000000</color>
+    <color name="yellow">#EEE220</color>
 
 
 </resources>

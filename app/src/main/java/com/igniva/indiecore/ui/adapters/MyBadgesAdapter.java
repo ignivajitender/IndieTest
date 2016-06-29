@@ -46,6 +46,7 @@ public class MyBadgesAdapter extends RecyclerView.Adapter<MyBadgesAdapter.Recycl
     @Override
     public void onBindViewHolder(final RecyclerViewHolders holder, final int position) {
        // final ImageLoader imageLoader = new ImageLoader(mContext);
+
         holder.mTvMyBadgeName.setText(mSelectedBadgeIds.get(position).getName());
 
         // Glide Implementation

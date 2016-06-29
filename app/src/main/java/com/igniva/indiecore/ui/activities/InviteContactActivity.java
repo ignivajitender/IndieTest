@@ -230,11 +230,24 @@ public class InviteContactActivity extends BaseActivity {
             if (!Build.MANUFACTURER.contains("Samsung")) {
                 mNumber = mNumber.replace(",", ";");
             }
+
             mNumber = mNumber.replace("]", "");
             mNumber = mNumber.replace("[", "");
             Log.e("Passed contacts", "++" + mNumber);
             Log.e("PASSED LIST SIZE", "" + mSelectedContacts.size());
-            Uri smsToContacts = Uri.parse("sms to:" + Uri.encode(mNumber));
+
+
+            // NEW CODE
+//            Uri uri = Uri.parse("smsto:0800000123");
+//            Intent it = new Intent(Intent.ACTION_SENDTO, uri);
+//            it.putExtra("sms_body", "The SMS text");
+//            startActivity(it);
+
+
+            //
+
+            mNumber = mNumber.replace(" ", "");
+            Uri smsToContacts = Uri.parse("smsto:" + mNumber);
             Intent intent = new Intent(Intent.ACTION_SENDTO, smsToContacts);
             String message = "hello..please download this amazing app from.www.google-playstore/indiecore/";
             // message = message.replace("%s", StoresMessage.m_storeName);
