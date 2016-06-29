@@ -125,8 +125,9 @@ public class MyBadgesActivity extends BaseActivity {
                 mTVBadgesMArket.setBackgroundColor(Color.parseColor("#4598E8"));
                 break;
             case R.id.btn_load_more:
-
-
+                pageNumber=pageNumber+1;
+                badgeCount=badgeCount+20;
+                getBadgeMarketBadges();
                 break;
             default:
 
