@@ -30,7 +30,6 @@ public class TestActivity extends BaseActivity {
         setDataInViewObjects();
         // this is sidharth
         // this is sidharth 2
-
         // this is sidharth 4
 
 

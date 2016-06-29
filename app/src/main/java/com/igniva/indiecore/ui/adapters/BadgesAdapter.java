@@ -137,7 +137,7 @@ try {
                     intent.putExtras(bundle);
                     // Opening the activity
                     ((Activity) mContext).startActivityForResult(intent, REQUEST_CODE);
-                    Toast.makeText(mContext, "Recycle Click" + (position + ((BadgesActivity.pageNumber - 1) * BadgesActivity.badgeCount)), Toast.LENGTH_SHORT).show();
+                   // Toast.makeText(mContext, "Recycle Click" + (position + ((BadgesActivity.pageNumber - 1) * BadgesActivity.badgeCount)), Toast.LENGTH_SHORT).show();
                 }catch (Exception e){
                     e.printStackTrace();
                 }
