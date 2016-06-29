@@ -5,9 +5,11 @@ import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.GridLayoutManager;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -75,21 +77,42 @@ public class MyBadgesActivity extends BaseActivity {
         mRvMyBadges = (RecyclerView) findViewById(R.id.recycler_view_activity_mybadges);
         mRvMyBadges.setHasFixedSize(true);
         mRvMyBadges.setLayoutManager(mGlMAnager);
+
+       mRvMyBadges.addOnScrollListener(new RecyclerView.OnScrollListener() {
+           @Override
+           public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
+               super.onScrollStateChanged(recyclerView, newState);
+           }
+
+           @Override
+           public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+               super.onScrolled(recyclerView, dx, dy);
+               Log.d(LOG_TAG," dx is "+dx+" dy is "+dy);
+           }
+       });
+
     }
 
     @Override
     protected void setDataInViewObjects() {
 
         if (buttonIndex == 1) {
-            getMyBadges();
+
+            if (mSelectedBadgesList.size()<1){
+                getMyBadges();
+            }
+
             mMyBadgeAdapter = null;
             mRvMyBadges.setAdapter(mMyBadgeAdapter);
             //
             Log.e("", "set in adapter" + mSelectedBadgesList.size());
             mMyBadgeAdapter = new MyBadgesAdapter(MyBadgesActivity.this, mSelectedBadgesList);
             mRvMyBadges.setAdapter(mMyBadgeAdapter);
+            // Hide Load More Button
+            findViewById(R.id.btn_load_more).setVisibility(View.GONE);
         } else if (buttonIndex == 2) {
 
+            findViewById(R.id.btn_load_more).setVisibility(View.VISIBLE);
             if (mBadgeMarketList.size() < 1) {
                 // Service Call
                 getBadgeMarketBadges();
