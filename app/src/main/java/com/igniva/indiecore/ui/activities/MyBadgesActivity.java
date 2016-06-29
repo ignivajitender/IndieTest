@@ -41,19 +41,23 @@ public class MyBadgesActivity extends BaseActivity {
     BadgesMarketAdapter mBadgeMarketAdpter;
     Bundle bundle;
     ArrayList<BadgesPojo> mSelectedBadgesList = null;
-    ArrayList<BadgesPojo> badgeMarketList = null;
+    ArrayList<BadgesPojo> mBadgeMarketList = null;
     private BadgesDb db_badges;
     public static int active = 0;
     public static String selectedBadgeId = null;
     String LOG_TAG = "MyBadgeActivity";
     int buttonIndex = 1;
-    public int pageNumber = 1, badgeCount = 20, category = 0, mTotalBadgeCount = 0;
+    public int mPageNumber = 1, mBadgeCount = 20, category = 0, mTotalBadgeCount = 0;
 
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_mybadges);
+
+        mBadgeMarketList = new ArrayList<BadgesPojo>();
+        mSelectedBadgesList = new ArrayList<BadgesPojo>();
+
         initToolbar();
         setUpLayout();
         setDataInViewObjects();
@@ -62,10 +66,6 @@ public class MyBadgesActivity extends BaseActivity {
         Log.e("", "" + mSelectedBadgesList.size());
     }
 
-    @Override
-    protected void onResume() {
-        super.onResume();
-    }
 
     @Override
     protected void setUpLayout() {
@@ -89,13 +89,25 @@ public class MyBadgesActivity extends BaseActivity {
             mMyBadgeAdapter = new MyBadgesAdapter(MyBadgesActivity.this, mSelectedBadgesList);
             mRvMyBadges.setAdapter(mMyBadgeAdapter);
         } else if (buttonIndex == 2) {
-            badgeMarketList = new ArrayList<BadgesPojo>();
 
-            getBadgeMarketBadges();
+            if (mBadgeMarketList.size() < 1) {
+                // Service Call
+                getBadgeMarketBadges();
+            }  else {
+                // Display content only
+                updateBadgesMarket();
+            }
+
+
+
+//            else if (mBadgeMarketList.size() < mTotalBadgeCount) {
+//                // Service Call
+//                getBadgeMarketBadges();
+//            }
 
 //            mBadgeMarketAdpter = null;
-//            Log.e(LOG_TAG,"setting bin adpter"+badgeMarketList.size());
-//            mBadgeMarketAdpter = new BadgesMarketAdapter(MyBadgesActivity.this, badgeMarketList);
+//            Log.e(LOG_TAG,"setting bin adpter"+mBadgeMarketList.size());
+//            mBadgeMarketAdpter = new BadgesMarketAdapter(MyBadgesActivity.this, mBadgeMarketList);
 //            mRvMyBadges.setAdapter(mBadgeMarketAdpter);
 
         }
@@ -125,9 +137,9 @@ public class MyBadgesActivity extends BaseActivity {
                 mTVBadgesMArket.setBackgroundColor(Color.parseColor("#4598E8"));
                 break;
             case R.id.btn_load_more:
-                pageNumber=pageNumber+1;
-                badgeCount=badgeCount+20;
+                mPageNumber += 1;
                 getBadgeMarketBadges();
+
                 break;
             default:
 
@@ -142,10 +154,10 @@ public class MyBadgesActivity extends BaseActivity {
         mSelectedBadgesList = db_badges.retrieveSelectedBadges();
         Log.e("", "" + mSelectedBadgesList.toString());
         Log.e("", "" + mSelectedBadgesList.size());
-        if(mSelectedBadgesList.size()<40){
-            int count=40-mSelectedBadgesList.size();
-            for (int i=0;i<count;i++)
-            mSelectedBadgesList.add(new BadgesPojo());
+        if (mSelectedBadgesList.size() < 40) {
+            int count = 40 - mSelectedBadgesList.size();
+            for (int i = 0; i < count; i++)
+                mSelectedBadgesList.add(new BadgesPojo());
         }
     }
 
@@ -228,15 +240,21 @@ public class MyBadgesActivity extends BaseActivity {
     }
 
 
+    void updateBadgesMarket() {
+        mBadgeMarketAdpter = null;
+        Log.e(LOG_TAG, "setting bin adpter" + mBadgeMarketList.size());
+        mBadgeMarketAdpter = new BadgesMarketAdapter(MyBadgesActivity.this, mBadgeMarketList);
+        mRvMyBadges.setAdapter(mBadgeMarketAdpter);
+    }
+
     public void getBadgeMarketBadges() {
         try {
-            String payload_badge_market = createPayload(pageNumber, badgeCount, category);
+            String payload_badge_market = createPayload(mPageNumber, mBadgeCount, category);
             if (payload_badge_market != null) {
-
                 WebNotificationManager.registerResponseListener(responseHandlerListner);
                 WebServiceClient.getBadges(this, payload_badge_market, responseHandlerListner);
             }
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
@@ -248,14 +266,18 @@ public class MyBadgesActivity extends BaseActivity {
 
             if (error == null) {
                 if (result.getSuccess().equalsIgnoreCase("true")) {
-
                     mTotalBadgeCount = result.getTotal_badges();
-                    badgeMarketList.addAll(result.getBadges());
-                    Log.e(LOG_TAG,""+badgeMarketList.size());
-                    mBadgeMarketAdpter = null;
-                    Log.e(LOG_TAG,"setting bin adpter"+badgeMarketList.size());
-                    mBadgeMarketAdpter = new BadgesMarketAdapter(MyBadgesActivity.this, badgeMarketList);
-                    mRvMyBadges.setAdapter(mBadgeMarketAdpter);
+
+                    if (mBadgeMarketList.size() < mTotalBadgeCount) {
+                        mBadgeMarketList.addAll(result.getBadges());
+                    }
+
+                    if (mBadgeMarketList.size() >= mTotalBadgeCount) {
+                        findViewById(R.id.btn_load_more).setVisibility(View.GONE);
+                    }
+
+                    Log.e(LOG_TAG, "" + mBadgeMarketList.size());
+                    updateBadgesMarket();
 
                 }
             }

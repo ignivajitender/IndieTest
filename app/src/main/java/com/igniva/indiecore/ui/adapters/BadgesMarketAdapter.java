@@ -92,7 +92,7 @@ public class BadgesMarketAdapter extends RecyclerView.Adapter<BadgesMarketAdapte
 //                intent.putExtras(bundle);
 //                // Opening the activity
 //                ((Activity) context).startActivityForResult(intent,REQUEST_CODE);
-//                Toast.makeText(context, "Recycle Click" +(position+((BadgesActivity.pageNumber-1)*BadgesActivity.badgeCount)), Toast.LENGTH_SHORT).show();
+//                Toast.makeText(context, "Recycle Click" +(position+((BadgesActivity.mPageNumber-1)*BadgesActivity.mBadgeCount)), Toast.LENGTH_SHORT).show();
 //            }
 //        });
 

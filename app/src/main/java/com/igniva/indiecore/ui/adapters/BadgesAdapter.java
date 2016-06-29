@@ -237,7 +237,7 @@ public class BadgesAdapter extends RecyclerView.Adapter<BadgesAdapter.RecyclerVi
                     badgesList.add(i, originalList.get(badgePerPage * (pageNumber - 1) + i));
                 }
 //                // case 1 , size is more than 20
-//                if (totalBadgeCount-(pageNumber*badgePerPage)>=badgePerPage){
+//                if (totalBadgeCount-(mPageNumber*badgePerPage)>=badgePerPage){
 //                    int sizeOfList = originalList.size() - 1;
 //                    for (int i = 0; i < badgePerPage; i++) {
 //                        badgesList.add(i, originalList.get(badgePerPage + i));
