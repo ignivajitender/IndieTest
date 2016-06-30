@@ -56,30 +56,33 @@ public class MyBadgesAdapter extends RecyclerView.Adapter<MyBadgesAdapter.Recycl
         // final ImageLoader imageLoader = new ImageLoader(mContext);
 
         try {
-            if(mSelectedBadgeIds.get(position).getIsSelectedAsMyBadge()==0){
+            if(mSelectedBadgeIds.get(position).getIsSelectedAsMyBadge()==1){
+
+                holder.mIvOnOffBadge.setVisibility(View.VISIBLE);
+                holder.mTvMyBadgeName.setText(mSelectedBadgeIds.get(position).getName());
+                // Glide Implementation
+                Glide.with(mContext).load(mSelectedBadgeIds.get(position).getIcon())
+                        .thumbnail(1f)
+                        .crossFade()
+                        .diskCacheStrategy(DiskCacheStrategy.ALL)
+                        .into(holder.mIvMyBadgeIcon);
+
+            }else {
                 holder.mIvOnOffBadge.setVisibility(View.INVISIBLE);
                 holder.mIvMyBadgeIcon.setImageResource(R.drawable.add_badge);
-            }else {
-                holder.mIvOnOffBadge.setVisibility(View.VISIBLE);
             }
-            holder.mTvMyBadgeName.setText(mSelectedBadgeIds.get(position).getName());
-            // Glide Implementation
-            Glide.with(mContext).load(mSelectedBadgeIds.get(position).getIcon())
-                    .thumbnail(1f)
-                    .crossFade()
-                    .diskCacheStrategy(DiskCacheStrategy.ALL)
-                    .into(holder.mIvMyBadgeIcon);
+
 
 
             //
 
             // imageLoader.DisplayImage(mSelectedBadgeIds.get(position).getIcon(), holder.mIvMyBadgeIcon);
 
-            if (mSelectedBadgeIds.get(position).getiSActive() == 0) {
-                holder.mIvOnOffBadge.setImageResource(R.drawable.badge_off);
-            } else {
-                holder.mIvOnOffBadge.setImageResource(R.drawable.badge_on);
-            }
+//            if (mSelectedBadgeIds.get(position).getiSActive() == 0) {
+//                holder.mIvOnOffBadge.setImageResource(R.drawable.badge_off);
+//            } else {
+//                holder.mIvOnOffBadge.setImageResource(R.drawable.badge_on);
+//            }
         } catch (Exception e) {
             e.printStackTrace();
         }

@@ -26,7 +26,7 @@
         android:layout_centerHorizontal="true"
         android:layout_marginTop="12dp"
         android:scaleType="centerCrop"
-        android:src="@mipmap/ic_launcher" />
+        android:src="@drawable/add_badge" />
 
     <LinearLayout
         android:layout_marginRight="4dp"

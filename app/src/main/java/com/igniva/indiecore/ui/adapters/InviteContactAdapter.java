@@ -89,7 +89,7 @@ public class InviteContactAdapter extends RecyclerView.Adapter<InviteContactAdap
                 try {
 
 
-                    Utility.showToastMessageShort((Activity) context, "Clicked position is " + position);
+//                    Utility.showToastMessageShort((Activity) context, "Clicked position is " + position);
 
                     if (holder.mTicked.isChecked()) {
                         holder.mTicked.setChecked(false);

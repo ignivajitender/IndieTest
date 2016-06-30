@@ -88,8 +88,6 @@ public class BadgesAdapter extends RecyclerView.Adapter<BadgesAdapter.RecyclerVi
             public void onClick(View v) {
 
                 try {
-
-
                     if (itemList.get(position).isSelected()) {
                         holder.mIvActivateBadge.setImageResource(R.drawable.get_badge);
                         itemList.get(position).setSelected(false);

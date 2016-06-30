@@ -225,8 +225,7 @@ public class MyBadgesActivity extends BaseActivity {
                 int count = 10 - mSelectedBadgesList.size();
                 for (int i = 0; i < count; i++) {
                     BadgesPojo badgesPojo = new BadgesPojo();
-                    badgesPojo.setIsSelectedAsMyBadge(0);
-                    //
+
                     mSelectedBadgesList.add(badgesPojo);
                 }
             }
