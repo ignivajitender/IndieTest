@@ -142,7 +142,7 @@ public class BadgesDb extends SQLiteOpenHelper {
                     badgeModel.setIsPremium(cursor.getInt(5));
                     badgeModel.setPrice(cursor.getString(6));
                     badgeModel.setSku(cursor.getString(7));
-                    badgeModel.setIsSelectedAsMyBadge(8);
+                    badgeModel.setIsSelectedAsMyBadge(cursor.getInt(8));
                     myBadgesList.add(badgeModel);
                 }
             }
