@@ -34,7 +34,7 @@
             android:gravity="center"
             android:onClick="onClick"
             android:padding="4dp"
-            android:text="@string/my_badges"
+            android:text="@string/my_badge"
             android:textColor="@color/white"
             android:textSize="15sp" />
 
