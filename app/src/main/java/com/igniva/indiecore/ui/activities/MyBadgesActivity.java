@@ -292,7 +292,7 @@ public class MyBadgesActivity extends BaseActivity {
         }
     };
 
-    private String createPayload(String badgeId,int status) {
+    private String createPayload(String badgeId,String badgestatus) {
 //        token, userId, badgeId, active (0/1)
         JSONObject payload = null;
         try {
@@ -300,7 +300,7 @@ public class MyBadgesActivity extends BaseActivity {
             payload.put(Constants.TOKEN, PreferenceHandler.readString(this, PreferenceHandler.PREF_KEY_USER_TOKEN, ""));
             payload.put(Constants.USERID, PreferenceHandler.readString(this, PreferenceHandler.PREF_KEY_USER_ID, ""));
             payload.put(Constants.BADGEID, badgeId);
-            payload.put(Constants.ACTIVE, status);
+            payload.put(Constants.ACTIVE, badgestatus);
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -364,7 +364,6 @@ public class MyBadgesActivity extends BaseActivity {
         }
     }
 
-
     ResponseHandlerListener responseHandlerListner = new ResponseHandlerListener() {
         @Override
         public void onComplete(ResponsePojo result, WebServiceClient.WebError error, ProgressDialog mProgressDialog) {
@@ -421,7 +420,7 @@ public class MyBadgesActivity extends BaseActivity {
                 view.setImageResource(R.drawable.badge_on);
                 mSelectedBadgesList.get(position).setActive(1);
 
-                String payload = createPayload(mSelectedBadgesList.get(position).getBadgeId(),mSelectedBadgesList.get(position).getActive());
+                String payload = createPayload(mSelectedBadgesList.get(position).getBadgeId(),String.valueOf(mSelectedBadgesList.get(position).getActive()));
                 try {
 
                     if (payload != null) {
@@ -436,7 +435,7 @@ public class MyBadgesActivity extends BaseActivity {
             } else {
                 view.setImageResource(R.drawable.badge_off);
                 mSelectedBadgesList.get(position).setActive(0);
-                String payload = createPayload(mSelectedBadgesList.get(position).getBadgeId(),mSelectedBadgesList.get(position).getActive());
+                String payload = createPayload(mSelectedBadgesList.get(position).getBadgeId(),String.valueOf(mSelectedBadgesList.get(position).getActive()));
                 try {
 
                     if (payload != null) {

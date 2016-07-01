@@ -85,27 +85,25 @@ public class BadgesDb extends SQLiteOpenHelper {
         }
     }
 
-
-    public ArrayList<BadgesPojo> getMyBadges() {
-        SQLiteDatabase database = this.getReadableDatabase();
-        Cursor cursor = database.query(TABLE_BADGES, null, null, null, null, null, null);
-        ArrayList<BadgesPojo> badges = new ArrayList<BadgesPojo>();
-        BadgesPojo badgeModel;
-        if (cursor.getCount() > 0) {
-            for (int i = 0; i < cursor.getCount(); i++) {
-                cursor.moveToNext();
-                badgeModel = new BadgesPojo();
-//                badgeModel.set(cursor.getString(0));
-//                badgeModel.setFirstName(cursor.getString(1));
-//                badgeModel.setLastName(cursor.getString(2));
 //
-                badges.add(badgeModel);
-            }
-        }
-        cursor.close();
-        database.close();
-        return badges;
-    }
+//    public void updateSin(SQLiteDatabase db, BadgesPojo badges) {
+//        try {
+//            ContentValues values = new ContentValues();
+//            values.put(S_NO,1);
+//            values.put(BADGE_ID, badges.getBadgeId()); // Contact Phone Number
+//            values.put(BADGE_NAME, badges.getName());
+//            values.put(BADGE_DESC, badges.getDescription());
+//            values.put(BADGE_ICON, badges.getIcon());
+//            values.put(IS_PREMIUM, badges.getIsPremium());
+//            values.put(BADGE_PRICE, badges.getPrice());
+//            values.put(BADGE_SKU, badges.getSku());
+//            values.put(IS_ACTIVE, badges.getActive());
+//            // update Single Row
+////            db.updateWithOnConflict(TABLE_BADGES,values,,null);
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//        }
+//    }
 
 
     public void insertAllBadges(ArrayList<BadgesPojo> mTotalBadges) {
