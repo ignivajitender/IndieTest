@@ -87,6 +87,12 @@
     <string name="my_badge">My Badges</string>
     <string name="badge_market">Badges Market</string>
 
+
+    <!--check-In-->
+    <string name="trending">Trending</string>
+    <string name="near_by">NearBy</string>
+    <string name="find">Find</string>
+
     <!--Country-->
     <array name="country_name">
         <item name="Afghanistan"></item>

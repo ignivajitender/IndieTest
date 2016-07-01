@@ -60,6 +60,7 @@ public class ResponsePojo {
     public void setUserId(String userId) {
         this.userId = userId;
     }
+
     public int getTotal_badges() {
         return total_badges;
     }
@@ -79,30 +80,39 @@ public class ResponsePojo {
     public ArrayList<BadgesPojo> getBadges() {
         return badges;
     }
+
     public void setBadges(ArrayList<BadgesPojo> badges) {
         this.badges = badges;
     }
+
     public String getError() {
         return error;
     }
+
     public String getSuccess() {
         return success;
     }
+
     public void setSuccess(String success) {
         this.success = success;
     }
+
     public void setError(String error) {
         this.error = error;
     }
+
     public String getDescription() {
         return description;
     }
+
     public void setDescription(String description) {
         this.description = description;
     }
+
     public int getStatus() {
         return status;
     }
+
     public void setStatus(int status) {
         this.status = status;
     }

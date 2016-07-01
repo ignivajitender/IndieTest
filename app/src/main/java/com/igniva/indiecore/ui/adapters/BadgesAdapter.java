@@ -91,13 +91,13 @@ public class BadgesAdapter extends RecyclerView.Adapter<BadgesAdapter.RecyclerVi
                     if (itemList.get(position).isSelected()) {
                         holder.mIvActivateBadge.setImageResource(R.drawable.get_badge);
                         itemList.get(position).setSelected(false);
-                        itemList.get(position).setIsSelectedAsMyBadge(0);
+                        itemList.get(position).setActive(0);
                         itemList.get(position).setIsPremium(0);
                         removeBadgeIds(position);
                     } else if (mSelectedBadgeIds.size() < 10) {
                         holder.mIvActivateBadge.setImageResource(R.drawable.tick_badge);
                         itemList.get(position).setSelected(true);
-                        itemList.get(position).setIsSelectedAsMyBadge(1);
+                        itemList.get(position).setActive(1);
                         itemList.get(position).setIsPremium(1);
 
                         addSelectedBadgeIds(position);
@@ -160,7 +160,7 @@ public class BadgesAdapter extends RecyclerView.Adapter<BadgesAdapter.RecyclerVi
                 if (mSelectedBadgeIds.size() < 10) {
 
                     itemList.get(pos).setSelected(true);
-                    itemList.get(pos).setIsSelectedAsMyBadge(1);
+                    itemList.get(pos).setActive(1);
                     itemList.get(pos).setIsPremium(0);
                     addSelectedBadgeIds(pos);
 

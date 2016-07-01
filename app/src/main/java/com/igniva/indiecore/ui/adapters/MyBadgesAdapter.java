@@ -15,6 +15,7 @@ import android.widget.Toast;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.igniva.indiecore.R;
+import com.igniva.indiecore.controller.OnCardClickListner;
 import com.igniva.indiecore.model.BadgesPojo;
 import com.igniva.indiecore.ui.activities.BadgeDetailActivity;
 import com.igniva.indiecore.ui.activities.BadgesActivity;
@@ -34,13 +35,13 @@ public class MyBadgesAdapter extends RecyclerView.Adapter<MyBadgesAdapter.Recycl
     public static final int REQUEST_CODE = 500;
     String LOG_TAG = "BadgesAdapter";
     private ArrayList<BadgesPojo> mSelectedBadgeIds;
+    private final OnCardClickListner listener;
 
-
-    public MyBadgesAdapter(Context context, ArrayList<BadgesPojo> mSelectedBadgeIds) {
+    public MyBadgesAdapter(Context context, ArrayList<BadgesPojo> mSelectedBadgeIds, OnCardClickListner onCardClickListner) {
 
         this.mContext = context;
         this.mSelectedBadgeIds = mSelectedBadgeIds;
-
+        this.listener = onCardClickListner;
     }
 
     @Override
@@ -56,7 +57,7 @@ public class MyBadgesAdapter extends RecyclerView.Adapter<MyBadgesAdapter.Recycl
         // final ImageLoader imageLoader = new ImageLoader(mContext);
 
         try {
-            if(mSelectedBadgeIds.get(position).getIsSelectedAsMyBadge()==1){
+            if(!(mSelectedBadgeIds.get(position).getBadgeId()==null)){
 
                 holder.mIvOnOffBadge.setVisibility(View.VISIBLE);
                 holder.mTvMyBadgeName.setText(mSelectedBadgeIds.get(position).getName());
@@ -72,41 +73,44 @@ public class MyBadgesAdapter extends RecyclerView.Adapter<MyBadgesAdapter.Recycl
                 holder.mIvMyBadgeIcon.setImageResource(R.drawable.add_badge);
             }
 
+            if(mSelectedBadgeIds.get(position).getActive()==1){
+                holder.mIvOnOffBadge.setImageResource(R.drawable.badge_on);
 
+            }else {
+                holder.mIvOnOffBadge.setImageResource(R.drawable.badge_off);
+            }
 
-            //
-
-            // imageLoader.DisplayImage(mSelectedBadgeIds.get(position).getIcon(), holder.mIvMyBadgeIcon);
-
-//            if (mSelectedBadgeIds.get(position).getiSActive() == 0) {
-//                holder.mIvOnOffBadge.setImageResource(R.drawable.badge_off);
-//            } else {
-//                holder.mIvOnOffBadge.setImageResource(R.drawable.badge_on);
-//            }
         } catch (Exception e) {
             e.printStackTrace();
         }
 
+//        holder.mIvOnOffBadge.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                try {
+//
+//                    if (mSelectedBadgeIds.get(position).getActive() == 0) {
+//                        holder.mIvOnOffBadge.setImageResource(R.drawable.badge_on);
+//                        mSelectedBadgeIds.get(position).setActive(1);
+//                        MyBadgesActivity.active = 1;
+//                        MyBadgesActivity.selectedBadgeId = mSelectedBadgeIds.get(position).getBadgeId();
+//                    } else {
+//
+//                        holder.mIvOnOffBadge.setImageResource(R.drawable.badge_off);
+//                        mSelectedBadgeIds.get(position).setActive(0);
+//                        MyBadgesActivity.active = 0;
+//                        MyBadgesActivity.selectedBadgeId = "";
+//                    }
+//                } catch (Exception e) {
+//                    e.printStackTrace();
+//                }
+//            }
+//        });
+
         holder.mIvOnOffBadge.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                try {
-
-                    if (mSelectedBadgeIds.get(position).getiSActive() == 0) {
-                        holder.mIvOnOffBadge.setImageResource(R.drawable.badge_on);
-                        mSelectedBadgeIds.get(position).setiSActive(1);
-                        MyBadgesActivity.active = 1;
-                        MyBadgesActivity.selectedBadgeId = mSelectedBadgeIds.get(position).getBadgeId();
-                    } else {
-
-                        holder.mIvOnOffBadge.setImageResource(R.drawable.badge_off);
-                        mSelectedBadgeIds.get(position).setiSActive(0);
-                        MyBadgesActivity.active = 0;
-                        MyBadgesActivity.selectedBadgeId = "";
-                    }
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
+                listener.onCardClicked(holder.mIvOnOffBadge,position);
             }
         });
         //holder.mIvBadgeIcon.setImageResource(itemList.get(position).getIcon());
@@ -167,6 +171,7 @@ public class MyBadgesAdapter extends RecyclerView.Adapter<MyBadgesAdapter.Recycl
 
         }
     }
+
 
 
 }

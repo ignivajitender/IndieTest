@@ -9,12 +9,15 @@ import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.igniva.indiecore.R;
+import com.igniva.indiecore.controller.OnCardClickListner;
 import com.igniva.indiecore.controller.ResponseHandlerListener;
 import com.igniva.indiecore.controller.WebNotificationManager;
 import com.igniva.indiecore.controller.WebServiceClient;
@@ -47,8 +50,8 @@ public class MyBadgesActivity extends BaseActivity {
     ArrayList<BadgesPojo> mSelectedBadgesList = null;
     ArrayList<BadgesPojo> mBadgeMarketList = null;
     private BadgesDb db_badges;
-    public static int active = 0;
-    public static String selectedBadgeId = null;
+    public  int active = 0;
+    public  String selectedBadgeId = null;
     String LOG_TAG = "MyBadgeActivity";
     int buttonIndex = 1;
     public int mPageNumber = 1, mBadgeCount = 20, category = 0, mTotalBadgeCount = 0;
@@ -87,6 +90,7 @@ public class MyBadgesActivity extends BaseActivity {
             mRvMyBadges.setHasFixedSize(true);
             mRvMyBadges.setLayoutManager(mGlMAnager);
 
+
             mRvMyBadges.addOnScrollListener(new RecyclerView.OnScrollListener() {
                 @Override
                 public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
@@ -124,6 +128,25 @@ public class MyBadgesActivity extends BaseActivity {
                     }
                 }
             });
+            //
+            mRvMyBadges.addOnItemTouchListener(new RecyclerView.OnItemTouchListener() {
+                @Override
+                public boolean onInterceptTouchEvent(RecyclerView rv, MotionEvent e) {
+                    return false;
+                }
+
+                @Override
+                public void onTouchEvent(RecyclerView rv, MotionEvent e) {
+
+                    rv.findViewById(R.id.iv_badge_on_off);
+                }
+
+                @Override
+                public void onRequestDisallowInterceptTouchEvent(boolean disallowIntercept) {
+
+                }
+            });
+
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -135,7 +158,6 @@ public class MyBadgesActivity extends BaseActivity {
         super.onNewIntent(intent);
         buttonIndex = 2;
         setDataInViewObjects();
-
     }
 
     @Override
@@ -158,8 +180,9 @@ public class MyBadgesActivity extends BaseActivity {
                 mRvMyBadges.setAdapter(mMyBadgeAdapter);
                 //
                 Log.e("", "set in adapter" + mSelectedBadgesList.size());
-                mMyBadgeAdapter = new MyBadgesAdapter(MyBadgesActivity.this, mSelectedBadgesList);
+                mMyBadgeAdapter = new MyBadgesAdapter(MyBadgesActivity.this, mSelectedBadgesList, onCardClickListner);
                 mRvMyBadges.setAdapter(mMyBadgeAdapter);
+//                mMyBadgeAdapter.
                 // Hide Load More Button
                 findViewById(R.id.btn_load_more).setVisibility(View.GONE);
             } else if (buttonIndex == 2) {
@@ -240,24 +263,26 @@ public class MyBadgesActivity extends BaseActivity {
     *
     *
     * */
-    public void onOffBadges() {
-        try {
-            String payload = createPayload();
-            if (payload != null) {
-                WebNotificationManager.registerResponseListener(responseListner);
-                WebServiceClient.onOffMyBadges(this, payload, responseListner);
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
+//    public void onOffBadges() {
+//        try {
+//
+//            if (payload != null) {
+//                WebNotificationManager.registerResponseListener(responseListner);
+//                WebServiceClient.onOffMyBadges(this, payload, responseListner);
+//            }
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//        }
+//    }
 
     ResponseHandlerListener responseListner = new ResponseHandlerListener() {
         @Override
         public void onComplete(ResponsePojo result, WebServiceClient.WebError error, ProgressDialog mProgressDialog) {
 
             if (error == null) {
-
+                Toast.makeText(MyBadgesActivity.this,"success",Toast.LENGTH_SHORT).show();
+            }else {
+                Toast.makeText(MyBadgesActivity.this,"success",Toast.LENGTH_SHORT).show();
             }
             // Always close the progressdialog
             if (mProgressDialog != null && mProgressDialog.isShowing()) {
@@ -267,15 +292,15 @@ public class MyBadgesActivity extends BaseActivity {
         }
     };
 
-    private String createPayload() {
+    private String createPayload(String badgeId,int status) {
 //        token, userId, badgeId, active (0/1)
         JSONObject payload = null;
         try {
             payload = new JSONObject();
             payload.put(Constants.TOKEN, PreferenceHandler.readString(this, PreferenceHandler.PREF_KEY_USER_TOKEN, ""));
             payload.put(Constants.USERID, PreferenceHandler.readString(this, PreferenceHandler.PREF_KEY_USER_ID, ""));
-            payload.put(Constants.BADGEID, selectedBadgeId);
-            payload.put(Constants.ACTIVE, active);
+            payload.put(Constants.BADGEID, badgeId);
+            payload.put(Constants.ACTIVE, status);
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -386,5 +411,44 @@ public class MyBadgesActivity extends BaseActivity {
         return payloadJson.toString();
     }
 
+
+    OnCardClickListner onCardClickListner = new OnCardClickListner() {
+        @Override
+        public void onCardClicked(ImageView view, int position) {
+            Utility.showToastMessageShort(MyBadgesActivity.this, "Position is " + position);
+
+            if (mSelectedBadgesList.get(position).getActive() == 0) {
+                view.setImageResource(R.drawable.badge_on);
+                mSelectedBadgesList.get(position).setActive(1);
+
+                String payload = createPayload(mSelectedBadgesList.get(position).getBadgeId(),mSelectedBadgesList.get(position).getActive());
+                try {
+
+                    if (payload != null) {
+                        Log.e("on payload","++"+payload.toString());
+
+                        WebNotificationManager.registerResponseListener(responseListner);
+                        WebServiceClient.onOffMyBadges(MyBadgesActivity.this, payload, responseListner);
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            } else {
+                view.setImageResource(R.drawable.badge_off);
+                mSelectedBadgesList.get(position).setActive(0);
+                String payload = createPayload(mSelectedBadgesList.get(position).getBadgeId(),mSelectedBadgesList.get(position).getActive());
+                try {
+
+                    if (payload != null) {
+                        Log.e("off payload","++"+payload.toString());
+                        WebNotificationManager.registerResponseListener(responseListner);
+                        WebServiceClient.onOffMyBadges(MyBadgesActivity.this, payload, responseListner);
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+    };
 
 }

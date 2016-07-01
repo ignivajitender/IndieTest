@@ -4,6 +4,8 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.ImageView;
@@ -12,14 +14,13 @@ import android.widget.TextView;
 import com.aurelhubert.ahbottomnavigation.AHBottomNavigation;
 import com.aurelhubert.ahbottomnavigation.AHBottomNavigationItem;
 import com.igniva.indiecore.R;
-import com.igniva.indiecore.utils.Utility;
-
 /**
  * Created by igniva-andriod-05 on 29/6/16.
  */
 public class DashBoardActivity extends BaseActivity {
 
     AHBottomNavigation bottomNavigation;
+    Fragment mFragment;
     Toolbar mToolbar;
     TextView mTvTitle;
     @Override
@@ -34,6 +35,12 @@ public class DashBoardActivity extends BaseActivity {
     @Override
     protected void setUpLayout() {
          bottomNavigation = (AHBottomNavigation) findViewById(R.id.bottom_navigation);
+//        FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+//// Replace the contents of the container with the new fragment
+//        ft.replace(R.id.five_fragment, new CheckInFragment());
+//// or ft.add(R.id.your_placeholder, new FooFragment());
+//// Complete the changes added above
+//        ft.commit();
     }
 
     void initToolbar() {

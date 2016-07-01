@@ -57,8 +57,6 @@ public class BadgesMarketAdapter extends RecyclerView.Adapter<BadgesMarketAdapte
     public void onBindViewHolder(final RecyclerViewHolders holder, final int position) {
 
         try {
-
-
             holder.mTvMyBadgeName.setText(mBadgeMarketList.get(position).getName());
             Glide.with(mContext).load(mBadgeMarketList.get(position).getIcon())
                     .thumbnail(1f)
@@ -74,14 +72,11 @@ public class BadgesMarketAdapter extends RecyclerView.Adapter<BadgesMarketAdapte
             @Override
             public void onClick(View v) {
                 try {
-
-
                     if (mBadgeMarketList.get(position).isSelected()) {
                         holder.mIvGetThisBadge.setImageResource(R.drawable.get_badge);
 //                     MyBadgesActivity.selectedBadgeId= mBadgeMarketList.get(position).getBadgeId();
                         mBadgeMarketList.get(position).setSelected(false);
                     } else {
-
                         holder.mIvGetThisBadge.setImageResource(R.drawable.tick_badge);
 //                    mBadgeMarketList.get(position).setiSActive(0);
                         mBadgeMarketList.get(position).setSelected(true);

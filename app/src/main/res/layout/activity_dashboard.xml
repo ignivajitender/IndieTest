@@ -7,18 +7,14 @@
         android:id="@+id/toolbar_with_icon"
         layout="@layout/toolbar_with_image_at_right" />
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_centerInParent="true"
-        android:text="Coming Soon"
-        android:textColor="@color/black"
-        android:textSize="30dp"/>
+
+
 
     <com.aurelhubert.ahbottomnavigation.AHBottomNavigation
         android:id="@+id/bottom_navigation"
         android:layout_width="match_parent"
         android:background="@color/white"
+        android:layout_below="@+id/toolbar_with_icon"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"/>
 

@@ -1,5 +1,6 @@
 package com.igniva.indiecore.model;
 
+import java.io.PipedReader;
 import java.io.Serializable;
 
 /**
@@ -14,10 +15,19 @@ import java.io.Serializable;
     private String name;
     private String description;
     private boolean isSelected;
-    private int isSelectedAsMyBadge;
     private int isPremium;
-    private int iSActive;
     private int sr_no;
+    private int active;
+
+
+
+    public int getActive() {
+        return active;
+    }
+
+    public void setActive(int active) {
+        this.active = active;
+    }
 
     public boolean isNewUser() {
         return newUser;
@@ -39,14 +49,6 @@ import java.io.Serializable;
 
 
 
-    public int getiSActive() {
-        return iSActive;
-    }
-
-    public void setiSActive(int iSActive) {
-        this.iSActive = iSActive;
-    }
-
     public int getIsPremium() {
         return isPremium;
     }
@@ -54,16 +56,6 @@ import java.io.Serializable;
     public void setIsPremium(int isPremium) {
         this.isPremium = isPremium;
     }
-
-    public int getIsSelectedAsMyBadge() {
-        return isSelectedAsMyBadge;
-    }
-
-    public void setIsSelectedAsMyBadge(int isSelectedAsMyBadge) {
-        this.isSelectedAsMyBadge = isSelectedAsMyBadge;
-    }
-
-
 
 
     public String getCategory() {

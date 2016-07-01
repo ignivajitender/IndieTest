@@ -99,7 +99,7 @@ e.printStackTrace();
             imageLoader.DisplayImage(badge.getIcon(), mBadgeIcon);
 
 
-            if(badge.getIsSelectedAsMyBadge()==1){
+            if(badge.getActive()==1){
                 mGetThisBadge.setVisibility(View.GONE);
             }else{
                 mGetThisBadge.setVisibility(View.VISIBLE);

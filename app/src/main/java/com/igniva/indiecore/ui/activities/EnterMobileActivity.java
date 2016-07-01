@@ -14,6 +14,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.igniva.indiecore.controller.WebServiceClient;
+import com.igniva.indiecore.db.BadgesDb;
+import com.igniva.indiecore.model.BadgesPojo;
 import com.igniva.indiecore.model.ResponsePojo;
 import com.igniva.indiecore.utils.Constants;
 import com.igniva.indiecore.utils.Log;
@@ -28,6 +30,8 @@ import org.json.JSONObject;
 
 import com.igniva.indiecore.R;
 
+import java.util.ArrayList;
+
 /**
  * Created by igniva-andriod-05 on 2/6/16.
  */
@@ -38,6 +42,7 @@ public class EnterMobileActivity extends BaseActivity {
     String countryId, mobileNumber;
     private EditText mEtMobileNumber, mEtCountryCode;
     Toolbar mToolbar;
+    BadgesDb dbBadges;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -200,9 +205,13 @@ public class EnterMobileActivity extends BaseActivity {
                             startActivity(in);
 
                         } else {
+
+                            insertRecords(result.getBadges());
                             // save in preferences
                             PreferenceHandler.writeString(EnterMobileActivity.this, PreferenceHandler.PREF_KEY_USER_TOKEN, result.getToken());
                             PreferenceHandler.writeString(EnterMobileActivity.this, PreferenceHandler.PREF_KEY_USER_ID, result.getUserId());
+                            PreferenceHandler.writeString(EnterMobileActivity.this,PreferenceHandler.COVER_PIC_URL,result.getProfile().getCoverPic());
+                            PreferenceHandler.writeString(EnterMobileActivity.this,PreferenceHandler.PROFILE_PIC_URL,result.getProfile().getProfilePic());
                             //
                             Intent in = new Intent(EnterMobileActivity.this, CreateProfileActivity.class);
                             Bundle bundle = new Bundle();
@@ -241,6 +250,24 @@ public class EnterMobileActivity extends BaseActivity {
             }
         }
     };
+
+
+/*
+* insert  badges record  in the db for a existing user
+*
+* */
+
+
+    public void insertRecords(ArrayList<BadgesPojo> userBadges) {
+        try{
+            dbBadges = new BadgesDb(this);
+            dbBadges.insertAllBadges(userBadges);
+
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+
+    }
 
     /**
      * To build json to send with  login call
