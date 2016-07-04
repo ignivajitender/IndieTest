@@ -4,15 +4,21 @@ import android.app.ProgressDialog;
 import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
+import android.os.Handler;
 import android.provider.ContactsContract;
 import android.support.annotation.Nullable;
+import android.support.design.widget.FloatingActionButton;
+import android.support.design.widget.Snackbar;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.view.Window;
 import android.view.accessibility.AccessibilityManager;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.github.jorgecastilloprz.FABProgressCircle;
+import com.github.jorgecastilloprz.listeners.FABProgressListener;
 import com.igniva.indiecore.R;
 import com.igniva.indiecore.controller.ResponseHandlerListener;
 import com.igniva.indiecore.controller.WebNotificationManager;
@@ -27,13 +33,17 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 
-public class SyncContactsActivity extends  BaseActivity implements View.OnClickListener{
+public class SyncContactsActivity extends  BaseActivity implements View.OnClickListener,FABProgressListener{
 
     Toolbar mToolbar;
     ArrayList<String> mNumbers= null;
     private int numberLength;
+    private TextView mStartSync;
     private String mCountryCode;
     private  String COUNTRY_PREFIX="";
+    FABProgressCircle fabProgressCircle;
+    FloatingActionButton fab;
+    ImageView img_btn;
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -51,6 +61,8 @@ public class SyncContactsActivity extends  BaseActivity implements View.OnClickL
             TextView mTvNext = (TextView) mToolbar.findViewById(R.id.toolbar_next);
             mTvNext.setVisibility(View.GONE);
             //
+
+            mStartSync =(TextView) findViewById(R.id.tv_start_sync);
             setSupportActionBar(mToolbar);
             getSupportActionBar().setDisplayShowTitleEnabled(false);
         } catch (Exception e) {
@@ -58,8 +70,42 @@ public class SyncContactsActivity extends  BaseActivity implements View.OnClickL
             mToolbar = (Toolbar) findViewById(R.id.toolbar);
         }
 
+        fabProgressCircle =(FABProgressCircle)findViewById(R.id.fabProgressCircle);
+        fab = (FloatingActionButton) findViewById(R.id.fab);
+        img_btn=(ImageView)findViewById(R.id.img_btn);
+        img_btn.setVisibility(View.GONE);
+
+        fab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                fabProgressCircle.show();
+                mStartSync.setText("Syncing..");
+                getAllContacts();
+                syncContacts();
+            }
+        });
+
     }
 
+
+    @Override
+    public void onFABProgressAnimationEnd() {
+        img_btn.setVisibility(View.VISIBLE);
+        mStartSync.setText("successful");
+        Snackbar.make(fabProgressCircle, "Complete", Snackbar.LENGTH_LONG).show();
+//        Toast.makeText(getApplicationContext(),getResources().getString(R.string.contact_sync_successful),Toast.LENGTH_LONG).show();
+
+
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                startActivity(new Intent(SyncContactsActivity.this,BadgesActivity.class));
+
+            }
+        }, 3000);
+        //fabProgressCircle.setForeground(getResources().getDrawable(R.drawable.done));
+
+    }
 
     @Override
     protected void setUpLayout() {
@@ -148,8 +194,9 @@ try{
                     // start parsing
                     if (result.getSuccess().equalsIgnoreCase("true")) {
 
-                        Toast.makeText(getApplicationContext(),getResources().getString(R.string.contact_sync_successful),Toast.LENGTH_LONG).show();
-                        startActivity(new Intent(SyncContactsActivity.this,BadgesActivity.class));
+                        fabProgressCircle.beginFinalAnimation();
+                        fabProgressCircle.attachListener(SyncContactsActivity.this);
+
 
                     }
                 } else {
@@ -181,10 +228,10 @@ try{
                 startActivity(new Intent(this,BadgesActivity.class));
                 break;
 
-            case R.id.iv_syncbtn:
-                getAllContacts();
-                syncContacts();
-                break;
+//            case R.id.iv_syncbtn:
+//                getAllContacts();
+//                syncContacts();
+//                break;
         }
     }
 }

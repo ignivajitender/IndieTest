@@ -29,6 +29,7 @@ public class BadgeDetailActivity extends BaseActivity {
     private String badgeId;
     BadgesPojo badge;
     Bundle bundle;
+    private int index = 0;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -75,8 +76,8 @@ public class BadgeDetailActivity extends BaseActivity {
             mBadgeName = (TextView) findViewById(R.id.tv_badge_name);
             mBadgeDesc = (TextView) findViewById(R.id.tv_badge_desc);
             mGetThisBadge = (ImageView) findViewById(R.id.btn_get_this_badge);
-        }catch (Exception e){
-e.printStackTrace();
+        } catch (Exception e) {
+            e.printStackTrace();
         }
 
 
@@ -85,23 +86,23 @@ e.printStackTrace();
     @Override
     protected void setDataInViewObjects() {
         try {
-           // BadgesPojo badge = getIntent().getParcelableExtra("BadgeData");
-            bundle=getIntent().getExtras();
-            badge= (BadgesPojo) bundle.getSerializable("badgePojo");
+            // BadgesPojo badge = getIntent().getParcelableExtra("BadgeData");
+            bundle = getIntent().getExtras();
+            badge = (BadgesPojo) bundle.getSerializable("badgePojo");
+            index = bundle.getInt("INDEX");
             ImageLoader imageLoader = new ImageLoader(BadgeDetailActivity.this);
-
 
 
             Log.e("", "" + badge.toString());
             mBadgeName.setText(badge.getName());
             mBadgeDesc.setText(badge.getDescription());
-            badgeId=badge.getBadgeId();
+            badgeId = badge.getBadgeId();
             imageLoader.DisplayImage(badge.getIcon(), mBadgeIcon);
 
 
-            if(badge.isSelected()==true){
+            if (index == 1) {
                 mGetThisBadge.setVisibility(View.GONE);
-            }else{
+            } else {
                 mGetThisBadge.setVisibility(View.VISIBLE);
             }
 
@@ -116,7 +117,7 @@ e.printStackTrace();
     @Override
     protected void onClick(View v) {
 
-        switch (v.getId()){
+        switch (v.getId()) {
 
             case R.id.btn_get_this_badge:
 
@@ -144,11 +145,11 @@ e.printStackTrace();
 
                     AlertDialog alert11 = builder1.create();
                     alert11.show();
-                }catch (Exception e){
+                } catch (Exception e) {
                     e.printStackTrace();
                 }
 
-               // Utility.showAlertDialogGetBadge("Do you want to add this badge to your list",this);
+                // Utility.showAlertDialogGetBadge("Do you want to add this badge to your list",this);
 
 
                 break;

@@ -124,6 +124,7 @@ public class MyBadgesAdapter extends RecyclerView.Adapter<MyBadgesAdapter.Recycl
                 if (!(mSelectedBadgeIds.get(position).getName()==null)) {
                     Bundle bundle = new Bundle();
                     bundle.putInt(Constants.POSITION, position);
+                    bundle.putInt("INDEX",1);
                     bundle.putSerializable("badgePojo", mSelectedBadgeIds.get(position));
                     // Creating an intent to open the activity StudentViewActivity
                     Intent intent = new Intent(mContext, BadgeDetailActivity.class);

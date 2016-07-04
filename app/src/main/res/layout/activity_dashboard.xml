@@ -8,7 +8,10 @@
         layout="@layout/toolbar_with_image_at_right" />
 
 
-
+<FrameLayout
+    android:layout_width="match_parent"
+    android:id="@+id/fl_fragment_container"
+    android:layout_height="wrap_content"></FrameLayout>
 
     <com.aurelhubert.ahbottomnavigation.AHBottomNavigation
         android:id="@+id/bottom_navigation"
