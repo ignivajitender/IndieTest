@@ -1,65 +1,140 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical" android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
 
 
-    <fragment xmlns:android="http://schemas.android.com/apk/res/android"
-        android:id="@+id/map"
-        android:layout_width="match_parent"
-        android:layout_height="200dp"
-        class="com.google.android.gms.maps.SupportMapFragment" />
     <LinearLayout
-        android:id="@+id/ll_tabs"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/toolbar_with_icon"
-        android:layout_marginLeft="20dp"
-        android:layout_marginRight="20dp"
-        android:layout_marginTop="20dp"
-        android:background="@drawable/simple_border_line_style"
-        android:orientation="horizontal">
+        android:layout_height="match_parent"
+        android:orientation="vertical">
 
-        <TextView
-            android:id="@+id/tv_trending"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_centerHorizontal="true"
-            android:layout_margin="1dp"
-            android:layout_weight="1"
-            android:background="@color/blue_clicked"
-            android:gravity="center"
-            android:onClick="onClick"
-            android:padding="4dp"
-            android:text="@string/trending"
-            android:textColor="@color/white"
-            android:textSize="15sp" />
+        <LinearLayout
 
-        <TextView
-            android:id="@+id/tv_nearby"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_centerHorizontal="true"
-            android:layout_margin="1dp"
-            android:layout_weight="1"
-            android:gravity="center"
-            android:onClick="onClick"
-            android:padding="4dp"
-            android:text="@string/near_by"
-            android:textColor="@color/blue_clicked"
-            android:textSize="15sp" />
-        <TextView
-            android:id="@+id/tv_find"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_centerHorizontal="true"
-            android:layout_margin="1dp"
-            android:layout_weight="1"
-            android:gravity="center"
-            android:onClick="onClick"
-            android:padding="4dp"
-            android:text="@string/find"
-            android:textColor="@color/blue_clicked"
-            android:textSize="15sp" />
+            android:id="@+id/ll_maps_container"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_below="@+id/ll_header"
+            android:layout_weight="4"
+            android:background="#ffffff"
+            android:orientation="vertical"
+            android:visibility="gone">
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:visibility="visible"
+            android:layout_below="@+id/rl_tabs"
+            android:id="@+id/ll_Search"
+            android:layout_marginTop="50dp"
+            android:background="@color/light_gray"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+            <LinearLayout
+                android:orientation="horizontal"
+                android:layout_width="match_parent"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="10dp"
+                android:layout_marginBottom="7dp"
+                android:layout_marginTop="7dp"
+                android:padding="3dp"
+                android:background="@color/white"
+                android:layout_height="wrap_content">
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_gravity="center"
+                    android:padding="7dp"
+                    android:src="@drawable/search_icon"/>
+
+                <View
+                    android:layout_width="2dp"
+                    android:layout_height="match_parent"
+                    android:background="@color/light_gray"
+                    android:layout_marginTop="3dp"
+                    android:layout_marginBottom="3dp"/>
+                <EditText
+                    android:id="@+id/et_search"
+                    android:layout_gravity="center_vertical"
+                    android:layout_width="match_parent"
+                    android:padding="8dp"
+                    android:background="@color/transparent"
+                    android:layout_height="wrap_content"
+                    android:hint="Search.."/>
+            </LinearLayout>
+        </LinearLayout>
+
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_below="@+id/ll_header"
+            android:layout_weight="6"
+            android:background="#FF00">
+            <android.support.v7.widget.RecyclerView
+                android:layout_marginTop="15dp"
+                android:id="@+id/rv_business"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+            </android.support.v7.widget.RecyclerView>
+        </LinearLayout>
     </LinearLayout>
+
+    <RelativeLayout
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
+        android:id="@+id/rl_tabs"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <LinearLayout
+            android:id="@+id/ll_tabs"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="20dp"
+            android:layout_marginRight="20dp"
+            android:layout_marginTop="20dp"
+            android:background="@drawable/simple_border_line_style"
+            android:orientation="horizontal"
+            android:visibility="visible">
+
+            <TextView
+                android:id="@+id/tv_trending"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:background="@color/blue_clicked"
+                android:gravity="center"
+                android:onClick="onClick"
+                android:text="@string/trending"
+                android:textColor="@color/white"
+                android:textSize="15sp" />
+
+            <TextView
+                android:id="@+id/tv_nearby"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:onClick="onClick"
+                android:text="@string/near_by"
+                android:textColor="@color/blue_clicked"
+                android:textSize="15sp" />
+
+            <TextView
+                android:id="@+id/tv_find"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_margin="1dp"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:onClick="onClick"
+                android:text="@string/find"
+                android:textColor="@color/blue_clicked"
+                android:textSize="15sp" />
+        </LinearLayout>
+
+    </RelativeLayout>
+
 </RelativeLayout>

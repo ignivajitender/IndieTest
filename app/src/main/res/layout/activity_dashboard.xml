@@ -1,24 +1,25 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical" android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
 
     <include
         android:id="@+id/toolbar_with_icon"
         layout="@layout/toolbar_with_image_at_right" />
 
-
-<FrameLayout
-    android:layout_width="match_parent"
-    android:id="@+id/fl_fragment_container"
-    android:layout_height="wrap_content"></FrameLayout>
+    <FrameLayout
+        android:layout_above="@+id/bottom_navigation"
+        android:layout_below="@+id/toolbar_with_icon"
+        android:id="@+id/fl_fragment_container"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"></FrameLayout>
 
     <com.aurelhubert.ahbottomnavigation.AHBottomNavigation
         android:id="@+id/bottom_navigation"
         android:layout_width="match_parent"
-        android:background="@color/white"
-        android:layout_below="@+id/toolbar_with_icon"
         android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"/>
+        android:layout_alignParentBottom="true"
+        android:background="@color/colorAccent" />
 
 </RelativeLayout>
