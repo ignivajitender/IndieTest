@@ -151,29 +151,34 @@ public class BadgesActivity extends BaseActivity {
                 public void onClick(View v) {
 
 
-                    if(mSelectedBadgeIds.size()>0){
-                    Log.e("", "------Done");
-                    AlertDialog.Builder builder=Utility.showAlertDialogOkNoThanks("Are you sure you want to add these badge(s)",BadgesActivity.this);
-                    builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            getSelectedBadgesList();
-                            mySelectedBadges();
-                        }
-                    });
-                    builder.setNegativeButton("No Thanks", new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
+                    if (mSelectedBadgeIds.size() > 0) {
+                        Log.e("", "------Done");
+                        AlertDialog.Builder builder = Utility.showAlertDialogOkNoThanks("Are you sure you want to add these badge(s)", BadgesActivity.this);
+                        builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                // Uncomment below two while giving for QA
+                                //getSelectedBadgesList();
+                                //mySelectedBadges();
 
-                        }
-                    });
-                    builder.create().show();}
-                    else {
+                                // Delete me, i am for testing only
+                                Intent intent = new Intent(BadgesActivity.this, DashBoardActivity.class);
+//                    // intent.putExtra("Badges", mBadgesList);
+                                startActivity(intent);
+                            }
+                        });
+                        builder.setNegativeButton("No Thanks", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
 
-                        Utility.showToastMessageShort(BadgesActivity.this,"Please select atleast one badge");
+                            }
+                        });
+                        builder.create().show();
+                    } else {
+
+                        Utility.showToastMessageShort(BadgesActivity.this, "Please select atleast one badge");
                         return;
                     }
-
 
 
 //                    Intent intent = new Intent(BadgesActivity.this, DashBoardActivity.class);
@@ -302,7 +307,7 @@ public class BadgesActivity extends BaseActivity {
                 if (result.getSuccess().equals("true")) {
 
 
-                    Utility.showToastMessageShort(BadgesActivity.this,"Badge(s) added successfully");
+                    Utility.showToastMessageShort(BadgesActivity.this, "Badge(s) added successfully");
                     insertRecords();
                     Intent intnet = new Intent(BadgesActivity.this, DashBoardActivity.class);
                     startActivity(intnet);
@@ -339,13 +344,13 @@ public class BadgesActivity extends BaseActivity {
 
 
     public void insertRecords() {
-        try{
-        dbBadges = new BadgesDb(this);
-        ArrayList<BadgesPojo> selectedBadgesList = new ArrayList<BadgesPojo>();
-        selectedBadgesList = mSelectedBadgeIds;
+        try {
+            dbBadges = new BadgesDb(this);
+            ArrayList<BadgesPojo> selectedBadgesList = new ArrayList<BadgesPojo>();
+            selectedBadgesList = mSelectedBadgeIds;
 //        ArrayList<BadgesPojo> mTotalBadges=new ArrayList<BadgesPojo>();
-        dbBadges.insertAllBadges(selectedBadgesList);
-        }catch (Exception e){
+            dbBadges.insertAllBadges(selectedBadgesList);
+        } catch (Exception e) {
             e.printStackTrace();
         }
 

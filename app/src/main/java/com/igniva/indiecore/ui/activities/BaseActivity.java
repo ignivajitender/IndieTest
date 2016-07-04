@@ -12,7 +12,4 @@ public abstract class BaseActivity extends AppCompatActivity{
     protected abstract void setDataInViewObjects();
     protected abstract void onClick(View v);
 
-
-
-
 }
