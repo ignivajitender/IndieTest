@@ -61,6 +61,8 @@ public class WebServiceClient {
     public static final String HTTP_SYNC_CONTACTS=HTTP_PROTOCOL+HTTP_HOST_IP+"user/sync";
     public static final String  HTTP_SELECTED_BADGES=HTTP_PROTOCOL+HTTP_HOST_IP+"badge/get";
     public  static  final String HTTP_ON_OFF_BADGES=HTTP_PROTOCOL+HTTP_HOST_IP+"badge/onoff";
+    public static  final String HTTP_GET_BUSINESS_LIST= HTTP_PROTOCOL+HTTP_HOST_IP+"business/list";
+    public static  final String HTTP_ON_OFF_BUSINESS_BADGE=HTTP_PROTOCOL+HTTP_HOST_IP+"business/onoff";
    //
     private final static String CONTENT_TYPE = "application/json";
 
@@ -138,9 +140,27 @@ public class WebServiceClient {
 
      url=HTTP_ON_OFF_BADGES;
      method=HttpMethod.HTTP_POST;
-     mResponseHandlerListener=mResponseHandlerListener;
+     mResponseHandlerListener=responseHandlerListener;
      checkNetworkState(url,payload,method,context);
  }
+
+    public static void getBusinessList(final Context context,String payload,ResponseHandlerListener responseHandlerListener){
+
+        url=HTTP_GET_BUSINESS_LIST;
+        method=HttpMethod.HTTP_POST;
+        mResponseHandlerListener=responseHandlerListener;
+        checkNetworkState(url,payload,method,context);
+    }
+
+
+    public static void onOffBusinessBadges(final Context context,String payload,ResponseHandlerListener responseHandlerListener){
+
+        url=HTTP_ON_OFF_BUSINESS_BADGE;
+        method=HttpMethod.HTTP_POST;
+        mResponseHandlerListener=responseHandlerListener;
+        checkNetworkState(url,payload,method,context);
+    }
+
 
 
 

@@ -52,7 +52,7 @@ public class InviteContactAdapter extends RecyclerView.Adapter<InviteContactAdap
     public RecyclerViewHolders onCreateViewHolder(ViewGroup parent, int viewType) {
 
 
-        View layoutView = LayoutInflater.from(parent.getContext()).inflate(R.layout.invite_contact_list_items, null);
+        View layoutView = LayoutInflater.from(parent.getContext()).inflate(R.layout.list_item_invite_contacts, null);
         RecyclerViewHolders rcv = new RecyclerViewHolders(layoutView);
         return rcv;
     }

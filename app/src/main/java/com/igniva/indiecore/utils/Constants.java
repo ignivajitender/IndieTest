@@ -57,6 +57,18 @@ public class Constants {
 
 
 
+//    businessId, badge_status
+
+    //    token, userId, location, latlong, sort, limit, page
+    public static  final String LOCATION="location";
+    public static  final String SORT="sort";
+    public static  final String LATLONG="latlong";
+    public static  final String BUSINESS_ID="businessId";
+     public static  final String BADGE_STATUS="badge_status";
+
+
+
+
     public static  final String ENTER_FIRST_NAME="Please enter your first name";
     public static  final String ENTER_LAST_NAME="Please enter your last name";
     public static  final String ENTER_DOB="Please enter your Date of Birth";

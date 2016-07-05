@@ -18,6 +18,32 @@ public class ResponsePojo {
     private String token;
     private String newUser;
     private ProfilePojo profile;
+    private ArrayList<BusinessPojo> business_list;
+
+    public int getBadge_status() {
+        return badge_status;
+    }
+
+    public void setBadge_status(int badge_status) {
+        this.badge_status = badge_status;
+    }
+
+    private  int badge_status;
+
+    public ArrayList<BusinessPojo> getBusiness_list() {
+        return business_list;
+    }
+
+    public void setBusiness_list(ArrayList<BusinessPojo> business_list) {
+        this.business_list = business_list;
+    }
+
+
+
+
+
+
+
 
     public String getError_text() {
         return error_text;

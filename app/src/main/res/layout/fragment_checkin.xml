@@ -4,7 +4,6 @@
     android:layout_height="match_parent"
     android:orientation="vertical">
 
-
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -71,7 +70,9 @@
             android:layout_height="0dp"
             android:layout_below="@+id/ll_header"
             android:layout_weight="6"
-            android:background="#FF00">
+            android:layout_marginLeft="5dp"
+            android:layout_marginRight="5dp"
+            android:background="@color/light_gray">
             <android.support.v7.widget.RecyclerView
                 android:layout_marginTop="15dp"
                 android:id="@+id/rv_business"
@@ -95,7 +96,7 @@
             android:layout_marginLeft="20dp"
             android:layout_marginRight="20dp"
             android:layout_marginTop="20dp"
-            android:background="@drawable/simple_border_line_style"
+            android:padding="2dp"
             android:orientation="horizontal"
             android:visibility="visible">
 
@@ -104,11 +105,11 @@
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
-                android:background="@color/blue_clicked"
+                android:background="@drawable/simple_border_line_style"
                 android:gravity="center"
                 android:onClick="onClick"
                 android:text="@string/trending"
-                android:textColor="@color/white"
+                android:textColor="@color/blue_clicked"
                 android:textSize="15sp" />
 
             <TextView
@@ -118,7 +119,9 @@
                 android:layout_weight="1"
                 android:gravity="center"
                 android:onClick="onClick"
+                android:background="@drawable/simple_border_line_style"
                 android:text="@string/near_by"
+                android:layout_marginLeft="-2dp"
                 android:textColor="@color/blue_clicked"
                 android:textSize="15sp" />
 
@@ -126,8 +129,9 @@
                 android:id="@+id/tv_find"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
-                android:layout_margin="1dp"
                 android:layout_weight="1"
+                android:layout_marginLeft="-2dp"
+                android:background="@drawable/simple_border_line_style"
                 android:gravity="center"
                 android:onClick="onClick"
                 android:text="@string/find"
