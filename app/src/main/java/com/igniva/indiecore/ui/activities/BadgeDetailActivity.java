@@ -102,9 +102,14 @@ public class BadgeDetailActivity extends BaseActivity {
 
             if (index == 1) {
                 mGetThisBadge.setVisibility(View.GONE);
-            } else {
-                mGetThisBadge.setVisibility(View.VISIBLE);
-            }
+             } else if(badge.getActive()==1) {
+                mGetThisBadge.setVisibility(View.GONE);
+
+            } else
+            {
+                    mGetThisBadge.setVisibility(View.VISIBLE);
+                }
+
 
         } catch (Exception e) {
             e.printStackTrace();

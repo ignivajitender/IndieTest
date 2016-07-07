@@ -93,6 +93,34 @@
     <string name="near_by">NearBy</string>
     <string name="find">Find</string>
 
+    <!--Business_detail-->
+   <string name="about">About</string>
+    <string name="telephone">Telephone</string>
+    <string name="opening_hours">Opening hours</string>
+    <string name="website">Website</string>
+
+
+    <!--settings-->
+
+    <string name="profile">Profile</string>
+
+    <string name="edit_profile">Edit Profile</string>
+
+    <string name="cover_pic">Cover Pic</string>
+
+    <string name="name">Name</string>
+
+
+    <string name="privacy">Privacy</string>
+
+    <string name="notifiation">Notification</string>
+
+    <string name="clear_chats">Clear Chats</string>
+
+
+
+
+
     <!--Country-->
     <array name="country_name">
         <item name="Afghanistan"></item>

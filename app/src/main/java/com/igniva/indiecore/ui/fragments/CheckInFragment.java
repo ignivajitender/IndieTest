@@ -12,9 +12,12 @@ import android.support.annotation.Nullable;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -46,7 +49,8 @@ import java.util.Comparator;
 public class CheckInFragment extends BaseFragment implements LocationListener {
 
     LinearLayout mLlMapContainer, mLlSearchContainer;
-    TextView mTvTrending, mTvNearby, mTvFind;
+    private TextView mTvTrending, mTvNearby, mTvFind;
+    private EditText mEtSearch;
     ArrayList<BusinessPojo> mBusinessList;
     RecyclerView mRvBusinessGrid;
     private GridLayoutManager mGlManager;
@@ -77,12 +81,13 @@ public class CheckInFragment extends BaseFragment implements LocationListener {
             mTvTrending = (TextView) rootView.findViewById(R.id.tv_trending);
             mTvNearby = (TextView) rootView.findViewById(R.id.tv_nearby);
             mTvFind = (TextView) rootView.findViewById(R.id.tv_find);
+            mEtSearch = (EditText) rootView.findViewById(R.id.et_search);
             mRvBusinessGrid = (RecyclerView) rootView.findViewById(R.id.rv_business);
             mRvBusinessGrid.setLayoutManager(mGlManager);
             mTvTrending.setOnClickListener(onClickListener);
             mTvNearby.setOnClickListener(onClickListener);
             mTvFind.setOnClickListener(onClickListener);
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
         getBusinesses();
@@ -121,7 +126,6 @@ public class CheckInFragment extends BaseFragment implements LocationListener {
     * */
     ResponseHandlerListener responseHandler = new ResponseHandlerListener() {
 
-
         @Override
         public void onComplete(ResponsePojo result, WebServiceClient.WebError error, ProgressDialog mProgressDialog) {
 
@@ -132,7 +136,7 @@ public class CheckInFragment extends BaseFragment implements LocationListener {
 
                         mBusinessList.addAll(result.getBusiness_list());
                         try {
-                            mFindBusinessAdapter=null;
+                            mFindBusinessAdapter = null;
                             mBusinessAdapter = null;
                             Log.e("", "setting bin adpter" + mBusinessList.size());
                             if (mBusinessList.size() > 0) {
@@ -142,9 +146,7 @@ public class CheckInFragment extends BaseFragment implements LocationListener {
                         } catch (Exception e) {
                             e.printStackTrace();
                         }
-
                     }
-
 
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -156,28 +158,23 @@ public class CheckInFragment extends BaseFragment implements LocationListener {
         }
 
     };
-//
-//    public ArrayList<BusinessPojo> sortBusinessByDistance(ArrayList<BusinessPojo> businesslist) {
-//        ArrayList<BusinessPojo> sortedList= new ArrayList<BusinessPojo>();
-//        try {
-//
-//            Collections.sort(businesslist, new Comparator<BusinessPojo>(){
-//                @Override
-//                public int compare(BusinessPojo first, BusinessPojo second) {
-////                    return first.getDistance().compareToIgnoreCase(second.getDistance());
-//                }
-//            });
-//
-//
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//        }
-//        return sortedList;
-//    }
 
+    public ArrayList<BusinessPojo> sortBusinessByDistance(ArrayList<BusinessPojo> businesslist) {
+        ArrayList<BusinessPojo> sortedList = new ArrayList<BusinessPojo>();
+        try {
 
+            Collections.sort(businesslist, new Comparator<BusinessPojo>() {
+                @Override
+                public int compare(BusinessPojo first, BusinessPojo second) {
+                    return Double.compare(first.getDistance(), second.getDistance());
+                }
+            });
 
-
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return sortedList;
+    }
 
     /*
     * badges on off response handler
@@ -189,17 +186,14 @@ public class CheckInFragment extends BaseFragment implements LocationListener {
 
             if (error == null) {
                 if (result.getSuccess().equalsIgnoreCase("true")) {
-                      if(result.getBadge_status()==1) {
-                          mIvBusiness.setImageResource(R.drawable.badge_on);
-                      } else {
-                          mIvBusiness.setImageResource(R.drawable.badge_off);
-                      }
-
+                    if (result.getBadge_status() == 1) {
+                        mIvBusiness.setImageResource(R.drawable.badge_on);
+                    } else {
+                        mIvBusiness.setImageResource(R.drawable.badge_off);
+                    }
                 }
-            }
-            else
-            {
-
+            } else {
+                Utility.showToastMessageLong(getActivity(), "Some error occurred.Please try later");
             }
 
             if (mProgressDialog != null && mProgressDialog.isShowing()) {
@@ -219,10 +213,10 @@ public class CheckInFragment extends BaseFragment implements LocationListener {
 //        token, userId, businessId, badge_status
         try {
             payload = new JSONObject();
-            payload.put(Constants.TOKEN,PreferenceHandler.readString(getActivity(),PreferenceHandler.PREF_KEY_USER_TOKEN,""));
-            payload.put(Constants.USERID,PreferenceHandler.readString(getActivity(),PreferenceHandler.PREF_KEY_USER_ID,""));
-            payload.put(Constants.BUSINESS_ID,businessId);
-            payload.put(Constants.BADGE_STATUS,badgeStatus);
+            payload.put(Constants.TOKEN, PreferenceHandler.readString(getActivity(), PreferenceHandler.PREF_KEY_USER_TOKEN, ""));
+            payload.put(Constants.USERID, PreferenceHandler.readString(getActivity(), PreferenceHandler.PREF_KEY_USER_ID, ""));
+            payload.put(Constants.BUSINESS_ID, businessId);
+            payload.put(Constants.BADGE_STATUS, badgeStatus);
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -320,7 +314,7 @@ public class CheckInFragment extends BaseFragment implements LocationListener {
         mTvFind.setTextColor(Color.parseColor("#1C6DCE"));
         mTvFind.setBackgroundResource(R.drawable.simple_border_line_style);
         try {
-            mFindBusinessAdapter=null;
+            mFindBusinessAdapter = null;
             mBusinessAdapter = null;
             Log.e("", "setting bin adpter" + mBusinessList.size());
             if (mBusinessList.size() > 0) {
@@ -346,7 +340,7 @@ public class CheckInFragment extends BaseFragment implements LocationListener {
         mTvFind.setTextColor(Color.parseColor("#1C6DCE"));
         mTvFind.setBackgroundResource(R.drawable.simple_border_line_style);
         try {
-            mFindBusinessAdapter=null;
+            mFindBusinessAdapter = null;
             mBusinessAdapter = null;
             Log.e("", "setting bin adpter" + mBusinessList.size());
             if (mBusinessList.size() > 0) {
@@ -374,7 +368,7 @@ public class CheckInFragment extends BaseFragment implements LocationListener {
 
         try {
             mFindBusinessAdapter = null;
-            mBusinessAdapter=null;
+            mBusinessAdapter = null;
             Log.e("", "setting bin adpter" + mBusinessList.size());
             if (mBusinessList.size() > 0) {
                 mFindBusinessAdapter = new FindBusinessAdapter(getActivity(), mBusinessList, onCardClickListner);
@@ -383,11 +377,35 @@ public class CheckInFragment extends BaseFragment implements LocationListener {
         } catch (Exception e) {
             e.printStackTrace();
         }
+        try {
+            mEtSearch.addTextChangedListener(new TextWatcher() {
+
+                @Override
+                public void onTextChanged(CharSequence s, int start, int before, int count) {
+                    System.out.println("Text [" + s + "]");
+
+                    mFindBusinessAdapter.getFilter().filter(s.toString());
+                }
+
+                @Override
+                public void beforeTextChanged(CharSequence s, int start, int count,
+                                              int after) {
+
+                }
+
+                @Override
+                public void afterTextChanged(Editable s) {
+                }
+            });
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
     public void onLocationChanged(Location location) {
-        Toast.makeText(getActivity(), "Latitude:" + location.getLatitude() + ", Longitude:" + location.getLongitude(), Toast.LENGTH_LONG).show();
+//        Toast.makeText(getActivity(), "Latitude:" + location.getLatitude() + ", Longitude:" + location.getLongitude(), Toast.LENGTH_LONG).show();
     }
 
     @Override
@@ -411,18 +429,18 @@ public class CheckInFragment extends BaseFragment implements LocationListener {
         @Override
         public void onCardClicked(ImageView view, int position) {
 //            Utility.showToastMessageShort(getActivity(), "Position is " + position);
-            mIvBusiness=view;
+            mIvBusiness = view;
             if (mBusinessList.get(position).getBadge_status() == 0) {
 
 //                this should be done on server request success
-               // view.setImageResource(R.drawable.badge_on);
+                // view.setImageResource(R.drawable.badge_on);
                 mBusinessList.get(position).setBadge_status(1);
 
-                String payload = createPayload(mBusinessList.get(position).getBusiness_id(),String.valueOf(mBusinessList.get(position).getBadge_status()));
+                String payload = createPayload(mBusinessList.get(position).getBusiness_id(), String.valueOf(mBusinessList.get(position).getBadge_status()));
                 try {
 
                     if (payload != null) {
-                        Log.e("on payload","++"+payload.toString());
+                        Log.e("on payload", "++" + payload.toString());
 
                         WebNotificationManager.registerResponseListener(responseListner);
                         WebServiceClient.onOffBusinessBadges(getActivity(), payload, responseListner);
@@ -433,11 +451,11 @@ public class CheckInFragment extends BaseFragment implements LocationListener {
             } else {
                 view.setImageResource(R.drawable.badge_off);
                 mBusinessList.get(position).setBadge_status(0);
-                String payload = createPayload(mBusinessList.get(position).getBusiness_id(),String.valueOf(mBusinessList.get(position).getBadge_status()));
+                String payload = createPayload(mBusinessList.get(position).getBusiness_id(), String.valueOf(mBusinessList.get(position).getBadge_status()));
                 try {
 
                     if (payload != null) {
-                        Log.e("off payload","++"+payload.toString());
+                        Log.e("off payload", "++" + payload.toString());
                         WebNotificationManager.registerResponseListener(responseListner);
                         WebServiceClient.onOffBusinessBadges(getActivity(), payload, responseListner);
                     }

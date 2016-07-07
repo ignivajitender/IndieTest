@@ -19,6 +19,7 @@ import com.igniva.indiecore.controller.OnCardClickListner;
 import com.igniva.indiecore.model.BadgesPojo;
 import com.igniva.indiecore.model.BusinessPojo;
 import com.igniva.indiecore.ui.activities.BadgeDetailActivity;
+import com.igniva.indiecore.ui.activities.BusinessDetailActivity;
 import com.igniva.indiecore.ui.activities.MyBadgesActivity;
 import com.igniva.indiecore.utils.Constants;
 
@@ -97,9 +98,17 @@ String address="";
         });
 
 
+        holder.mIvBusinessIcon.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                Intent intent = new Intent(mContext, BusinessDetailActivity.class);
+                mContext.startActivity(intent);
+
+            }
+        });
 
     }
-
 
     @Override
     public int getItemCount() {

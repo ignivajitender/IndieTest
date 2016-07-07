@@ -123,10 +123,9 @@
             android:layout_height="wrap_content"
             android:layout_centerInParent="true"
             android:layout_marginTop="-5dp"
-            android:layout_marginLeft="3dp"
-            android:layout_marginRight="3dp"
             android:background="@drawable/rounded_corners_distance_text_block"
-            android:padding="3dp"
+            android:paddingLeft="10dp"
+            android:paddingRight="10dp"
             android:text="15 miles away"
             android:textColor="@color/black"
             android:textSize="10sp" />
