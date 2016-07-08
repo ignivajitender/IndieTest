@@ -7,6 +7,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
 import com.igniva.indiecore.model.BadgesPojo;
+import com.igniva.indiecore.utils.Log;
 
 import java.util.ArrayList;
 
@@ -15,7 +16,7 @@ import java.util.ArrayList;
  */
 public class BadgesDb extends SQLiteOpenHelper {
 
-
+     public static  final String LOG_TAG="BadgesDb";
     //---- DATABASE START-----------
 
     public static final String DATABASE_NAME = "db_indiecore";
@@ -43,7 +44,7 @@ public class BadgesDb extends SQLiteOpenHelper {
 
     public static String createBadgeTable() {
 
-        return "CREATE TABLE " + TABLE_BADGES
+        return "CREATE TABLE IF NOT EXISTS " + TABLE_BADGES
                 + "(" +BADGE_ID +  " TEXT PRIMARY KEY,"+ S_NO + " INTEGER," +
                 BADGE_NAME + " TEXT," + BADGE_DESC + " TEXT," + BADGE_ICON + " TEXT,"
                 + IS_PREMIUM + " INTEGER," + BADGE_PRICE + " REAL,"
@@ -88,7 +89,31 @@ public class BadgesDb extends SQLiteOpenHelper {
     public  void updateSingleRow(BadgesPojo badges) {
         SQLiteDatabase db = this.getWritableDatabase();
         try {
-                db.rawQuery("UPDATE tbl_badge_master set "+IS_ACTIVE+"="+badges.getActive()+" where "+BADGE_ID+"="+badges.getBadgeId()+";", null);
+//            "UPDATE "+ MyConstants.TABLE_NAME + " SET "+ MyConstants.ISFAV + " = "+fav+ " WHERE " + MyConstants.WORD_NAME + " = \""+word_name+"\"", null);
+                db.rawQuery("UPDATE "+ BadgesDb.TABLE_BADGES + " SET "+IS_ACTIVE+ "="+badges.getActive()+ " WHERE "+BADGE_ID+ " = '"+badges.getBadgeId()+"'", null);
+
+            String query="SELECT * FROM tbl_badge_master WHERE id_badge='"+badges.getBadgeId()+"'";
+            Cursor cursor=db.rawQuery(query,null);
+            while (cursor.moveToNext()) {
+
+                for (int i=0;i<9;i++){
+                    Log.d(LOG_TAG,"coulumn is "+i+" value "+cursor.getString(i));
+                }
+//                String result_0=cursor.getString(0);
+//                String result_1=cursor.getString(1);
+//                Log.d(LOG_TAG,"first column "+result_0);
+//                Log.d(LOG_TAG,"second column "+result_0);
+//                Log.d(LOG_TAG,"thirrd column "+result_0);
+//                Log.d(LOG_TAG,"fourth column "+result_0);
+//                Log.d(LOG_TAG,"fifth column "+result_0);
+
+                //and so on
+            }
+            cursor.close();
+
+               //  db.rawQuery("SELECT * FROM tbl_badge_master WHERE id_badge='"+badges.getBadgeId()+"'",null);
+
+           // Log.d(LOG_TAG,""+db.rawQuery("SELECT * FROM tbl_badge_master WHERE id_badge='"+badges.getBadgeId()+"'",null));
         } catch (Exception e) {
             e.printStackTrace();
         }

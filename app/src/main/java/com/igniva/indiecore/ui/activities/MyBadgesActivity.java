@@ -318,6 +318,9 @@ public class MyBadgesActivity extends BaseActivity {
             BadgesPojo selectedBadge;
 
             selectedBadge = mSelectedBadgesList.get(mSelectedPostion);
+          Log.d(LOG_TAG,"ACtive or not"+selectedBadge.getActive());
+            selectedBadge.getName();
+            selectedBadge.getBadgeId();
 
             dbBadges.updateSingleRow(selectedBadge);
         } catch (Exception e) {
@@ -459,6 +462,7 @@ public class MyBadgesActivity extends BaseActivity {
                     if (payload != null) {
                         Log.e("on payload","++"+payload.toString());
                          mSelectedPostion=position;
+                        mSelectedBadgesList.get(position).setActive(1);
                         WebNotificationManager.registerResponseListener(responseListner);
                         WebServiceClient.onOffMyBadges(MyBadgesActivity.this, payload, responseListner);
                     }
@@ -473,6 +477,8 @@ public class MyBadgesActivity extends BaseActivity {
 
                     if (payload != null) {
                         Log.e("off payload","++"+payload.toString());
+                        mSelectedPostion=position;
+                        mSelectedBadgesList.get(position).setActive(0);
                         WebNotificationManager.registerResponseListener(responseListner);
                         WebServiceClient.onOffMyBadges(MyBadgesActivity.this, payload, responseListner);
                     }
