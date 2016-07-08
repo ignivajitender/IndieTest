@@ -47,6 +47,8 @@ public class MyBadgesActivity extends BaseActivity {
     MyBadgesAdapter mMyBadgeAdapter;
     BadgesMarketAdapter mBadgeMarketAdpter;
     Bundle bundle;
+    private BadgesDb dbBadges;
+    private ImageView onOffImage;
     ArrayList<BadgesPojo> mSelectedBadgesList = null;
     ArrayList<BadgesPojo> mBadgeMarketList = null;
     private BadgesDb db_badges;
@@ -54,6 +56,7 @@ public class MyBadgesActivity extends BaseActivity {
     public  String selectedBadgeId = null;
     String LOG_TAG = "MyBadgeActivity";
     int buttonIndex = 1;
+    int mSelectedPostion=-1;
     public int mPageNumber = 1, mBadgeCount = 20, category = 0, mTotalBadgeCount = 0;
 
     int pastVisiblesItems, visibleItemCount, totalItemCount;
@@ -280,9 +283,25 @@ public class MyBadgesActivity extends BaseActivity {
         public void onComplete(ResponsePojo result, WebServiceClient.WebError error, ProgressDialog mProgressDialog) {
 
             if (error == null) {
-                Toast.makeText(MyBadgesActivity.this,"success",Toast.LENGTH_SHORT).show();
-            }else {
-                Toast.makeText(MyBadgesActivity.this,"success",Toast.LENGTH_SHORT).show();
+
+            if(result.getSuccess().equalsIgnoreCase("true")){
+
+
+                if(result.getActive()==1){
+                    onOffImage.setImageResource(R.drawable.badge_on);
+                    updateRecord();
+
+
+                }else {
+                    onOffImage.setImageResource(R.drawable.badge_off);
+                    updateRecord();
+                }
+
+
+
+              }else {
+                Utility.showToastMessageLong(MyBadgesActivity.this,"Some error occurred.Please try later");
+            }
             }
             // Always close the progressdialog
             if (mProgressDialog != null && mProgressDialog.isShowing()) {
@@ -291,6 +310,20 @@ public class MyBadgesActivity extends BaseActivity {
 
         }
     };
+
+
+    public void updateRecord(){
+        try {
+            dbBadges = new BadgesDb(this);
+            BadgesPojo selectedBadge;
+
+            selectedBadge = mSelectedBadgesList.get(mSelectedPostion);
+
+            dbBadges.updateSingleRow(selectedBadge);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 
     private String createPayload(String badgeId,String badgestatus) {
 //        token, userId, badgeId, active (0/1)
@@ -415,9 +448,9 @@ public class MyBadgesActivity extends BaseActivity {
         @Override
         public void onCardClicked(ImageView view, int position) {
             Utility.showToastMessageShort(MyBadgesActivity.this, "Position is " + position);
-
+            onOffImage=view;
             if (mSelectedBadgesList.get(position).getActive() == 0) {
-                view.setImageResource(R.drawable.badge_on);
+//                view.setImageResource(R.drawable.badge_on);
                 mSelectedBadgesList.get(position).setActive(1);
 
                 String payload = createPayload(mSelectedBadgesList.get(position).getBadgeId(),String.valueOf(mSelectedBadgesList.get(position).getActive()));
@@ -425,7 +458,7 @@ public class MyBadgesActivity extends BaseActivity {
 
                     if (payload != null) {
                         Log.e("on payload","++"+payload.toString());
-
+                         mSelectedPostion=position;
                         WebNotificationManager.registerResponseListener(responseListner);
                         WebServiceClient.onOffMyBadges(MyBadgesActivity.this, payload, responseListner);
                     }
@@ -433,7 +466,7 @@ public class MyBadgesActivity extends BaseActivity {
                     e.printStackTrace();
                 }
             } else {
-                view.setImageResource(R.drawable.badge_off);
+//                view.setImageResource(R.drawable.badge_off);
                 mSelectedBadgesList.get(position).setActive(0);
                 String payload = createPayload(mSelectedBadgesList.get(position).getBadgeId(),String.valueOf(mSelectedBadgesList.get(position).getActive()));
                 try {

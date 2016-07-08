@@ -85,25 +85,14 @@ public class BadgesDb extends SQLiteOpenHelper {
         }
     }
 
-//
-//    public void updateSin(SQLiteDatabase db, BadgesPojo badges) {
-//        try {
-//            ContentValues values = new ContentValues();
-//            values.put(S_NO,1);
-//            values.put(BADGE_ID, badges.getBadgeId()); // Contact Phone Number
-//            values.put(BADGE_NAME, badges.getName());
-//            values.put(BADGE_DESC, badges.getDescription());
-//            values.put(BADGE_ICON, badges.getIcon());
-//            values.put(IS_PREMIUM, badges.getIsPremium());
-//            values.put(BADGE_PRICE, badges.getPrice());
-//            values.put(BADGE_SKU, badges.getSku());
-//            values.put(IS_ACTIVE, badges.getActive());
-//            // update Single Row
-////            db.updateWithOnConflict(TABLE_BADGES,values,,null);
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//        }
-//    }
+    public  void updateSingleRow(BadgesPojo badges) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        try {
+                db.rawQuery("UPDATE tbl_badge_master set "+IS_ACTIVE+"="+badges.getActive()+" where "+BADGE_ID+"="+badges.getBadgeId()+";", null);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 
 
     public void insertAllBadges(ArrayList<BadgesPojo> mTotalBadges) {

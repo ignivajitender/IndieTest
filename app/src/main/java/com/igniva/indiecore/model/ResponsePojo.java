@@ -12,6 +12,10 @@ public class ResponsePojo {
     private String success;
     private ArrayList<BadgesPojo> badges;
     private int total_badges;
+
+
+
+    private int active;
     private int friends_invited;
     private String error;
     private String userId;
@@ -20,6 +24,14 @@ public class ResponsePojo {
     private ProfilePojo profile;
     private ArrayList<BusinessPojo> business_list;
 
+
+    public int getActive() {
+        return active;
+    }
+
+    public void setActive(int active) {
+        this.active = active;
+    }
     public int getBadge_status() {
         return badge_status;
     }

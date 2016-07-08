@@ -9,6 +9,7 @@ import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v4.app.Fragment;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -23,6 +24,12 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.gms.maps.CameraUpdateFactory;
+import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.OnMapReadyCallback;
+import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.MarkerOptions;
 import com.igniva.indiecore.R;
 import com.igniva.indiecore.controller.OnCardClickListner;
 import com.igniva.indiecore.controller.ResponseHandlerListener;
@@ -46,7 +53,7 @@ import java.util.Comparator;
 /**
  * Created by igniva-andriod-05 on 1/7/16.
  */
-public class CheckInFragment extends BaseFragment implements LocationListener {
+public class CheckInFragment extends BaseFragment implements OnMapReadyCallback {
 
     LinearLayout mLlMapContainer, mLlSearchContainer;
     private TextView mTvTrending, mTvNearby, mTvFind;
@@ -61,6 +68,7 @@ public class CheckInFragment extends BaseFragment implements LocationListener {
     protected LocationManager locationManager;
     protected LocationListener locationListener;
     ImageView mIvBusiness;
+Location mLocation;
 
     @Nullable
     @Override
@@ -87,6 +95,32 @@ public class CheckInFragment extends BaseFragment implements LocationListener {
             mTvTrending.setOnClickListener(onClickListener);
             mTvNearby.setOnClickListener(onClickListener);
             mTvFind.setOnClickListener(onClickListener);
+
+            try {
+
+                SupportMapFragment mapFragment =
+                        (SupportMapFragment) this.getChildFragmentManager().findFragmentById(R.id.map);
+                mapFragment.getMapAsync(new OnMapReadyCallback() {
+                    @Override
+                    public void onMapReady(GoogleMap googleMap) {
+                        if (googleMap != null) {
+                            googleMap.addMarker(new MarkerOptions().position(new LatLng(30.7362900,76.7884000
+                            )).title("My Location"));
+
+                            // We will provide our own zoom controls.
+                            googleMap.getUiSettings().setZoomControlsEnabled(false);
+
+
+                            googleMap.setMyLocationEnabled(true);
+                            // Show Sydney
+                            googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(30.7362900, 76.7884000), 10));
+                        }
+                    }
+                });
+
+            }catch (Exception e){
+                e.printStackTrace();
+            }
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -94,6 +128,8 @@ public class CheckInFragment extends BaseFragment implements LocationListener {
 
         updateTrendingUI();
     }
+
+
 
     @Override
     protected void setDataInViewObjects() {
@@ -253,39 +289,14 @@ public class CheckInFragment extends BaseFragment implements LocationListener {
         public void onClick(View v) {
             switch (v.getId()) {
                 case R.id.tv_trending:
-//                    mTvTrending.setTextColor(Color.parseColor("#FFFFFF"));
-//                    mTvTrending.setBackgroundColor(Color.parseColor("#1C6DCE"));
-//
-//                    mTvNearby.setTextColor(Color.parseColor("#1C6DCE"));
-//                    mTvNearby.setBackgroundResource(R.drawable.simple_border_line_style);
-//
-//                    mTvFind.setTextColor(Color.parseColor("#1C6DCE"));
-//                    mTvFind.setBackgroundResource(R.drawable.simple_border_line_style);
+
                     updateTrendingUI();
                     break;
                 case R.id.tv_nearby:
-
-
-//                    mTvTrending.setTextColor(Color.parseColor("#1C6DCE"));
-//                    mTvTrending.setBackgroundResource(R.drawable.simple_border_line_style);
-//
-//                    mTvNearby.setTextColor(Color.parseColor("#FFFFFF"));
-//                    mTvNearby.setBackgroundColor(Color.parseColor("#1C6DCE"));
-//
-//                    mTvFind.setTextColor(Color.parseColor("#1C6DCE"));
-//                    mTvFind.setBackgroundResource(R.drawable.simple_border_line_style);
                     updateNearbygUI();
                     break;
                 case R.id.tv_find:
 
-//                    mTvTrending.setTextColor(Color.parseColor("#1C6DCE"));
-//                    mTvTrending.setBackgroundResource(R.drawable.simple_border_line_style);
-//
-//                    mTvNearby.setTextColor(Color.parseColor("#1C6DCE"));
-//                    mTvNearby.setBackgroundResource(R.drawable.simple_border_line_style);
-//
-//                    mTvFind.setTextColor(Color.parseColor("#FFFFFF"));
-//                    mTvFind.setBackgroundColor(Color.parseColor("#1C6DCE"));
                     updateFindUI();
                     break;
 
@@ -303,8 +314,8 @@ public class CheckInFragment extends BaseFragment implements LocationListener {
         mRvBusinessGrid.setLayoutManager(mGlManager);
         mLlMapContainer.setVisibility(View.VISIBLE);
         mLlSearchContainer.setVisibility(View.GONE);
-        locationManager = (LocationManager) getActivity().getSystemService(Context.LOCATION_SERVICE);
-        locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, this);
+//        locationManager = (LocationManager) getActivity().getSystemService(Context.LOCATION_SERVICE);
+//        locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, this);
         mTvTrending.setTextColor(Color.parseColor("#FFFFFF"));
         mTvTrending.setBackgroundColor(Color.parseColor("#1C6DCE"));
 
@@ -403,26 +414,27 @@ public class CheckInFragment extends BaseFragment implements LocationListener {
         }
     }
 
-    @Override
-    public void onLocationChanged(Location location) {
+//    @Override
+//    public void onLocationChanged(Location location) {
 //        Toast.makeText(getActivity(), "Latitude:" + location.getLatitude() + ", Longitude:" + location.getLongitude(), Toast.LENGTH_LONG).show();
-    }
-
-    @Override
-    public void onStatusChanged(String provider, int status, Bundle extras) {
-        Log.i("LOCATION", "Provider " + provider + " has now status: " + status);
-    }
-
-    @Override
-    public void onProviderEnabled(String provider) {
-        Log.i("++", "Provider " + provider + " is enabled");
-    }
-
-    @Override
-    public void onProviderDisabled(String provider) {
-        Log.i("", "Provider " + provider + " is disabled");
-        Log.i("", "Provider " + provider + " is disabled");
-    }
+//        mLocation=location;
+//    }
+//
+//    @Override
+//    public void onStatusChanged(String provider, int status, Bundle extras) {
+//        Log.i("LOCATION", "Provider " + provider + " has now status: " + status);
+//    }
+//
+//    @Override
+//    public void onProviderEnabled(String provider) {
+//        Log.i("++", "Provider " + provider + " is enabled");
+//    }
+//
+//    @Override
+//    public void onProviderDisabled(String provider) {
+//        Log.i("", "Provider " + provider + " is disabled");
+//        Log.i("", "Provider " + provider + " is disabled");
+//    }
 
 
     OnCardClickListner onCardClickListner = new OnCardClickListner() {
@@ -466,4 +478,11 @@ public class CheckInFragment extends BaseFragment implements LocationListener {
         }
     };
 
+    @Override
+    public void onMapReady(GoogleMap googleMap) {
+        if (googleMap != null) {
+            googleMap.addMarker(new MarkerOptions().position(new LatLng(30.7362900,76.7884000
+            )).title("My Location"));
+        }
+    }
 }

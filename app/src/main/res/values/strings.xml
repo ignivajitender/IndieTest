@@ -43,7 +43,7 @@
     <string name="it_is_recommended_to_choose_b">to connect quicker and see who is </string>
     <string name="it_is_recommended_to_choose_c">using Indiecore </string>
     <string name="contacts_sync">Sync Contacts</string>
-    <string name="contact_sync_successful">Contact syncing done successfully</string>
+    <string name="contact_sync_successful">Contacts Sync successful</string>
     <string name="contact_sync_failure">Error in contact syncing</string>
     <string name="no_contact_to_sync">No Contacts to Sync</string>
 
@@ -77,10 +77,11 @@
     <string name="Badge_detail_activity">Badge Detail Activity</string>
 
 
+
     <!--inviteFriensActivity-->
 
     <string name="invite_friends">Invite Friends</string>
-    <string name="no_thanks">No thanks</string>
+    <string name="no_thanks">No,Thanks</string>
 
     <!--myBadges-->
     <string name="my_badges">Badges</string>

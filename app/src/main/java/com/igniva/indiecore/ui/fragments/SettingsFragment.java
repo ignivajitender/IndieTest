@@ -139,10 +139,10 @@ public class SettingsFragment extends BaseFragment{
 
         listDataChild.put(listDataHeader.get(0), firstGroup); // Header, Child data
         listDataChild.put(listDataHeader.get(1), secondGroup);
-        listDataChild.put(listDataHeader.get(3), thirdGroup);
-        listDataChild.put(listDataHeader.get(4), forthGroup);
-        listDataChild.put(listDataHeader.get(5), fifthGroup);
-        listDataChild.put(listDataHeader.get(6), sixthGroup);
-//        listDataChild.put(listDataHeader.get(7), seventhGroup);
+        listDataChild.put(listDataHeader.get(2), thirdGroup);
+        listDataChild.put(listDataHeader.get(3), forthGroup);
+        listDataChild.put(listDataHeader.get(4), fifthGroup);
+        listDataChild.put(listDataHeader.get(5), sixthGroup);
+        listDataChild.put(listDataHeader.get(6), seventhGroup);
     }
 }

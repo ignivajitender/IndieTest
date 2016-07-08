@@ -102,7 +102,7 @@ public class BadgesAdapter extends RecyclerView.Adapter<BadgesAdapter.RecyclerVi
 
                         addSelectedBadgeIds(position);
                     } else {
-                        Utility.showAlertDialogInviteAndBuy("You can Select maximum 10 badges free,to get more either invite friends or purchase", mContext);
+                        Utility.showAlertDialogInviteAndBuy("You can select a maximum of 10 badges for free, to get more invite friends or purchase'", mContext);
                         return;
 
 

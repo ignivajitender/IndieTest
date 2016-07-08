@@ -130,7 +130,7 @@ public class BadgeDetailActivity extends BaseActivity {
                     AlertDialog.Builder builder1 = new AlertDialog.Builder(this, R.style.AppCompatAlertDialogStyle);
                     builder1.setMessage("Do you want to add this badge to your list");
                     builder1.setCancelable(true);
-                    builder1.setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
+                    builder1.setPositiveButton("OK", new DialogInterface.OnClickListener() {
                         public void onClick(DialogInterface dialog, int id) {
                             dialog.dismiss();
                             Intent intent = new Intent();
@@ -141,7 +141,7 @@ public class BadgeDetailActivity extends BaseActivity {
                         }
                     });
 
-                    builder1.setNegativeButton(getResources().getString(R.string.no_thanks), new DialogInterface.OnClickListener() {
+                    builder1.setNegativeButton("No, Thanks", new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
                             dialog.dismiss();
