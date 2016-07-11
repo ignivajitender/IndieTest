@@ -50,8 +50,8 @@
     <!--BadgesPojo Activity-->
     <string name="badges">Badges</string>
     <string name="previous">Previous</string>
-    <string name="its_recommended">It is recommended to choose badges and engage with people based on </string>
-    <string name="same_choice">mutual choices</string>
+    <string name="its_recommended">It is recommended to choose badges and engage with people based on mutual choices</string>
+    <!--<string name="same_choice">mutual choices</string>-->
     <string name="no_more_badges">No more badges available</string>
 
 
@@ -98,6 +98,11 @@
     <string name="near_by">NearBy</string>
     <string name="find">Find</string>
 
+
+    <!--contacts-->
+    <string name="phonebook">Phonebook</string>
+    <string name="favourite">Favourite</string>
+
     <!--Business_detail-->
    <string name="about">About</string>
     <string name="telephone">Telephone</string>
@@ -124,7 +129,7 @@
 
     <!--recommend a badge-->
     <string name="reccomend_badge">Recommend a Badge</string>
-    <string name="dummy_txt">Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry\'s standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.</string>
+    <string name="dummy_txt">Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry\'s standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged.</string>
    <string name="enter_badge_title">Enter a Badge Title Below </string>
     <string name="max_50_character">Max 50 Characters</string>
     <string name="empty_badge_name">Please enter a badge name</string>

@@ -69,9 +69,13 @@ public class SettingsFragment extends BaseFragment{
 
             @Override
             public void onGroupExpand(int groupPosition) {
-                Toast.makeText(getActivity(),
-                        listDataHeader.get(groupPosition) + " Expanded",
-                        Toast.LENGTH_SHORT).show();
+             switch (groupPosition){
+//
+//                 case Integer.parseInt(getResources().getString(R.string.reccomend_badge));
+//                     break;
+//                 default:
+//                     break;
+             }
             }
         });
 
@@ -113,6 +117,7 @@ public class SettingsFragment extends BaseFragment{
         listDataHeader.add(getResources().getString(R.string.invite_friends));
         listDataHeader.add(getResources().getString(R.string.notifiation));
         listDataHeader.add(getResources().getString(R.string.contacts_sync));
+        listDataHeader.add(getResources().getString(R.string.reccomend_badge));
         listDataHeader.add(getResources().getString(R.string.clear_chats));
 
 
@@ -144,5 +149,6 @@ public class SettingsFragment extends BaseFragment{
         listDataChild.put(listDataHeader.get(4), fifthGroup);
         listDataChild.put(listDataHeader.get(5), sixthGroup);
         listDataChild.put(listDataHeader.get(6), seventhGroup);
+        listDataChild.put(listDataHeader.get(7),eightthGroup);
     }
 }

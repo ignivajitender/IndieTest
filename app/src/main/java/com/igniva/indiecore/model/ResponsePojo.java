@@ -11,10 +11,11 @@ public class ResponsePojo {
     private String description;
     private String success;
     private ArrayList<BadgesPojo> badges;
+
+
+
+    private ArrayList<UsersPojo> users;
     private int total_badges;
-
-
-
     private int active;
     private int friends_invited;
     private String error;
@@ -24,7 +25,13 @@ public class ResponsePojo {
     private ProfilePojo profile;
     private ArrayList<BusinessPojo> business_list;
 
+    public ArrayList<UsersPojo> getUsers() {
+        return users;
+    }
 
+    public void setUsers(ArrayList<UsersPojo> users) {
+        this.users = users;
+    }
     public int getActive() {
         return active;
     }

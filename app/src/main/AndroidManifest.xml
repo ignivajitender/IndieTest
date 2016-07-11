@@ -41,6 +41,7 @@
             android:screenOrientation="portrait"
             android:name=".ui.activities.SplashActivity"
             android:label="@string/app_name"
+            android:windowSoftInputMode="adjustResize"
             android:theme="@style/AppTheme.NoActionBar.FullScreen">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -117,6 +118,13 @@
             android:screenOrientation="portrait"
             android:windowSoftInputMode="stateHidden"
             android:label="Business Name"/>
+
+        <activity
+            android:theme="@style/AppTheme"
+            android:name=".ui.activities.RecommendBadgeActivity"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateHidden"
+            android:label="@string/reccomend_badge"/>
 
         <meta-data
             android:name="com.google.android.gms.version"

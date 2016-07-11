@@ -226,7 +226,10 @@ try{
         switch (v.getId()) {
             case R.id.tv_skip_step:
                 startActivity(new Intent(this,BadgesActivity.class));
+//                startActivity(new Intent(this,RecommendBadgeActivity.class));
+
                 break;
+
 
 //            case R.id.iv_syncbtn:
 //                getAllContacts();

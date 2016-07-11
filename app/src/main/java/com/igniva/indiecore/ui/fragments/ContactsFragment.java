@@ -13,12 +13,15 @@ import com.igniva.indiecore.R;
  */
 public class ContactsFragment extends BaseFragment{
 
+
+    View rootView;
+
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_contacts, container, false);
+        rootView  = inflater.inflate(R.layout.fragment_contacts, container, false);
 
-        return view;
+        return rootView;
     }
 
     @Override

@@ -4,6 +4,7 @@
     android:gravity="center"
     android:layout_height="match_parent">
     <ExpandableListView
+        android:layout_marginTop="6dp"
         android:id="@+id/lvExp"
         android:layout_height="match_parent"
         android:divider="@color/light_gray"
