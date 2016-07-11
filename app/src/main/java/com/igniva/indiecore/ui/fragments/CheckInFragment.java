@@ -63,6 +63,7 @@ public class CheckInFragment extends BaseFragment implements OnMapReadyCallback 
     protected LocationManager locationManager;
     protected LocationListener locationListener;
     ArrayList<BusinessPojo> mBusinessList;
+    ArrayList<BusinessPojo> mNearbyList;
     RecyclerView mRvBusinessGrid;
     View rootView;
     BusinessListAdpter mBusinessAdapter;
@@ -110,8 +111,9 @@ public class CheckInFragment extends BaseFragment implements OnMapReadyCallback 
 
                             // We will provide our own zoom controls.
                             googleMap.getUiSettings().setZoomControlsEnabled(false);
-
-
+                            // hide my location button
+                            googleMap.getUiSettings().setMyLocationButtonEnabled(false);
+                            //
                             googleMap.setMyLocationEnabled(true);
                             // Show Sydney
                             googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(30.7362900, 76.7884000), 10));
@@ -351,12 +353,30 @@ public class CheckInFragment extends BaseFragment implements OnMapReadyCallback 
 
         mTvFind.setTextColor(Color.parseColor("#1C6DCE"));
         mTvFind.setBackgroundResource(R.drawable.simple_border_line_style);
+
+
+        // sort ArrayList
+        mNearbyList=null;
+        int sizeOfBusiness=mBusinessList.size();
+        mNearbyList=new ArrayList<BusinessPojo>();
+        for (int i=0;i<sizeOfBusiness;i++){
+            mNearbyList.add(mBusinessList.get(i));
+        }
+
+        Collections.sort(mNearbyList, new Comparator<BusinessPojo>() {
+            @Override
+            public int compare(BusinessPojo c1, BusinessPojo c2) {
+                return Double.compare(c1.getDistance(), c2.getDistance());
+            }
+        });
+
         try {
             mFindBusinessAdapter = null;
             mBusinessAdapter = null;
+          //  mRvBusinessGrid.setAdapter(mBusinessAdapter);
             Log.e("", "setting bin adpter" + mBusinessList.size());
-            if (mBusinessList.size() > 0) {
-                mBusinessAdapter = new BusinessListAdpter(getActivity(), mBusinessList, onCardClickListner);
+            if (mNearbyList.size() > 0) {
+                mBusinessAdapter = new BusinessListAdpter(getActivity(), mNearbyList, onCardClickListner);
                 mRvBusinessGrid.setAdapter(mBusinessAdapter);
             }
         } catch (Exception e) {

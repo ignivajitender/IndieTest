@@ -120,6 +120,8 @@
                 android:textSize="15sp" />
 
             <TextView
+                android:paddingTop="2dp"
+                android:paddingBottom="2dp"
                 android:id="@+id/tv_nearby"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
@@ -133,6 +135,8 @@
                 android:textSize="15sp" />
 
             <TextView
+                android:paddingTop="2dp"
+                android:paddingBottom="2dp"
                 android:id="@+id/tv_find"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"

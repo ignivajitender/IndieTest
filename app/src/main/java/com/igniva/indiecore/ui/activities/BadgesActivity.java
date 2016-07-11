@@ -158,13 +158,13 @@ public class BadgesActivity extends BaseActivity {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
                                 // Uncomment below two while giving for QA
-                                getSelectedBadgesList();
-                                mySelectedBadges();
+//                                getSelectedBadgesList();
+//                                mySelectedBadges();
 
                                 // Delete me, i am for testing only
-//                                Intent intent = new Intent(BadgesActivity.this, DashBoardActivity.class);
-//                    // intent.putExtra("Badges", mBadgesList);
-//                                startActivity(intent);
+                                Intent intent = new Intent(BadgesActivity.this, DashBoardActivity.class);
+                    // intent.putExtra("Badges", mBadgesList);
+                                startActivity(intent);
                             }
                         });
                         builder.setNegativeButton("No, Thanks", new DialogInterface.OnClickListener() {
