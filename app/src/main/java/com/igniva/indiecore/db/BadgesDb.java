@@ -85,12 +85,11 @@ public class BadgesDb extends SQLiteOpenHelper {
             e.printStackTrace();
         }
     }
-
     public  void updateSingleRow(BadgesPojo badges) {
         SQLiteDatabase db = this.getWritableDatabase();
         try {
 //            "UPDATE "+ MyConstants.TABLE_NAME + " SET "+ MyConstants.ISFAV + " = "+fav+ " WHERE " + MyConstants.WORD_NAME + " = \""+word_name+"\"", null);
-                db.rawQuery("UPDATE "+ BadgesDb.TABLE_BADGES + " SET "+IS_ACTIVE+ "="+badges.getActive()+ " WHERE "+BADGE_ID+ " = '"+badges.getBadgeId()+"'", null);
+                db.rawQuery("UPDATE "+ TABLE_BADGES + " SET "+IS_ACTIVE+ "="+badges.getActive()+ " WHERE "+BADGE_ID+ " = '"+badges.getBadgeId()+"'", null);
 
             String query="SELECT * FROM tbl_badge_master WHERE id_badge='"+badges.getBadgeId()+"'";
             Cursor cursor=db.rawQuery(query,null);

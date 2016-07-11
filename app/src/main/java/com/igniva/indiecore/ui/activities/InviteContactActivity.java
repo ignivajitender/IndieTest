@@ -229,7 +229,7 @@ public class InviteContactActivity extends BaseActivity {
 
             if(mSelectedContacts.size()<10){
 
-                Utility.showAlertDialog("You need to invite atleast ten people to get more badges",this);
+                Utility.showAlertDialog(getResources().getString(R.string.invite_atleast_ten_friend),this);
                 return;
             }
             mNumber = mSelectedContacts.toString();
@@ -243,20 +243,12 @@ public class InviteContactActivity extends BaseActivity {
             Log.e("Passed contacts", "++" + mNumber);
             Log.e("PASSED LIST SIZE", "" + mSelectedContacts.size());
 
-
-            // NEW CODE
-//            Uri uri = Uri.parse("smsto:0800000123");
-//            Intent it = new Intent(Intent.ACTION_SENDTO, uri);
-//            it.putExtra("sms_body", "The SMS text");
-//            startActivity(it);
-
-
             //
 
             mNumber = mNumber.replace(" ", "");
             Uri smsToContacts = Uri.parse("smsto:" + mNumber);
             Intent intent = new Intent(Intent.ACTION_SENDTO, smsToContacts);
-            String message = "hello..please download this amazing app from.www.google-playstore/indiecore/";
+            String message = "Hello, I'm using Indiecore, please download and see what you're missing:www.google-playstore/indiecore/";
             // message = message.replace("%s", StoresMessage.m_storeName);
             intent.putExtra("sms_body", message);
             startActivity(intent);

@@ -58,17 +58,18 @@ public class CheckInFragment extends BaseFragment implements OnMapReadyCallback 
     LinearLayout mLlMapContainer, mLlSearchContainer;
     private TextView mTvTrending, mTvNearby, mTvFind;
     private EditText mEtSearch;
-    ArrayList<BusinessPojo> mBusinessList;
-    RecyclerView mRvBusinessGrid;
     private GridLayoutManager mGlManager;
     private LinearLayoutManager mLlManager;
+    protected LocationManager locationManager;
+    protected LocationListener locationListener;
+    ArrayList<BusinessPojo> mBusinessList;
+    RecyclerView mRvBusinessGrid;
     View rootView;
     BusinessListAdpter mBusinessAdapter;
     FindBusinessAdapter mFindBusinessAdapter;
-    protected LocationManager locationManager;
-    protected LocationListener locationListener;
+
     ImageView mIvBusiness;
-Location mLocation;
+     Location mLocation;
 
     @Nullable
     @Override

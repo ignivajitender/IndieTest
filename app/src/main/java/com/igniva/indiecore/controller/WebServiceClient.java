@@ -63,6 +63,7 @@ public class WebServiceClient {
     public  static  final String HTTP_ON_OFF_BADGES=HTTP_PROTOCOL+HTTP_HOST_IP+"badge/onoff";
     public static  final String HTTP_GET_BUSINESS_LIST= HTTP_PROTOCOL+HTTP_HOST_IP+"business/list";
     public static  final String HTTP_ON_OFF_BUSINESS_BADGE=HTTP_PROTOCOL+HTTP_HOST_IP+"business/onoff";
+    public static  final String HTTP_RECOMMEND_A_BADGE=HTTP_PROTOCOL+HTTP_HOST_IP+"badge/recommend";
    //
     private final static String CONTENT_TYPE = "application/json";
 
@@ -162,6 +163,13 @@ public class WebServiceClient {
     }
 
 
+    public static void recommend_a_badge(final Context context,String payload,ResponseHandlerListener responseHandlerListener){
+
+        url=HTTP_RECOMMEND_A_BADGE;
+        method=HttpMethod.HTTP_POST;
+        mResponseHandlerListener=responseHandlerListener;
+        checkNetworkState(url,payload,method,context);
+    }
 
 
     /**

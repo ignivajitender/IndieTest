@@ -44,23 +44,23 @@ public class MyBadgesActivity extends BaseActivity {
     private RecyclerView mRvMyBadges;
     private GridLayoutManager mGlMAnager;
     private ImageView mTvNext;
-    MyBadgesAdapter mMyBadgeAdapter;
-    BadgesMarketAdapter mBadgeMarketAdpter;
-    Bundle bundle;
     private BadgesDb dbBadges;
     private ImageView onOffImage;
-    ArrayList<BadgesPojo> mSelectedBadgesList = null;
-    ArrayList<BadgesPojo> mBadgeMarketList = null;
     private BadgesDb db_badges;
     public  int active = 0;
     public  String selectedBadgeId = null;
-    String LOG_TAG = "MyBadgeActivity";
+    public int mPageNumber = 1, mBadgeCount = 20, category = 0, mTotalBadgeCount = 0;
+    boolean isLoading;
     int buttonIndex = 1;
     int mSelectedPostion=-1;
-    public int mPageNumber = 1, mBadgeCount = 20, category = 0, mTotalBadgeCount = 0;
-
     int pastVisiblesItems, visibleItemCount, totalItemCount;
-    boolean isLoading;
+    MyBadgesAdapter mMyBadgeAdapter;
+    BadgesMarketAdapter mBadgeMarketAdpter;
+    Bundle bundle;
+    ArrayList<BadgesPojo> mSelectedBadgesList = null;
+    ArrayList<BadgesPojo> mBadgeMarketList = null;
+    String LOG_TAG = "MyBadgeActivity";
+
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -77,8 +77,6 @@ public class MyBadgesActivity extends BaseActivity {
         }
         setDataInViewObjects();
 
-        Log.e("", "" + mSelectedBadgesList.toString());
-        Log.e("", "" + mSelectedBadgesList.size());
     }
 
 
@@ -204,7 +202,6 @@ public class MyBadgesActivity extends BaseActivity {
                     // Display content only
                     updateBadgesMarket();
                 }
-
 
             }
         } catch (Exception e) {
