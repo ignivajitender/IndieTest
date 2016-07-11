@@ -106,6 +106,8 @@
             android:visibility="visible">
 
             <TextView
+                android:paddingTop="2dp"
+                android:paddingBottom="2dp"
                 android:id="@+id/tv_trending"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"

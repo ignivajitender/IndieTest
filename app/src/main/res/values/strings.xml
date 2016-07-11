@@ -50,8 +50,8 @@
     <!--BadgesPojo Activity-->
     <string name="badges">Badges</string>
     <string name="previous">Previous</string>
-    <string name="its_recommended">It is recommended to choose badges to find people of</string>
-    <string name="same_choice">same choice</string>
+    <string name="its_recommended">It is recommended to choose badges and engage with people based on </string>
+    <string name="same_choice">mutual choices</string>
     <string name="no_more_badges">No more badges available</string>
 
 
@@ -78,10 +78,14 @@
 
 
 
+
+
     <!--inviteFriensActivity-->
 
     <string name="invite_friends">Invite Friends</string>
     <string name="no_thanks">No,Thanks</string>
+    <string name="invite_atleast_ten_friend">You need to invite at least 10 people to get more badges</string>
+    <string name="not_more_than_ten_sms">You cannot send more than 10 SMS at any one time when inviting friends</string>
 
     <!--myBadges-->
     <string name="my_badges">Badges</string>
@@ -118,8 +122,12 @@
 
     <string name="clear_chats">Clear Chats</string>
 
-
-
+    <!--recommend a badge-->
+    <string name="reccomend_badge">Recommend a Badge</string>
+    <string name="dummy_txt">Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry\'s standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.</string>
+   <string name="enter_badge_title">Enter a Badge Title Below </string>
+    <string name="max_50_character">Max 50 Characters</string>
+    <string name="empty_badge_name">Please enter a badge name</string>
 
 
     <!--Country-->
