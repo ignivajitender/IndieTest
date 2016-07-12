@@ -70,29 +70,29 @@ public class SyncContactsActivity extends  BaseActivity implements View.OnClickL
             mToolbar = (Toolbar) findViewById(R.id.toolbar);
         }
 
-        fabProgressCircle =(FABProgressCircle)findViewById(R.id.fabProgressCircle);
-        fab = (FloatingActionButton) findViewById(R.id.fab);
-        img_btn=(ImageView)findViewById(R.id.img_btn);
-        img_btn.setVisibility(View.GONE);
-
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                fabProgressCircle.show();
-                mStartSync.setText("Syncing..");
-                getAllContacts();
-                syncContacts();
-            }
-        });
+//        fabProgressCircle =(FABProgressCircle)findViewById(R.id.fabProgressCircle);
+//        fab = (FloatingActionButton) findViewById(R.id.fab);
+//        img_btn=(ImageView)findViewById(R.id.img_btn);
+//        img_btn.setVisibility(View.GONE);
+//
+//        fab.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//                fabProgressCircle.show();
+//                mStartSync.setText("Syncing..");
+//                getAllContacts();
+//                syncContacts();
+//            }
+//        });
 
     }
 
 
     @Override
     public void onFABProgressAnimationEnd() {
-        img_btn.setVisibility(View.VISIBLE);
+        //img_btn.setVisibility(View.VISIBLE);
         mStartSync.setText("successful");
-        Snackbar.make(fabProgressCircle, "Complete", Snackbar.LENGTH_LONG).show();
+     //   Snackbar.make(fabProgressCircle, "Complete", Snackbar.LENGTH_LONG).show();
 //        Toast.makeText(getApplicationContext(),getResources().getString(R.string.contact_sync_successful),Toast.LENGTH_LONG).show();
 
 
@@ -140,7 +140,7 @@ try{
 
                 if(phnNumber.length()==numberLength){
 
-                  phnNumber=COUNTRY_PREFIX+phnNumber;
+                  phnNumber=COUNTRY_PREFIX+phnNumber.trim();
 
                 }
                 mNumbers.add(phnNumber);
@@ -167,7 +167,7 @@ try{
 
                String mNumber=mNumbers.toString().substring(1,mNumbers.toString().length()-1);
 
-                syncPayload.put(Constants.NUMBER,mNumber);
+                syncPayload.put(Constants.NUMBER,mNumber.trim());
 
                 WebNotificationManager.registerResponseListener(responseListner);
                 WebServiceClient.syncContacts(this,syncPayload.toString(),responseListner);
@@ -194,9 +194,9 @@ try{
                     // start parsing
                     if (result.getSuccess().equalsIgnoreCase("true")) {
 
-                        fabProgressCircle.beginFinalAnimation();
-                        fabProgressCircle.attachListener(SyncContactsActivity.this);
-
+//                        fabProgressCircle.beginFinalAnimation();
+//                        fabProgressCircle.attachListener(SyncContactsActivity.this);
+                        startActivity(new Intent(SyncContactsActivity.this,BadgesActivity.class));
 
                     }
                 } else {
@@ -231,10 +231,10 @@ try{
                 break;
 
 
-//            case R.id.iv_syncbtn:
-//                getAllContacts();
-//                syncContacts();
-//                break;
+            case R.id.iv_syncbtn:
+                getAllContacts();
+                syncContacts();
+                break;
         }
     }
 }

@@ -229,7 +229,7 @@ public class InviteContactActivity extends BaseActivity {
 
             if(mSelectedContacts.size()<10){
 
-                Utility.showAlertDialog(getResources().getString(R.string.invite_atleast_ten_friend),this);
+                Utility.showAlertDialog(getResources().getString(R.string.not_more_than_ten_sms),this);
                 return;
             }
             mNumber = mSelectedContacts.toString();

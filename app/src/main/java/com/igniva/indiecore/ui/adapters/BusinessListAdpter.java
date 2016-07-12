@@ -102,8 +102,18 @@ String address="";
             @Override
             public void onClick(View v) {
 
-                Intent intent = new Intent(mContext, BusinessDetailActivity.class);
-                mContext.startActivity(intent);
+              try {
+
+                  Bundle bundle= new Bundle();
+                  bundle .putInt(Constants.POSITION,position);
+                  bundle.putSerializable("businessPojo",mBusinessList.get(position));
+
+                  Intent intent = new Intent(mContext, BusinessDetailActivity.class);
+                  intent.putExtras(bundle);
+                  mContext.startActivity(intent);
+              }catch (Exception e){
+                  e.printStackTrace();
+              }
 
             }
         });
@@ -132,6 +142,7 @@ String address="";
             mTvAddress = (TextView) itemView.findViewById(R.id.tv_business_address);
             mTVDistance = (TextView) itemView.findViewById(R.id.tv_distance);
             mUserCount= (TextView) itemView.findViewById(R.id.tv_user_count);
+
 
         }
 

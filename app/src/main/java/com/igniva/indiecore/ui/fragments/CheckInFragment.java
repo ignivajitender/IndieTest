@@ -482,7 +482,7 @@ public class CheckInFragment extends BaseFragment implements OnMapReadyCallback 
                     e.printStackTrace();
                 }
             } else {
-                view.setImageResource(R.drawable.badge_off);
+//                view.setImageResource(R.drawable.badge_off);
                 mBusinessList.get(position).setBadge_status(0);
                 String payload = createPayload(mBusinessList.get(position).getBusiness_id(), String.valueOf(mBusinessList.get(position).getBadge_status()));
                 try {

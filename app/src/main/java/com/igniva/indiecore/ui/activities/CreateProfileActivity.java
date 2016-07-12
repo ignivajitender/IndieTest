@@ -93,6 +93,8 @@ public class CreateProfileActivity extends BaseActivity implements AsyncResult {
             TextView mTvTitle = (TextView) mToolbar.findViewById(R.id.toolbar_title);
             mTvTitle.setText(getResources().getString(R.string.create_profile));
             //
+
+
             TextView mTvNext = (TextView) mToolbar.findViewById(R.id.toolbar_next);
             mTvNext.setOnClickListener(new View.OnClickListener() {
                 @Override

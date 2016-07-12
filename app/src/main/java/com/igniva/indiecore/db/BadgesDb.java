@@ -7,6 +7,9 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
 import com.igniva.indiecore.model.BadgesPojo;
+import com.igniva.indiecore.model.ContactPojo;
+import com.igniva.indiecore.model.ProfilePojo;
+import com.igniva.indiecore.model.UsersPojo;
 import com.igniva.indiecore.utils.Log;
 
 import java.util.ArrayList;
@@ -41,7 +44,6 @@ public class BadgesDb extends SQLiteOpenHelper {
 
     //---- TABLE BADGE END-----------
 
-
     public static String createBadgeTable() {
 
         return "CREATE TABLE IF NOT EXISTS " + TABLE_BADGES
@@ -50,6 +52,30 @@ public class BadgesDb extends SQLiteOpenHelper {
                 + IS_PREMIUM + " INTEGER," + BADGE_PRICE + " REAL,"
                 + BADGE_SKU + " TEXT," + IS_ACTIVE + " INTEGER" + ")";
     }
+
+
+
+//    TABLE USERS
+public  static  final String TABLE_USERS="tbl_users";
+//    COLUMN USERS
+    public  static final String MOBILE_NO="";
+    public  static final String FIRST_NAME="";
+    public  static final String LAST_NAME="";
+    public  static final String CONTACT_IMG="";
+    public  static final int TYPE=-1;
+    public  static final int BADGE_COUNT=-1;
+
+//    TABLE END USERS
+
+    public static String createUsersTable(){
+
+        return "CREATE TABLE IF NOT EXISTS " + TABLE_USERS
+                + "(" +MOBILE_NO +  " TEXT PRIMARY KEY,"+ S_NO +
+                FIRST_NAME + " TEXT," + LAST_NAME + " TEXT," + CONTACT_IMG + " TEXT,"
+                + BADGE_COUNT + " INTEGER," + TYPE + " INTEGER" + ")";
+    }
+
+
 
     public BadgesDb(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
@@ -85,6 +111,24 @@ public class BadgesDb extends SQLiteOpenHelper {
             e.printStackTrace();
         }
     }
+
+
+    public void insertSingleContact(SQLiteDatabase db, UsersPojo users){
+
+        try {
+            ContentValues values= new ContentValues();
+            values.put(MOBILE_NO,users.getMobileNo());
+            values.put(FIRST_NAME,users.getProfile().getFirstName());
+            values.put(LAST_NAME,users.getProfile().getLastName());
+            values.put(CONTACT_IMG,users.getProfile().getProfilePic());
+            db.insertWithOnConflict(TABLE_USERS,null,values,SQLiteDatabase.CONFLICT_REPLACE);
+
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+    }
+
+
     public  void updateSingleRow(BadgesPojo badges) {
         SQLiteDatabase db = this.getWritableDatabase();
         try {
@@ -129,6 +173,21 @@ public class BadgesDb extends SQLiteOpenHelper {
             e.printStackTrace();
         } finally {
             // Closing database connection
+            db.close();
+        }
+    }
+
+    public void InsertAllContacts(ArrayList<UsersPojo> mUsers){
+        SQLiteDatabase db=this.getWritableDatabase();
+        try {
+            for(int i=0;i<mUsers.size();i++){
+
+                insertSingleContact(db,mUsers.get(i));
+            }
+
+        }catch (Exception e){
+            e.printStackTrace();
+        } finally {
             db.close();
         }
     }

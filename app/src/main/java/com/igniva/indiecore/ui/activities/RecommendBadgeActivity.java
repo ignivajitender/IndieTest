@@ -67,22 +67,28 @@ public class RecommendBadgeActivity extends BaseActivity {
     void initToolbar() {
         try {
             mToolbar = (Toolbar) findViewById(R.id.toolbar);
+            mToolbar.setNavigationIcon(R.drawable.backarrow_icon);
             TextView mTvTitle = (TextView) mToolbar.findViewById(R.id.toolbar_title);
             mTvTitle.setText(getResources().getString(R.string.reccomend_badge));
             //
 
             TextView mTvNext = (TextView) mToolbar.findViewById(R.id.toolbar_next);
             mTvNext.setVisibility(View.GONE);
-            ImageView back = (ImageView) mToolbar.findViewById(R.id.iv_back);
-            back.setOnClickListener(new View.OnClickListener() {
+
+
+
+
+            setSupportActionBar(mToolbar);
+            getSupportActionBar().setDisplayShowTitleEnabled(false);
+
+
+
+            mToolbar.setNavigationOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     finish();
                 }
             });
-
-            setSupportActionBar(mToolbar);
-            getSupportActionBar().setDisplayShowTitleEnabled(false);
         } catch (Exception e) {
             e.printStackTrace();
             mToolbar = (Toolbar) findViewById(R.id.toolbar);

@@ -1,6 +1,8 @@
 package com.igniva.indiecore.ui.adapters;
 
 import android.content.Context;
+import android.content.Intent;
+import android.os.Bundle;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -16,6 +18,8 @@ import com.igniva.indiecore.R;
 import com.igniva.indiecore.controller.OnCardClickListner;
 import com.igniva.indiecore.model.BusinessPojo;
 import com.igniva.indiecore.model.ContactPojo;
+import com.igniva.indiecore.ui.activities.BusinessDetailActivity;
+import com.igniva.indiecore.utils.Constants;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -92,6 +96,27 @@ public class FindBusinessAdapter extends RecyclerView.Adapter<FindBusinessAdapte
                 listener.onCardClicked(holder.mIvOnOffBadgeStatus, position);
             }
         });
+
+        holder.mIvBusinessIcon.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                try {
+                    Bundle bundle= new Bundle();
+                    bundle .putInt(Constants.POSITION,position);
+                    bundle.putSerializable("businessPojo",mBusinessList.get(position));
+
+                    Intent intent = new Intent(mContext, BusinessDetailActivity.class);
+                    intent.putExtras(bundle);
+                    mContext.startActivity(intent);
+                }catch (Exception e){
+                    e.printStackTrace();
+                }
+
+            }
+        });
+
+
 
 
     }

@@ -12,14 +12,14 @@
     app:titleTextColor="@color/black">
 
 
-    <ImageView
-        android:id="@+id/iv_back"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="left"
-        android:src="@drawable/backarrow_icon"
+    <!--<ImageView-->
+        <!--android:id="@+id/iv_back"-->
+        <!--android:layout_width="wrap_content"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:layout_gravity="left"-->
+        <!--android:src="@drawable/backarrow_icon"-->
 
-        />
+        <!--/>-->
 
     <TextView
         android:textSize="18sp"

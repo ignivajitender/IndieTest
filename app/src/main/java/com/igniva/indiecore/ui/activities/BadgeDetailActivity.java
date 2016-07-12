@@ -45,10 +45,18 @@ public class BadgeDetailActivity extends BaseActivity {
     void initToolbar() {
         try {
             mToolbar = (Toolbar) findViewById(R.id.toolbar);
-
+            mToolbar.setNavigationIcon(R.drawable.backarrow_icon);
             TextView mTvTitle = (TextView) mToolbar.findViewById(R.id.toolbar_title);
-            mTvTitle.setText(badge.getName());
+             mTvTitle.setText(badge.getName());
             //
+//            //ImageView back=(ImageView) mToolbar.findViewById(R.id.iv_back);
+//            back.setOnClickListener(new View.OnClickListener() {
+//                @Override
+//                public void onClick(View v) {
+//                    finish();
+//                }
+//            });
+
             TextView mTvNext = (TextView) mToolbar.findViewById(R.id.toolbar_next);
             mTvNext.setVisibility(View.GONE);
 

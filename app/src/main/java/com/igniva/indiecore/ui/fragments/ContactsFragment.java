@@ -20,8 +20,8 @@ public class ContactsFragment extends BaseFragment{
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         rootView  = inflater.inflate(R.layout.fragment_contacts, container, false);
-
         return rootView;
+
     }
 
     @Override

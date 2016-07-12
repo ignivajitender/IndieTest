@@ -77,8 +77,8 @@
     <string name="Badge_detail_activity">Badge Detail Activity</string>
 
 
-
-
+<!--badges actvity-->
+       <string name="not_more_then_ten_badge">You can select a maximum of 10 badges for free, to get more please invite friends or purchase</string>
 
     <!--inviteFriensActivity-->
 
@@ -95,7 +95,7 @@
 
     <!--check-In-->
     <string name="trending">Trending</string>
-    <string name="near_by">NearBy</string>
+    <string name="near_by">Near by</string>
     <string name="find">Find</string>
 
 

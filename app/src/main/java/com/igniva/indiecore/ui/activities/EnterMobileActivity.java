@@ -8,6 +8,7 @@ import android.telephony.TelephonyManager;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.support.v7.widget.Toolbar;
 import android.widget.TextView;
@@ -60,6 +61,7 @@ public class EnterMobileActivity extends BaseActivity {
             TextView mTvTitle = (TextView) mToolbar.findViewById(R.id.toolbar_title);
             mTvTitle.setText(getResources().getString(R.string.contact_number));
             //
+
 
             TextView mTvNext = (TextView) mToolbar.findViewById(R.id.toolbar_next);
             mTvNext.setOnClickListener(new View.OnClickListener() {

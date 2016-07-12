@@ -13,6 +13,7 @@ import android.support.v7.widget.Toolbar;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -144,6 +145,10 @@ public class BadgesActivity extends BaseActivity {
             TextView mTvTitle = (TextView) mToolbar.findViewById(R.id.toolbar_title);
             mTvTitle.setText(getResources().getString(R.string.badges));
             //
+
+//            ImageView back=(ImageView) mToolbar.findViewById(R.id.iv_back);
+//            back.setVisibility(View.GONE);
+
             TextView mTvNext = (TextView) mToolbar.findViewById(R.id.toolbar_next);
             mTvNext.setText("Done");
             mTvNext.setOnClickListener(new View.OnClickListener() {
@@ -176,7 +181,7 @@ public class BadgesActivity extends BaseActivity {
                         builder.create().show();
                     } else {
 
-                        Utility.showToastMessageShort(BadgesActivity.this, "Please select atleast one badge");
+                        Utility.showToastMessageShort(BadgesActivity.this, "Please select at-least one badge");
                         return;
                     }
 
