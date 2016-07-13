@@ -58,20 +58,21 @@ public class BadgesDb extends SQLiteOpenHelper {
 //    TABLE USERS
 public  static  final String TABLE_USERS="tbl_users";
 //    COLUMN USERS
-    public  static final String MOBILE_NO="";
-    public  static final String FIRST_NAME="";
-    public  static final String LAST_NAME="";
-    public  static final String CONTACT_IMG="";
-    public  static final int TYPE=-1;
-    public  static final int BADGE_COUNT=-1;
+    public  static final String MOBILE_NO="mobile_no";
+    public  static final String FIRST_NAME="first_name";
+    public  static final String LAST_NAME="last_name";
+    public  static final String CONTACT_IMG="contact_img";
+    public  static final String TYPE="type";
+    public  static final String BADGE_COUNT="badge_count";
+    public static  final String DESCERIPTION="description";
 
 //    TABLE END USERS
 
     public static String createUsersTable(){
 
         return "CREATE TABLE IF NOT EXISTS " + TABLE_USERS
-                + "(" +MOBILE_NO +  " TEXT PRIMARY KEY,"+ S_NO +
-                FIRST_NAME + " TEXT," + LAST_NAME + " TEXT," + CONTACT_IMG + " TEXT,"
+                + "(" +MOBILE_NO +  " TEXT PRIMARY KEY,"+
+                FIRST_NAME + " TEXT," + LAST_NAME + " TEXT," + DESCERIPTION + " TEXT," + CONTACT_IMG + " TEXT,"
                 + BADGE_COUNT + " INTEGER," + TYPE + " INTEGER" + ")";
     }
 
@@ -84,11 +85,13 @@ public  static  final String TABLE_USERS="tbl_users";
     @Override
     public void onCreate(SQLiteDatabase db) {
         db.execSQL(createBadgeTable());
+        db.execSQL(createUsersTable());
     }
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_BADGES);
+        db.execSQL("DROP TABLE IF EXISTS " + TABLE_USERS);
         onCreate(db);
     }
 
@@ -121,6 +124,9 @@ public  static  final String TABLE_USERS="tbl_users";
             values.put(FIRST_NAME,users.getProfile().getFirstName());
             values.put(LAST_NAME,users.getProfile().getLastName());
             values.put(CONTACT_IMG,users.getProfile().getProfilePic());
+            values.put(DESCERIPTION,users.getProfile().getDesc());
+            values.put(BADGE_COUNT,12);
+            values.put(TYPE,1);
             db.insertWithOnConflict(TABLE_USERS,null,values,SQLiteDatabase.CONFLICT_REPLACE);
 
         }catch (Exception e){
@@ -177,12 +183,14 @@ public  static  final String TABLE_USERS="tbl_users";
         }
     }
 
-    public void InsertAllContacts(ArrayList<UsersPojo> mUsers){
+    public void insertAllContacts(ArrayList<UsersPojo> mUsers){
         SQLiteDatabase db=this.getWritableDatabase();
         try {
             for(int i=0;i<mUsers.size();i++){
 
                 insertSingleContact(db,mUsers.get(i));
+
+                Log.e(LOG_TAG,"inseretd"+mUsers.get(i));
             }
 
         }catch (Exception e){
@@ -194,7 +202,6 @@ public  static  final String TABLE_USERS="tbl_users";
 
 
     public ArrayList<BadgesPojo> retrieveSelectedBadges() {
-
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor cursor = db.query(TABLE_BADGES, null, null, null, null, null, null);
         ArrayList<BadgesPojo> myBadgesList = new ArrayList<BadgesPojo>();
@@ -223,6 +230,34 @@ public  static  final String TABLE_USERS="tbl_users";
             cursor.close();
         }
         return myBadgesList;
+    }
+
+    public ArrayList<ProfilePojo> retrieveSavedUsersList(){
+        SQLiteDatabase db=getReadableDatabase();
+        Cursor cursor = db.query(TABLE_USERS, null, null, null, null, null, null);
+        ArrayList<ProfilePojo> savedUsersList=new ArrayList<ProfilePojo>();
+        ProfilePojo usersPojoObj;
+
+        try {
+            if(cursor.getCount()>0){
+                for(int i=0;i< cursor.getCount();i++){
+
+                    cursor.moveToNext();
+                    usersPojoObj= new ProfilePojo();
+                    usersPojoObj.setFirstName(cursor.getString(1));
+                    usersPojoObj.setDesc(cursor.getString(3));
+                    usersPojoObj.setProfilePic(cursor.getString(4));
+                    savedUsersList.add(usersPojoObj);
+                }
+            }
+
+
+        } catch (Exception e){
+            e.printStackTrace();
+        }
+
+        return savedUsersList;
+
     }
 
     public void deleteAllData(SQLiteDatabase db) {

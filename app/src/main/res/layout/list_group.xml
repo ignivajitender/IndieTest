@@ -41,6 +41,8 @@
                 android:textSize="15dp" />
 
             <ImageView
+                android:visibility="invisible"
+                android:id="@+id/iv_collapse"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentRight="true"

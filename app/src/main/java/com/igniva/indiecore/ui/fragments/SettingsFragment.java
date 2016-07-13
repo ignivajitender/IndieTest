@@ -1,15 +1,24 @@
 package com.igniva.indiecore.ui.fragments;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.util.DisplayMetrics;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ExpandableListView;
+import android.widget.ImageView;
 import android.widget.Toast;
 
+import com.bumptech.glide.util.Util;
 import com.igniva.indiecore.R;
+import com.igniva.indiecore.ui.activities.CreateProfileActivity;
+import com.igniva.indiecore.ui.activities.RecommendBadgeActivity;
 import com.igniva.indiecore.ui.adapters.ExpandableListAdapter;
+import com.igniva.indiecore.utils.Constants;
+import com.igniva.indiecore.utils.Log;
+import com.igniva.indiecore.utils.Utility;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -25,6 +34,7 @@ public class SettingsFragment extends BaseFragment{
     ExpandableListView expListView;
     List<String> listDataHeader;
     HashMap<String, List<String>> listDataChild;
+    ImageView mIvcollapse;
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -36,10 +46,20 @@ public class SettingsFragment extends BaseFragment{
     @Override
     protected void setUpLayout() {
 
+        DisplayMetrics metrics = new DisplayMetrics();
+        getActivity().getWindowManager().getDefaultDisplay().getMetrics(metrics);
+        int width = metrics.widthPixels;
+
         expListView = (ExpandableListView) rootView.findViewById(R.id.lvExp);
+
 
         // preparing list data
         prepareListData();
+
+        expListView.setIndicatorBounds(width - GetPixelFromDips(50), width - GetPixelFromDips(10));
+//
+
+
 
         listAdapter = new ExpandableListAdapter(getActivity(), listDataHeader, listDataChild);
 
@@ -51,14 +71,52 @@ public class SettingsFragment extends BaseFragment{
             @Override
             public boolean onChildClick(ExpandableListView parent, View v,
                                         int groupPosition, int childPosition, long id) {
-                Toast.makeText(
-                        getActivity(),
-                        listDataHeader.get(groupPosition)
-                                + " : "
-                                + listDataChild.get(
-                                listDataHeader.get(groupPosition)).get(
-                                childPosition), Toast.LENGTH_SHORT)
-                        .show();
+             switch (groupPosition){
+
+                 case 0:
+                     if(childPosition==0){
+                         Intent in = new Intent(getActivity(), CreateProfileActivity.class);
+                         Bundle bundle = new Bundle();
+//                         bundle.putString(Constants.FIRSTNAME, result.getProfile().getFirstName());
+//                         bundle.putString(Constants.LASTNAME, result.getProfile().getLastName());
+//                         bundle.putString(Constants.DOB, result.getProfile().getDob());
+//                         bundle.putString(Constants.DESCRIPTION, result.getProfile().getDesc());
+//                         bundle.putString(Constants.GENDER, result.getProfile().getGender());
+                         bundle.putInt(Constants.INDEX,2);
+//                         bundle.putString(Constants.PROFILEPIC,result.getProfile().getProfilePic());
+//                         bundle.putString(Constants.COVERPIC,result.getProfile().getCoverPic());
+//                         bundle.putInt(Constants.NUMBER_LENGTH,mobileNumber.length());
+//                         bundle.putString(Constants.COUNTRY_CODE,countryId);
+                         in.putExtras(bundle);
+                         startActivity(in);
+                     }
+                     break;
+                 case 1:
+                     break;
+                 default:
+                     break;
+             }
+                return false;
+            }
+        });
+
+
+        expListView.setOnGroupClickListener(new ExpandableListView.OnGroupClickListener() {
+            @Override
+            public boolean onGroupClick(ExpandableListView parent, View v, int groupPosition, long id) {
+                Log.d("onGroupClick:", "worked");
+
+                mIvcollapse=(ImageView)v.findViewById(R.id.iv_collapse);
+                mIvcollapse.setImageResource(R.drawable.dropdown_icon);
+
+//                parent.smoothScrollToPosition(groupPosition);
+//
+//                if (parent.isGroupExpanded(groupPosition)) {
+//                    parent.collapseGroup(groupPosition);
+//                } else {
+//                    parent.expandGroup(groupPosition);
+//                }
+
                 return false;
             }
         });
@@ -69,27 +127,51 @@ public class SettingsFragment extends BaseFragment{
 
             @Override
             public void onGroupExpand(int groupPosition) {
-             switch (groupPosition){
-//
-//                 case Integer.parseInt(getResources().getString(R.string.reccomend_badge));
-//                     break;
-//                 default:
-//                     break;
-             }
+                 int m=groupPosition;
+                switch (m){
+                    case 0:
+                       // Utility.showToastMessageShort(getActivity(),"Profile Expanded");
+                        break;
+                    case 1:
+                        break;
+                    case 2:
+                        break;
+                    case  3:
+                        break;
+                    case 4:
+                        break;
+                    case 6:
+                        Intent intent= new Intent(getActivity(), RecommendBadgeActivity.class);
+                        getActivity().startActivity(intent);
+                        break;
+                    default:
+                        break;
+                }
+
+                mIvcollapse.setImageResource(R.drawable.next_arrow_icon);
+
             }
         });
 
         // Listview Group collasped listener
-        expListView.setOnGroupCollapseListener(new ExpandableListView.OnGroupCollapseListener() {
+//        expListView.setOnGroupCollapseListener(new ExpandableListView.OnGroupCollapseListener() {
+//
+//            @Override
+//            public void onGroupCollapse(int groupPosition) {
+//                Toast.makeText(getActivity(),
+//                        listDataHeader.get(groupPosition) + " Collapsed",
+//                        Toast.LENGTH_SHORT).show();
+//
+//            }
+//        });
+    }
 
-            @Override
-            public void onGroupCollapse(int groupPosition) {
-                Toast.makeText(getActivity(),
-                        listDataHeader.get(groupPosition) + " Collapsed",
-                        Toast.LENGTH_SHORT).show();
 
-            }
-        });
+    public int GetPixelFromDips(float pixels) {
+        // Get the screen's density scale
+        final float scale = getResources().getDisplayMetrics().density;
+        // Convert the dps to pixels, based on density scale
+        return (int) (pixels * scale + 0.5f);
     }
 
     @Override

@@ -214,6 +214,12 @@ public class EnterMobileActivity extends BaseActivity {
                             PreferenceHandler.writeString(EnterMobileActivity.this, PreferenceHandler.PREF_KEY_USER_ID, result.getUserId());
                             PreferenceHandler.writeString(EnterMobileActivity.this,PreferenceHandler.COVER_PIC_URL,result.getProfile().getCoverPic());
                             PreferenceHandler.writeString(EnterMobileActivity.this,PreferenceHandler.PROFILE_PIC_URL,result.getProfile().getProfilePic());
+
+                            PreferenceHandler.writeString(EnterMobileActivity.this,PreferenceHandler.PREF_KEY_FIRST_NAME,result.getProfile().getFirstName());
+                            PreferenceHandler.writeString(EnterMobileActivity.this,PreferenceHandler.PREF_KEY_LAST_NAME,result.getProfile().getLastName());
+                            PreferenceHandler.writeString(EnterMobileActivity.this,PreferenceHandler.PREF_KEY_DOB,result.getProfile().getDob());
+                            PreferenceHandler.writeString(EnterMobileActivity.this,PreferenceHandler.PREF_KEY_DESCRIPTION,result.getProfile().getDesc());
+
                             //
                             Intent in = new Intent(EnterMobileActivity.this, CreateProfileActivity.class);
                             Bundle bundle = new Bundle();
@@ -222,6 +228,7 @@ public class EnterMobileActivity extends BaseActivity {
                             bundle.putString(Constants.DOB, result.getProfile().getDob());
                             bundle.putString(Constants.DESCRIPTION, result.getProfile().getDesc());
                             bundle.putString(Constants.GENDER, result.getProfile().getGender());
+                            bundle.putInt(Constants.INDEX,1);
                             bundle.putString(Constants.PROFILEPIC,result.getProfile().getProfilePic());
                             bundle.putString(Constants.COVERPIC,result.getProfile().getCoverPic());
                             bundle.putInt(Constants.NUMBER_LENGTH,mobileNumber.length());

@@ -15,8 +15,12 @@ public class PreferenceHandler {
 	public static final String PREF_KEY_LOGIN = "PREF_KEY_LOGIN";
 	public static final String PREF_KEY_USER_ID = "PREF_KEY_USER_ID";
 	public static final String PREF_KEY_USER_TOKEN="PREF_KEY_USER_TOKEN";
-	public static final String PREF_KEY_USER_NAME = "PREF_KEY_USER_NAME";
-	public static final String PREF_KEY_USER_EMAIL = "PREF_KEY_USER_EMAIL";
+	public static final String PREF_KEY_FIRST_NAME = "PREF_KEY_FIRST_NAME";
+	public static final String PREF_KEY_LAST_NAME = "PREF_KEY_LAST_NAME";
+	public static final String PREF_KEY_DOB = "PREF_KEY_DOB";
+	public static final String PREF_KEY_DESCRIPTION = "PREF_KEY_DESCRIPTION";
+	public static final String PREF_KEY_GENDER = "PREF_KEy_GENDER";
+
 	public static final String PREF_KEY_USER_MOBILE = "PREF_KEY_USER_MOBILE";
 	public static final String PREF_KEY_GCMID = "PREF_KEY_GCMID";
 	public static  final String PROFILE_PIC_URL="PROFILE_PIC_URL";

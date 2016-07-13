@@ -16,6 +16,7 @@ import android.widget.TextView;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.igniva.indiecore.R;
+import com.igniva.indiecore.controller.WebServiceClient;
 import com.igniva.indiecore.model.ContactPojo;
 import com.igniva.indiecore.model.ProfilePojo;
 import com.igniva.indiecore.ui.activities.InviteContactActivity;
@@ -46,7 +47,7 @@ public class PhonebookAdapter extends RecyclerView.Adapter<PhonebookAdapter.Recy
     public RecyclerViewHolders onCreateViewHolder(ViewGroup parent, int viewType) {
 
 
-        View layoutView = LayoutInflater.from(parent.getContext()).inflate(R.layout.contact_list_items, null);
+        View layoutView = LayoutInflater.from(parent.getContext()).inflate(R.layout.contact_list_items, parent,false);
         RecyclerViewHolders rcv = new RecyclerViewHolders(layoutView);
         return rcv;
     }
@@ -54,15 +55,18 @@ public class PhonebookAdapter extends RecyclerView.Adapter<PhonebookAdapter.Recy
     @Override
     public void onBindViewHolder(final RecyclerViewHolders holder, final int position) {
         try {
-
             holder.mContactName.setText(itemList.get(position).getFirstName());
-            Glide.with(context).load(itemList.get(position).getProfilePic())
-                    .thumbnail(1f)
-                    .crossFade()
-                    .diskCacheStrategy(DiskCacheStrategy.ALL)
-                    .into(holder.mContactImage);
-            holder.mText.setText(itemList.get(position).getDesc());
+if(itemList.get(position).getProfilePic()!=null) {
+    Glide.with(context).load(WebServiceClient.HTTP_STAGING + itemList.get(position).getProfilePic())
+            .thumbnail(1f)
+            .crossFade()
+            .diskCacheStrategy(DiskCacheStrategy.ALL)
+            .into(holder.mContactImage);
+}else {
 
+    holder.mContactImage.setImageResource(R.drawable.default_user);
+}
+            holder.mText.setText(itemList.get(position).getDesc());
         }catch (Exception e){
             e.printStackTrace();
         }

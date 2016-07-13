@@ -114,7 +114,7 @@ public class InviteContactAdapter extends RecyclerView.Adapter<InviteContactAdap
 
                     } else {
 
-                        Utility.showAlertDialog("You canot send sms to more than 10 peoples at the same time ", context);
+                        Utility.showAlertDialog("You cannot send more than 10 SMS at any one time when inviting friends", context);
                         return;
                     }
 

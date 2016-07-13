@@ -57,6 +57,8 @@
 
     <!--creatyeProfieActivity-->
     <string name="create_profile">Create Profile</string>
+    <string name="update_profile">Update Profile</string>
+
     <string name="first_name">First name</string>
     <string name="last_name">Last name</string>
     <string name="date_of_birth">Date of birth</string>
@@ -95,7 +97,7 @@
 
     <!--check-In-->
     <string name="trending">Trending</string>
-    <string name="near_by">Near by</string>
+    <string name="near_by">Nearby</string>
     <string name="find">Find</string>
 
 

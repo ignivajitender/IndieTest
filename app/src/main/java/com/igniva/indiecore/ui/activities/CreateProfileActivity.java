@@ -24,6 +24,8 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.igniva.indiecore.R;
 import com.igniva.indiecore.controller.ResponseHandlerListener;
 import com.igniva.indiecore.controller.WebNotificationManager;
@@ -71,6 +73,7 @@ public class CreateProfileActivity extends BaseActivity implements AsyncResult {
     private String mCountryCode;
     private int PIC_INDEX_CODE = 0;
     private int numberLenth;
+    int index = -1;
     Calendar cal;
     String profileImageUrl = "";
     String CoverImageUrl = "";
@@ -82,8 +85,9 @@ public class CreateProfileActivity extends BaseActivity implements AsyncResult {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_create_profile);
-        initToolbar();
         setUpLayout();
+        initToolbar();
+
         setDataInViewObjects();
     }
 
@@ -91,11 +95,16 @@ public class CreateProfileActivity extends BaseActivity implements AsyncResult {
         try {
             mToolbar = (Toolbar) findViewById(R.id.toolbar);
             TextView mTvTitle = (TextView) mToolbar.findViewById(R.id.toolbar_title);
-            mTvTitle.setText(getResources().getString(R.string.create_profile));
-            //
-
-
             TextView mTvNext = (TextView) mToolbar.findViewById(R.id.toolbar_next);
+
+            if (index == 1) {
+                mTvTitle.setText(getResources().getString(R.string.create_profile));
+            } else {
+                mTvTitle.setText(getResources().getString(R.string.update_profile));
+                mTvNext.setText("Update");
+            }
+
+
             mTvNext.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -115,14 +124,14 @@ public class CreateProfileActivity extends BaseActivity implements AsyncResult {
 
     public void getDateOfBirth() {
 
-try{
-        mDay = cal.get(Calendar.DAY_OF_MONTH);
-        mMonth = cal.get(Calendar.MONTH);
-        mYear = cal.get(Calendar.YEAR);
-        DateDialog();
-    }catch (Exception e){
-        e.printStackTrace();
-    }
+        try {
+            mDay = cal.get(Calendar.DAY_OF_MONTH);
+            mMonth = cal.get(Calendar.MONTH);
+            mYear = cal.get(Calendar.YEAR);
+            DateDialog();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
 
@@ -146,6 +155,19 @@ try{
 
             mTvMale.setBackgroundResource(R.drawable.left_rounded_corner_selected);
             mTvMale.setTextColor(Color.parseColor("#ffffff"));
+
+
+            Bundle bundle = getIntent().getExtras();
+//            String firstName = bundle.getString(Constants.FIRSTNAME);
+//            String lastName = bundle.getString(Constants.LASTNAME);
+//            String dateOfBirth = bundle.getString(Constants.DOB);
+//            String desc = bundle.getString(Constants.DESCRIPTION);
+//            String gender = bundle.getString(Constants.GENDER);
+            index = bundle.getInt(Constants.INDEX);
+////            String profilePicUrl = bundle.getString(Constants.PROFILEPIC);
+////            String coverPic = bundle.getString(Constants.COVERPIC);
+            numberLenth = bundle.getInt(Constants.NUMBER_LENGTH);
+            mCountryCode = bundle.getString(Constants.COUNTRY_CODE);
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -175,56 +197,56 @@ try{
 
 
     private void selectImage() {
-        try{
-        final CharSequence[] items = {getResources().getString(R.string.take_photo), getResources().getString(R.string.choose_from_gallary)
-        };
-        AlertDialog.Builder builder = new AlertDialog.Builder(CreateProfileActivity.this, R.style.AppCompatAlertDialogStyle);
-        builder.setTitle(getResources().getString(R.string.upload_image));
-        builder.setItems(items, new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int item) {
-                boolean result = true;
-                if (items[item].equals(getResources().getString(R.string.take_photo))) {
-                    userChoosenTask = getResources().getString(R.string.take_photo);
-                    if (result)
-                        cameraIntent();
-                } else if (items[item].equals(getResources().getString(R.string.choose_from_gallary))) {
-                    userChoosenTask = getResources().getString(R.string.choose_from_gallary);
-                    if (result)
-                        galleryIntent();
+        try {
+            final CharSequence[] items = {getResources().getString(R.string.take_photo), getResources().getString(R.string.choose_from_gallary)
+            };
+            AlertDialog.Builder builder = new AlertDialog.Builder(CreateProfileActivity.this, R.style.AppCompatAlertDialogStyle);
+            builder.setTitle(getResources().getString(R.string.upload_image));
+            builder.setItems(items, new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int item) {
+                    boolean result = true;
+                    if (items[item].equals(getResources().getString(R.string.take_photo))) {
+                        userChoosenTask = getResources().getString(R.string.take_photo);
+                        if (result)
+                            cameraIntent();
+                    } else if (items[item].equals(getResources().getString(R.string.choose_from_gallary))) {
+                        userChoosenTask = getResources().getString(R.string.choose_from_gallary);
+                        if (result)
+                            galleryIntent();
+                    }
                 }
-            }
 
-        });
+            });
 
-        builder.setPositiveButton(getResources().getString(R.string.cancel), new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                dialog.dismiss();
-            }
-        });
-        builder.show();
-        }catch (Exception e){
+            builder.setPositiveButton(getResources().getString(R.string.cancel), new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    dialog.dismiss();
+                }
+            });
+            builder.show();
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
     private void cameraIntent() {
-        try{
-        Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-        startActivityForResult(intent, REQUEST_CAMERA);
-        }catch (Exception e){
+        try {
+            Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+            startActivityForResult(intent, REQUEST_CAMERA);
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
     private void galleryIntent() {
-        try{
-        Intent intent = new Intent();
-        intent.setType("image/*");
-        intent.setAction(Intent.ACTION_GET_CONTENT);//
-        startActivityForResult(Intent.createChooser(intent, "Select File"), SELECT_FILE);
-        }catch (Exception e){
+        try {
+            Intent intent = new Intent();
+            intent.setType("image/*");
+            intent.setAction(Intent.ACTION_GET_CONTENT);//
+            startActivityForResult(Intent.createChooser(intent, "Select File"), SELECT_FILE);
+        } catch (Exception e) {
             e.printStackTrace();
         }
 
@@ -403,12 +425,16 @@ try{
             if (error == null) {
                 // start parsing
                 if (result.getSuccess().equalsIgnoreCase("true")) {
-                    Intent intent = new Intent(CreateProfileActivity.this, SyncContactsActivity.class);
-                    Bundle bundle = new Bundle();
-                    bundle.putInt(Constants.NUMBER_LENGTH, numberLenth);
-                    bundle.putString(Constants.COUNTRY_CODE, mCountryCode);
-                    intent.putExtras(bundle);
-                    startActivity(intent);
+                    if (index == 1) {
+                        Intent intent = new Intent(CreateProfileActivity.this, SyncContactsActivity.class);
+                        Bundle bundle = new Bundle();
+                        bundle.putInt(Constants.NUMBER_LENGTH, numberLenth);
+                        bundle.putString(Constants.COUNTRY_CODE, mCountryCode);
+                        intent.putExtras(bundle);
+                        startActivity(intent);
+                    } else {
+                        Toast.makeText(CreateProfileActivity.this, "Profile updated successfully", Toast.LENGTH_SHORT).show();
+                    }
                 } else {
                     // display error message
                     Toast.makeText(CreateProfileActivity.this, "Error in update", Toast.LENGTH_SHORT).show();
@@ -431,44 +457,66 @@ try{
 
         try {
 
-            Bundle bundle = getIntent().getExtras();
-            String firstName = bundle.getString(Constants.FIRSTNAME);
-            String lastName = bundle.getString(Constants.LASTNAME);
-            String dateOfBirth = bundle.getString(Constants.DOB);
-            String desc = bundle.getString(Constants.DESCRIPTION);
-            String gender = bundle.getString(Constants.GENDER);
-            String profilePicUrl = bundle.getString(Constants.PROFILEPIC);
-            String coverPic = bundle.getString(Constants.COVERPIC);
-            numberLenth = bundle.getInt(Constants.NUMBER_LENGTH);
-            mCountryCode = bundle.getString(Constants.COUNTRY_CODE);
+//            Bundle bundle = getIntent().getExtras();
+////            String firstName = bundle.getString(Constants.FIRSTNAME);
+////            String lastName = bundle.getString(Constants.LASTNAME);
+////            String dateOfBirth = bundle.getString(Constants.DOB);
+////            String desc = bundle.getString(Constants.DESCRIPTION);
+////            String gender = bundle.getString(Constants.GENDER);
+//              index =bundle.getInt(Constants.INDEX);
+//////            String profilePicUrl = bundle.getString(Constants.PROFILEPIC);
+//////            String coverPic = bundle.getString(Constants.COVERPIC);
+//            numberLenth = bundle.getInt(Constants.NUMBER_LENGTH);
+//            mCountryCode = bundle.getString(Constants.COUNTRY_CODE);
 
 
-            mEtFirstName.setText(firstName);
-            mEtLastName.setText(lastName);
-            mTvDateOfBirth.setText(dateOfBirth);
-            mEtDescription.setText(desc);
+            mEtFirstName.setText(PreferenceHandler.readString(this, PreferenceHandler.PREF_KEY_FIRST_NAME, ""));
+            mEtLastName.setText(PreferenceHandler.readString(this, PreferenceHandler.PREF_KEY_LAST_NAME, ""));
+            mTvDateOfBirth.setText(PreferenceHandler.readString(this, PreferenceHandler.PREF_KEY_DOB, ""));
+            mEtDescription.setText(PreferenceHandler.readString(this, PreferenceHandler.PREF_KEY_DESCRIPTION, ""));
             //
-            if (gender.length() > 0) {
-                if (gender.equalsIgnoreCase("male")) {
+            if (PreferenceHandler.readString(this, PreferenceHandler.PREF_KEY_GENDER, "").length() > 0) {
+                if (PreferenceHandler.readString(this, PreferenceHandler.PREF_KEY_GENDER, "").equalsIgnoreCase("male")) {
                     mTvMale.performClick();
-                } else if (gender.equalsIgnoreCase("female")) {
+                } else if (PreferenceHandler.readString(this, PreferenceHandler.PREF_KEY_GENDER, "").equalsIgnoreCase("female")) {
                     mTvFemale.performClick();
                 } else {
                     mTvOther.performClick();
                 }
-
-                ImageLoader imageLoader = new ImageLoader(CreateProfileActivity.this);
-
-                if (profilePicUrl != null) {
-                    Log.e("Url Profile Image", "" + profilePicUrl);
-                    imageLoader.DisplayImage(WebServiceClient.HTTP_STAGING + profilePicUrl, mIvProfileImage);
-                }
-                if (coverPic != null) {
-                    Log.e("Url cover Image", "" + coverPic);
-                    imageLoader.DisplayImage(WebServiceClient.HTTP_STAGING + coverPic, mIvCoverImage);
-                }
-
             }
+
+
+                if (PreferenceHandler.readString(this, PreferenceHandler.PROFILE_PIC_URL, "") != null) {
+
+
+                    Glide.with(this).load(WebServiceClient.HTTP_STAGING + PreferenceHandler.readString(this, PreferenceHandler.PROFILE_PIC_URL, ""))
+                            .thumbnail(1f)
+                            .crossFade()
+                            .diskCacheStrategy(DiskCacheStrategy.ALL)
+                            .into(mIvProfileImage);
+
+
+//                    imageLoader.DisplayImage(WebServiceClient.HTTP_STAGING + PreferenceHandler.readString(this, PreferenceHandler.PROFILE_PIC_URL, ""), mIvProfileImage);
+                } else {
+                    mIvProfileImage.setImageResource(R.drawable.default_user);
+
+                }
+                if (PreferenceHandler.readString(this, PreferenceHandler.COVER_PIC_URL, "") != null) {
+
+
+                    Glide.with(this).load(WebServiceClient.HTTP_STAGING + PreferenceHandler.readString(this, PreferenceHandler.COVER_PIC_URL, ""))
+                            .thumbnail(1f)
+                            .crossFade()
+                            .diskCacheStrategy(DiskCacheStrategy.ALL)
+                            .into(mIvCoverImage);
+
+
+
+
+//                    imageLoader.DisplayImage(WebServiceClient.HTTP_STAGING + PreferenceHandler.readString(this, PreferenceHandler.COVER_PIC_URL, ""), mIvCoverImage);
+                }
+
+
 
 
         } catch (Exception e) {

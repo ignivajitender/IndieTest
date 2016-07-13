@@ -125,8 +125,16 @@ public class RecommendBadgeActivity extends BaseActivity {
             WebNotificationManager.unRegisterResponseListener(responseHandler);
 
             if (error != null) {
+                if (result.getSuccess().equalsIgnoreCase("true")) {
 
-                Utility.showToastMessageLong(RecommendBadgeActivity.this, "Your badge recommendation submit successfully");
+                    Utility.showToastMessageLong(RecommendBadgeActivity.this, "Your badge recommendation submit successfully");
+                }else {
+                    Utility.showToastMessageLong(RecommendBadgeActivity.this, "Some error occurred please try later");
+                }
+            }
+            // Always close the progressdialog
+            if (mProgressDialog != null && mProgressDialog.isShowing()) {
+                mProgressDialog.dismiss();
             }
         }
     };

@@ -198,22 +198,22 @@ public class CheckInFragment extends BaseFragment implements OnMapReadyCallback 
 
     };
 
-    public ArrayList<BusinessPojo> sortBusinessByDistance(ArrayList<BusinessPojo> businesslist) {
-        ArrayList<BusinessPojo> sortedList = new ArrayList<BusinessPojo>();
-        try {
-
-            Collections.sort(businesslist, new Comparator<BusinessPojo>() {
-                @Override
-                public int compare(BusinessPojo first, BusinessPojo second) {
-                    return Double.compare(first.getDistance(), second.getDistance());
-                }
-            });
-
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return sortedList;
-    }
+//    public ArrayList<BusinessPojo> sortBusinessByDistance(ArrayList<BusinessPojo> businesslist) {
+//        ArrayList<BusinessPojo> sortedList = new ArrayList<BusinessPojo>();
+//        try {
+//
+//            Collections.sort(businesslist, new Comparator<BusinessPojo>() {
+//                @Override
+//                public int compare(BusinessPojo first, BusinessPojo second) {
+//                    return Double.compare(first.getDistance(), second.getDistance());
+//                }
+//            });
+//
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//        }
+//        return sortedList;
+//    }
 
     /*
     * badges on off response handler
@@ -310,7 +310,6 @@ public class CheckInFragment extends BaseFragment implements OnMapReadyCallback 
 
         }
     };
-
 
     void updateTrendingUI() {
         mGlManager = new GridLayoutManager(getActivity(), 3);
