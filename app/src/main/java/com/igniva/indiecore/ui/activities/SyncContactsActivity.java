@@ -199,6 +199,8 @@ public class SyncContactsActivity extends BaseActivity implements View.OnClickLi
 
                         mUSers=result.getUsers();
                         insertUsers();
+                        Toast.makeText(getApplicationContext(), getResources().getString(R.string.contact_sync_successful),Toast.LENGTH_LONG).show();
+
                         startActivity(new Intent(SyncContactsActivity.this, BadgesActivity.class));
 
                     }
@@ -242,7 +244,6 @@ public class SyncContactsActivity extends BaseActivity implements View.OnClickLi
         switch (v.getId()) {
             case R.id.tv_skip_step:
                 startActivity(new Intent(this, BadgesActivity.class));
-//                startActivity(new Intent(this,RecommendBadgeActivity.class));
 
                 break;
 

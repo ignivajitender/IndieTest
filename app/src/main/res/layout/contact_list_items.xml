@@ -11,8 +11,7 @@
         android:layout_height="100dp"
         android:layout_marginLeft="7dp"
         android:layout_marginRight="7dp"
-        android:layout_marginTop="15dp"
-        android:background="#ff00"
+        android:layout_marginTop="10dp"
         android:elevation="4dp">
 
         <View
@@ -49,6 +48,8 @@
                     android:id="@+id/tv_phonebook_name"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:textSize="20dp"
+                    android:textColor="@color/black"
                     android:text="Name" />
 
                 <TextView
@@ -58,6 +59,9 @@
                     android:layout_marginRight="5dp"
                     android:layout_marginTop="3dp"
                     android:ellipsize="end"
+                    android:maxLines="2"
+                    android:textSize="10dp"
+                    android:textColor="@color/black"
                     android:text="@string/description" />
             </LinearLayout>
 

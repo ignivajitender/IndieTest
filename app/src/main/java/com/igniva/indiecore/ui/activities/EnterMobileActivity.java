@@ -138,12 +138,12 @@ public class EnterMobileActivity extends BaseActivity {
         // mButtonNext.setOnClickListener(this);
 
         mEtMobileNumber = (EditText) findViewById(R.id.et_mobile_number);
-              mEtMobileNumber.setText("9816428478");
+//              mEtMobileNumber.setText("9816428478");
         mEtMobileNumber.requestFocus();
 
         mEtCountryCode = (EditText) findViewById(R.id.et_country_code);
         //  mEtCountryCode.setText(countryId);
-              mEtCountryCode.setText("91");
+//              mEtCountryCode.setText("91");
     } catch (Exception e){
 
         e.printStackTrace();
@@ -214,7 +214,7 @@ public class EnterMobileActivity extends BaseActivity {
                             PreferenceHandler.writeString(EnterMobileActivity.this, PreferenceHandler.PREF_KEY_USER_ID, result.getUserId());
                             PreferenceHandler.writeString(EnterMobileActivity.this,PreferenceHandler.COVER_PIC_URL,result.getProfile().getCoverPic());
                             PreferenceHandler.writeString(EnterMobileActivity.this,PreferenceHandler.PROFILE_PIC_URL,result.getProfile().getProfilePic());
-
+                            PreferenceHandler.writeString(EnterMobileActivity.this,PreferenceHandler.PREF_KEY_GENDER,result.getProfile().getGender());
                             PreferenceHandler.writeString(EnterMobileActivity.this,PreferenceHandler.PREF_KEY_FIRST_NAME,result.getProfile().getFirstName());
                             PreferenceHandler.writeString(EnterMobileActivity.this,PreferenceHandler.PREF_KEY_LAST_NAME,result.getProfile().getLastName());
                             PreferenceHandler.writeString(EnterMobileActivity.this,PreferenceHandler.PREF_KEY_DOB,result.getProfile().getDob());
@@ -223,6 +223,7 @@ public class EnterMobileActivity extends BaseActivity {
                             //
                             Intent in = new Intent(EnterMobileActivity.this, CreateProfileActivity.class);
                             Bundle bundle = new Bundle();
+
                             bundle.putString(Constants.FIRSTNAME, result.getProfile().getFirstName());
                             bundle.putString(Constants.LASTNAME, result.getProfile().getLastName());
                             bundle.putString(Constants.DOB, result.getProfile().getDob());

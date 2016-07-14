@@ -110,7 +110,6 @@ public class MyBadgesActivity extends BaseActivity {
                             totalItemCount = mGlMAnager.getItemCount();
                             pastVisiblesItems = mGlMAnager.findFirstVisibleItemPosition();
 
-
                             if (!isLoading) {
 
                                 Log.d(LOG_TAG, " visibleItemCount " + visibleItemCount + " pastVisiblesItems " + pastVisiblesItems + " totalItemCount " + totalItemCount);
@@ -447,7 +446,7 @@ public class MyBadgesActivity extends BaseActivity {
     OnCardClickListner onCardClickListner = new OnCardClickListner() {
         @Override
         public void onCardClicked(ImageView view, int position) {
-            Utility.showToastMessageShort(MyBadgesActivity.this, "Position is " + position);
+//            Utility.showToastMessageShort(MyBadgesActivity.this, "Position is " + position);
             onOffImage=view;
             if (mSelectedBadgesList.get(position).getActive() == 0) {
 //                view.setImageResource(R.drawable.badge_on);
@@ -457,7 +456,7 @@ public class MyBadgesActivity extends BaseActivity {
                 try {
 
                     if (payload != null) {
-                        Log.e("on payload","++"+payload.toString());
+//                        Log.e("on payload","++"+payload.toString());
                          mSelectedPostion=position;
                         mSelectedBadgesList.get(position).setActive(1);
                         WebNotificationManager.registerResponseListener(responseListner);

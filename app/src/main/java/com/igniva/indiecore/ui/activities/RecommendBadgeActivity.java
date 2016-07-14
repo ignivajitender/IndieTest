@@ -124,7 +124,7 @@ public class RecommendBadgeActivity extends BaseActivity {
         public void onComplete(ResponsePojo result, WebServiceClient.WebError error, ProgressDialog mProgressDialog) {
             WebNotificationManager.unRegisterResponseListener(responseHandler);
 
-            if (error != null) {
+            if (error == null) {
                 if (result.getSuccess().equalsIgnoreCase("true")) {
 
                     Utility.showToastMessageLong(RecommendBadgeActivity.this, "Your badge recommendation submit successfully");

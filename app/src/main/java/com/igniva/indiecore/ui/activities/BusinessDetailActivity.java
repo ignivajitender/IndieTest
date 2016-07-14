@@ -1,5 +1,6 @@
 package com.igniva.indiecore.ui.activities;
 
+import android.content.Intent;
 import android.media.Image;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -77,6 +78,14 @@ public class BusinessDetailActivity extends BaseActivity implements OnMapReadyCa
                 }
             });
             mTvTitle = (TextView) mToolbar.findViewById(R.id.toolbar_title_img);
+            ImageView mToolBArImageBtn=(ImageView)mToolbar.findViewById(R.id.toolbar_img);
+            mToolBArImageBtn.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent intent= new Intent(BusinessDetailActivity.this,MyBadgesActivity.class);
+                    startActivity(intent);
+                }
+            });
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -90,10 +99,14 @@ public class BusinessDetailActivity extends BaseActivity implements OnMapReadyCa
 
         bundle=getIntent().getExtras();
         businessPojo=(BusinessPojo) bundle.getSerializable("businessPojo");
+
+
         mTvBUsinessName.setText(businessPojo.getName());
+      String businessAddress=businessPojo.getLocation().getAddress().toString();
+        businessAddress=businessAddress.replace("[","");
+        businessAddress=businessAddress.replace("]","");
 
-
-        mTvBusinessAddress.setText(businessPojo.getLocation().getAddress().toString());
+        mTvBusinessAddress.setText(businessAddress);
 
         Glide.with(this).load(businessPojo.getImage_url())
                 .thumbnail(1f)

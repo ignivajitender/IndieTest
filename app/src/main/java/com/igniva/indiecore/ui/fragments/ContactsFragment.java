@@ -16,6 +16,7 @@ import com.igniva.indiecore.model.BadgesPojo;
 import com.igniva.indiecore.model.ProfilePojo;
 import com.igniva.indiecore.ui.adapters.PhonebookAdapter;
 import com.igniva.indiecore.utils.Log;
+import com.igniva.indiecore.utils.Utility;
 
 import java.util.ArrayList;
 
@@ -45,6 +46,7 @@ public class ContactsFragment extends BaseFragment {
 
     @Override
     protected void setUpLayout() {
+        try {
         mRvUsers = (RecyclerView) rootView.findViewById(R.id.rv_users);
         mSavedUsersList = new ArrayList<ProfilePojo>();
         mTvPhoneBook = (TextView) rootView.findViewById(R.id.tv_phonebook);
@@ -55,12 +57,15 @@ public class ContactsFragment extends BaseFragment {
         mComingSoon=(TextView) rootView.findViewById(R.id.tv_coming_soon);
 
         setDataInViewObjects();
+        }catch (Exception e){
+            e.printStackTrace();
+        }
     }
 
     @Override
     protected void setDataInViewObjects() {
-        updatePhoneBookUi();
         getSavedUsers();
+        updatePhoneBookUi();
 
     }
 
@@ -95,33 +100,68 @@ public class ContactsFragment extends BaseFragment {
             mRvUsers.setLayoutManager(mLlManager);
             usersDb = new BadgesDb(getActivity());
             mSavedUsersList = usersDb.retrieveSavedUsersList();
-            mPhoneBookAdter = null;
-            mPhoneBookAdter = new PhonebookAdapter(getActivity(), mSavedUsersList);
-            mRvUsers.setAdapter(mPhoneBookAdter);
+
+            if(mSavedUsersList.size()>0) {
+                mPhoneBookAdter = null;
+                mPhoneBookAdter = new PhonebookAdapter(getActivity(), mSavedUsersList);
+                mRvUsers.setAdapter(mPhoneBookAdter);
+                mComingSoon.setVisibility(View.GONE);
+                rootView.findViewById(R.id.tv_coming_soon_two).setVisibility(View.GONE);
+
+            }else {
+                mRvUsers.setVisibility(View.GONE);
+                mComingSoon.setVisibility(View.VISIBLE);
+                rootView.findViewById(R.id.tv_coming_soon_two).setVisibility(View.VISIBLE);
+                mComingSoon.setText(R.string.no_contacts_one);
+                ((TextView)rootView.findViewById(R.id.tv_coming_soon_two)).setText(R.string.no_contacts_two);
+
+            }
         } catch (Exception e) {
             e.printStackTrace();
+            mRvUsers.setVisibility(View.GONE);
+            mComingSoon.setVisibility(View.VISIBLE);
+            mComingSoon.setText("No Contacts on Indiecore.Try Syncing contact with indiecore");
         }
     }
 
     public void updatePhoneBookUi() {
+try {
+    mTvPhoneBook.setTextColor(Color.parseColor("#FFFFFF"));
+    mTvPhoneBook.setBackgroundColor(Color.parseColor("#1C6DCE"));
+    mTvFavourite.setTextColor(Color.parseColor("#1C6DCE"));
+    mTvFavourite.setBackgroundResource(R.drawable.simple_border_line_style);
 
-        mTvPhoneBook.setTextColor(Color.parseColor("#FFFFFF"));
-        mTvPhoneBook.setBackgroundColor(Color.parseColor("#1C6DCE"));
-        mTvFavourite.setTextColor(Color.parseColor("#1C6DCE"));
-        mTvFavourite.setBackgroundResource(R.drawable.simple_border_line_style);
+    if (mSavedUsersList.size() > 0) {
         mRvUsers.setVisibility(View.VISIBLE);
-        mComingSoon.setVisibility(View.INVISIBLE);
+        mComingSoon.setVisibility(View.GONE);
+    } else {
+        mRvUsers.setVisibility(View.GONE);
+        mComingSoon.setVisibility(View.VISIBLE);
+
+        rootView.findViewById(R.id.tv_coming_soon_two).setVisibility(View.VISIBLE);
+        mComingSoon.setText(R.string.no_contacts_one);
+        ((TextView)rootView.findViewById(R.id.tv_coming_soon_two)).setText(R.string.no_contacts_two);
+    }
+}catch (Exception e){
+    e.printStackTrace();
+}
 
     }
 
     public void updateFavouriteUi() {
-        mTvPhoneBook.setTextColor(Color.parseColor("#1C6DCE"));
-        mTvPhoneBook.setBackgroundResource(R.drawable.simple_border_line_style);
-        mTvFavourite.setTextColor(Color.parseColor("#FFFFFF"));
-        mTvFavourite.setBackgroundColor(Color.parseColor("#1C6DCE"));
-        mRvUsers.setVisibility(View.GONE);
-        mComingSoon.setVisibility(View.VISIBLE);
+        try {
 
+            mTvPhoneBook.setTextColor(Color.parseColor("#1C6DCE"));
+            mTvPhoneBook.setBackgroundResource(R.drawable.simple_border_line_style);
+            mTvFavourite.setTextColor(Color.parseColor("#FFFFFF"));
+            mTvFavourite.setBackgroundColor(Color.parseColor("#1C6DCE"));
+            mRvUsers.setVisibility(View.GONE);
+            mComingSoon.setVisibility(View.VISIBLE);
+            rootView.findViewById(R.id.tv_coming_soon_two).setVisibility(View.GONE);
+            mComingSoon.setText(R.string.coming_soon);
+        }catch (Exception e){
+            e.printStackTrace();
+        }
     }
 
 }

@@ -27,7 +27,7 @@ import java.util.List;
 /**
  * Created by igniva-andriod-11 on 4/7/16.
  */
-public class SettingsFragment extends BaseFragment{
+public class SettingsFragment extends BaseFragment {
 
     View rootView;
     ExpandableListAdapter listAdapter;
@@ -35,135 +35,118 @@ public class SettingsFragment extends BaseFragment{
     List<String> listDataHeader;
     HashMap<String, List<String>> listDataChild;
     ImageView mIvcollapse;
+
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-         rootView = inflater.inflate(R.layout.fragment_settings, container, false);
+        rootView = inflater.inflate(R.layout.fragment_settings, container, false);
         setUpLayout();
         return rootView;
     }
 
     @Override
     protected void setUpLayout() {
+        try {
 
-        DisplayMetrics metrics = new DisplayMetrics();
-        getActivity().getWindowManager().getDefaultDisplay().getMetrics(metrics);
-        int width = metrics.widthPixels;
+            DisplayMetrics metrics = new DisplayMetrics();
+            getActivity().getWindowManager().getDefaultDisplay().getMetrics(metrics);
+            int width = metrics.widthPixels;
 
-        expListView = (ExpandableListView) rootView.findViewById(R.id.lvExp);
+            expListView = (ExpandableListView) rootView.findViewById(R.id.lvExp);
 
 
-        // preparing list data
-        prepareListData();
+            // preparing list data
+            prepareListData();
 
-        expListView.setIndicatorBounds(width - GetPixelFromDips(50), width - GetPixelFromDips(10));
+            expListView.setIndicatorBounds(width - GetPixelFromDips(50), width - GetPixelFromDips(10));
 //
 
 
+            listAdapter = new ExpandableListAdapter(getActivity(), listDataHeader, listDataChild);
 
-        listAdapter = new ExpandableListAdapter(getActivity(), listDataHeader, listDataChild);
+            // setting list adapter
+            expListView.setAdapter(listAdapter);
 
-        // setting list adapter
-        expListView.setAdapter(listAdapter);
+            expListView.setOnChildClickListener(new ExpandableListView.OnChildClickListener() {
 
-        expListView.setOnChildClickListener(new ExpandableListView.OnChildClickListener() {
+                @Override
+                public boolean onChildClick(ExpandableListView parent, View v,
+                                            int groupPosition, int childPosition, long id) {
+                    switch (groupPosition) {
 
-            @Override
-            public boolean onChildClick(ExpandableListView parent, View v,
-                                        int groupPosition, int childPosition, long id) {
-             switch (groupPosition){
-
-                 case 0:
-                     if(childPosition==0){
-                         Intent in = new Intent(getActivity(), CreateProfileActivity.class);
-                         Bundle bundle = new Bundle();
-//                         bundle.putString(Constants.FIRSTNAME, result.getProfile().getFirstName());
-//                         bundle.putString(Constants.LASTNAME, result.getProfile().getLastName());
-//                         bundle.putString(Constants.DOB, result.getProfile().getDob());
-//                         bundle.putString(Constants.DESCRIPTION, result.getProfile().getDesc());
-//                         bundle.putString(Constants.GENDER, result.getProfile().getGender());
-                         bundle.putInt(Constants.INDEX,2);
-//                         bundle.putString(Constants.PROFILEPIC,result.getProfile().getProfilePic());
-//                         bundle.putString(Constants.COVERPIC,result.getProfile().getCoverPic());
-//                         bundle.putInt(Constants.NUMBER_LENGTH,mobileNumber.length());
-//                         bundle.putString(Constants.COUNTRY_CODE,countryId);
-                         in.putExtras(bundle);
-                         startActivity(in);
-                     }
-                     break;
-                 case 1:
-                     break;
-                 default:
-                     break;
-             }
-                return false;
-            }
-        });
-
-
-        expListView.setOnGroupClickListener(new ExpandableListView.OnGroupClickListener() {
-            @Override
-            public boolean onGroupClick(ExpandableListView parent, View v, int groupPosition, long id) {
-                Log.d("onGroupClick:", "worked");
-
-                mIvcollapse=(ImageView)v.findViewById(R.id.iv_collapse);
-                mIvcollapse.setImageResource(R.drawable.dropdown_icon);
-
-//                parent.smoothScrollToPosition(groupPosition);
-//
-//                if (parent.isGroupExpanded(groupPosition)) {
-//                    parent.collapseGroup(groupPosition);
-//                } else {
-//                    parent.expandGroup(groupPosition);
-//                }
-
-                return false;
-            }
-        });
-
-
-        // Listview Group expanded listener
-        expListView.setOnGroupExpandListener(new ExpandableListView.OnGroupExpandListener() {
-
-            @Override
-            public void onGroupExpand(int groupPosition) {
-                 int m=groupPosition;
-                switch (m){
-                    case 0:
-                       // Utility.showToastMessageShort(getActivity(),"Profile Expanded");
-                        break;
-                    case 1:
-                        break;
-                    case 2:
-                        break;
-                    case  3:
-                        break;
-                    case 4:
-                        break;
-                    case 6:
-                        Intent intent= new Intent(getActivity(), RecommendBadgeActivity.class);
-                        getActivity().startActivity(intent);
-                        break;
-                    default:
-                        break;
+                        case 0:
+                            try {
+                                if (childPosition == 0) {
+                                    Intent in = new Intent(getActivity(), CreateProfileActivity.class);
+                                    Bundle bundle = new Bundle();
+                                    bundle.putInt(Constants.INDEX, 2);
+                                    in.putExtras(bundle);
+                                    startActivity(in);
+                                }
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                            }
+                            break;
+                        case 1:
+                            break;
+                        default:
+                            break;
+                    }
+                    return false;
                 }
+            });
 
-                mIvcollapse.setImageResource(R.drawable.next_arrow_icon);
 
-            }
-        });
+            expListView.setOnGroupClickListener(new ExpandableListView.OnGroupClickListener() {
+                @Override
+                public boolean onGroupClick(ExpandableListView parent, View v, int groupPosition, long id) {
+                    Log.d("onGroupClick:", "worked");
+                    try {
 
-        // Listview Group collasped listener
-//        expListView.setOnGroupCollapseListener(new ExpandableListView.OnGroupCollapseListener() {
-//
-//            @Override
-//            public void onGroupCollapse(int groupPosition) {
-//                Toast.makeText(getActivity(),
-//                        listDataHeader.get(groupPosition) + " Collapsed",
-//                        Toast.LENGTH_SHORT).show();
-//
-//            }
-//        });
+                        mIvcollapse = (ImageView) v.findViewById(R.id.iv_collapse);
+                        mIvcollapse.setImageResource(R.drawable.dropdown_icon);
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                    return false;
+                }
+            });
+
+
+            // Listview Group expanded listener
+            expListView.setOnGroupExpandListener(new ExpandableListView.OnGroupExpandListener() {
+
+                @Override
+                public void onGroupExpand(int groupPosition) {
+                    int m = groupPosition;
+                    switch (m) {
+                        case 0:
+                            // Utility.showToastMessageShort(getActivity(),"Profile Expanded");
+                            break;
+                        case 1:
+                            break;
+                        case 2:
+                            break;
+                        case 3:
+                            break;
+                        case 4:
+                            break;
+                        case 6:
+                            Intent intent = new Intent(getActivity(), RecommendBadgeActivity.class);
+                            getActivity().startActivity(intent);
+                            break;
+                        default:
+                            break;
+                    }
+
+                    mIvcollapse.setImageResource(R.drawable.next_arrow_icon);
+
+                }
+            });
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
 
@@ -185,9 +168,6 @@ public class SettingsFragment extends BaseFragment{
     }
 
 
-
-
-
     private void prepareListData() {
         listDataHeader = new ArrayList<String>();
         listDataChild = new HashMap<String, List<String>>();
@@ -201,7 +181,6 @@ public class SettingsFragment extends BaseFragment{
         listDataHeader.add(getResources().getString(R.string.contacts_sync));
         listDataHeader.add(getResources().getString(R.string.reccomend_badge));
         listDataHeader.add(getResources().getString(R.string.clear_chats));
-
 
 
         // Adding child data
@@ -221,9 +200,6 @@ public class SettingsFragment extends BaseFragment{
         List<String> eightthGroup = new ArrayList<String>();
 
 
-
-
-
         listDataChild.put(listDataHeader.get(0), firstGroup); // Header, Child data
         listDataChild.put(listDataHeader.get(1), secondGroup);
         listDataChild.put(listDataHeader.get(2), thirdGroup);
@@ -231,6 +207,6 @@ public class SettingsFragment extends BaseFragment{
         listDataChild.put(listDataHeader.get(4), fifthGroup);
         listDataChild.put(listDataHeader.get(5), sixthGroup);
         listDataChild.put(listDataHeader.get(6), seventhGroup);
-        listDataChild.put(listDataHeader.get(7),eightthGroup);
+        listDataChild.put(listDataHeader.get(7), eightthGroup);
     }
 }

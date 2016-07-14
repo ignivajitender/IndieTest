@@ -457,24 +457,41 @@ public class CreateProfileActivity extends BaseActivity implements AsyncResult {
 
         try {
 
-//            Bundle bundle = getIntent().getExtras();
-////            String firstName = bundle.getString(Constants.FIRSTNAME);
-////            String lastName = bundle.getString(Constants.LASTNAME);
-////            String dateOfBirth = bundle.getString(Constants.DOB);
-////            String desc = bundle.getString(Constants.DESCRIPTION);
-////            String gender = bundle.getString(Constants.GENDER);
-//              index =bundle.getInt(Constants.INDEX);
-//////            String profilePicUrl = bundle.getString(Constants.PROFILEPIC);
-//////            String coverPic = bundle.getString(Constants.COVERPIC);
-//            numberLenth = bundle.getInt(Constants.NUMBER_LENGTH);
-//            mCountryCode = bundle.getString(Constants.COUNTRY_CODE);
-
 
             mEtFirstName.setText(PreferenceHandler.readString(this, PreferenceHandler.PREF_KEY_FIRST_NAME, ""));
             mEtLastName.setText(PreferenceHandler.readString(this, PreferenceHandler.PREF_KEY_LAST_NAME, ""));
             mTvDateOfBirth.setText(PreferenceHandler.readString(this, PreferenceHandler.PREF_KEY_DOB, ""));
             mEtDescription.setText(PreferenceHandler.readString(this, PreferenceHandler.PREF_KEY_DESCRIPTION, ""));
             //
+
+
+                if (PreferenceHandler.readString(this, PreferenceHandler.PROFILE_PIC_URL, null) != null) {
+
+
+                    Glide.with(this).load(WebServiceClient.HTTP_STAGING + PreferenceHandler.readString(this, PreferenceHandler.PROFILE_PIC_URL, ""))
+                            .thumbnail(1f)
+                            .crossFade()
+                            .diskCacheStrategy(DiskCacheStrategy.ALL)
+                            .into(mIvProfileImage);
+
+//                    imageLoader.DisplayImage(WebServiceClient.HTTP_STAGING + PreferenceHandler.readString(this, PreferenceHandler.PROFILE_PIC_URL, ""), mIvProfileImage);
+                } else {
+                    mIvProfileImage.setImageResource(R.drawable.default_user);
+
+                }
+                if (PreferenceHandler.readString(this, PreferenceHandler.COVER_PIC_URL, null) != null) {
+
+
+                    Glide.with(this).load(WebServiceClient.HTTP_STAGING + PreferenceHandler.readString(this, PreferenceHandler.COVER_PIC_URL, ""))
+                            .thumbnail(1f)
+                            .crossFade()
+                            .diskCacheStrategy(DiskCacheStrategy.ALL)
+                            .into(mIvCoverImage);
+
+                } else {
+                    mIvCoverImage.setImageResource(R.drawable.default_user);
+                }
+
             if (PreferenceHandler.readString(this, PreferenceHandler.PREF_KEY_GENDER, "").length() > 0) {
                 if (PreferenceHandler.readString(this, PreferenceHandler.PREF_KEY_GENDER, "").equalsIgnoreCase("male")) {
                     mTvMale.performClick();
@@ -484,39 +501,6 @@ public class CreateProfileActivity extends BaseActivity implements AsyncResult {
                     mTvOther.performClick();
                 }
             }
-
-
-                if (PreferenceHandler.readString(this, PreferenceHandler.PROFILE_PIC_URL, "") != null) {
-
-
-                    Glide.with(this).load(WebServiceClient.HTTP_STAGING + PreferenceHandler.readString(this, PreferenceHandler.PROFILE_PIC_URL, ""))
-                            .thumbnail(1f)
-                            .crossFade()
-                            .diskCacheStrategy(DiskCacheStrategy.ALL)
-                            .into(mIvProfileImage);
-
-
-//                    imageLoader.DisplayImage(WebServiceClient.HTTP_STAGING + PreferenceHandler.readString(this, PreferenceHandler.PROFILE_PIC_URL, ""), mIvProfileImage);
-                } else {
-                    mIvProfileImage.setImageResource(R.drawable.default_user);
-
-                }
-                if (PreferenceHandler.readString(this, PreferenceHandler.COVER_PIC_URL, "") != null) {
-
-
-                    Glide.with(this).load(WebServiceClient.HTTP_STAGING + PreferenceHandler.readString(this, PreferenceHandler.COVER_PIC_URL, ""))
-                            .thumbnail(1f)
-                            .crossFade()
-                            .diskCacheStrategy(DiskCacheStrategy.ALL)
-                            .into(mIvCoverImage);
-
-
-
-
-//                    imageLoader.DisplayImage(WebServiceClient.HTTP_STAGING + PreferenceHandler.readString(this, PreferenceHandler.COVER_PIC_URL, ""), mIvCoverImage);
-                }
-
-
 
 
         } catch (Exception e) {

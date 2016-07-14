@@ -4,12 +4,12 @@ package com.igniva.indiecore.ui.fragments;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.graphics.Color;
+import android.location.Criteria;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -22,12 +22,12 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.igniva.indiecore.R;
@@ -56,21 +56,25 @@ import java.util.Comparator;
 public class CheckInFragment extends BaseFragment implements OnMapReadyCallback {
 
     LinearLayout mLlMapContainer, mLlSearchContainer;
-    private TextView mTvTrending, mTvNearby, mTvFind;
+    private TextView mTvTrending, mTvNearby, mTvFind, mTvSearch;
     private EditText mEtSearch;
     private GridLayoutManager mGlManager;
     private LinearLayoutManager mLlManager;
     protected LocationManager locationManager;
     protected LocationListener locationListener;
     ArrayList<BusinessPojo> mBusinessList;
+    ArrayList<BusinessPojo> mFindBusinessResultList;
     ArrayList<BusinessPojo> mNearbyList;
     RecyclerView mRvBusinessGrid;
     View rootView;
     BusinessListAdpter mBusinessAdapter;
     FindBusinessAdapter mFindBusinessAdapter;
+    private int sort = 1;
+    private int limit = 16;
+    private int page = 1;
 
     ImageView mIvBusiness;
-     Location mLocation;
+    Location mLocation;
 
     @Nullable
     @Override
@@ -85,6 +89,7 @@ public class CheckInFragment extends BaseFragment implements OnMapReadyCallback 
 
         try {
             mBusinessList = new ArrayList<BusinessPojo>();
+            mFindBusinessResultList = new ArrayList<BusinessPojo>();
             mGlManager = new GridLayoutManager(getActivity(), 3);
             mLlMapContainer = (LinearLayout) rootView.findViewById(R.id.ll_maps_container);
             mLlSearchContainer = (LinearLayout) rootView.findViewById(R.id.ll_Search);
@@ -93,6 +98,8 @@ public class CheckInFragment extends BaseFragment implements OnMapReadyCallback 
             mTvFind = (TextView) rootView.findViewById(R.id.tv_find);
             mEtSearch = (EditText) rootView.findViewById(R.id.et_search);
             mRvBusinessGrid = (RecyclerView) rootView.findViewById(R.id.rv_business);
+            mTvSearch = (TextView) rootView.findViewById(R.id.tv_search);
+            mTvSearch.setOnClickListener(onClickListener);
             mRvBusinessGrid.setLayoutManager(mGlManager);
             mTvTrending.setOnClickListener(onClickListener);
             mTvNearby.setOnClickListener(onClickListener);
@@ -106,22 +113,43 @@ public class CheckInFragment extends BaseFragment implements OnMapReadyCallback 
                     @Override
                     public void onMapReady(GoogleMap googleMap) {
                         if (googleMap != null) {
-                            googleMap.addMarker(new MarkerOptions().position(new LatLng(30.7362900,76.7884000
-                            )).title("My Location"));
 
+//                            37.77493,-122.419415
                             // We will provide our own zoom controls.
                             googleMap.getUiSettings().setZoomControlsEnabled(false);
                             // hide my location button
                             googleMap.getUiSettings().setMyLocationButtonEnabled(false);
                             //
                             googleMap.setMyLocationEnabled(true);
-                            // Show Sydney
-                            googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(30.7362900, 76.7884000), 10));
+
+                            LocationManager locationManager = (LocationManager) getActivity().getSystemService(Context.LOCATION_SERVICE);
+                            Criteria criteria = new Criteria();
+
+                            Location location = locationManager.getLastKnownLocation(locationManager.getBestProvider(criteria, false));
+                            if (location != null)
+                            {
+                                googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(
+                                        new LatLng(location.getLatitude(), location.getLongitude()), 13));
+
+                                googleMap.addMarker(new MarkerOptions().position(new LatLng(location.getLatitude(), location.getLongitude()
+                                )).title("My Location"));
+
+                                CameraPosition cameraPosition = new CameraPosition.Builder()
+                                        .target(new LatLng(location.getLatitude(), location.getLongitude()))      // Sets the center of the map to location user
+                                        .zoom(10)                   // Sets the zoom
+                                                        // Sets the orientation of the camera to eas
+                                        // Sets the tilt of the camera to 30 degrees
+                                        .build();                   // Creates a CameraPosition from the builder
+//                                googleMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
+
+                            }
+
+
                         }
                     }
                 });
 
-            }catch (Exception e){
+            } catch (Exception e) {
                 e.printStackTrace();
             }
         } catch (Exception e) {
@@ -131,7 +159,6 @@ public class CheckInFragment extends BaseFragment implements OnMapReadyCallback 
 
         updateTrendingUI();
     }
-
 
 
     @Override
@@ -152,6 +179,20 @@ public class CheckInFragment extends BaseFragment implements OnMapReadyCallback 
             if (payload != null) {
                 WebNotificationManager.registerResponseListener(responseHandler);
                 WebServiceClient.getBusinessList(getActivity(), payload, responseHandler);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+    }
+
+
+    public void findBusinesses() {
+        String payload = createPayload(sort, limit, page);
+        try {
+            if (payload != null) {
+                WebNotificationManager.registerResponseListener(responseHandlerFindBusiness);
+                WebServiceClient.getBusinessList(getActivity(), payload, responseHandlerFindBusiness);
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -182,9 +223,13 @@ public class CheckInFragment extends BaseFragment implements OnMapReadyCallback 
                                 mBusinessAdapter = new BusinessListAdpter(getActivity(), mBusinessList, onCardClickListner);
                                 mRvBusinessGrid.setAdapter(mBusinessAdapter);
                             }
+                            if (mProgressDialog != null && mProgressDialog.isShowing()) {
+                                mProgressDialog.dismiss();
+                            }
                         } catch (Exception e) {
                             e.printStackTrace();
                         }
+
                     }
 
                 } catch (Exception e) {
@@ -198,22 +243,33 @@ public class CheckInFragment extends BaseFragment implements OnMapReadyCallback 
 
     };
 
-//    public ArrayList<BusinessPojo> sortBusinessByDistance(ArrayList<BusinessPojo> businesslist) {
-//        ArrayList<BusinessPojo> sortedList = new ArrayList<BusinessPojo>();
-//        try {
-//
-//            Collections.sort(businesslist, new Comparator<BusinessPojo>() {
-//                @Override
-//                public int compare(BusinessPojo first, BusinessPojo second) {
-//                    return Double.compare(first.getDistance(), second.getDistance());
-//                }
-//            });
-//
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//        }
-//        return sortedList;
-//    }
+
+    ResponseHandlerListener responseHandlerFindBusiness = new ResponseHandlerListener() {
+        @Override
+        public void onComplete(ResponsePojo result, WebServiceClient.WebError error, ProgressDialog mProgressDialog) {
+            WebNotificationManager.unRegisterResponseListener(responseHandlerFindBusiness);
+
+            try {
+                mFindBusinessResultList.addAll(result.getBusiness_list());
+
+                mFindBusinessAdapter = null;
+
+                if (mFindBusinessResultList.size() > 0) {
+                    mFindBusinessAdapter = new FindBusinessAdapter(getActivity(), mFindBusinessResultList, onCardClickListner);
+                    mRvBusinessGrid.setAdapter(mFindBusinessAdapter);
+                } else {
+                    Utility.showToastMessageLong(getActivity(), getResources().getString(R.string.no_result_found));
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+
+
+            if (mProgressDialog != null && mProgressDialog.isShowing()) {
+                mProgressDialog.dismiss();
+            }
+        }
+    };
 
     /*
     * badges on off response handler
@@ -222,23 +278,27 @@ public class CheckInFragment extends BaseFragment implements OnMapReadyCallback 
     ResponseHandlerListener responseListner = new ResponseHandlerListener() {
         @Override
         public void onComplete(ResponsePojo result, WebServiceClient.WebError error, ProgressDialog mProgressDialog) {
+            try {
 
-            if (error == null) {
-                if (result.getSuccess().equalsIgnoreCase("true")) {
-                    if (result.getBadge_status() == 1) {
-                        mIvBusiness.setImageResource(R.drawable.badge_on);
-                    } else {
-                        mIvBusiness.setImageResource(R.drawable.badge_off);
+                if (error == null) {
+                    if (result.getSuccess().equalsIgnoreCase("true")) {
+                        if (result.getBadge_status() == 1) {
+                            mIvBusiness.setImageResource(R.drawable.badge_on);
+                        } else {
+                            mIvBusiness.setImageResource(R.drawable.badge_off);
+                        }
                     }
+                } else {
+                    Utility.showToastMessageLong(getActivity(), "Some error occurred.Please try later");
                 }
-            } else {
-                Utility.showToastMessageLong(getActivity(), "Some error occurred.Please try later");
-            }
 
-            if (mProgressDialog != null && mProgressDialog.isShowing()) {
-                mProgressDialog.dismiss();
-            }
+                if (mProgressDialog != null && mProgressDialog.isShowing()) {
+                    mProgressDialog.dismiss();
+                }
 
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         }
     };
 
@@ -277,9 +337,31 @@ public class CheckInFragment extends BaseFragment implements OnMapReadyCallback 
             payload.put(Constants.USERID, PreferenceHandler.readString(getActivity(), PreferenceHandler.PREF_KEY_USER_ID, ""));
             payload.put(Constants.LOCATION, "Piccadilly Circus");
             payload.put(Constants.LATLONG, "37.77493,-122.419415");
-            payload.put(Constants.SORT, "0");
-            payload.put(Constants.LIMIT, "16");
-            payload.put(Constants.PAGE, "2");
+            payload.put(Constants.SORT, String.valueOf(sort));
+            payload.put(Constants.LIMIT, String.valueOf(limit));
+            payload.put(Constants.PAGE, String.valueOf(page));
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return payload.toString();
+    }
+
+
+    public String createPayload(int sort, int limit, int page) {
+        JSONObject payload = null;
+        sort = 0;
+        limit +=4;
+        page += page;
+        try {
+            payload = new JSONObject();
+            payload.put(Constants.TOKEN, PreferenceHandler.readString(getActivity(), PreferenceHandler.PREF_KEY_USER_TOKEN, ""));
+            payload.put(Constants.USERID, PreferenceHandler.readString(getActivity(), PreferenceHandler.PREF_KEY_USER_ID, ""));
+            payload.put(Constants.LOCATION, mEtSearch.getText().toString().trim());
+//                    payload.put(Constants.LATLONG, "37.77493,-122.419415");
+            payload.put(Constants.SORT, String.valueOf(sort));
+            payload.put(Constants.LIMIT, String.valueOf(limit));
+            payload.put(Constants.PAGE, String.valueOf(page));
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -303,6 +385,11 @@ public class CheckInFragment extends BaseFragment implements OnMapReadyCallback 
                     updateFindUI();
                     break;
 
+                case R.id.tv_search:
+                    findBusinesses();
+
+                    break;
+
                 default:
                     break;
 
@@ -312,27 +399,31 @@ public class CheckInFragment extends BaseFragment implements OnMapReadyCallback 
     };
 
     void updateTrendingUI() {
-        mGlManager = new GridLayoutManager(getActivity(), 3);
-        mRvBusinessGrid.setLayoutManager(mGlManager);
-        mLlMapContainer.setVisibility(View.VISIBLE);
-        mLlSearchContainer.setVisibility(View.GONE);
+        try {
+            mGlManager = new GridLayoutManager(getActivity(), 3);
+            mRvBusinessGrid.setLayoutManager(mGlManager);
+            mLlMapContainer.setVisibility(View.VISIBLE);
+            mLlSearchContainer.setVisibility(View.GONE);
 //        locationManager = (LocationManager) getActivity().getSystemService(Context.LOCATION_SERVICE);
 //        locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, this);
-        mTvTrending.setTextColor(Color.parseColor("#FFFFFF"));
-        mTvTrending.setBackgroundColor(Color.parseColor("#1C6DCE"));
+            mTvTrending.setTextColor(Color.parseColor("#FFFFFF"));
+            mTvTrending.setBackgroundColor(Color.parseColor("#1C6DCE"));
 
-        mTvNearby.setTextColor(Color.parseColor("#1C6DCE"));
-        mTvNearby.setBackgroundResource(R.drawable.simple_border_line_style);
+            mTvNearby.setTextColor(Color.parseColor("#1C6DCE"));
+            mTvNearby.setBackgroundResource(R.drawable.simple_border_line_style);
 
-        mTvFind.setTextColor(Color.parseColor("#1C6DCE"));
-        mTvFind.setBackgroundResource(R.drawable.simple_border_line_style);
-        try {
-            mFindBusinessAdapter = null;
-            mBusinessAdapter = null;
-            Log.e("", "setting bin adpter" + mBusinessList.size());
-            if (mBusinessList.size() > 0) {
-                mBusinessAdapter = new BusinessListAdpter(getActivity(), mBusinessList, onCardClickListner);
-                mRvBusinessGrid.setAdapter(mBusinessAdapter);
+            mTvFind.setTextColor(Color.parseColor("#1C6DCE"));
+            mTvFind.setBackgroundResource(R.drawable.simple_border_line_style);
+            try {
+                mFindBusinessAdapter = null;
+                mBusinessAdapter = null;
+                Log.e("", "setting bin adpter" + mBusinessList.size());
+                if (mBusinessList.size() > 0) {
+                    mBusinessAdapter = new BusinessListAdpter(getActivity(), mBusinessList, onCardClickListner);
+                    mRvBusinessGrid.setAdapter(mBusinessAdapter);
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -340,43 +431,47 @@ public class CheckInFragment extends BaseFragment implements OnMapReadyCallback 
     }
 
     void updateNearbygUI() {
-        mGlManager = new GridLayoutManager(getActivity(), 3);
-        mRvBusinessGrid.setLayoutManager(mGlManager);
-        mLlMapContainer.setVisibility(View.VISIBLE);
-        mLlSearchContainer.setVisibility(View.GONE);
-        mTvTrending.setTextColor(Color.parseColor("#1C6DCE"));
-        mTvTrending.setBackgroundResource(R.drawable.simple_border_line_style);
-
-        mTvNearby.setTextColor(Color.parseColor("#FFFFFF"));
-        mTvNearby.setBackgroundColor(Color.parseColor("#1C6DCE"));
-
-        mTvFind.setTextColor(Color.parseColor("#1C6DCE"));
-        mTvFind.setBackgroundResource(R.drawable.simple_border_line_style);
-
-
-        // sort ArrayList
-        mNearbyList=null;
-        int sizeOfBusiness=mBusinessList.size();
-        mNearbyList=new ArrayList<BusinessPojo>();
-        for (int i=0;i<sizeOfBusiness;i++){
-            mNearbyList.add(mBusinessList.get(i));
-        }
-
-        Collections.sort(mNearbyList, new Comparator<BusinessPojo>() {
-            @Override
-            public int compare(BusinessPojo c1, BusinessPojo c2) {
-                return Double.compare(c1.getDistance(), c2.getDistance());
-            }
-        });
-
         try {
-            mFindBusinessAdapter = null;
-            mBusinessAdapter = null;
-          //  mRvBusinessGrid.setAdapter(mBusinessAdapter);
-            Log.e("", "setting bin adpter" + mBusinessList.size());
-            if (mNearbyList.size() > 0) {
-                mBusinessAdapter = new BusinessListAdpter(getActivity(), mNearbyList, onCardClickListner);
-                mRvBusinessGrid.setAdapter(mBusinessAdapter);
+            mGlManager = new GridLayoutManager(getActivity(), 3);
+            mRvBusinessGrid.setLayoutManager(mGlManager);
+            mLlMapContainer.setVisibility(View.VISIBLE);
+            mLlSearchContainer.setVisibility(View.GONE);
+            mTvTrending.setTextColor(Color.parseColor("#1C6DCE"));
+            mTvTrending.setBackgroundResource(R.drawable.simple_border_line_style);
+
+            mTvNearby.setTextColor(Color.parseColor("#FFFFFF"));
+            mTvNearby.setBackgroundColor(Color.parseColor("#1C6DCE"));
+
+            mTvFind.setTextColor(Color.parseColor("#1C6DCE"));
+            mTvFind.setBackgroundResource(R.drawable.simple_border_line_style);
+
+
+            // sort ArrayList
+            mNearbyList = null;
+            int sizeOfBusiness = mBusinessList.size();
+            mNearbyList = new ArrayList<BusinessPojo>();
+            for (int i = 0; i < sizeOfBusiness; i++) {
+                mNearbyList.add(mBusinessList.get(i));
+            }
+
+            Collections.sort(mNearbyList, new Comparator<BusinessPojo>() {
+                @Override
+                public int compare(BusinessPojo c1, BusinessPojo c2) {
+                    return Double.compare(c1.getDistance(), c2.getDistance());
+                }
+            });
+
+            try {
+                mFindBusinessAdapter = null;
+                mBusinessAdapter = null;
+                //  mRvBusinessGrid.setAdapter(mBusinessAdapter);
+                Log.e("", "setting bin adpter" + mBusinessList.size());
+                if (mNearbyList.size() > 0) {
+                    mBusinessAdapter = new BusinessListAdpter(getActivity(), mNearbyList, onCardClickListner);
+                    mRvBusinessGrid.setAdapter(mBusinessAdapter);
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -384,51 +479,55 @@ public class CheckInFragment extends BaseFragment implements OnMapReadyCallback 
     }
 
     void updateFindUI() {
-        mLlManager = new LinearLayoutManager(getActivity());
-        mRvBusinessGrid.setLayoutManager(mLlManager);
-        mLlMapContainer.setVisibility(View.GONE);
-        mLlSearchContainer.setVisibility(View.VISIBLE);
-        mTvTrending.setTextColor(Color.parseColor("#1C6DCE"));
-        mTvTrending.setBackgroundResource(R.drawable.simple_border_line_style);
-
-        mTvNearby.setTextColor(Color.parseColor("#1C6DCE"));
-        mTvNearby.setBackgroundResource(R.drawable.simple_border_line_style);
-
-        mTvFind.setTextColor(Color.parseColor("#FFFFFF"));
-        mTvFind.setBackgroundColor(Color.parseColor("#1C6DCE"));
-
         try {
-            mFindBusinessAdapter = null;
-            mBusinessAdapter = null;
-            Log.e("", "setting bin adpter" + mBusinessList.size());
-            if (mBusinessList.size() > 0) {
-                mFindBusinessAdapter = new FindBusinessAdapter(getActivity(), mBusinessList, onCardClickListner);
-                mRvBusinessGrid.setAdapter(mFindBusinessAdapter);
+            mLlManager = new LinearLayoutManager(getActivity());
+            mRvBusinessGrid.setLayoutManager(mLlManager);
+            mLlMapContainer.setVisibility(View.GONE);
+            mLlSearchContainer.setVisibility(View.VISIBLE);
+            mTvTrending.setTextColor(Color.parseColor("#1C6DCE"));
+            mTvTrending.setBackgroundResource(R.drawable.simple_border_line_style);
+
+            mTvNearby.setTextColor(Color.parseColor("#1C6DCE"));
+            mTvNearby.setBackgroundResource(R.drawable.simple_border_line_style);
+
+            mTvFind.setTextColor(Color.parseColor("#FFFFFF"));
+            mTvFind.setBackgroundColor(Color.parseColor("#1C6DCE"));
+
+            try {
+                mFindBusinessAdapter = null;
+                mBusinessAdapter = null;
+                Log.e("", "setting bin adpter" + mBusinessList.size());
+                if (mBusinessList.size() > 0) {
+                    mFindBusinessAdapter = new FindBusinessAdapter(getActivity(), mBusinessList, onCardClickListner);
+                    mRvBusinessGrid.setAdapter(mFindBusinessAdapter);
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
             }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        try {
-            mEtSearch.addTextChangedListener(new TextWatcher() {
+            try {
+                mEtSearch.addTextChangedListener(new TextWatcher() {
 
-                @Override
-                public void onTextChanged(CharSequence s, int start, int before, int count) {
-                    System.out.println("Text [" + s + "]");
+                    @Override
+                    public void onTextChanged(CharSequence s, int start, int before, int count) {
+                        System.out.println("Text [" + s + "]");
 
-                    mFindBusinessAdapter.getFilter().filter(s.toString());
-                }
+                        mFindBusinessAdapter.getFilter().filter(s.toString());
+                    }
 
-                @Override
-                public void beforeTextChanged(CharSequence s, int start, int count,
-                                              int after) {
+                    @Override
+                    public void beforeTextChanged(CharSequence s, int start, int count,
+                                                  int after) {
 
-                }
+                    }
 
-                @Override
-                public void afterTextChanged(Editable s) {
-                }
-            });
+                    @Override
+                    public void afterTextChanged(Editable s) {
+                    }
+                });
 
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -460,7 +559,6 @@ public class CheckInFragment extends BaseFragment implements OnMapReadyCallback 
     OnCardClickListner onCardClickListner = new OnCardClickListner() {
         @Override
         public void onCardClicked(ImageView view, int position) {
-//            Utility.showToastMessageShort(getActivity(), "Position is " + position);
             mIvBusiness = view;
             if (mBusinessList.get(position).getBadge_status() == 0) {
 
@@ -501,7 +599,7 @@ public class CheckInFragment extends BaseFragment implements OnMapReadyCallback 
     @Override
     public void onMapReady(GoogleMap googleMap) {
         if (googleMap != null) {
-            googleMap.addMarker(new MarkerOptions().position(new LatLng(30.7362900,76.7884000
+            googleMap.addMarker(new MarkerOptions().position(new LatLng(30.7362900, 76.7884000
             )).title("My Location"));
         }
     }
