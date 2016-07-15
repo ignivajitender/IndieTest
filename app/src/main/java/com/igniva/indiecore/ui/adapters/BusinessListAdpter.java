@@ -5,11 +5,13 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
+import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
@@ -20,6 +22,7 @@ import com.igniva.indiecore.model.BadgesPojo;
 import com.igniva.indiecore.model.BusinessPojo;
 import com.igniva.indiecore.ui.activities.BadgeDetailActivity;
 import com.igniva.indiecore.ui.activities.BusinessDetailActivity;
+import com.igniva.indiecore.ui.activities.BusinessRoomActivity;
 import com.igniva.indiecore.ui.activities.MyBadgesActivity;
 import com.igniva.indiecore.utils.Constants;
 
@@ -118,6 +121,18 @@ String address="";
             }
         });
 
+        holder.mRlBUsiness.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+        Intent intent= new Intent(mContext,BusinessRoomActivity.class);
+                mContext.startActivity(intent);
+            }
+        });
+
+
+
+
+
     }
 
     @Override
@@ -132,6 +147,7 @@ String address="";
         public TextView mTvAddress;
         public TextView mTVDistance;
         public TextView mUserCount;
+        public RelativeLayout mRlBUsiness;
 
         public RecyclerViewHolders(final View itemView) {
             super(itemView);
@@ -142,6 +158,7 @@ String address="";
             mTvAddress = (TextView) itemView.findViewById(R.id.tv_business_address);
             mTVDistance = (TextView) itemView.findViewById(R.id.tv_distance);
             mUserCount= (TextView) itemView.findViewById(R.id.tv_user_count);
+            mRlBUsiness=(RelativeLayout) itemView.findViewById(R.id.rl_main);
 
 
         }

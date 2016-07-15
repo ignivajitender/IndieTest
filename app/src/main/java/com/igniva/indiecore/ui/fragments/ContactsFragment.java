@@ -12,11 +12,8 @@ import android.widget.TextView;
 
 import com.igniva.indiecore.R;
 import com.igniva.indiecore.db.BadgesDb;
-import com.igniva.indiecore.model.BadgesPojo;
 import com.igniva.indiecore.model.ProfilePojo;
 import com.igniva.indiecore.ui.adapters.PhonebookAdapter;
-import com.igniva.indiecore.utils.Log;
-import com.igniva.indiecore.utils.Utility;
 
 import java.util.ArrayList;
 
@@ -29,7 +26,7 @@ public class ContactsFragment extends BaseFragment {
     private RecyclerView mRvUsers;
     private LinearLayoutManager mLlManager;
     private TextView mTvPhoneBook, mTvFavourite,mComingSoon;
-    PhonebookAdapter mPhoneBookAdter;
+    PhonebookAdapter mPhoneBookAdapter;
     BadgesDb usersDb;
     View rootView;
 
@@ -102,9 +99,9 @@ public class ContactsFragment extends BaseFragment {
             mSavedUsersList = usersDb.retrieveSavedUsersList();
 
             if(mSavedUsersList.size()>0) {
-                mPhoneBookAdter = null;
-                mPhoneBookAdter = new PhonebookAdapter(getActivity(), mSavedUsersList);
-                mRvUsers.setAdapter(mPhoneBookAdter);
+                mPhoneBookAdapter = null;
+                mPhoneBookAdapter = new PhonebookAdapter(getActivity(), mSavedUsersList);
+                mRvUsers.setAdapter(mPhoneBookAdapter);
                 mComingSoon.setVisibility(View.GONE);
                 rootView.findViewById(R.id.tv_coming_soon_two).setVisibility(View.GONE);
 

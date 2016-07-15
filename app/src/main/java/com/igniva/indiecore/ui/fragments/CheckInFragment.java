@@ -53,7 +53,7 @@ import java.util.Comparator;
 /**
  * Created by igniva-andriod-05 on 1/7/16.
  */
-public class CheckInFragment extends BaseFragment implements OnMapReadyCallback {
+public class CheckInFragment extends BaseFragment {
 
     LinearLayout mLlMapContainer, mLlSearchContainer;
     private TextView mTvTrending, mTvNearby, mTvFind, mTvSearch;
@@ -140,7 +140,7 @@ public class CheckInFragment extends BaseFragment implements OnMapReadyCallback 
                                                         // Sets the orientation of the camera to eas
                                         // Sets the tilt of the camera to 30 degrees
                                         .build();                   // Creates a CameraPosition from the builder
-//                                googleMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
+                                googleMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
 
                             }
 
@@ -404,8 +404,6 @@ public class CheckInFragment extends BaseFragment implements OnMapReadyCallback 
             mRvBusinessGrid.setLayoutManager(mGlManager);
             mLlMapContainer.setVisibility(View.VISIBLE);
             mLlSearchContainer.setVisibility(View.GONE);
-//        locationManager = (LocationManager) getActivity().getSystemService(Context.LOCATION_SERVICE);
-//        locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, this);
             mTvTrending.setTextColor(Color.parseColor("#FFFFFF"));
             mTvTrending.setBackgroundColor(Color.parseColor("#1C6DCE"));
 
@@ -595,12 +593,12 @@ public class CheckInFragment extends BaseFragment implements OnMapReadyCallback 
             }
         }
     };
-
-    @Override
-    public void onMapReady(GoogleMap googleMap) {
-        if (googleMap != null) {
-            googleMap.addMarker(new MarkerOptions().position(new LatLng(30.7362900, 76.7884000
-            )).title("My Location"));
-        }
-    }
+//
+//    @Override
+//    public void onMapReady(GoogleMap googleMap) {
+//        if (googleMap != null) {
+//            googleMap.addMarker(new MarkerOptions().position(new LatLng(30.7362900, 76.7884000
+//            )).title("My Location"));
+//        }
+//    }
 }

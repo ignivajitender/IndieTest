@@ -12,7 +12,7 @@
     <string name="coming_soon">Coming Soon</string>
     <string name="no_result_found">No result found for this business Name</string>
 
-
+<string name="business_room_activity">Business Room</string>
     <!--splash-->
     <string name="get_started">Get Started Now</string>
     <string name="Real_Check_Ins">Real check-ins for real people</string>
@@ -100,6 +100,11 @@
     <string name="near_by">Nearby</string>
     <string name="find">Find</string>
 
+
+    <!--Busines room-->
+    <string name="chat">Chat</string>
+    <string name="board">Board</string>
+    <string name="people">People</string>
 
     <!--contacts-->
     <string name="phonebook">Phonebook</string>

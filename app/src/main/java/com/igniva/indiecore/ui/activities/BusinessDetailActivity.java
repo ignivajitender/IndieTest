@@ -38,7 +38,6 @@ public class BusinessDetailActivity extends BaseActivity implements OnMapReadyCa
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_business_detail);
         initToolbar();
-
         setUpLayout();
         setDataInViewObjects();
 

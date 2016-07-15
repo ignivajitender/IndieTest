@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/light_gray"
+    android:orientation="vertical">
+
+
+    <include
+        android:id="@+id/toolbar_business_room"
+        layout="@layout/toolbar_with_image_at_right" />
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="30dp"
+        android:layout_centerVertical="true"
+        android:layout_marginLeft="20dp"
+        android:layout_marginRight="20dp"
+        android:layout_marginTop="20dp"
+        android:orientation="horizontal"
+        android:visibility="visible">
+
+        <TextView
+            android:id="@+id/tv_chat"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:background="@drawable/simple_border_line_style"
+            android:gravity="center"
+            android:onClick="onClick"
+            android:paddingBottom="4dp"
+            android:paddingTop="4dp"
+            android:text="@string/chat"
+            android:textColor="@color/blue_clicked"
+            android:textSize="15sp" />
+
+        <TextView
+            android:id="@+id/tv_board"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_marginLeft="-2dp"
+            android:layout_weight="1"
+            android:background="@drawable/simple_border_line_style"
+            android:gravity="center"
+            android:onClick="onClick"
+            android:paddingBottom="4dp"
+            android:paddingTop="4dp"
+            android:text="@string/board"
+            android:textColor="@color/blue_clicked"
+            android:textSize="15sp" />
+
+        <TextView
+            android:id="@+id/tv_people"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_marginLeft="-2dp"
+            android:layout_weight="1"
+            android:background="@drawable/simple_border_line_style"
+            android:gravity="center"
+            android:onClick="onClick"
+            android:paddingBottom="4dp"
+            android:paddingTop="4dp"
+            android:text="@string/people"
+            android:textColor="@color/blue_clicked"
+            android:textSize="15sp" />
+    </LinearLayout>
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
+        android:orientation="vertical">
+
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp">
+
+            <LinearLayout
+                android:id="@+id/ll_upper"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <TextView
+                    android:id="@+id/tv_user_name"
+                    android:layout_width="match_parent"
+                    android:layout_height="30dp"
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginLeft="90dp"
+                    android:textColor="@color/black"
+                    android:textSize="20sp"
+                    android:layout_toRightOf="@+id/iv_userimg"
+                    android:gravity="center_vertical"
+                    android:text="User Name" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/ll_lower"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/ll_upper"
+                android:background="@color/white">
+
+                <TextView
+                    android:id="@+id/tv_create_post"
+                    android:layout_width="match_parent"
+                    android:layout_height="40dp"
+                    android:textSize="15sp"
+                    android:textColor="@color/light_black"
+                    android:layout_below="@+id/tv_user_name"
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginLeft="90dp"
+                    android:background="@color/white"
+                    android:gravity="center_vertical"
+                    android:text="Create a new board message ?" />
+            </LinearLayout>
+
+            <ImageView
+                android:id="@+id/iv_user_img"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:layout_centerVertical="true"
+                android:layout_marginLeft="15dp"
+                android:src="@drawable/default_user" />
+
+
+        </RelativeLayout>
+
+    </LinearLayout>
+</LinearLayout>
