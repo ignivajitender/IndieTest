@@ -19,7 +19,7 @@ import java.util.ArrayList;
  */
 public class BadgesDb extends SQLiteOpenHelper {
 
-     public static  final String LOG_TAG="BadgesDb";
+    public static final String LOG_TAG = "BadgesDb";
     //---- DATABASE START-----------
 
     public static final String DATABASE_NAME = "db_indiecore";
@@ -47,35 +47,33 @@ public class BadgesDb extends SQLiteOpenHelper {
     public static String createBadgeTable() {
 
         return "CREATE TABLE IF NOT EXISTS " + TABLE_BADGES
-                + "(" +BADGE_ID +  " TEXT PRIMARY KEY,"+ S_NO + " INTEGER," +
+                + "(" + BADGE_ID + " TEXT PRIMARY KEY," + S_NO + " INTEGER," +
                 BADGE_NAME + " TEXT," + BADGE_DESC + " TEXT," + BADGE_ICON + " TEXT,"
                 + IS_PREMIUM + " INTEGER," + BADGE_PRICE + " REAL,"
                 + BADGE_SKU + " TEXT," + IS_ACTIVE + " INTEGER" + ")";
     }
 
 
-
-//    TABLE USERS
-public  static  final String TABLE_USERS="tbl_users";
-//    COLUMN USERS
-    public  static final String MOBILE_NO="mobile_no";
-    public  static final String FIRST_NAME="first_name";
-    public  static final String LAST_NAME="last_name";
-    public  static final String CONTACT_IMG="contact_img";
-    public  static final String TYPE="type";
-    public  static final String BADGE_COUNT="badge_count";
-    public static  final String DESCERIPTION="description";
+    //    TABLE USERS
+    public static final String TABLE_USERS = "tbl_users";
+    //    COLUMN USERS
+    public static final String MOBILE_NO = "mobile_no";
+    public static final String FIRST_NAME = "first_name";
+    public static final String LAST_NAME = "last_name";
+    public static final String CONTACT_IMG = "contact_img";
+    public static final String TYPE = "type";
+    public static final String BADGE_COUNT = "badge_count";
+    public static final String DESCERIPTION = "description";
 
 //    TABLE END USERS
 
-    public static String createUsersTable(){
+    public static String createUsersTable() {
 
         return "CREATE TABLE IF NOT EXISTS " + TABLE_USERS
-                + "(" +MOBILE_NO +  " TEXT PRIMARY KEY,"+
+                + "(" + MOBILE_NO + " TEXT PRIMARY KEY," +
                 FIRST_NAME + " TEXT," + LAST_NAME + " TEXT," + DESCERIPTION + " TEXT," + CONTACT_IMG + " TEXT,"
                 + BADGE_COUNT + " INTEGER," + TYPE + " INTEGER" + ")";
     }
-
 
 
     public BadgesDb(Context context) {
@@ -99,7 +97,7 @@ public  static  final String TABLE_USERS="tbl_users";
     public void insertSingleBadge(SQLiteDatabase db, BadgesPojo badges) {
         try {
             ContentValues values = new ContentValues();
-            values.put(S_NO,1);
+            values.put(S_NO, 1);
             values.put(BADGE_ID, badges.getBadgeId()); // Contact Phone Number
             values.put(BADGE_NAME, badges.getName());
             values.put(BADGE_DESC, badges.getDescription());
@@ -109,62 +107,41 @@ public  static  final String TABLE_USERS="tbl_users";
             values.put(BADGE_SKU, badges.getSku());
             values.put(IS_ACTIVE, badges.getActive());
             // Inserting Single Row
-            db.insertWithOnConflict(TABLE_BADGES, null, values,SQLiteDatabase.CONFLICT_REPLACE);
+            db.insertWithOnConflict(TABLE_BADGES, null, values, SQLiteDatabase.CONFLICT_REPLACE);
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
 
-    public void insertSingleContact(SQLiteDatabase db, UsersPojo users){
+    public void insertSingleContact(SQLiteDatabase db, UsersPojo users) {
 
         try {
-            ContentValues values= new ContentValues();
-            values.put(MOBILE_NO,users.getMobileNo());
-            values.put(FIRST_NAME,users.getProfile().getFirstName());
-            values.put(LAST_NAME,users.getProfile().getLastName());
-            values.put(CONTACT_IMG,users.getProfile().getProfilePic());
-            values.put(DESCERIPTION,users.getProfile().getDesc());
-            values.put(BADGE_COUNT,12);
-            values.put(TYPE,1);
-            db.insertWithOnConflict(TABLE_USERS,null,values,SQLiteDatabase.CONFLICT_REPLACE);
+            ContentValues values = new ContentValues();
+            values.put(MOBILE_NO, users.getMobileNo());
+            values.put(FIRST_NAME, users.getProfile().getFirstName());
+            values.put(LAST_NAME, users.getProfile().getLastName());
+            values.put(CONTACT_IMG, users.getProfile().getProfilePic());
+            values.put(DESCERIPTION, users.getProfile().getDesc());
+            values.put(BADGE_COUNT, 12);
+            values.put(TYPE, 1);
+            db.insertWithOnConflict(TABLE_USERS, null, values, SQLiteDatabase.CONFLICT_REPLACE);
 
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
 
-    public  void updateSingleRow(BadgesPojo badges) {
+    public void updateSingleRow(BadgesPojo badges) {
         SQLiteDatabase db = this.getWritableDatabase();
         try {
-//            "UPDATE "+ MyConstants.TABLE_NAME + " SET "+ MyConstants.ISFAV + " = "+fav+ " WHERE " + MyConstants.WORD_NAME + " = \""+word_name+"\"", null);
-                db.rawQuery("UPDATE "+ TABLE_BADGES + " SET "+IS_ACTIVE+ "="+badges.getActive()+ " WHERE "+BADGE_ID+ " = '"+badges.getBadgeId()+"'", null);
+            db.execSQL("UPDATE " + TABLE_BADGES + " SET " + IS_ACTIVE + "=" + badges.getActive() + " WHERE " + BADGE_ID + " = '" + badges.getBadgeId() + "'");
 
-            String query="SELECT * FROM tbl_badge_master WHERE id_badge='"+badges.getBadgeId()+"'";
-            Cursor cursor=db.rawQuery(query,null);
-            while (cursor.moveToNext()) {
-
-                for (int i=0;i<9;i++){
-                    Log.d(LOG_TAG,"coulumn is "+i+" value "+cursor.getString(i));
-                }
-//                String result_0=cursor.getString(0);
-//                String result_1=cursor.getString(1);
-//                Log.d(LOG_TAG,"first column "+result_0);
-//                Log.d(LOG_TAG,"second column "+result_0);
-//                Log.d(LOG_TAG,"thirrd column "+result_0);
-//                Log.d(LOG_TAG,"fourth column "+result_0);
-//                Log.d(LOG_TAG,"fifth column "+result_0);
-
-                //and so on
-            }
-            cursor.close();
-
-               //  db.rawQuery("SELECT * FROM tbl_badge_master WHERE id_badge='"+badges.getBadgeId()+"'",null);
-
-           // Log.d(LOG_TAG,""+db.rawQuery("SELECT * FROM tbl_badge_master WHERE id_badge='"+badges.getBadgeId()+"'",null));
         } catch (Exception e) {
             e.printStackTrace();
+        } finally {
+            db.close();
         }
     }
 
@@ -183,17 +160,17 @@ public  static  final String TABLE_USERS="tbl_users";
         }
     }
 
-    public void insertAllContacts(ArrayList<UsersPojo> mUsers){
-        SQLiteDatabase db=this.getWritableDatabase();
+    public void insertAllContacts(ArrayList<UsersPojo> mUsers) {
+        SQLiteDatabase db = this.getWritableDatabase();
         try {
-            for(int i=0;i<mUsers.size();i++){
+            for (int i = 0; i < mUsers.size(); i++) {
 
-                insertSingleContact(db,mUsers.get(i));
+                insertSingleContact(db, mUsers.get(i));
 
-                Log.e(LOG_TAG,"inseretd"+mUsers.get(i));
+                Log.e(LOG_TAG, "inseretd" + mUsers.get(i));
             }
 
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         } finally {
             db.close();
@@ -232,18 +209,18 @@ public  static  final String TABLE_USERS="tbl_users";
         return myBadgesList;
     }
 
-    public ArrayList<ProfilePojo> retrieveSavedUsersList(){
-        SQLiteDatabase db=getReadableDatabase();
+    public ArrayList<ProfilePojo> retrieveSavedUsersList() {
+        SQLiteDatabase db = getReadableDatabase();
         Cursor cursor = db.query(TABLE_USERS, null, null, null, null, null, null);
-        ArrayList<ProfilePojo> savedUsersList=new ArrayList<ProfilePojo>();
+        ArrayList<ProfilePojo> savedUsersList = new ArrayList<ProfilePojo>();
         ProfilePojo usersPojoObj;
 
         try {
-            if(cursor.getCount()>0){
-                for(int i=0;i< cursor.getCount();i++){
+            if (cursor.getCount() > 0) {
+                for (int i = 0; i < cursor.getCount(); i++) {
 
                     cursor.moveToNext();
-                    usersPojoObj= new ProfilePojo();
+                    usersPojoObj = new ProfilePojo();
                     usersPojoObj.setFirstName(cursor.getString(1));
                     usersPojoObj.setDesc(cursor.getString(3));
                     usersPojoObj.setProfilePic(cursor.getString(4));
@@ -252,7 +229,7 @@ public  static  final String TABLE_USERS="tbl_users";
             }
 
 
-        } catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
 

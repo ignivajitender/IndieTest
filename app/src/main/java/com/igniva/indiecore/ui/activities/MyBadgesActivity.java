@@ -314,7 +314,6 @@ public class MyBadgesActivity extends BaseActivity {
             BadgesPojo selectedBadge;
 
             selectedBadge = mSelectedBadgesList.get(mSelectedPostion);
-          Log.d(LOG_TAG,"ACtive or not"+selectedBadge.getActive());
             selectedBadge.getName();
             selectedBadge.getBadgeId();
 
