@@ -138,12 +138,12 @@ public class EnterMobileActivity extends BaseActivity {
         // mButtonNext.setOnClickListener(this);
 
         mEtMobileNumber = (EditText) findViewById(R.id.et_mobile_number);
-//              mEtMobileNumber.setText("9816428478");
+              mEtMobileNumber.setText("9816428478");
         mEtMobileNumber.requestFocus();
 
         mEtCountryCode = (EditText) findViewById(R.id.et_country_code);
         //  mEtCountryCode.setText(countryId);
-//              mEtCountryCode.setText("91");
+              mEtCountryCode.setText("91");
     } catch (Exception e){
 
         e.printStackTrace();
@@ -206,7 +206,7 @@ public class EnterMobileActivity extends BaseActivity {
                             in.putExtras(bundle);
                             startActivity(in);
 
-                        } else {
+                        } else if(result.getNewUser().equalsIgnoreCase("False")){
 
                             insertRecords(result.getBadges());
                             // save in preferences
@@ -221,7 +221,7 @@ public class EnterMobileActivity extends BaseActivity {
                             PreferenceHandler.writeString(EnterMobileActivity.this,PreferenceHandler.PREF_KEY_DESCRIPTION,result.getProfile().getDesc());
 
                             //
-                            Intent in = new Intent(EnterMobileActivity.this, CreateProfileActivity.class);
+                            Intent in = new Intent(EnterMobileActivity.this, DashBoardActivity.class);
                             Bundle bundle = new Bundle();
 
                             bundle.putString(Constants.FIRSTNAME, result.getProfile().getFirstName());
@@ -237,7 +237,6 @@ public class EnterMobileActivity extends BaseActivity {
                             in.putExtras(bundle);
                             startActivity(in);
                         }
-
 
                     } else {
 

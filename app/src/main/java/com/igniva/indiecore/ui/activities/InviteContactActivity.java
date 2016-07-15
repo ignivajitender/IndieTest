@@ -31,6 +31,7 @@ import com.google.android.gms.common.api.GoogleApiClient;
 import com.igniva.indiecore.R;
 import com.igniva.indiecore.model.ContactPojo;
 import com.igniva.indiecore.ui.adapters.InviteContactAdapter;
+import com.igniva.indiecore.utils.Constants;
 import com.igniva.indiecore.utils.Log;
 import com.igniva.indiecore.utils.Utility;
 
@@ -50,6 +51,7 @@ public class InviteContactActivity extends BaseActivity {
     InviteContactAdapter mInviteContactAdapter;
     ArrayList<ContactPojo> mContactList = null;
     ContactPojo obj;
+    int index=-1;
     public static ArrayList<String> mSelectedContacts = new ArrayList<String>();
     public static ArrayList<String> mSelectedContactName = new ArrayList<String>();
     /**
@@ -104,7 +106,6 @@ public class InviteContactActivity extends BaseActivity {
     @Override
     protected void setUpLayout() {
         try {
-
             mSelectedContactName.clear();
             mSelectedContacts.clear();
 
@@ -248,43 +249,21 @@ public class InviteContactActivity extends BaseActivity {
             mNumber = mNumber.replace(" ", "");
             Uri smsToContacts = Uri.parse("smsto:" + mNumber);
             Intent intent = new Intent(Intent.ACTION_SENDTO, smsToContacts);
-            String message = "Hello, I'm using Indiecore, please download and see what you're missing:www.google-playstore/indiecore/";
+            String message = getResources().getString(R.string.invite_message);
             // message = message.replace("%s", StoresMessage.m_storeName);
             intent.putExtra("sms_body", message);
             startActivity(intent);
 
         } catch (Exception e) {
             e.printStackTrace();
-            Toast.makeText(getApplicationContext(), "Some error occured", Toast.LENGTH_SHORT).show();
+            Toast.makeText(getApplicationContext(),getResources().getString(R.string.some_unknown_error), Toast.LENGTH_SHORT).show();
 
         }
 
     }
 
 
-//    public void onClickWhatsApp(View view) {
-//
-//        PackageManager pm = getPackageManager();
-//        try {
-//
-//            Intent waIntent = new Intent(Intent.ACTION_SEND);
-//            waIntent.setType("text/plain");
-//            String text = "YOUR TEXT HERE";
-//
-//            PackageInfo info = pm.getPackageInfo("com.whatsapp", PackageManager.GET_META_DATA);
-//            //Check if package exists or not. If not then code
-//            //in catch block will be called
-//            waIntent.setPackage("com.whatsapp");
-//
-//            waIntent.putExtra(Intent.EXTRA_TEXT, text);
-//            startActivity(Intent.createChooser(waIntent, "Share with"));
-//
-//        } catch (PackageManager.NameNotFoundException e) {
-//            Toast.makeText(this, "WhatsApp not Installed", Toast.LENGTH_SHORT)
-//                    .show();
-//        }
-//
-//    }
+
 
 
 //    @Override

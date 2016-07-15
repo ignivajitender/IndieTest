@@ -119,6 +119,7 @@
             android:windowSoftInputMode="stateHidden"
             android:label="Business Name"/>
 
+
         <activity
             android:theme="@style/AppTheme"
             android:name=".ui.activities.RecommendBadgeActivity"

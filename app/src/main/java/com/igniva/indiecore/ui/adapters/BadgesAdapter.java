@@ -60,7 +60,6 @@ public class BadgesAdapter extends RecyclerView.Adapter<BadgesAdapter.RecyclerVi
         //final ImageLoader imageLoader=new ImageLoader(mContext);
         try {
 
-
             holder.mTvBadgeName.setText(itemList.get(position).getName());
             //imageLoader.DisplayImage(itemList.get(position).getIcon(),holder.mIvBadgeIcon);
             // Glide Implementation
@@ -73,9 +72,6 @@ public class BadgesAdapter extends RecyclerView.Adapter<BadgesAdapter.RecyclerVi
 
             //
             if (itemList.get(position).isSelected() == true) {
-
-                Log.d("", "");
-                Log.d("", "");
 
                 holder.mIvActivateBadge.setImageResource(R.drawable.tick_badge);
             }
@@ -120,9 +116,6 @@ public class BadgesAdapter extends RecyclerView.Adapter<BadgesAdapter.RecyclerVi
             public void onClick(View view) {
 
                 try {
-
-
-                    //BadgesPojo obj= new BadgesPojo(itemList.get(position).getName(),itemList.get(position).getIcon(),itemList.get(position).getDescription());
 
                     Bundle bundle = new Bundle();
                     bundle.putInt(Constants.POSITION, position);

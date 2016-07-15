@@ -88,7 +88,7 @@
     <string name="no_thanks">No,Thanks</string>
     <string name="invite_atleast_ten_friend">You need to invite at least 10 people to get more badges</string>
     <string name="not_more_than_ten_sms">You cannot send more than 10 SMS at any one time when inviting friends</string>
-
+    <string name="invite_message">Hello, I\'m using Indiecore, please download and see what you\'re missing:www.google-playstore/indiecore</string>
     <!--myBadges-->
     <string name="my_badges">Badges</string>
     <string name="my_badge">My Badges</string>
@@ -125,6 +125,8 @@
     <string name="cover_pic">Cover Pic</string>
 
     <string name="name">Name</string>
+    <string name="by_sms">By Sms</string>
+    <string name="by_whats_app">By WhatsApp</string>
 
 
     <string name="privacy">Privacy</string>

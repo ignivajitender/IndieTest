@@ -222,6 +222,7 @@ public class Utility {
 			@Override
 			public void onClick(DialogInterface dialog, int which) {
           Intent intent = new Intent(context, InviteContactActivity.class);
+//				intent.putExtra(Constants.INDEX,3);
 				context.startActivity(intent);
 			}
 		});

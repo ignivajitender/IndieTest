@@ -180,8 +180,6 @@ public class InviteContactAdapter extends RecyclerView.Adapter<InviteContactAdap
     }
 
 
-
-
     private class ItemFilter extends Filter {
         @Override
         protected FilterResults performFiltering(CharSequence constraint) {
