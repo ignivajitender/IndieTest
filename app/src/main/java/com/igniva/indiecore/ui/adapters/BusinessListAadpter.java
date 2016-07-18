@@ -1,11 +1,8 @@
 package com.igniva.indiecore.ui.adapters;
 
-import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.v4.app.FragmentActivity;
-import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -18,29 +15,24 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.igniva.indiecore.R;
 import com.igniva.indiecore.controller.OnCardClickListner;
-import com.igniva.indiecore.model.BadgesPojo;
 import com.igniva.indiecore.model.BusinessPojo;
-import com.igniva.indiecore.ui.activities.BadgeDetailActivity;
 import com.igniva.indiecore.ui.activities.BusinessDetailActivity;
-import com.igniva.indiecore.ui.activities.BusinessRoomActivity;
-import com.igniva.indiecore.ui.activities.MyBadgesActivity;
-import com.igniva.indiecore.utils.Constants;
 
-import org.w3c.dom.Text;
+import com.igniva.indiecore.utils.Constants;
 
 import java.util.ArrayList;
 
 /**
  * Created by igniva-andriod-11 on 10/6/16.
  */
-public class BusinessListAdpter extends RecyclerView.Adapter<BusinessListAdpter.RecyclerViewHolders> {
+public class BusinessListAadpter extends RecyclerView.Adapter<BusinessListAadpter.RecyclerViewHolders> {
 
     private Context mContext;
     String LOG_TAG = "BusinessListAdapter";
     private ArrayList<BusinessPojo> mBusinessList;
     private final OnCardClickListner listener;
 
-    public BusinessListAdpter(Context context, ArrayList<BusinessPojo> mBusinessList, OnCardClickListner onCardClickListner) {
+    public BusinessListAadpter(Context context, ArrayList<BusinessPojo> mBusinessList, OnCardClickListner onCardClickListner) {
 
         this.mContext = context;
         this.mBusinessList = mBusinessList;
@@ -124,8 +116,9 @@ String address="";
         holder.mRlBUsiness.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-        Intent intent= new Intent(mContext,BusinessRoomActivity.class);
-                mContext.startActivity(intent);
+
+
+
             }
         });
 

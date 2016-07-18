@@ -37,7 +37,7 @@ import com.igniva.indiecore.controller.WebNotificationManager;
 import com.igniva.indiecore.controller.WebServiceClient;
 import com.igniva.indiecore.model.BusinessPojo;
 import com.igniva.indiecore.model.ResponsePojo;
-import com.igniva.indiecore.ui.adapters.BusinessListAdpter;
+import com.igniva.indiecore.ui.adapters.BusinessListAadpter;
 import com.igniva.indiecore.ui.adapters.FindBusinessAdapter;
 import com.igniva.indiecore.utils.Constants;
 import com.igniva.indiecore.utils.Log;
@@ -67,7 +67,7 @@ public class CheckInFragment extends BaseFragment {
     ArrayList<BusinessPojo> mNearbyList;
     RecyclerView mRvBusinessGrid;
     View rootView;
-    BusinessListAdpter mBusinessAdapter;
+    BusinessListAadpter mBusinessAdapter;
     FindBusinessAdapter mFindBusinessAdapter;
     private int sort = 1;
     private int limit = 16;
@@ -220,7 +220,7 @@ public class CheckInFragment extends BaseFragment {
                             mBusinessAdapter = null;
                             Log.e("", "setting bin adpter" + mBusinessList.size());
                             if (mBusinessList.size() > 0) {
-                                mBusinessAdapter = new BusinessListAdpter(getActivity(), mBusinessList, onCardClickListner);
+                                mBusinessAdapter = new BusinessListAadpter(getActivity(), mBusinessList, onCardClickListner);
                                 mRvBusinessGrid.setAdapter(mBusinessAdapter);
                             }
                             if (mProgressDialog != null && mProgressDialog.isShowing()) {
@@ -417,7 +417,7 @@ public class CheckInFragment extends BaseFragment {
                 mBusinessAdapter = null;
                 Log.e("", "setting bin adpter" + mBusinessList.size());
                 if (mBusinessList.size() > 0) {
-                    mBusinessAdapter = new BusinessListAdpter(getActivity(), mBusinessList, onCardClickListner);
+                    mBusinessAdapter = new BusinessListAadpter(getActivity(), mBusinessList, onCardClickListner);
                     mRvBusinessGrid.setAdapter(mBusinessAdapter);
                 }
             } catch (Exception e) {
@@ -465,7 +465,7 @@ public class CheckInFragment extends BaseFragment {
                 //  mRvBusinessGrid.setAdapter(mBusinessAdapter);
                 Log.e("", "setting bin adpter" + mBusinessList.size());
                 if (mNearbyList.size() > 0) {
-                    mBusinessAdapter = new BusinessListAdpter(getActivity(), mNearbyList, onCardClickListner);
+                    mBusinessAdapter = new BusinessListAadpter(getActivity(), mNearbyList, onCardClickListner);
                     mRvBusinessGrid.setAdapter(mBusinessAdapter);
                 }
             } catch (Exception e) {
