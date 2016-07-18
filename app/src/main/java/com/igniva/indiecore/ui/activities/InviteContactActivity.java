@@ -151,7 +151,7 @@ public class InviteContactActivity extends BaseActivity {
         getAllContacts();
         mInviteContactAdapter = null;
         try {
-            mInviteContactAdapter = new InviteContactAdapter(this, mContactList);
+            mInviteContactAdapter = new InviteContactAdapter(this, mContactList,10);
             recyclerView.setAdapter(mInviteContactAdapter);
 
         } catch (Exception e) {
