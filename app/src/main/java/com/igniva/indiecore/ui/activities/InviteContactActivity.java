@@ -109,6 +109,13 @@ public class InviteContactActivity extends BaseActivity {
             mSelectedContactName.clear();
             mSelectedContacts.clear();
 
+            try {
+                Bundle bundle= getIntent().getExtras();
+                index=bundle.getInt(Constants.INDEX);
+            }catch (Exception e){
+                e.printStackTrace();
+            }
+
             mContactList = new ArrayList<ContactPojo>();
             recyclerView = (RecyclerView) findViewById(R.id.recyclerView);
 
@@ -151,8 +158,13 @@ public class InviteContactActivity extends BaseActivity {
         getAllContacts();
         mInviteContactAdapter = null;
         try {
-            mInviteContactAdapter = new InviteContactAdapter(this, mContactList,10);
-            recyclerView.setAdapter(mInviteContactAdapter);
+            if(index==3) {
+                mInviteContactAdapter = new InviteContactAdapter(this, mContactList, 10);
+                recyclerView.setAdapter(mInviteContactAdapter);
+            } else {
+                mInviteContactAdapter = new InviteContactAdapter(this, mContactList, 10000);
+                recyclerView.setAdapter(mInviteContactAdapter);
+            }
 
         } catch (Exception e) {
 
