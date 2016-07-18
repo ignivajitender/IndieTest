@@ -14,23 +14,18 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLEncoder;
 import java.util.ArrayList;
-
 import com.igniva.indiecore.R;
 import com.igniva.indiecore.utils.AsyncResult;
 import com.igniva.indiecore.utils.Utility;
-
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.ContentResolver;
 import android.content.Context;
 import android.os.AsyncTask;
 import android.os.StrictMode;
-
 import com.google.gson.Gson;
-
 import org.apache.http.entity.mime.MultipartEntity;
 import org.json.JSONObject;
-
 import com.igniva.indiecore.utils.Log;
 import com.igniva.indiecore.model.ResponsePojo;
 
@@ -44,7 +39,6 @@ public class WebServiceClient {
     private static HttpMethod method;
     private static ProgressDialog progressDialog;
     private static ResponseHandlerListener mResponseHandlerListener;
-
     /**
      * Webservice Urls
      */
@@ -64,7 +58,7 @@ public class WebServiceClient {
     public static  final String HTTP_GET_BUSINESS_LIST= HTTP_PROTOCOL+HTTP_HOST_IP+"business/list";
     public static  final String HTTP_ON_OFF_BUSINESS_BADGE=HTTP_PROTOCOL+HTTP_HOST_IP+"business/onoff";
     public static  final String HTTP_RECOMMEND_A_BADGE=HTTP_PROTOCOL+HTTP_HOST_IP+"badge/recommend";
-   //
+    //
     private final static String CONTENT_TYPE = "application/json";
 
     private enum HttpMethod {
@@ -97,7 +91,6 @@ public class WebServiceClient {
     }
 
     public static void verifyOtp(final Context context,String payload,ResponseHandlerListener responseHandlerListener){
-
         url=HTTP_VERIFY_OTP;
         method=HttpMethod.HTTP_POST;
         mResponseHandlerListener=responseHandlerListener;
@@ -105,17 +98,13 @@ public class WebServiceClient {
     }
 
     public static void userselectedBadges(final Context context,String payload,ResponseHandlerListener responselistener){
-
         url=HTTP_SELECTED_BADGES;
         method=HttpMethod.HTTP_POST;
         mResponseHandlerListener=mResponseHandlerListener;
         checkNetworkState(url,payload,method,context);
     }
 
-
-
     public static void resendOTP(final Context context,String payload,ResponseHandlerListener responseHandlerListener){
-
         url=HTTP_RESEND_OTP;
         method=HttpMethod.HTTP_POST;
         mResponseHandlerListener=responseHandlerListener;
@@ -123,7 +112,6 @@ public class WebServiceClient {
     }
 
     public static void createProfile(final Context context,String payload,ResponseHandlerListener responseHandlerListener){
-
         url=HTTP_CREATE_PROFILE;
         method=HttpMethod.HTTP_POST;
         mResponseHandlerListener=responseHandlerListener;
@@ -131,46 +119,39 @@ public class WebServiceClient {
     }
 
     public static void syncContacts(final Context context,String payload,ResponseHandlerListener responseHandlerListener){
-
         url=HTTP_SYNC_CONTACTS;
         method=HttpMethod.HTTP_POST;
         mResponseHandlerListener=responseHandlerListener;
         checkNetworkState(url,payload,method,context);
     }
- public static void onOffMyBadges(final Context context,String payload,ResponseHandlerListener responseHandlerListener){
 
-     url=HTTP_ON_OFF_BADGES;
-     method=HttpMethod.HTTP_POST;
-     mResponseHandlerListener=responseHandlerListener;
-     checkNetworkState(url,payload,method,context);
- }
+    public static void onOffMyBadges(final Context context,String payload,ResponseHandlerListener responseHandlerListener){
+         url=HTTP_ON_OFF_BADGES;
+         method=HttpMethod.HTTP_POST;
+         mResponseHandlerListener=responseHandlerListener;
+         checkNetworkState(url,payload,method,context);
+    }
 
     public static void getBusinessList(final Context context,String payload,ResponseHandlerListener responseHandlerListener){
-
         url=HTTP_GET_BUSINESS_LIST;
         method=HttpMethod.HTTP_POST;
         mResponseHandlerListener=responseHandlerListener;
         checkNetworkState(url,payload,method,context);
     }
 
-
     public static void onOffBusinessBadges(final Context context,String payload,ResponseHandlerListener responseHandlerListener){
-
         url=HTTP_ON_OFF_BUSINESS_BADGE;
         method=HttpMethod.HTTP_POST;
         mResponseHandlerListener=responseHandlerListener;
         checkNetworkState(url,payload,method,context);
     }
 
-
     public static void recommend_a_badge(final Context context,String payload,ResponseHandlerListener responseHandlerListener){
-
         url=HTTP_RECOMMEND_A_BADGE;
         method=HttpMethod.HTTP_POST;
         mResponseHandlerListener=responseHandlerListener;
         checkNetworkState(url,payload,method,context);
     }
-
 
     /**
      * Check Available Network connection and make http call only if network is
@@ -180,6 +161,7 @@ public class WebServiceClient {
      * @param _payload ,the data to be send while making http call
      * @param method   , the requested method
      * @param context  , the context of calling class
+     *
      */
     private static void checkNetworkState(String url, String _payload,
                                           HttpMethod method, Context context) {
@@ -219,7 +201,6 @@ public class WebServiceClient {
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
-
             if (isDisplayDialog) {
                 progressDialog = ProgressDialog.show(mContext, "", mContext
                                 .getResources().getString(R.string.please_wait), true,
@@ -230,7 +211,6 @@ public class WebServiceClient {
 
         @Override
         protected Object[] doInBackground(Void... vParams) {
-
             ResponsePojo responsePojo = null;
             WebError error = null;
             String method = "";
@@ -256,18 +236,15 @@ public class WebServiceClient {
                 BufferedWriter writer = new BufferedWriter(
                         new OutputStreamWriter(os, "UTF-8"));
                 writer.write(mPayload);
-
                 writer.flush();
                 writer.close();
                 os.close();
 
-
-//
 //                DataOutputStream dStream = new DataOutputStream(connection.getOutputStream());
 //                dStream.writeBytes(mPayload); //Writes out the string to the underlying output stream as a sequence of bytes
 //                dStream.flush(); // Flushes the data output stream.
 //                dStream.close(); // Closing the output stream.
-                connection.connect();
+                  connection.connect();
 
                 int successCode = connection.getResponseCode();
 
@@ -297,7 +274,6 @@ public class WebServiceClient {
                 error = WebError.UNKNOWN;
                 e.printStackTrace();
             }
-
 
             return new Object[]{responsePojo, error};
         }
