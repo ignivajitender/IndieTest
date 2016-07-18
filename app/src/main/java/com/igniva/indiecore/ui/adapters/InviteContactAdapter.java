@@ -37,14 +37,16 @@ public class InviteContactAdapter extends RecyclerView.Adapter<InviteContactAdap
     private ItemFilter mFilter = new ItemFilter();
     private List<ContactPojo>originalData = null;
     private List<ContactPojo>filteredData = null;
+    int mMaxInviteContactCount;
 
 
-    public InviteContactAdapter(Context context, ArrayList<ContactPojo> itemList) {
+    public InviteContactAdapter(Context context, ArrayList<ContactPojo> itemList,int contactCount) {
 
         this.itemList = itemList;
         this.context = context;
         this.originalData=itemList;
         filteredData=itemList;
+        mMaxInviteContactCount=contactCount;
 
     }
 
@@ -103,7 +105,7 @@ public class InviteContactAdapter extends RecyclerView.Adapter<InviteContactAdap
 
                         }
 
-                    } else if (InviteContactActivity.mSelectedContacts.size() < 10) {
+                    } else if (InviteContactActivity.mSelectedContacts.size() < mMaxInviteContactCount) {
                         filteredData.get(position).setSelected(true);
                         InviteContactActivity.mSelectedContactName.add(filteredData.get(position).getContactName());
                         InviteContactActivity.mSelectedContacts.add(filteredData.get(position).getContactNumber().trim());
