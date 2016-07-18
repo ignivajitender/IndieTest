@@ -85,11 +85,11 @@
                     android:layout_height="30dp"
                     android:layout_gravity="center_vertical"
                     android:layout_marginLeft="90dp"
-                    android:textColor="@color/black"
-                    android:textSize="20sp"
                     android:layout_toRightOf="@+id/iv_userimg"
                     android:gravity="center_vertical"
-                    android:text="User Name" />
+                    android:text="User Name"
+                    android:textColor="@color/black"
+                    android:textSize="20sp" />
             </LinearLayout>
 
             <LinearLayout
@@ -103,14 +103,14 @@
                     android:id="@+id/tv_create_post"
                     android:layout_width="match_parent"
                     android:layout_height="40dp"
-                    android:textSize="15sp"
-                    android:textColor="@color/light_black"
                     android:layout_below="@+id/tv_user_name"
                     android:layout_gravity="center_vertical"
                     android:layout_marginLeft="90dp"
                     android:background="@color/white"
                     android:gravity="center_vertical"
-                    android:text="Create a new board message ?" />
+                    android:text="Create a new board message ?"
+                    android:textColor="@color/light_black"
+                    android:textSize="15sp" />
             </LinearLayout>
 
             <ImageView
@@ -124,5 +124,15 @@
 
         </RelativeLayout>
 
+        <android.support.v7.widget.RecyclerView
+            android:layout_marginTop="2dp"
+            android:id="@+id/rv_users_posts"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+        </android.support.v7.widget.RecyclerView>
+
+
+
     </LinearLayout>
+
 </LinearLayout>

@@ -100,7 +100,7 @@ public class SettingsFragment extends BaseFragment {
                             try {
                                 if (childPosition == 0) {
                                     Intent intent= new Intent(getActivity(),InviteContactActivity.class);
-//                                    intent.putExtra(Constants.INDEX,4);
+                                    intent.putExtra(Constants.INDEX,4);
                                     getActivity().startActivity(intent);
 
                                 } else if(childPosition==1){

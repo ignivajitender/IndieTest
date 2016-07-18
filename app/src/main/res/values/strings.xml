@@ -12,7 +12,7 @@
     <string name="coming_soon">Coming Soon</string>
     <string name="no_result_found">No result found for this business Name</string>
 
-<string name="business_room_activity">Business Room</string>
+<string name="create_post_activity">Create Post</string>
     <!--splash-->
     <string name="get_started">Get Started Now</string>
     <string name="Real_Check_Ins">Real check-ins for real people</string>
@@ -120,6 +120,9 @@
     <string name="opening_hours">Opening hours</string>
     <string name="website">Website</string>
 
+
+    <!--Chats-->
+    <string name="available">Available</string>
 
     <!--settings-->
 

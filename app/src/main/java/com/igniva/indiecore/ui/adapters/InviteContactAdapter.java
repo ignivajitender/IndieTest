@@ -100,8 +100,6 @@ public class InviteContactAdapter extends RecyclerView.Adapter<InviteContactAdap
 
                             InviteContactActivity.mSelectedContacts.remove((filteredData).get(position).getContactNumber().trim());
                             InviteContactActivity.mSelectedContactName.remove(filteredData.get(position).getContactName());
-                            Log.e("selected Contacts after remove", "" + InviteContactActivity.mSelectedContacts + InviteContactActivity.mSelectedContacts.size());
-                            Log.e("selected Contacts name after remove", "" + InviteContactActivity.mSelectedContactName);
 
                         }
 
@@ -161,16 +159,6 @@ public class InviteContactAdapter extends RecyclerView.Adapter<InviteContactAdap
             mCardView = (CardView) itemView.findViewById(R.id.card_view);
 
 
-//            mIvBadgeIcon.setOnClickListener(new View.OnClickListener() {
-//                @Override
-//                public void onClick(View v) {
-//
-//                    BadgesPojo badgesPojo= new BadgesPojo()
-//                    Intent intent= new Intent(context, BadgeDetailActivity.class);
-//
-//                    context.startActivity(intent);
-//                }
-//            });
         }
 
         @Override
