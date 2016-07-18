@@ -148,6 +148,20 @@
     <string name="empty_badge_name">Please enter a badge name</string>
 
 
+    <!-- IN APP BILLING -->
+    <string name="base_64_key">MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAgV7olLwFUm5FN5pYAqlZr5DY4RhlMgQQBw8QfmODWV3fNO0JQ3kw2ZU4pbVaUCLuklkmRmC2qGxwWeJqa1yUHYUwKBX6QgswwbZTnAX02nZGhuuWkC2M559A/Bm6buyaHMcPoDceejvcNrKLvIn3WHht+VMiyTIqaeDty4auyTAbql584jlGI3HEmhwjYByOI5VVVW23f3Qrq6aOcuvhHYX9ImB/ljHjdeMziMGvYK4UMN6t/ZXXPY8HmQBiBj3Svfjvw4qN7czwm/4QbAk3UoDXA7oS2ceqKEPgDF149DX6vpTOTpI+UK73dB2i5l3I7QImQNnivMFwnJoME+QH1wIDAQAB</string>
+    <string name="subscription_period_prompt">Select your subscription period</string>
+    <string name="subscription_resignup_prompt">To reactivate your subscription, select your subscription period</string>
+    <string name="subscription_update_prompt">To change your subscription, select your new subscription period</string>
+    <string name="subscription_period_monthly">Monthly</string>
+    <string name="subscription_period_yearly">Yearly</string>
+    <string name="subscription_prompt_continue">Continue</string>
+    <string name="subscription_prompt_cancel">Cancel</string>
+    <string name="content_description_app_loading_image">App loading image</string>
+    <string name="content_description_title_image">80\'s Video Game Style Car Logo</string>
+    <string name="content_desc_gas_gauge_indicator">Gas gauge indicator</string>
+    <string name="content_desc_free_vs_premium_indicator">Free or Premium Image Indicator</string>
+
     <!--Country-->
     <array name="country_name">
         <item name="Afghanistan"></item>
@@ -848,6 +862,8 @@
         <item>260,ZM</item>
         <item>263,ZW</item>
     </string-array>
+
+
 
 
 </resources>

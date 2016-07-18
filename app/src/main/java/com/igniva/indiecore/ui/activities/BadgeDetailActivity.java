@@ -11,12 +11,14 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.igniva.indiecore.R;
 import com.igniva.indiecore.model.BadgesPojo;
 import com.igniva.indiecore.utils.Constants;
 import com.igniva.indiecore.utils.Log;
 import com.igniva.indiecore.utils.Utility;
-import com.igniva.indiecore.utils.imageloader.ImageLoader;
+
 
 /**
  * Created by igniva-andriod-05 on 16/6/16.
@@ -98,14 +100,20 @@ public class BadgeDetailActivity extends BaseActivity {
             bundle = getIntent().getExtras();
             badge = (BadgesPojo) bundle.getSerializable("badgePojo");
             index = bundle.getInt("INDEX");
-            ImageLoader imageLoader = new ImageLoader(BadgeDetailActivity.this);
 
 
             Log.e("", "" + badge.toString());
             mBadgeName.setText(badge.getName());
             mBadgeDesc.setText(badge.getDescription());
             badgeId = badge.getBadgeId();
-            imageLoader.DisplayImage(badge.getIcon(), mBadgeIcon);
+
+            Glide.with(this).load(badge.getIcon())
+                    .thumbnail(1f)
+                    .crossFade()
+                    .diskCacheStrategy(DiskCacheStrategy.ALL)
+                    .into(mBadgeIcon);
+
+
 
 
             if (index == 1) {

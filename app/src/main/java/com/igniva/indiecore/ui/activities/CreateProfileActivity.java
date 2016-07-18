@@ -37,7 +37,7 @@ import com.igniva.indiecore.utils.Log;
 import com.igniva.indiecore.utils.PreferenceHandler;
 import com.igniva.indiecore.utils.Utility;
 import com.igniva.indiecore.utils.WebServiceClientUploadImage;
-import com.igniva.indiecore.utils.imageloader.ImageLoader;
+
 
 import org.apache.http.entity.mime.HttpMultipartMode;
 import org.apache.http.entity.mime.MultipartEntity;

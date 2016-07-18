@@ -24,7 +24,6 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
-
 import com.google.android.gms.appindexing.Action;
 import com.google.android.gms.appindexing.AppIndex;
 import com.google.android.gms.common.api.GoogleApiClient;
@@ -34,7 +33,6 @@ import com.igniva.indiecore.ui.adapters.InviteContactAdapter;
 import com.igniva.indiecore.utils.Constants;
 import com.igniva.indiecore.utils.Log;
 import com.igniva.indiecore.utils.Utility;
-
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -81,15 +79,12 @@ public class InviteContactActivity extends BaseActivity {
             //
             TextView mTvSend = (TextView) mToolbar.findViewById(R.id.toolbar_next);
             mTvSend.setText("Send");
-
             mTvSend.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-//                    onClickWhatsApp(v);
-
+//                  onClickWhatsApp(v);
                     Log.e("contact list to send", "" + mSelectedContacts);
                     Log.e("contact list size", "" + mSelectedContacts.size());
-
                     sendInviteSms();
                 }
             });
@@ -108,39 +103,27 @@ public class InviteContactActivity extends BaseActivity {
         try {
             mSelectedContactName.clear();
             mSelectedContacts.clear();
-
             mContactList = new ArrayList<ContactPojo>();
             recyclerView = (RecyclerView) findViewById(R.id.recyclerView);
-
             final LinearLayoutManager layoutManager = new LinearLayoutManager(this);
             layoutManager.setOrientation(LinearLayoutManager.VERTICAL);
             recyclerView.setLayoutManager(layoutManager);
-
-
             obj = new ContactPojo();
-
-
             mEtSearch = (EditText) findViewById(R.id.et_search);
             mEtSearch.addTextChangedListener(new TextWatcher() {
-
                 @Override
                 public void onTextChanged(CharSequence s, int start, int before, int count) {
                     System.out.println("Text [" + s + "]");
-
                     mInviteContactAdapter.getFilter().filter(s.toString());
                 }
-
                 @Override
                 public void beforeTextChanged(CharSequence s, int start, int count,
-                                              int after) {
-
+                                             int after) {
                 }
-
                 @Override
                 public void afterTextChanged(Editable s) {
                 }
             });
-
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -153,9 +136,7 @@ public class InviteContactActivity extends BaseActivity {
         try {
             mInviteContactAdapter = new InviteContactAdapter(this, mContactList,10);
             recyclerView.setAdapter(mInviteContactAdapter);
-
         } catch (Exception e) {
-
 
         }
 
@@ -227,25 +208,19 @@ public class InviteContactActivity extends BaseActivity {
     public void sendInviteSms() {
         String mNumber = "";
         try {
-
             if(mSelectedContacts.size()<10){
-
                 Utility.showAlertDialog(getResources().getString(R.string.invite_atleast_ten_friend),this);
                 return;
             }
             mNumber = mSelectedContacts.toString();
-
             if (!Build.MANUFACTURER.contains("Samsung")) {
                 mNumber = mNumber.replace(",", ";");
             }
-
             mNumber = mNumber.replace("]", "");
             mNumber = mNumber.replace("[", "");
             Log.e("Passed contacts", "++" + mNumber);
             Log.e("PASSED LIST SIZE", "" + mSelectedContacts.size());
-
             //
-
             mNumber = mNumber.replace(" ", "");
             Uri smsToContacts = Uri.parse("smsto:" + mNumber);
             Intent intent = new Intent(Intent.ACTION_SENDTO, smsToContacts);
@@ -253,17 +228,11 @@ public class InviteContactActivity extends BaseActivity {
             // message = message.replace("%s", StoresMessage.m_storeName);
             intent.putExtra("sms_body", message);
             startActivity(intent);
-
         } catch (Exception e) {
             e.printStackTrace();
             Toast.makeText(getApplicationContext(),getResources().getString(R.string.some_unknown_error), Toast.LENGTH_SHORT).show();
-
         }
-
     }
-
-
-
 
 
 //    @Override

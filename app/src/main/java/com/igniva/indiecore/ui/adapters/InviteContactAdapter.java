@@ -21,7 +21,7 @@ import com.igniva.indiecore.model.ContactPojo;
 import com.igniva.indiecore.ui.activities.InviteContactActivity;
 import com.igniva.indiecore.utils.Log;
 import com.igniva.indiecore.utils.Utility;
-import com.igniva.indiecore.utils.imageloader.ImageLoader;
+
 
 import java.util.ArrayList;
 import java.util.List;

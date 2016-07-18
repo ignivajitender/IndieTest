@@ -22,7 +22,6 @@ import com.igniva.indiecore.ui.activities.MyBadgesActivity;
 import com.igniva.indiecore.utils.Constants;
 import com.igniva.indiecore.utils.Log;
 import com.igniva.indiecore.utils.Utility;
-import com.igniva.indiecore.utils.imageloader.ImageLoader;
 
 import java.util.ArrayList;
 
