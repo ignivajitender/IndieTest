@@ -13,15 +13,14 @@
 
 
     <TextView
-        android:padding="10dp"
+        android:padding="7dp"
         android:textSize="15sp"
         android:fontFamily="sans-serif"
         android:textStyle="normal"
         android:textColor="@drawable/text_selector_next"
-        android:id="@+id/toolbar_cancel"
+        android:id="@+id/tv_toolbar_cancel"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="15dp"
         android:layout_gravity="left"
         android:text="Cancel" />
 
@@ -31,19 +30,19 @@
         android:fontFamily="sans-serif"
         android:textStyle="normal"
         android:textColor="@color/black"
-        android:id="@+id/toolbar_title"
+        android:id="@+id/tv_toolbar_title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:text="Toolbar Title" />
 
     <TextView
-        android:padding="10dp"
+        android:padding="7dp"
         android:textSize="15sp"
         android:fontFamily="sans-serif"
         android:textStyle="normal"
         android:textColor="@drawable/text_selector_next"
-        android:id="@+id/toolbar_next"
+        android:id="@+id/tv_toolbar_post"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginRight="15dp"

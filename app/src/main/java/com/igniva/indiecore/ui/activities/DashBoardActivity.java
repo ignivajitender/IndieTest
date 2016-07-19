@@ -26,7 +26,7 @@ import com.igniva.indiecore.ui.fragments.SettingsFragment;
  */
 public class DashBoardActivity extends BaseActivity {
 
-    AHBottomNavigation bottomNavigation;
+    public AHBottomNavigation bottomNavigation;
     Fragment mFragment;
     Toolbar mToolbar;
     TextView mTvTitle;

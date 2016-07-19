@@ -69,7 +69,13 @@ public class Constants {
      public static  final String BADGE_STATUS="badge_status";
 
 
+//        token, userId, roomId, postType, media, text
 
+    public static  final String ROOM_ID="roomId";
+    public static  final String POST_TYPE="postType";
+    public static  final String MEDIA="media";
+    public static  final String TEXT="text";
+    public static  final String POST_ID="post_id";
 
     public static  final String ENTER_FIRST_NAME="Please enter your first name";
     public static  final String ENTER_LAST_NAME="Please enter your last name";

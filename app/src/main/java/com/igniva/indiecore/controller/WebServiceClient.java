@@ -58,6 +58,9 @@ public class WebServiceClient {
     public static  final String HTTP_GET_BUSINESS_LIST= HTTP_PROTOCOL+HTTP_HOST_IP+"business/list";
     public static  final String HTTP_ON_OFF_BUSINESS_BADGE=HTTP_PROTOCOL+HTTP_HOST_IP+"business/onoff";
     public static  final String HTTP_RECOMMEND_A_BADGE=HTTP_PROTOCOL+HTTP_HOST_IP+"badge/recommend";
+    public static  final String HTTP_CREATE_POST=HTTP_PROTOCOL+HTTP_HOST_IP+"post/make";
+    public static  final String HTTP_VIEW_ALL_POST=HTTP_PROTOCOL+HTTP_HOST_IP+"post/view";
+    public static  final String HTTP_LIKE_UNLIKE_POST=HTTP_PROTOCOL+HTTP_HOST_IP+"post/action";
     //
     private final static String CONTENT_TYPE = "application/json";
 
@@ -152,6 +155,30 @@ public class WebServiceClient {
         mResponseHandlerListener=responseHandlerListener;
         checkNetworkState(url,payload,method,context);
     }
+
+
+    public static void create_a_post(final Context context,String payload,ResponseHandlerListener responseHandlerListener){
+        url=HTTP_CREATE_POST;
+        method=HttpMethod.HTTP_POST;
+        mResponseHandlerListener=responseHandlerListener;
+        checkNetworkState(url,payload,method,context);
+    }
+
+
+    public static void view_all_posts(final Context context,String payload,ResponseHandlerListener responseHandlerListener){
+        url=HTTP_VIEW_ALL_POST;
+        method=HttpMethod.HTTP_POST;
+        mResponseHandlerListener=responseHandlerListener;
+        checkNetworkState(url,payload,method,context);
+    }
+
+    public static void like_unlike_post(final Context context,String payload,ResponseHandlerListener responseHandlerListener){
+        url=HTTP_LIKE_UNLIKE_POST;
+        method=HttpMethod.HTTP_POST;
+        mResponseHandlerListener=responseHandlerListener;
+        checkNetworkState(url,payload,method,context);
+    }
+
 
     /**
      * Check Available Network connection and make http call only if network is

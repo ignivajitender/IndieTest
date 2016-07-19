@@ -80,7 +80,7 @@
                 android:layout_height="wrap_content">
 
                 <TextView
-                    android:id="@+id/tv_user_name"
+                    android:id="@+id/tv_user_name_chat_fragment"
                     android:layout_width="match_parent"
                     android:layout_height="30dp"
                     android:layout_gravity="center_vertical"
@@ -113,8 +113,8 @@
                     android:textSize="15sp" />
             </LinearLayout>
 
-            <ImageView
-                android:id="@+id/iv_user_img"
+            <com.igniva.indiecore.utils.CircularImageView
+                android:id="@+id/iv_user_img_chat_fragment"
                 android:layout_width="50dp"
                 android:layout_height="50dp"
                 android:layout_centerVertical="true"

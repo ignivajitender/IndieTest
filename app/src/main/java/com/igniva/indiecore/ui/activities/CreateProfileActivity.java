@@ -603,7 +603,6 @@ public class CreateProfileActivity extends BaseActivity implements AsyncResult {
 
 
         if (PIC_INDEX_CODE == 2) {
-
             try {
                 JSONObject jsonObject = new JSONObject(result.toString());
                 JSONArray file = jsonObject.getJSONArray("files");
