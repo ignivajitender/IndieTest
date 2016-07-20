@@ -61,6 +61,7 @@ public class WebServiceClient {
     public static  final String HTTP_CREATE_POST=HTTP_PROTOCOL+HTTP_HOST_IP+"post/make";
     public static  final String HTTP_VIEW_ALL_POST=HTTP_PROTOCOL+HTTP_HOST_IP+"post/view";
     public static  final String HTTP_LIKE_UNLIKE_POST=HTTP_PROTOCOL+HTTP_HOST_IP+"post/action";
+    public  static  final String HTTP_CHECK_IN_A_BUSINESS=HTTP_PROTOCOL+HTTP_HOST_IP+"business/checkin";
     //
     private final static String CONTENT_TYPE = "application/json";
 
@@ -178,6 +179,14 @@ public class WebServiceClient {
         mResponseHandlerListener=responseHandlerListener;
         checkNetworkState(url,payload,method,context);
     }
+
+    public static void check_in_a_business(final Context context,String payload,ResponseHandlerListener responseHandlerListener){
+        url=HTTP_CHECK_IN_A_BUSINESS;
+        method=HttpMethod.HTTP_POST;
+        mResponseHandlerListener=responseHandlerListener;
+        checkNetworkState(url,payload,method,context);
+    }
+
 
 
     /**

@@ -2,6 +2,7 @@ package com.igniva.indiecore.ui.adapters;
 
 import android.app.Activity;
 
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -20,11 +21,20 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.igniva.indiecore.R;
 import com.igniva.indiecore.controller.OnCardClickListner;
+import com.igniva.indiecore.controller.ResponseHandlerListener;
+import com.igniva.indiecore.controller.WebNotificationManager;
+import com.igniva.indiecore.controller.WebServiceClient;
 import com.igniva.indiecore.model.BusinessPojo;
+import com.igniva.indiecore.model.ResponsePojo;
 import com.igniva.indiecore.ui.activities.BusinessDetailActivity;
 
+import com.igniva.indiecore.ui.activities.DashBoardActivity;
 import com.igniva.indiecore.ui.fragments.ChatsFragment;
 import com.igniva.indiecore.utils.Constants;
+import com.igniva.indiecore.utils.PreferenceHandler;
+import com.igniva.indiecore.utils.Utility;
+
+import org.json.JSONObject;
 
 import java.util.ArrayList;
 
@@ -37,6 +47,7 @@ public class BusinessListAadpter extends RecyclerView.Adapter<BusinessListAadpte
     String LOG_TAG = "BusinessListAdapter";
     private ArrayList<BusinessPojo> mBusinessList;
     private final OnCardClickListner listener;
+    private String mBusiness_Id="";
 
     public BusinessListAadpter(Context context, ArrayList<BusinessPojo> mBusinessList, OnCardClickListner onCardClickListner) {
         this.mContext=context;
@@ -123,16 +134,27 @@ public class BusinessListAadpter extends RecyclerView.Adapter<BusinessListAadpte
 
                 try {
 
-                    ChatsFragment fragment = new ChatsFragment();
-                Bundle args = new Bundle();
-                args.putString(Constants.BUSINESS_ID,mBusinessList.get(position).getBusiness_id());
-                fragment.setArguments(args);
-                    //Inflate the fragment
+                    mBusiness_Id=mBusinessList.get(position).getBusiness_id();
 
-                    FragmentTransaction fragmentTransaction = ((AppCompatActivity) mContext).getSupportFragmentManager().beginTransaction();
+                    String payload=createPayload(mBusiness_Id);
 
-                    fragmentTransaction.add(R.id.fl_fragment_container, fragment);
-                    fragmentTransaction.commit();
+                    if(!payload.isEmpty()){
+
+                        WebNotificationManager.registerResponseListener(responseHandler);
+                        WebServiceClient.check_in_a_business(mContext,payload,responseHandler);
+                    }
+
+
+//                    ChatsFragment fragment = new ChatsFragment();
+//                Bundle args = new Bundle();
+//                args.putString(Constants.BUSINESS_ID,mBusinessList.get(position).getBusiness_id());
+//                fragment.setArguments(args);
+//                    //Inflate the fragment
+//
+//                    FragmentTransaction fragmentTransaction = ((AppCompatActivity) mContext).getSupportFragmentManager().beginTransaction();
+//
+//                    fragmentTransaction.add(R.id.fl_fragment_container, fragment);
+//                    fragmentTransaction.commit();
 
                 }catch (Exception e){
                     e.printStackTrace();
@@ -177,5 +199,64 @@ public class BusinessListAadpter extends RecyclerView.Adapter<BusinessListAadpte
         }
     }
 
+    public String createPayload(String businessId){
+
+//        token, userId, businessId
+
+        JSONObject payload=null;
+        try {
+            payload=new JSONObject();
+            payload.put(Constants.TOKEN, PreferenceHandler.readString(mContext,PreferenceHandler.PREF_KEY_USER_TOKEN,""));
+            payload.put(Constants.USERID, PreferenceHandler.readString(mContext,PreferenceHandler.PREF_KEY_USER_ID,""));
+            payload.put(Constants.BUSINESS_ID,businessId);
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+       return payload.toString();
+    }
+
+
+    ResponseHandlerListener responseHandler= new ResponseHandlerListener() {
+        @Override
+        public void onComplete(ResponsePojo result, WebServiceClient.WebError error, ProgressDialog mProgressDialog) {
+            WebNotificationManager.unRegisterResponseListener(responseHandler);
+
+            if(error==null){
+                if(result.getSuccess().equalsIgnoreCase("true")){
+
+                    Utility.showToastMessageLong((Activity) mContext,"Check-in successful");
+
+                    DashBoardActivity.bottomNavigation.setCurrentItem(2);
+                    DashBoardActivity.businessId=mBusiness_Id;
+
+//
+//                    ChatsFragment fragment = new ChatsFragment();
+//                    Bundle args = new Bundle();
+//                    args.putString(Constants.BUSINESS_ID,mBusiness_Id);
+//                    fragment.setArguments(args);
+//                    //Inflate the fragment
+//
+//                    FragmentTransaction fragmentTransaction = ((AppCompatActivity) mContext).getSupportFragmentManager().beginTransaction();
+//
+//                    fragmentTransaction.add(R.id.fl_fragment_container, fragment);
+//                    fragmentTransaction.commit();
+
+
+                }else {
+                    Utility.showAlertDialog("Error in check-in to this place.Please try later",mContext);
+
+                }
+
+            }else {
+                Utility.showAlertDialog(mContext.getResources().getString(R.string.some_unknown_error),mContext);
+
+            }
+            if (mProgressDialog != null && mProgressDialog.isShowing()) {
+                mProgressDialog.dismiss();
+            }
+
+
+        }
+    };
 
 }

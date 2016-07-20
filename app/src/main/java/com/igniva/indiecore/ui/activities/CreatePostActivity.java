@@ -192,14 +192,17 @@ public class CreatePostActivity extends BaseActivity implements AsyncResult {
 
     public void createPost() {
         try {
-            Log.e("",""+mPostText.getText().toString().trim()+
-            ""+mMediaPostId);
+            if (!mMediaPostId.isEmpty() || !mPostText.getText().toString().isEmpty()) {
                 String payload = createPayload();
                 if (!payload.isEmpty()) {
 
                     WebNotificationManager.registerResponseListener(responseHandler);
                     WebServiceClient.create_a_post(this, payload, responseHandler);
 
+                }
+            }else {
+
+                Utility.showAlertDialog(getResources().getString(R.string.add_post),CreatePostActivity.this);
             }
         }catch (Exception e){
             e.printStackTrace();
@@ -216,6 +219,7 @@ public class CreatePostActivity extends BaseActivity implements AsyncResult {
                 if(result.getSuccess().equalsIgnoreCase("true")){
 
                     Utility.showToastMessageLong(CreatePostActivity.this,"Posted successfully");
+                    finish();
 
                 }else {
                     Utility.showToastMessageLong(CreatePostActivity.this,getResources().getString(R.string.some_unknown_error));

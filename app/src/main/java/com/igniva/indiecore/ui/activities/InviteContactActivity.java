@@ -51,6 +51,7 @@ public class InviteContactActivity extends BaseActivity {
     InviteContactAdapter mInviteContactAdapter;
     ArrayList<ContactPojo> mContactList = null;
     ContactPojo obj;
+    int mMaxContacts=0;
     int index=-1;
     public static ArrayList<String> mSelectedContacts = new ArrayList<String>();
     public static ArrayList<String> mSelectedContactName = new ArrayList<String>();
@@ -132,7 +133,7 @@ public class InviteContactActivity extends BaseActivity {
 
                 @Override
                 public void onTextChanged(CharSequence s, int start, int before, int count) {
-                    System.out.println("Text [" + s + "]");
+                   // System.out.println("Text [" + s + "]");
 
                     mInviteContactAdapter.getFilter().filter(s.toString());
                 }
@@ -158,11 +159,17 @@ public class InviteContactActivity extends BaseActivity {
         getAllContacts();
         mInviteContactAdapter = null;
         try {
+            /**
+             * index=3 --> coming from Invite Activity, the first time
+             *  index!=3 --> coming from settings-->SMS
+             * */
             if(index==3) {
-                mInviteContactAdapter = new InviteContactAdapter(this, mContactList, 10);
+                mMaxContacts=10;
+                mInviteContactAdapter = new InviteContactAdapter(this, mContactList, mMaxContacts);
                 recyclerView.setAdapter(mInviteContactAdapter);
             } else {
-                mInviteContactAdapter = new InviteContactAdapter(this, mContactList, 10000);
+                mMaxContacts=0;
+                mInviteContactAdapter = new InviteContactAdapter(this, mContactList, mMaxContacts);
                 recyclerView.setAdapter(mInviteContactAdapter);
             }
 
@@ -240,31 +247,39 @@ public class InviteContactActivity extends BaseActivity {
         String mNumber = "";
         try {
 
-            if(mSelectedContacts.size()<10){
+            if(mSelectedContacts.size() > mMaxContacts){
+                mNumber = mSelectedContacts.toString();
 
-                Utility.showAlertDialog(getResources().getString(R.string.invite_atleast_ten_friend),this);
+                if (!Build.MANUFACTURER.contains("Samsung")) {
+                    mNumber = mNumber.replace(",", ";");
+                }
+
+                mNumber = mNumber.replace("]", "");
+                mNumber = mNumber.replace("[", "");
+                Log.e("Passed contacts", "++" + mNumber);
+                Log.e("PASSED LIST SIZE", "" + mSelectedContacts.size());
+
+                //
+
+                mNumber = mNumber.replace(" ", "");
+                Uri smsToContacts = Uri.parse("smsto:" + mNumber);
+                Intent intent = new Intent(Intent.ACTION_SENDTO, smsToContacts);
+                String message = getResources().getString(R.string.invite_message);
+                // message = message.replace("%s", StoresMessage.m_storeName);
+                intent.putExtra("sms_body", message);
+                startActivity(intent);
+
+            }else
+            {
+            if(index==3) {
+                Utility.showAlertDialog(getResources().getString(R.string.invite_atleast_ten_friend), this);
+                return;
+            }else {
+                Utility.showAlertDialog(getResources().getString(R.string.at_least_one_contact), this);
                 return;
             }
-            mNumber = mSelectedContacts.toString();
-
-            if (!Build.MANUFACTURER.contains("Samsung")) {
-                mNumber = mNumber.replace(",", ";");
             }
 
-            mNumber = mNumber.replace("]", "");
-            mNumber = mNumber.replace("[", "");
-            Log.e("Passed contacts", "++" + mNumber);
-            Log.e("PASSED LIST SIZE", "" + mSelectedContacts.size());
-
-            //
-
-            mNumber = mNumber.replace(" ", "");
-            Uri smsToContacts = Uri.parse("smsto:" + mNumber);
-            Intent intent = new Intent(Intent.ACTION_SENDTO, smsToContacts);
-            String message = getResources().getString(R.string.invite_message);
-            // message = message.replace("%s", StoresMessage.m_storeName);
-            intent.putExtra("sms_body", message);
-            startActivity(intent);
 
         } catch (Exception e) {
             e.printStackTrace();

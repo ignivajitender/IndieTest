@@ -12,7 +12,15 @@ public class ResponsePojo {
     private String success;
     private ArrayList<BadgesPojo> badges;
 
+    public ArrayList<UsersWallPostPojo> getPostList() {
+        return postList;
+    }
 
+    public void setPostList(ArrayList<UsersWallPostPojo> postList) {
+        this.postList = postList;
+    }
+
+    private ArrayList<UsersWallPostPojo> postList;
 
     private ArrayList<UsersPojo> users;
     private int total_badges;

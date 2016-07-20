@@ -7,6 +7,7 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.ImageView;
@@ -20,16 +21,18 @@ import com.igniva.indiecore.ui.fragments.CheckInFragment;
 import com.igniva.indiecore.ui.fragments.ContactsFragment;
 import com.igniva.indiecore.ui.fragments.MessagesFragment;
 import com.igniva.indiecore.ui.fragments.SettingsFragment;
+import com.igniva.indiecore.utils.Constants;
 
 /**
  * Created by igniva-andriod-05 on 29/6/16.
  */
 public class DashBoardActivity extends BaseActivity {
 
-    public AHBottomNavigation bottomNavigation;
+    public static AHBottomNavigation bottomNavigation;
     Fragment mFragment;
     Toolbar mToolbar;
     TextView mTvTitle;
+    public static String businessId="";
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {

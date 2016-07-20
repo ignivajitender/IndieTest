@@ -1,6 +1,7 @@
 package com.igniva.indiecore.ui.fragments;
 
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.media.Image;
@@ -45,6 +46,7 @@ public class ChatsFragment extends BaseFragment {
     private WallPostAdapter mAdapter;
     private ArrayList<UsersWallPostPojo> mWallPostList;
     private LinearLayoutManager mLlManager;
+    private WallPostAdapter mWallPostAdapter;
     private RecyclerView mRvWallPosts;
     public final static String BUSINESS = "business";
     String PAGE = "1";
@@ -65,16 +67,17 @@ public class ChatsFragment extends BaseFragment {
     @Override
     protected void setUpLayout() {
 
-
+        mWallPostList= new ArrayList<UsersWallPostPojo>();
         try {
 
-            mBusinessId = getArguments().getString(Constants.BUSINESS_ID);
+            mBusinessId = DashBoardActivity.businessId;
 
         } catch (Exception e) {
             e.printStackTrace();
         }
 
         mRvWallPosts = (RecyclerView) rootView.findViewById(R.id.rv_users_posts);
+        mRvWallPosts.setLayoutManager(mLlManager);
         mChat = (TextView) rootView.findViewById(R.id.tv_chat);
         mChat.setOnClickListener(onclickListner);
         mBoard = (TextView) rootView.findViewById(R.id.tv_board);
@@ -89,7 +92,7 @@ public class ChatsFragment extends BaseFragment {
         mUserImage = (ImageView) rootView.findViewById(R.id.iv_user_img_chat_fragment);
 
 
-        viewAllPost();
+//        viewAllPost();
         setDataInViewObjects();
 
     }
@@ -111,10 +114,23 @@ public class ChatsFragment extends BaseFragment {
                         .into(mUserImage);
             }
 
+            updateBoardUi();
+
         } catch (Exception e) {
             e.printStackTrace();
         }
 
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        viewAllPost();
+    }
+
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
     }
 
     @Override
@@ -241,12 +257,42 @@ public class ChatsFragment extends BaseFragment {
         @Override
         public void onComplete(ResponsePojo result, WebServiceClient.WebError error, ProgressDialog mProgressDialog) {
             WebNotificationManager.unRegisterResponseListener(responseHandler);
+            try {
+
+                if (error == null) {
+
+                    if (result.getSuccess().equalsIgnoreCase("true")) {
+                        mWallPostList.clear();
+                        mWallPostList.addAll(result.getPostList());
+
+                        if(mWallPostList.size()>0) {
+                            try {
+                                mWallPostAdapter = null;
+                                mWallPostAdapter = new WallPostAdapter(getActivity(), mWallPostList);
+                                mWallPostAdapter.notifyDataSetChanged();
+                                mRvWallPosts.setAdapter(mWallPostAdapter);
+
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                            }
+                        }
+
+                    } else {
 
 
-            if (mProgressDialog != null && mProgressDialog.isShowing()) {
-                mProgressDialog.dismiss();
+                    }
+                } else {
+
+                }
+
+
+                if (mProgressDialog != null && mProgressDialog.isShowing()) {
+                    mProgressDialog.dismiss();
+                }
+
+            }catch (Exception e){
+                e.printStackTrace();
             }
-
         }
     };
 

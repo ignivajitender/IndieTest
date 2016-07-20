@@ -29,24 +29,24 @@ import java.util.List;
 /**
  * Created by igniva-andriod-11 on 10/6/16.
  */
-public class InviteContactAdapter extends RecyclerView.Adapter<InviteContactAdapter.RecyclerViewHolders> implements Filterable{
+public class InviteContactAdapter extends RecyclerView.Adapter<InviteContactAdapter.RecyclerViewHolders> implements Filterable {
 
     private ArrayList<ContactPojo> itemList;
     private Context context;
     String LOG_TAG = "InviteContactAdapter";
     private ItemFilter mFilter = new ItemFilter();
-    private List<ContactPojo>originalData = null;
-    private List<ContactPojo>filteredData = null;
+    private List<ContactPojo> originalData = null;
+    private List<ContactPojo> filteredData = null;
     int mMaxInviteContactCount;
 
 
-    public InviteContactAdapter(Context context, ArrayList<ContactPojo> itemList,int contactCount) {
+    public InviteContactAdapter(Context context, ArrayList<ContactPojo> itemList, int contactCount) {
 
         this.itemList = itemList;
         this.context = context;
-        this.originalData=itemList;
-        filteredData=itemList;
-        mMaxInviteContactCount=contactCount;
+        this.originalData = itemList;
+        filteredData = itemList;
+        mMaxInviteContactCount = contactCount;
 
     }
 
@@ -81,7 +81,7 @@ public class InviteContactAdapter extends RecyclerView.Adapter<InviteContactAdap
 
                 holder.mTicked.setChecked(true);
             }
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
 
@@ -103,8 +103,11 @@ public class InviteContactAdapter extends RecyclerView.Adapter<InviteContactAdap
 
                         }
 
-                    } else if (InviteContactActivity.mSelectedContacts.size() < mMaxInviteContactCount) {
-                        filteredData.get(position).setSelected(true);
+                    }
+                    else
+//                    if (InviteContactActivity.mSelectedContacts.size() > mMaxInviteContactCount)
+                    {
+                    filteredData.get(position).setSelected(true);
                         InviteContactActivity.mSelectedContactName.add(filteredData.get(position).getContactName());
                         InviteContactActivity.mSelectedContacts.add(filteredData.get(position).getContactNumber().trim());
                         Log.e("selected Contacts", "" + InviteContactActivity.mSelectedContacts + InviteContactActivity.mSelectedContacts.size());
@@ -112,14 +115,15 @@ public class InviteContactAdapter extends RecyclerView.Adapter<InviteContactAdap
 
                         holder.mTicked.setChecked(true);
 
-                    } else {
-
-                        Utility.showAlertDialog("You cannot send more than 10 SMS at any one time when inviting friends", context);
-                        return;
                     }
+//                    else {
+//
+//                        Utility.showAlertDialog("You cannot send more than 10 SMS at any one time when inviting friends", context);
+//                        return;
+//                    }
 
 
-                }catch (Exception e){
+                } catch (Exception e) {
                     e.printStackTrace();
                 }
             }
@@ -135,7 +139,6 @@ public class InviteContactAdapter extends RecyclerView.Adapter<InviteContactAdap
 
     @Override
     public Filter getFilter() {
-
 
 
         return mFilter;
@@ -182,7 +185,7 @@ public class InviteContactAdapter extends RecyclerView.Adapter<InviteContactAdap
             int count = list.size();
             final ArrayList<ContactPojo> nlist = new ArrayList<ContactPojo>(count);
 
-            String filterableString="" ;
+            String filterableString = "";
 
             for (int i = 0; i < count; i++) {
                 filterableString = itemList.get(i).getContactName();
