@@ -80,6 +80,10 @@ public class CreateProfileActivity extends BaseActivity implements AsyncResult {
     String gender = "male";
     String LOG_TAG = "CreateProfileActivity";
     CreateProfileActivity mCreateProfile;
+    String firstName="";
+    String lastName="";
+    String dob="";
+    String description="";
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -346,10 +350,10 @@ public class CreateProfileActivity extends BaseActivity implements AsyncResult {
     public void validateAndPostData() {
 
         try {
-            String firstName = mEtFirstName.getText().toString().trim();
-            String lastName = mEtLastName.getText().toString().trim();
-            String description = mEtDescription.getText().toString().trim();
-            String dob = mTvDateOfBirth.getText().toString();
+             firstName = mEtFirstName.getText().toString().trim();
+             lastName = mEtLastName.getText().toString().trim();
+             description = mEtDescription.getText().toString().trim();
+             dob = mTvDateOfBirth.getText().toString();
 
             int ageCal = 0;
             if (!dob.isEmpty()) {
@@ -426,6 +430,15 @@ public class CreateProfileActivity extends BaseActivity implements AsyncResult {
                 // start parsing
                 if (result.getSuccess().equalsIgnoreCase("true")) {
                     if (index == 1) {
+
+
+                        PreferenceHandler.writeString(CreateProfileActivity.this,PreferenceHandler.PREF_KEY_GENDER,gender);
+                        PreferenceHandler.writeString(CreateProfileActivity.this,PreferenceHandler.PREF_KEY_FIRST_NAME,firstName);
+                        PreferenceHandler.writeString(CreateProfileActivity.this,PreferenceHandler.PREF_KEY_LAST_NAME,lastName);
+                        PreferenceHandler.writeString(CreateProfileActivity.this,PreferenceHandler.PREF_KEY_DOB,dob);
+                        PreferenceHandler.writeString(CreateProfileActivity.this,PreferenceHandler.PREF_KEY_DESCRIPTION,description);
+
+
                         Intent intent = new Intent(CreateProfileActivity.this, SyncContactsActivity.class);
                         Bundle bundle = new Bundle();
                         bundle.putInt(Constants.NUMBER_LENGTH, numberLenth);
@@ -433,6 +446,12 @@ public class CreateProfileActivity extends BaseActivity implements AsyncResult {
                         intent.putExtras(bundle);
                         startActivity(intent);
                     } else {
+
+                        PreferenceHandler.writeString(CreateProfileActivity.this,PreferenceHandler.PREF_KEY_GENDER,gender);
+                        PreferenceHandler.writeString(CreateProfileActivity.this,PreferenceHandler.PREF_KEY_FIRST_NAME,firstName);
+                        PreferenceHandler.writeString(CreateProfileActivity.this,PreferenceHandler.PREF_KEY_LAST_NAME,lastName);
+                        PreferenceHandler.writeString(CreateProfileActivity.this,PreferenceHandler.PREF_KEY_DOB,dob);
+                        PreferenceHandler.writeString(CreateProfileActivity.this,PreferenceHandler.PREF_KEY_DESCRIPTION,description);
                         Toast.makeText(CreateProfileActivity.this, "Profile updated successfully", Toast.LENGTH_SHORT).show();
                     }
                 } else {
@@ -457,12 +476,12 @@ public class CreateProfileActivity extends BaseActivity implements AsyncResult {
 
         try {
 
-
-            mEtFirstName.setText(PreferenceHandler.readString(this, PreferenceHandler.PREF_KEY_FIRST_NAME, ""));
-            mEtLastName.setText(PreferenceHandler.readString(this, PreferenceHandler.PREF_KEY_LAST_NAME, ""));
-            mTvDateOfBirth.setText(PreferenceHandler.readString(this, PreferenceHandler.PREF_KEY_DOB, ""));
-            mEtDescription.setText(PreferenceHandler.readString(this, PreferenceHandler.PREF_KEY_DESCRIPTION, ""));
-            //
+            if(!PreferenceHandler.readString(this,PreferenceHandler.PREF_KEY_FIRST_NAME,"").isEmpty()) {
+                mEtFirstName.setText(PreferenceHandler.readString(this, PreferenceHandler.PREF_KEY_FIRST_NAME, ""));
+                mEtLastName.setText(PreferenceHandler.readString(this, PreferenceHandler.PREF_KEY_LAST_NAME, ""));
+                mTvDateOfBirth.setText(PreferenceHandler.readString(this, PreferenceHandler.PREF_KEY_DOB, ""));
+                mEtDescription.setText(PreferenceHandler.readString(this, PreferenceHandler.PREF_KEY_DESCRIPTION, ""));
+                //
 
 
                 if (PreferenceHandler.readString(this, PreferenceHandler.PROFILE_PIC_URL, null) != null) {
@@ -492,17 +511,17 @@ public class CreateProfileActivity extends BaseActivity implements AsyncResult {
                     mIvCoverImage.setImageResource(R.drawable.default_user);
                 }
 
-            if (PreferenceHandler.readString(this, PreferenceHandler.PREF_KEY_GENDER, "").length() > 0) {
-                if (PreferenceHandler.readString(this, PreferenceHandler.PREF_KEY_GENDER, "").equalsIgnoreCase("male")) {
-                    mTvMale.performClick();
-                } else if (PreferenceHandler.readString(this, PreferenceHandler.PREF_KEY_GENDER, "").equalsIgnoreCase("female")) {
-                    mTvFemale.performClick();
-                } else {
-                    mTvOther.performClick();
+                if (PreferenceHandler.readString(this, PreferenceHandler.PREF_KEY_GENDER, "").length() > 0) {
+                    if (PreferenceHandler.readString(this, PreferenceHandler.PREF_KEY_GENDER, "").equalsIgnoreCase("male")) {
+                        mTvMale.performClick();
+                    } else if (PreferenceHandler.readString(this, PreferenceHandler.PREF_KEY_GENDER, "").equalsIgnoreCase("female")) {
+                        mTvFemale.performClick();
+                    } else {
+                        mTvOther.performClick();
+                    }
                 }
+
             }
-
-
         } catch (Exception e) {
             e.printStackTrace();
         }

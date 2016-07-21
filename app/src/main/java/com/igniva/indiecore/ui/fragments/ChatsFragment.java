@@ -285,7 +285,6 @@ public class ChatsFragment extends BaseFragment {
 
                 }
 
-
                 if (mProgressDialog != null && mProgressDialog.isShowing()) {
                     mProgressDialog.dismiss();
                 }
