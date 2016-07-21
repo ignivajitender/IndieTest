@@ -75,6 +75,7 @@ public class Constants {
     public static  final String POST_TYPE="postType";
     public static  final String MEDIA="media";
     public static  final String TEXT="text";
+    public static  final String POSTID="postId";
     public static  final String POST_ID="post_id";
 
     public static  final String ENTER_FIRST_NAME="Please enter your first name";

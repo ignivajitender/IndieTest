@@ -13,7 +13,12 @@
     <string name="no_result_found">No result found for this business Name</string>
 
 <string name="create_post_activity">Create Post</string>
+
+    <!--preimium badges activity-->
+    <string name="premium_badges">In-App purchase</string>
+
     <!--splash-->
+
     <string name="get_started">Get Started Now</string>
     <string name="Real_Check_Ins">Real check-ins for real people</string>
     <string name="Create_chat_rooms_at_a">Create chat rooms at places nearby and find people</string>
@@ -101,11 +106,13 @@
     <string name="near_by">Nearby</string>
     <string name="find">Find</string>
 
-
+    <!--board-->
+    <string name="add_comment">Add comment</string>
     <!--Busines room-->
     <string name="chat">Chat</string>
     <string name="board">Board</string>
     <string name="people">People</string>
+
 
     <!--contacts-->
     <string name="phonebook">Phonebook</string>

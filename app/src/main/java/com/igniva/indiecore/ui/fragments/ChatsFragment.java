@@ -1,10 +1,8 @@
 package com.igniva.indiecore.ui.fragments;
 
 import android.app.ProgressDialog;
-import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
-import android.media.Image;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
@@ -18,18 +16,20 @@ import android.widget.TextView;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.igniva.indiecore.R;
+import com.igniva.indiecore.controller.OnListItemClickListner;
 import com.igniva.indiecore.controller.ResponseHandlerListener;
 import com.igniva.indiecore.controller.WebNotificationManager;
 import com.igniva.indiecore.controller.WebServiceClient;
-import com.igniva.indiecore.model.ProfilePojo;
+import com.igniva.indiecore.model.CommentPojo;
 import com.igniva.indiecore.model.ResponsePojo;
 import com.igniva.indiecore.model.UsersWallPostPojo;
 import com.igniva.indiecore.ui.activities.CreatePostActivity;
 import com.igniva.indiecore.ui.activities.DashBoardActivity;
-import com.igniva.indiecore.ui.adapters.FindBusinessAdapter;
+import com.igniva.indiecore.ui.adapters.PostCommentAdapter;
 import com.igniva.indiecore.ui.adapters.WallPostAdapter;
 import com.igniva.indiecore.utils.Constants;
 import com.igniva.indiecore.utils.PreferenceHandler;
+import com.igniva.indiecore.utils.Utility;
 
 import org.json.JSONObject;
 
@@ -45,13 +45,22 @@ public class ChatsFragment extends BaseFragment {
     public DashBoardActivity mDashBoard;
     private WallPostAdapter mAdapter;
     private ArrayList<UsersWallPostPojo> mWallPostList;
+    private ArrayList<CommentPojo> mCommentList;
     private LinearLayoutManager mLlManager;
+    private LinearLayoutManager mLlmanager;
     private WallPostAdapter mWallPostAdapter;
+    private PostCommentAdapter mCommentAdapter;
     private RecyclerView mRvWallPosts;
+    private RecyclerView mRvComment;
     public final static String BUSINESS = "business";
     String PAGE = "1";
     String LIMIT = "10";
     String mBusinessId = "";
+
+    //    (like/dislike/neutral), post_id
+    public static final String mActionTypeLike = "like";
+    public static final String mActionTypeDislike = "dislike";
+    public static final String mActionTypeNeutral = "neutral";
 
     @Nullable
     @Override
@@ -67,7 +76,7 @@ public class ChatsFragment extends BaseFragment {
     @Override
     protected void setUpLayout() {
 
-        mWallPostList= new ArrayList<UsersWallPostPojo>();
+        mWallPostList = new ArrayList<UsersWallPostPojo>();
         try {
 
             mBusinessId = DashBoardActivity.businessId;
@@ -128,10 +137,6 @@ public class ChatsFragment extends BaseFragment {
         viewAllPost();
     }
 
-    @Override
-    public void onAttach(Context context) {
-        super.onAttach(context);
-    }
 
     @Override
     protected void onClick(View v) {
@@ -160,6 +165,205 @@ public class ChatsFragment extends BaseFragment {
                     break;
                 default:
                     break;
+            }
+        }
+    };
+
+
+    OnListItemClickListner onListItemClickListner = new OnListItemClickListner() {
+        @Override
+        public void onListItemClicked(final WallPostAdapter.RecyclerViewHolders holder, int position, final String postId) {
+
+
+            holder.like.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+
+                    likeUnlikePost(mActionTypeLike, postId);
+                }
+            });
+
+            holder.dislike.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+
+                    likeUnlikePost(mActionTypeDislike, postId);
+                }
+            });
+
+
+            holder.neutral.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+
+                    likeUnlikePost(mActionTypeNeutral, postId);
+
+                }
+            });
+
+            holder.comment.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    holder.mCommentSection.setVisibility(View.VISIBLE);
+                    mRvComment = holder.mRvComments;
+                    mRvComment.setLayoutManager(mLlmanager);
+                    holder.mCommentSection.setVisibility(View.VISIBLE);
+                    viewAllComments(postId);
+
+
+                }
+            });
+
+
+            holder.mIvPostComment.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if (holder.mEtComment.getText().toString().isEmpty()) {
+
+                        Utility.showAlertDialog("Please write a comment", getActivity());
+                    } else {
+
+                        postComment(postId, holder.mEtComment.getText().toString());
+                    }
+
+                }
+            });
+
+        }
+    };
+
+
+    public String genratePayload(String postId, String text) {
+        JSONObject payload = null;
+        try {
+            payload = new JSONObject();
+            payload.put(Constants.TOKEN, PreferenceHandler.readString(getActivity(), PreferenceHandler.PREF_KEY_USER_TOKEN, ""));
+            payload.put(Constants.USERID, PreferenceHandler.readString(getActivity(), PreferenceHandler.PREF_KEY_USER_ID, ""));
+            payload.put(Constants.POSTID, postId);
+            payload.put(Constants.TEXT, text);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return payload.toString();
+    }
+
+    /*
+    * to post a comment for a businesspost
+    *
+    * */
+    public void postComment(String postId, String text) {
+
+        String payload = genratePayload(postId, text);
+        if (payload != null) {
+
+            WebNotificationManager.registerResponseListener(responseHandlerComment);
+            WebServiceClient.make_a_comment(getActivity(), payload, responseHandlerComment);
+        }
+
+    }
+
+    /*
+    *
+    * response of  a comment post
+    * */
+    ResponseHandlerListener responseHandlerComment = new ResponseHandlerListener() {
+        @Override
+        public void onComplete(ResponsePojo result, WebServiceClient.WebError error, ProgressDialog mProgressDialog) {
+
+            WebNotificationManager.unRegisterResponseListener(responseHandlerComment);
+
+            if (error == null) {
+
+                if (result.getSuccess().equalsIgnoreCase("true")) {
+
+                    Utility.showToastMessageLong(getActivity(), "comment posted");
+
+                } else {
+
+                }
+            } else {
+
+            }
+
+            if (mProgressDialog != null && mProgressDialog.isShowing()) {
+                mProgressDialog.dismiss();
+            }
+        }
+    };
+
+
+    /*
+    *
+    * payload to get comments of a post
+    *
+    * */
+    public String createPayload(String postId) {
+//        PARAMETER: token, userId, postId, page, limit
+        JSONObject payload = null;
+        try {
+            payload = new JSONObject();
+            payload.put(Constants.TOKEN, PreferenceHandler.readString(getActivity(), PreferenceHandler.PREF_KEY_USER_TOKEN, ""));
+            payload.put(Constants.USERID, PreferenceHandler.readString(getActivity(), PreferenceHandler.PREF_KEY_USER_ID, ""));
+            payload.put(Constants.POSTID, postId);
+            payload.put(Constants.PAGE, "1");
+            payload.put(Constants.LIMIT, "10");
+
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return payload.toString();
+    }
+
+
+    /*
+    *
+    * to get all comments of a post
+    *
+    * */
+    public void viewAllComments(String postId) {
+
+        try {
+            String payload = createPayload(postId);
+            if (payload != null) {
+
+                WebNotificationManager.registerResponseListener(responseHandle);
+                WebServiceClient.view_all_comments(getActivity(), payload, responseHandle);
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    /*
+    *
+    * response all comments
+    * */
+    ResponseHandlerListener responseHandle = new ResponseHandlerListener() {
+        @Override
+        public void onComplete(ResponsePojo result, WebServiceClient.WebError error, ProgressDialog mProgressDialog) {
+
+            try {
+                WebNotificationManager.unRegisterResponseListener(responseHandle);
+                if (error == null) {
+
+                    if (result.getSuccess().equalsIgnoreCase("true")) {
+                        mCommentList = new ArrayList<CommentPojo>();
+                        mCommentList.addAll(result.getCommentList());
+                        mCommentAdapter = null;
+                        mCommentAdapter = new PostCommentAdapter(getActivity(), mCommentList);
+                        mRvComment.setAdapter(mCommentAdapter);
+                    }
+                }
+
+                if (mProgressDialog != null && mProgressDialog.isShowing()) {
+                    mProgressDialog.dismiss();
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
             }
         }
     };
@@ -198,7 +402,7 @@ public class ChatsFragment extends BaseFragment {
             mPeople.setBackgroundResource(R.drawable.simple_border_line_style);
 
             mAdapter = null;
-            mAdapter = new WallPostAdapter(getActivity(), mWallPostList);
+            mAdapter = new WallPostAdapter(getActivity(), mWallPostList, onListItemClickListner);
             mRvWallPosts.setAdapter(mAdapter);
 
 
@@ -224,6 +428,10 @@ public class ChatsFragment extends BaseFragment {
         }
     }
 
+    /*
+    *
+    * create payload to get all post of a business
+    * */
     public String createPayload() {
         JSONObject payload = null;
 //    token, userId, roomId, postType, page, limit
@@ -242,6 +450,12 @@ public class ChatsFragment extends BaseFragment {
         return payload.toString();
     }
 
+    /*
+    *
+    *
+    * to get all the post of this business wall
+    *
+    * */
     public void viewAllPost() {
         String payload = createPayload();
         if (!payload.isEmpty()) {
@@ -249,10 +463,13 @@ public class ChatsFragment extends BaseFragment {
             WebNotificationManager.registerResponseListener(responseHandler);
             WebServiceClient.view_all_posts(getActivity(), payload, responseHandler);
         }
-
     }
 
-
+    /*
+    *
+    * posts response and list inflation
+    *
+    * */
     ResponseHandlerListener responseHandler = new ResponseHandlerListener() {
         @Override
         public void onComplete(ResponsePojo result, WebServiceClient.WebError error, ProgressDialog mProgressDialog) {
@@ -265,10 +482,10 @@ public class ChatsFragment extends BaseFragment {
                         mWallPostList.clear();
                         mWallPostList.addAll(result.getPostList());
 
-                        if(mWallPostList.size()>0) {
+                        if (mWallPostList.size() > 0) {
                             try {
                                 mWallPostAdapter = null;
-                                mWallPostAdapter = new WallPostAdapter(getActivity(), mWallPostList);
+                                mWallPostAdapter = new WallPostAdapter(getActivity(), mWallPostList, onListItemClickListner);
                                 mWallPostAdapter.notifyDataSetChanged();
                                 mRvWallPosts.setAdapter(mWallPostAdapter);
 
@@ -289,13 +506,20 @@ public class ChatsFragment extends BaseFragment {
                     mProgressDialog.dismiss();
                 }
 
-            }catch (Exception e){
+            } catch (Exception e) {
                 e.printStackTrace();
             }
         }
     };
 
-    public String createPayload(String postId) {
+
+    //    /*
+//
+// create payload to like unlike a post
+//
+//
+// */
+    public String createPayload(String type, String postId) {
 
         JSONObject payload = null;
 //        token, userId, type(like/dislike/neutral), post_id
@@ -303,8 +527,8 @@ public class ChatsFragment extends BaseFragment {
             payload = new JSONObject();
             payload.put(Constants.TOKEN, PreferenceHandler.readString(getActivity(), PreferenceHandler.PREF_KEY_USER_TOKEN, ""));
             payload.put(Constants.USERID, PreferenceHandler.readString(getActivity(), PreferenceHandler.PREF_KEY_USER_ID, ""));
-            payload.put(Constants.TYPE, "");
-            payload.put(Constants.POST_ID, "");
+            payload.put(Constants.TYPE, type);
+            payload.put(Constants.POST_ID, postId);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -313,14 +537,15 @@ public class ChatsFragment extends BaseFragment {
     }
 
 
-
     /*
     * like/unlike/neutral action to a post
     * @parms post_id
+    *
     * */
-    public void likeUnlikePost() {
-//cretepayload with parametrs i sto be acll here
-        String payload = createPayload();
+    public void likeUnlikePost(String type, String postId) {
+        //create payload with parameters is to be call here
+
+        String payload = createPayload(type, postId);
 
         if (!payload.isEmpty()) {
 
@@ -329,10 +554,25 @@ public class ChatsFragment extends BaseFragment {
         }
     }
 
+    /*
+    * like unlike response
+    * */
     ResponseHandlerListener responseHandl = new ResponseHandlerListener() {
         @Override
         public void onComplete(ResponsePojo result, WebServiceClient.WebError error, ProgressDialog mProgressDialog) {
             WebNotificationManager.unRegisterResponseListener(responseHandl);
+
+            if (error == null) {
+
+                if (result.getSuccess().equalsIgnoreCase("true")) {
+
+                    Utility.showToastMessageLong(getActivity(), "done");
+                }
+            }
+//            finish the dialog
+            if (mProgressDialog != null && mProgressDialog.isShowing()) {
+                mProgressDialog.dismiss();
+            }
 
         }
     };

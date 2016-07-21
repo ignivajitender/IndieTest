@@ -144,7 +144,7 @@
                         android:layout_height="wrap_content"
                         android:layout_gravity="center"
                         android:layout_weight="1"
-                        android:drawableLeft="@drawable/like_icon"
+                        android:drawableLeft="@drawable/like_grey_icon_circle"
                         android:drawablePadding="5dp"
                         android:text="2" />
 
@@ -154,7 +154,7 @@
                         android:layout_height="wrap_content"
                         android:layout_gravity="center"
                         android:layout_weight="1"
-                        android:drawableLeft="@drawable/hand_icon"
+                        android:drawableLeft="@drawable/hand_grey_icon_circle"
                         android:drawablePadding="5dp"
                         android:text="2" />
 
@@ -164,7 +164,7 @@
                         android:layout_height="wrap_content"
                         android:layout_gravity="center"
                         android:layout_weight="1"
-                        android:drawableLeft="@drawable/dislike_icon"
+                        android:drawableLeft="@drawable/dislike_grey_icon_circle"
                         android:drawablePadding="5dp"
                         android:text="2" />
 
@@ -174,7 +174,7 @@
                         android:layout_height="wrap_content"
                         android:layout_gravity="center"
                         android:layout_weight="1"
-                        android:drawableLeft="@drawable/menu_icon"
+                        android:drawableLeft="@drawable/comment_icon_grey_circle"
                         android:drawablePadding="5dp"
                         android:text="2" />
 
@@ -184,13 +184,66 @@
                         android:layout_height="wrap_content"
                         android:layout_gravity="center"
                         android:layout_weight="1"
-                        android:drawableLeft="@drawable/share_icon"
+                        android:drawableLeft="@drawable/share_grey_icon_circle"
                         android:drawablePadding="5dp"
                         android:text="2" />
 
                 </LinearLayout>
 
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:layout_marginTop="5dp"
+                    android:background="@color/light_black"
+                    android:layout_marginBottom="5dp"/>
 
+
+                <LinearLayout
+                    android:id="@+id/ll_comment_part"
+                    android:layout_width="match_parent"
+                    android:orientation="vertical"
+                    android:visibility="gone"
+                    android:layout_marginTop="10dp"
+                    android:layout_height="wrap_content">
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:orientation="horizontal"
+                    android:layout_height="wrap_content">
+
+                    <EditText
+                        android:id="@+id/et_comment_text"
+                        android:layout_width="0dp"
+                        android:layout_weight="4"
+                        android:background="@drawable/rounded_corners_distance_text_block"
+                        android:hint="@string/add_comment"
+                        android:gravity="start"
+                        android:paddingTop="3dp"
+                        android:paddingBottom="3dp"
+                        android:paddingStart="12dp"
+                        android:textColorHint="@color/light_black"
+                        android:textColor="@color/light_black"
+                        android:layout_marginRight="3dp"
+                        android:layout_height="match_parent"
+                        android:paddingLeft="12dp" />
+                    <ImageView
+                        android:id="@+id/iv_post_comment"
+                        android:layout_width="0dp"
+                        android:layout_weight="1"
+                        android:layout_marginRight="2dp"
+                        android:layout_gravity="center_vertical"
+                        android:src="@drawable/post_button"
+                        android:layout_height="match_parent" />
+
+                </LinearLayout>
+
+                <android.support.v7.widget.RecyclerView
+                    android:id="@+id/rv_comments"
+                    android:layout_marginTop="10dp"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+                </android.support.v7.widget.RecyclerView>
+
+            </LinearLayout>
             </LinearLayout>
         </LinearLayout>
 

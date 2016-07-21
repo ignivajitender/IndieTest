@@ -21,7 +21,7 @@ public class ResponsePojo {
     }
 
     private ArrayList<UsersWallPostPojo> postList;
-
+    private String postId;
     private ArrayList<UsersPojo> users;
     private int total_badges;
     private int active;
@@ -32,6 +32,27 @@ public class ResponsePojo {
     private String newUser;
     private ProfilePojo profile;
     private ArrayList<BusinessPojo> business_list;
+    private ArrayList<CommentPojo> commentList;
+
+    public ArrayList<CommentPojo> getCommentList() {
+        return commentList;
+    }
+
+    public void setCommentList(ArrayList<CommentPojo> commentList) {
+        this.commentList = commentList;
+    }
+
+
+
+
+
+    public String getPostId() {
+        return postId;
+    }
+
+    public void setPostId(String postId) {
+        this.postId = postId;
+    }
 
     public ArrayList<UsersPojo> getUsers() {
         return users;

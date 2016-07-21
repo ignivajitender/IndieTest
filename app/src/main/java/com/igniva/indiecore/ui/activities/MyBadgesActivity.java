@@ -359,7 +359,8 @@ public class MyBadgesActivity extends BaseActivity {
             mTvNext.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    Utility.showToastMessageShort(MyBadgesActivity.this, getResources().getString(R.string.coming_soon));
+                Intent intent= new Intent(MyBadgesActivity.this,PremiumBadgesActivity.class);
+                    startActivity(intent);
                 }
             });
             //

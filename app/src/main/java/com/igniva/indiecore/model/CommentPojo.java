@@ -1,56 +1,32 @@
 package com.igniva.indiecore.model;
 
 /**
- * Created by igniva-andriod-05 on 18/7/16.
+ * Created by igniva-andriod-05 on 21/7/16.
  */
-public class UsersWallPostPojo {
+public class CommentPojo{
 
-    private String roomId;
-    private String postType;
     private String text;
-    private String date_created;
-    private String date_updated;
-    private String postId;
+    private String date_created ;
+    private String date_updated ;
+    private String commentId;
     private String userId;
     private String firstName;
     private String lastName;
     private String profile_pic;
-
     private String relation;
-    private String userStatus;
-    private String is_reported;
     private String badges;
-    private String action;
+    private String action ;
     private String like;
     private String neutral;
     private String dislike;
-    private String comment;
-    private String mediaUrl;
-    private String mediaType;
+    private String replie;
 
-
-    public String getPostId() {
-        return postId;
+    public String getLastName() {
+        return lastName;
     }
 
-    public void setPostId(String postId) {
-        this.postId = postId;
-    }
-
-    public String getRoomId() {
-        return roomId;
-    }
-
-    public void setRoomId(String roomId) {
-        this.roomId = roomId;
-    }
-
-    public String getPostType() {
-        return postType;
-    }
-
-    public void setPostType(String postType) {
-        this.postType = postType;
+    public void setLastName(String lastName) {
+        this.lastName = lastName;
     }
 
     public String getText() {
@@ -77,6 +53,14 @@ public class UsersWallPostPojo {
         this.date_updated = date_updated;
     }
 
+    public String getCommentId() {
+        return commentId;
+    }
+
+    public void setCommentId(String commentId) {
+        this.commentId = commentId;
+    }
+
     public String getUserId() {
         return userId;
     }
@@ -93,14 +77,6 @@ public class UsersWallPostPojo {
         this.firstName = firstName;
     }
 
-    public String getLastName() {
-        return lastName;
-    }
-
-    public void setLastName(String lastName) {
-        this.lastName = lastName;
-    }
-
     public String getProfile_pic() {
         return profile_pic;
     }
@@ -115,22 +91,6 @@ public class UsersWallPostPojo {
 
     public void setRelation(String relation) {
         this.relation = relation;
-    }
-
-    public String getUserStatus() {
-        return userStatus;
-    }
-
-    public void setUserStatus(String userStatus) {
-        this.userStatus = userStatus;
-    }
-
-    public String getIs_reported() {
-        return is_reported;
-    }
-
-    public void setIs_reported(String is_reported) {
-        this.is_reported = is_reported;
     }
 
     public String getBadges() {
@@ -173,28 +133,12 @@ public class UsersWallPostPojo {
         this.dislike = dislike;
     }
 
-    public String getComment() {
-        return comment;
+    public String getReplie() {
+        return replie;
     }
 
-    public void setComment(String comment) {
-        this.comment = comment;
-    }
-
-    public String getMediaUrl() {
-        return mediaUrl;
-    }
-
-    public void setMediaUrl(String mediaUrl) {
-        this.mediaUrl = mediaUrl;
-    }
-
-    public String getMediaType() {
-        return mediaType;
-    }
-
-    public void setMediaType(String mediaType) {
-        this.mediaType = mediaType;
+    public void setReplie(String replie) {
+        this.replie = replie;
     }
 
 

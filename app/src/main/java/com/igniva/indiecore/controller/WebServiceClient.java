@@ -62,6 +62,13 @@ public class WebServiceClient {
     public static  final String HTTP_VIEW_ALL_POST=HTTP_PROTOCOL+HTTP_HOST_IP+"post/view";
     public static  final String HTTP_LIKE_UNLIKE_POST=HTTP_PROTOCOL+HTTP_HOST_IP+"post/action";
     public  static  final String HTTP_CHECK_IN_A_BUSINESS=HTTP_PROTOCOL+HTTP_HOST_IP+"business/checkin";
+    public  static  final String HTTP_MAKE_A_COMMENT=HTTP_PROTOCOL+HTTP_HOST_IP+"post/comment/make";
+    public  static  final String HTTP_VIEW_ALL_COMMENTS=HTTP_PROTOCOL+HTTP_HOST_IP+"post/comment/view";
+    public  static  final String HTTP_REMOVE_A_POST=HTTP_PROTOCOL+HTTP_HOST_IP+"post/remove";
+
+
+
+
     //
     private final static String CONTENT_TYPE = "application/json";
 
@@ -187,6 +194,27 @@ public class WebServiceClient {
         checkNetworkState(url,payload,method,context);
     }
 
+    public static void make_a_comment(final Context context,String payload,ResponseHandlerListener responseHandlerListener){
+        url=HTTP_MAKE_A_COMMENT;
+        method=HttpMethod.HTTP_POST;
+        mResponseHandlerListener=responseHandlerListener;
+        checkNetworkState(url,payload,method,context);
+    }
+
+    public static void view_all_comments(final Context context,String payload,ResponseHandlerListener responseHandlerListener){
+        url=HTTP_VIEW_ALL_COMMENTS;
+        method=HttpMethod.HTTP_POST;
+        mResponseHandlerListener=responseHandlerListener;
+        checkNetworkState(url,payload,method,context);
+    }
+
+
+    public static void remove_a_post(final Context context,String payload,ResponseHandlerListener responseHandlerListener){
+        url=HTTP_REMOVE_A_POST;
+        method=HttpMethod.HTTP_POST;
+        mResponseHandlerListener=responseHandlerListener;
+        checkNetworkState(url,payload,method,context);
+    }
 
 
     /**

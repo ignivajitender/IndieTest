@@ -6,12 +6,15 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.igniva.indiecore.R;
+import com.igniva.indiecore.controller.OnListItemClickListner;
 import com.igniva.indiecore.controller.WebServiceClient;
 import com.igniva.indiecore.model.UsersWallPostPojo;
 import com.igniva.indiecore.utils.PreferenceHandler;
@@ -27,12 +30,14 @@ public class WallPostAdapter extends RecyclerView.Adapter<WallPostAdapter.Recycl
     private ArrayList<UsersWallPostPojo> wallItemsList;
     private Context context;
     String LOG_TAG = "PhonebookAdapter";
+     OnListItemClickListner mOnListItemClickListner;
 
 
-    public WallPostAdapter(Context context, ArrayList<UsersWallPostPojo> wallItemsList) {
+    public WallPostAdapter(Context context, ArrayList<UsersWallPostPojo> wallItemsList,OnListItemClickListner onListItemClickListner) {
 
         this.wallItemsList = wallItemsList;
         this.context = context;
+        this.mOnListItemClickListner=onListItemClickListner;
 
     }
 
@@ -78,37 +83,14 @@ public class WallPostAdapter extends RecyclerView.Adapter<WallPostAdapter.Recycl
 
             holder.like.setText(wallItemsList.get(position).getLike());
 
-            holder.like.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-
-                    Utility.showToastMessageLong((Activity) context,"like");
-                }
-            });
             holder.dislike.setText(wallItemsList.get(position).getDislike());
-            holder.dislike.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    Utility.showToastMessageLong((Activity) context,"dislike");
 
-                }
-            });
             holder.neutral.setText(wallItemsList.get(position).getNeutral());
-            holder.neutral.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    Utility.showToastMessageLong((Activity) context,"neutral");
 
-
-                }
-            });
             holder.comment.setText(wallItemsList.get(position).getComment());
-            holder.comment.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
 
-                }
-            });
+
+            mOnListItemClickListner.onListItemClicked(holder,position,wallItemsList.get(position).getPostId());
 
 //
         } catch (Exception e) {
@@ -138,6 +120,10 @@ public class WallPostAdapter extends RecyclerView.Adapter<WallPostAdapter.Recycl
         public  TextView neutral;
         public  TextView comment;
         public TextView  share;
+        public LinearLayout mCommentSection;
+        public EditText mEtComment;
+        public  ImageView mIvPostComment;
+        public RecyclerView mRvComments;
 
 
         public RecyclerViewHolders(final View itemView) {
@@ -156,6 +142,12 @@ public class WallPostAdapter extends RecyclerView.Adapter<WallPostAdapter.Recycl
             neutral=(TextView) itemView.findViewById(R.id.tv_neutral);
             comment=(TextView) itemView.findViewById(R.id.tv_comment);
             share=(TextView) itemView.findViewById(R.id.tv_share);
+            mCommentSection=(LinearLayout) itemView.findViewById(R.id.ll_comment_part);
+
+            mEtComment=(EditText) itemView.findViewById(R.id.et_comment_text);
+            mIvPostComment=(ImageView) itemView.findViewById(R.id.iv_post_comment);
+            mRvComments=(RecyclerView) itemView.findViewById(R.id.rv_comments);
+
         }
 
         @Override
