@@ -48,7 +48,7 @@ public class PremiumBadgesAdapter extends RecyclerView.Adapter<PremiumBadgesAdap
         try {
 
 
-            holder.mBadgeIcon.setImageResource(R.drawable.default_user);
+            holder.mBadgeIcon.setImageResource(R.drawable.albino_icon);
             holder.mBadgeName.setText(mPremiumBadgeList.get(position).getBadgeName());
             holder.mBadgePrice.setText(mPremiumBadgeList.get(position).getBadgePrice());
 
