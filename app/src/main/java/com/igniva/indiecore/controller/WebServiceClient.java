@@ -65,6 +65,11 @@ public class WebServiceClient {
     public  static  final String HTTP_MAKE_A_COMMENT=HTTP_PROTOCOL+HTTP_HOST_IP+"post/comment/make";
     public  static  final String HTTP_VIEW_ALL_COMMENTS=HTTP_PROTOCOL+HTTP_HOST_IP+"post/comment/view";
     public  static  final String HTTP_REMOVE_A_POST=HTTP_PROTOCOL+HTTP_HOST_IP+"post/remove";
+    public  static  final String HTTP_FLAG_POST=HTTP_PROTOCOL+HTTP_HOST_IP+"post/flag";
+    public static  final String HTTP_LIKE_UNLIKE_COMMENT=HTTP_PROTOCOL+HTTP_HOST_IP+"post/comment/action";
+    public  static  final String HTTP_REMOVE_A_COMMENT=HTTP_PROTOCOL+HTTP_HOST_IP+"post/comment/remove";
+
+
 
 
 
@@ -208,13 +213,36 @@ public class WebServiceClient {
         checkNetworkState(url,payload,method,context);
     }
 
-
     public static void remove_a_post(final Context context,String payload,ResponseHandlerListener responseHandlerListener){
         url=HTTP_REMOVE_A_POST;
         method=HttpMethod.HTTP_POST;
         mResponseHandlerListener=responseHandlerListener;
         checkNetworkState(url,payload,method,context);
     }
+
+
+    public static void flag_a_post(final Context context,String payload,ResponseHandlerListener responseHandlerListener){
+        url=HTTP_FLAG_POST;
+        method=HttpMethod.HTTP_POST;
+        mResponseHandlerListener=responseHandlerListener;
+        checkNetworkState(url,payload,method,context);
+    }
+
+
+    public static void like_unlike_a_comment(final Context context,String payload,ResponseHandlerListener responseHandlerListener){
+        url=HTTP_LIKE_UNLIKE_COMMENT;
+        method=HttpMethod.HTTP_POST;
+        mResponseHandlerListener=responseHandlerListener;
+        checkNetworkState(url,payload,method,context);
+    }
+
+    public static void remove_a_comment(final Context context,String payload,ResponseHandlerListener responseHandlerListener){
+        url=HTTP_REMOVE_A_COMMENT;
+        method=HttpMethod.HTTP_POST;
+        mResponseHandlerListener=responseHandlerListener;
+        checkNetworkState(url,payload,method,context);
+    }
+
 
 
     /**

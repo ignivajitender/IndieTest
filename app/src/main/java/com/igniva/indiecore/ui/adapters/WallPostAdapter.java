@@ -1,6 +1,5 @@
 package com.igniva.indiecore.ui.adapters;
 
-import android.app.Activity;
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -16,9 +15,7 @@ import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.igniva.indiecore.R;
 import com.igniva.indiecore.controller.OnListItemClickListner;
 import com.igniva.indiecore.controller.WebServiceClient;
-import com.igniva.indiecore.model.UsersWallPostPojo;
-import com.igniva.indiecore.utils.PreferenceHandler;
-import com.igniva.indiecore.utils.Utility;
+import com.igniva.indiecore.model.PostPojo;
 
 import java.util.ArrayList;
 
@@ -27,13 +24,13 @@ import java.util.ArrayList;
  */
 public class WallPostAdapter extends RecyclerView.Adapter<WallPostAdapter.RecyclerViewHolders> {
 
-    private ArrayList<UsersWallPostPojo> wallItemsList;
+    private ArrayList<PostPojo> wallItemsList;
     private Context context;
     String LOG_TAG = "PhonebookAdapter";
      OnListItemClickListner mOnListItemClickListner;
 
 
-    public WallPostAdapter(Context context, ArrayList<UsersWallPostPojo> wallItemsList,OnListItemClickListner onListItemClickListner) {
+    public WallPostAdapter(Context context, ArrayList<PostPojo> wallItemsList, OnListItemClickListner onListItemClickListner) {
 
         this.wallItemsList = wallItemsList;
         this.context = context;
@@ -64,7 +61,8 @@ public class WallPostAdapter extends RecyclerView.Adapter<WallPostAdapter.Recycl
                         .diskCacheStrategy(DiskCacheStrategy.ALL)
                         .into(holder.mUserIcon);
             }
-            holder.mPostTime.setText(wallItemsList.get(position).getDate_created());
+            String time=wallItemsList.get(position).getDate_created().replace("T"," @ ");
+            holder.mPostTime.setText(time);
 
             if (wallItemsList.get(position).getMediaUrl() != null) {
                 holder.mMediaPost.setVisibility(View.VISIBLE);
@@ -120,10 +118,10 @@ public class WallPostAdapter extends RecyclerView.Adapter<WallPostAdapter.Recycl
         public  TextView neutral;
         public  TextView comment;
         public TextView  share;
-        public LinearLayout mCommentSection;
-        public EditText mEtComment;
-        public  ImageView mIvPostComment;
-        public RecyclerView mRvComments;
+//        public LinearLayout mCommentSection;
+//        public EditText mEtComment;
+//        public  ImageView mIvPostComment;
+//        public RecyclerView mRvComments;
 
 
         public RecyclerViewHolders(final View itemView) {
@@ -142,11 +140,11 @@ public class WallPostAdapter extends RecyclerView.Adapter<WallPostAdapter.Recycl
             neutral=(TextView) itemView.findViewById(R.id.tv_neutral);
             comment=(TextView) itemView.findViewById(R.id.tv_comment);
             share=(TextView) itemView.findViewById(R.id.tv_share);
-            mCommentSection=(LinearLayout) itemView.findViewById(R.id.ll_comment_part);
+//            mCommentSection=(LinearLayout) itemView.findViewById(R.id.ll_comment_part);
 
-            mEtComment=(EditText) itemView.findViewById(R.id.et_comment_text);
-            mIvPostComment=(ImageView) itemView.findViewById(R.id.iv_post_comment);
-            mRvComments=(RecyclerView) itemView.findViewById(R.id.rv_comments);
+//            mEtComment=(EditText) itemView.findViewById(R.id.et_comment_text);
+//            mIvPostComment=(ImageView) itemView.findViewById(R.id.iv_post_comment);
+//            mRvComments=(RecyclerView) itemView.findViewById(R.id.rv_comments);
 
         }
 

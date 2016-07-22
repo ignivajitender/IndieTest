@@ -56,6 +56,8 @@ public class Constants {
     public static  final String SELECTED_BADGEIDS="selectedBadgeids";
     public static  final String BADGE_NAME="badgeName";
 
+    public static  final String COMMENTID="commentId";
+
 
 
 

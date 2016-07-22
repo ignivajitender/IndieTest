@@ -12,10 +12,14 @@
     <string name="coming_soon">Coming Soon</string>
     <string name="no_result_found">No result found for this business Name</string>
 
-<string name="create_post_activity">Create Post</string>
+    <string name="create_post_activity">Create Post</string>
 
     <!--preimium badges activity-->
     <string name="premium_badges">In-App purchase</string>
+
+
+    <!--commentActivity-->
+    <string name="comment_activity">Comment Activity</string>
 
     <!--splash-->
 
@@ -76,16 +80,16 @@
     <string name="upload_image">Upload Image</string>
     <string name="cancel">Cancel</string>
     <!--<string name="name_validation">abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ</string>-->
- 
-    
+
+
     <!--badgeDetailsActivity-->
 
     <string name="Badge_name">Badge Name</string>
     <string name="Badge_detail_activity">Badge Detail Activity</string>
 
 
-<!--badges actvity-->
-       <string name="not_more_then_ten_badge">You can select a maximum of 10 badges for free, to get more please invite friends or purchase</string>
+    <!--badges actvity-->
+    <string name="not_more_then_ten_badge">You can select a maximum of 10 badges for free, to get more please invite friends or purchase</string>
 
     <!--inviteFriensActivity-->
 
@@ -108,6 +112,8 @@
 
     <!--board-->
     <string name="add_comment">Add comment</string>
+
+    <string name="comment_text_validation_message">Please do write a comment to post</string>
     <!--Busines room-->
     <string name="chat">Chat</string>
     <string name="board">Board</string>
@@ -123,7 +129,7 @@
 
 
     <!--Business_detail-->
-   <string name="about">About</string>
+    <string name="about">About</string>
     <string name="telephone">Telephone</string>
     <string name="opening_hours">Opening hours</string>
     <string name="website">Website</string>
@@ -155,7 +161,7 @@
     <!--recommend a badge-->
     <string name="reccomend_badge">Recommend a Badge</string>
     <string name="dummy_txt">Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry\'s standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged.</string>
-   <string name="enter_badge_title">Enter a Badge Title Below </string>
+    <string name="enter_badge_title">Enter a Badge Title Below </string>
     <string name="max_50_character">Max 50 Characters</string>
     <string name="empty_badge_name">Please enter a badge name</string>
 
@@ -183,16 +189,19 @@
         <item name="American Samoa"></item>
         <item name="AndorrA"></item>
         <item name="Angola"></item>
-        <item name="Anguilla"></item> -
+        <item name="Anguilla"></item>
+        -
         <item name="Antarctica"></item>
-        <item name="Antigua and Barbuda"></item> -
+        <item name="Antigua and Barbuda"></item>
+        -
         <item name="Argentina"></item>
         <item name="Armenia"></item>
         <item name="Aruba"></item>
         <item name="Australia"></item>
         <item name="Austria"></item>
         <item name="Azerbaijan"></item>
-        <item name="Bahamas"></item> -
+        <item name="Bahamas"></item>
+        -
         <item name="Bahrain"></item>
         <item name="Bangladesh"></item>
         <item name="Barbados"></item>
@@ -200,7 +209,8 @@
         <item name="Belgium"></item>
         <item name="Belize"></item>
         <item name="Benin"></item>
-        <item name="Bermuda"></item> -
+        <item name="Bermuda"></item>
+        -
         <item name="Bhutan"></item>
         <item name="Bolivia"></item>
         <item name="Bosnia and Herzegovina"></item>
@@ -216,7 +226,8 @@
         <item name="Cameroon"></item>
         <item name="Canada"></item>
         <item name="Cape Verde"></item>
-        <item name="Cayman Islands"></item> -
+        <item name="Cayman Islands"></item>
+        -
         <item name="Central African Republic"></item>
         <item name="Chad"></item>
         <item name="Chile"></item>
@@ -235,7 +246,8 @@
         <item name="Czech Republic"></item>
         <item name="Denmark"></item>
         <item name="Djibouti"></item>
-        <item name="Dominica"></item> -
+        <item name="Dominica"></item>
+        -
         <item name="Dominican Republic"></item>
         <item name="Ecuador"></item>
         <item name="Egypt"></item>
@@ -260,9 +272,11 @@
         <item name="Gibraltar"></item>
         <item name="Greece"></item>
         <item name="Greenland"></item>
-        <item name="Grenada"></item> -
+        <item name="Grenada"></item>
+        -
         <item name="Guadeloupe"></item>
-        <item name="Guam"></item> -
+        <item name="Guam"></item>
+        -
         <item name="Guatemala"></item>
         <item name="Guernsey"></item>
         <item name="Guinea"></item>
@@ -283,7 +297,8 @@
         <item name="Isle of Man"></item>
         <item name="Israel"></item>
         <item name="Italy"></item>
-        <item name="Jamaica"></item> -
+        <item name="Jamaica"></item>
+        -
         <item name="Japan"></item>
         <item name="Jersey"></item>
         <item name="Jordan"></item>
@@ -321,7 +336,8 @@
         <item name="Moldova, Republic of"></item>
         <item name="Monaco"></item>
         <item name="Mongolia"></item>
-        <item name="Montserrat"></item> -
+        <item name="Montserrat"></item>
+        -
         <item name="Morocco"></item>
         <item name="Mozambique"></item>
         <item name="Myanmar"></item>
@@ -351,7 +367,8 @@
         <item name="Pitcairn"></item>
         <item name="Poland"></item>
         <item name="Portugal"></item>
-        <item name="Puerto Rico"></item> -
+        <item name="Puerto Rico"></item>
+        -
         <item name="Qatar"></item>
         <item name="Reunion"></item>
         <item name="Romania"></item>
@@ -423,250 +440,250 @@
 
     <array name="country_code">
         <item name="93"></item>
-        <item name= "358"></item>
-        <item name= "355"></item>
-        <item name= "213"></item>
-        <item name= "684"></item>
-        <item name= "376"></item>
-        <item name= "244"></item>
-        <item name= "1-264"></item>
-        <item name= "672"></item>
-        <item name= "1-268"></item>
-        <item name= "54"></item>
-        <item name= "374"></item>
-        <item name= "297"></item>
-        <item name= "61"></item>
-        <item name= "43"></item>
-        <item name= "994"></item>
-        <item name= "1-242"></item>
-        <item name= "973"></item>
-        <item name= "880"></item>
-        <item name= "246"></item>
-        <item name= "375"></item>
-        <item name= "32"></item>
-        <item name= "501"></item>
-        <item name= "229"></item>
-        <item name= "1-441"></item>
-        <item name= "975"></item>
-        <item name= "591"></item>
-        <item name= "387"></item>
-        <item name= "267"></item>
-        <item name= "74"></item>
-        <item name= "55"></item>
-        <item name= "246"></item>
-        <item name= "673"></item>
-        <item name= "359"></item>
-        <item name= "226"></item>
-        <item name= "257"></item>
-        <item name= "855"></item>
-        <item name= "237"></item>
-        <item name= "1"></item>
-        <item name= "238"></item>
-        <item name= "1-345"></item>
-        <item name= "236"></item>
-        <item name= "235"></item>
-        <item name= "56"></item>
-        <item name= "86"></item>
-        <item name= "61"></item>
-        <item name= "61"></item>
-        <item name= "57"></item>
-        <item name= "269"></item>
-        <item name= "242"></item>
-        <item name= "243"></item>
-        <item name= "682"></item>
-        <item name= "506"></item>
-        <item name= "385"></item>
-        <item name= "53"></item>
-        <item name= "357"></item>
-        <item name= "420"></item>
-        <item name= "45"></item>
-        <item name= "253"></item>
-        <item name= "1-767"></item>
-        <item name= "809"></item>
-        <item name= "593"></item>
-        <item name= "20"></item>
-        <item name= "503"></item>
-        <item name= "240"></item>
-        <item name= "291"></item>
-        <item name= "372"></item>
-        <item name= "251"></item>
-        <item name= "500"></item>
-        <item name= "298"></item>
-        <item name= "679"></item>
-        <item name= "358"></item>
-        <item name= "33"></item>
-        <item name= "594"></item>
-        <item name= "689"></item>
-        <item name= "260"></item>
-        <item name= "241"></item>
-        <item name= "220"></item>
-        <item name= "995"></item>
-        <item name= "49"></item>
-        <item name= "233"></item>
-        <item name= "350"></item>
-        <item name= "30"></item>
-        <item name= "299"></item>
-        <item name= "1-473"></item>
-        <item name= "59"></item>
-        <item name= "1-671"></item>
-        <item name= "502"></item>
-        <item name= "44"></item>
-        <item name= "224"></item>
-        <item name= "245"></item>
-        <item name= "592"></item>
-        <item name= "509"></item>
-        <item name= "334"></item>
-        <item name= "379"></item>
-        <item name= "504"></item>
-        <item name= "852"></item>
-        <item name= "36"></item>
-        <item name= "354"></item>
-        <item name= "91"></item>
-        <item name= "62"></item>
-        <item name= "98"></item>
-        <item name= "964"></item>
-        <item name= "353"></item>
-        <item name= "44"></item>
-        <item name= "972"></item>
-        <item name= "39"></item>
-        <item name= "1-876"></item>
-        <item name= "81"></item>
-        <item name= "44"></item>
-        <item name= "962"></item>
-        <item name= "7"></item>
-        <item name= "254"></item>
-        <item name= "686"></item>
-        <item name= "850"></item>
-        <item name= "82"></item>
-        <item name= "965"></item>
-        <item name= "996"></item>
-        <item name= "856"></item>
-        <item name= "371"></item>
-        <item name= "961"></item>
-        <item name= "266"></item>
-        <item name= "231"></item>
-        <item name= "218"></item>
-        <item name= "423"></item>
-        <item name= "370"></item>
-        <item name= "352"></item>
-        <item name= "853"></item>
-        <item name= "389"></item>
-        <item name= "261"></item>
-        <item name= "265"></item>
-        <item name= "60"></item>
-        <item name= "960"></item>
-        <item name= "223"></item>
-        <item name= "356"></item>
-        <item name= "692"></item>
-        <item name= "596"></item>
-        <item name= "222"></item>
-        <item name= "230"></item>
-        <item name= "269"></item>
-        <item name= "52"></item>
-        <item name= "691"></item>
-        <item name= "373"></item>
-        <item name= "377"></item>
-        <item name= "976"></item>
-        <item name= "1-664"></item>
-        <item name= "212"></item>
-        <item name= "258"></item>
-        <item name= "95"></item>
-        <item name= "264"></item>
-        <item name= "674"></item>
-        <item name= "977"></item>
-        <item name= "31"></item>
-        <item name= "599"></item>
-        <item name= "687"></item>
-        <item name= "64"></item>
-        <item name= "505"></item>
-        <item name= "227"></item>
-        <item name= "234"></item>
-        <item name= "683"></item>
-        <item name= "672"></item>
-        <item name= "670"></item>
-        <item name= "47"></item>
-        <item name= "968"></item>
-        <item name= "92"></item>
-        <item name= "680"></item>
-        <item name= "275"></item>
-        <item name= "507"></item>
-        <item name= "675"></item>
-        <item name= "595"></item>
-        <item name= "51"></item>
-        <item name= "63"></item>
-        <item name= "612"></item>
-        <item name= "48"></item>
-        <item name= "351"></item>
-        <item name= "1-787"></item>
-        <item name= "974"></item>
-        <item name= "262"></item>
-        <item name= "40"></item>
-        <item name= "7"></item>
-        <item name= "250"></item>
-        <item name= "290"></item>
-        <item name= "869"></item>
-        <item name= "758"></item>
-        <item name= "508"></item>
-        <item name= "784"></item>
-        <item name= "684"></item>
-        <item name= "378"></item>
-        <item name= "239"></item>
-        <item name= "966"></item>
-        <item name= "221"></item>
-        <item name= "381"></item>
-        <item name= "248"></item>
-        <item name= "232"></item>
-        <item name= "65"></item>
-        <item name= "421"></item>
-        <item name= "386"></item>
-        <item name= "677"></item>
-        <item name= "252"></item>
-        <item name= "27"></item>
-        <item name= "500"></item>
-        <item name= "34"></item>
-        <item name= "94"></item>
-        <item name= "249"></item>
-        <item name= "597"></item>
-        <item name= "744"></item>
-        <item name= "268"></item>
-        <item name= "46"></item>
-        <item name= "41"></item>
-        <item name= "963"></item>
-        <item name= "886"></item>
-        <item name= "992"></item>
-        <item name= "255"></item>
-        <item name= "66"></item>
-        <item name= "670"></item>
-        <item name= "228"></item>
-        <item name= "690"></item>
-        <item name= "676"></item>
-        <item name= "868"></item>
-        <item name= "216"></item>
-        <item name= "90"></item>
-        <item name= "993"></item>
-        <item name= "649"></item>
-        <item name= "688"></item>
-        <item name= "256"></item>
-        <item name= "380"></item>
-        <item name= "971"></item>
-        <item name= "44"></item>
-        <item name= "1"></item>
-        <item name= "246"></item>
-        <item name= "598"></item>
-        <item name= "998"></item>
-        <item name= "678"></item>
-        <item name= "58"></item>
-        <item name= "84"></item>
-        <item name= "284"></item>
-        <item name= "340"></item>
-        <item name= "681"></item>
-        <item name= "212"></item>
-        <item name= "967"></item>
-        <item name= "260"></item>
-        <item name= "263"></item>
+        <item name="358"></item>
+        <item name="355"></item>
+        <item name="213"></item>
+        <item name="684"></item>
+        <item name="376"></item>
+        <item name="244"></item>
+        <item name="1-264"></item>
+        <item name="672"></item>
+        <item name="1-268"></item>
+        <item name="54"></item>
+        <item name="374"></item>
+        <item name="297"></item>
+        <item name="61"></item>
+        <item name="43"></item>
+        <item name="994"></item>
+        <item name="1-242"></item>
+        <item name="973"></item>
+        <item name="880"></item>
+        <item name="246"></item>
+        <item name="375"></item>
+        <item name="32"></item>
+        <item name="501"></item>
+        <item name="229"></item>
+        <item name="1-441"></item>
+        <item name="975"></item>
+        <item name="591"></item>
+        <item name="387"></item>
+        <item name="267"></item>
+        <item name="74"></item>
+        <item name="55"></item>
+        <item name="246"></item>
+        <item name="673"></item>
+        <item name="359"></item>
+        <item name="226"></item>
+        <item name="257"></item>
+        <item name="855"></item>
+        <item name="237"></item>
+        <item name="1"></item>
+        <item name="238"></item>
+        <item name="1-345"></item>
+        <item name="236"></item>
+        <item name="235"></item>
+        <item name="56"></item>
+        <item name="86"></item>
+        <item name="61"></item>
+        <item name="61"></item>
+        <item name="57"></item>
+        <item name="269"></item>
+        <item name="242"></item>
+        <item name="243"></item>
+        <item name="682"></item>
+        <item name="506"></item>
+        <item name="385"></item>
+        <item name="53"></item>
+        <item name="357"></item>
+        <item name="420"></item>
+        <item name="45"></item>
+        <item name="253"></item>
+        <item name="1-767"></item>
+        <item name="809"></item>
+        <item name="593"></item>
+        <item name="20"></item>
+        <item name="503"></item>
+        <item name="240"></item>
+        <item name="291"></item>
+        <item name="372"></item>
+        <item name="251"></item>
+        <item name="500"></item>
+        <item name="298"></item>
+        <item name="679"></item>
+        <item name="358"></item>
+        <item name="33"></item>
+        <item name="594"></item>
+        <item name="689"></item>
+        <item name="260"></item>
+        <item name="241"></item>
+        <item name="220"></item>
+        <item name="995"></item>
+        <item name="49"></item>
+        <item name="233"></item>
+        <item name="350"></item>
+        <item name="30"></item>
+        <item name="299"></item>
+        <item name="1-473"></item>
+        <item name="59"></item>
+        <item name="1-671"></item>
+        <item name="502"></item>
+        <item name="44"></item>
+        <item name="224"></item>
+        <item name="245"></item>
+        <item name="592"></item>
+        <item name="509"></item>
+        <item name="334"></item>
+        <item name="379"></item>
+        <item name="504"></item>
+        <item name="852"></item>
+        <item name="36"></item>
+        <item name="354"></item>
+        <item name="91"></item>
+        <item name="62"></item>
+        <item name="98"></item>
+        <item name="964"></item>
+        <item name="353"></item>
+        <item name="44"></item>
+        <item name="972"></item>
+        <item name="39"></item>
+        <item name="1-876"></item>
+        <item name="81"></item>
+        <item name="44"></item>
+        <item name="962"></item>
+        <item name="7"></item>
+        <item name="254"></item>
+        <item name="686"></item>
+        <item name="850"></item>
+        <item name="82"></item>
+        <item name="965"></item>
+        <item name="996"></item>
+        <item name="856"></item>
+        <item name="371"></item>
+        <item name="961"></item>
+        <item name="266"></item>
+        <item name="231"></item>
+        <item name="218"></item>
+        <item name="423"></item>
+        <item name="370"></item>
+        <item name="352"></item>
+        <item name="853"></item>
+        <item name="389"></item>
+        <item name="261"></item>
+        <item name="265"></item>
+        <item name="60"></item>
+        <item name="960"></item>
+        <item name="223"></item>
+        <item name="356"></item>
+        <item name="692"></item>
+        <item name="596"></item>
+        <item name="222"></item>
+        <item name="230"></item>
+        <item name="269"></item>
+        <item name="52"></item>
+        <item name="691"></item>
+        <item name="373"></item>
+        <item name="377"></item>
+        <item name="976"></item>
+        <item name="1-664"></item>
+        <item name="212"></item>
+        <item name="258"></item>
+        <item name="95"></item>
+        <item name="264"></item>
+        <item name="674"></item>
+        <item name="977"></item>
+        <item name="31"></item>
+        <item name="599"></item>
+        <item name="687"></item>
+        <item name="64"></item>
+        <item name="505"></item>
+        <item name="227"></item>
+        <item name="234"></item>
+        <item name="683"></item>
+        <item name="672"></item>
+        <item name="670"></item>
+        <item name="47"></item>
+        <item name="968"></item>
+        <item name="92"></item>
+        <item name="680"></item>
+        <item name="275"></item>
+        <item name="507"></item>
+        <item name="675"></item>
+        <item name="595"></item>
+        <item name="51"></item>
+        <item name="63"></item>
+        <item name="612"></item>
+        <item name="48"></item>
+        <item name="351"></item>
+        <item name="1-787"></item>
+        <item name="974"></item>
+        <item name="262"></item>
+        <item name="40"></item>
+        <item name="7"></item>
+        <item name="250"></item>
+        <item name="290"></item>
+        <item name="869"></item>
+        <item name="758"></item>
+        <item name="508"></item>
+        <item name="784"></item>
+        <item name="684"></item>
+        <item name="378"></item>
+        <item name="239"></item>
+        <item name="966"></item>
+        <item name="221"></item>
+        <item name="381"></item>
+        <item name="248"></item>
+        <item name="232"></item>
+        <item name="65"></item>
+        <item name="421"></item>
+        <item name="386"></item>
+        <item name="677"></item>
+        <item name="252"></item>
+        <item name="27"></item>
+        <item name="500"></item>
+        <item name="34"></item>
+        <item name="94"></item>
+        <item name="249"></item>
+        <item name="597"></item>
+        <item name="744"></item>
+        <item name="268"></item>
+        <item name="46"></item>
+        <item name="41"></item>
+        <item name="963"></item>
+        <item name="886"></item>
+        <item name="992"></item>
+        <item name="255"></item>
+        <item name="66"></item>
+        <item name="670"></item>
+        <item name="228"></item>
+        <item name="690"></item>
+        <item name="676"></item>
+        <item name="868"></item>
+        <item name="216"></item>
+        <item name="90"></item>
+        <item name="993"></item>
+        <item name="649"></item>
+        <item name="688"></item>
+        <item name="256"></item>
+        <item name="380"></item>
+        <item name="971"></item>
+        <item name="44"></item>
+        <item name="1"></item>
+        <item name="246"></item>
+        <item name="598"></item>
+        <item name="998"></item>
+        <item name="678"></item>
+        <item name="58"></item>
+        <item name="84"></item>
+        <item name="284"></item>
+        <item name="340"></item>
+        <item name="681"></item>
+        <item name="212"></item>
+        <item name="967"></item>
+        <item name="260"></item>
+        <item name="263"></item>
     </array>
 
-    <string-array name="CountryCodes" >
+    <string-array name="CountryCodes">
         <item>93,AF</item>
         <item>355,AL</item>
         <item>213,DZ</item>
@@ -874,8 +891,6 @@
         <item>260,ZM</item>
         <item>263,ZW</item>
     </string-array>
-
-
 
 
 </resources>

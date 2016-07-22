@@ -22,12 +22,14 @@ import com.igniva.indiecore.controller.WebNotificationManager;
 import com.igniva.indiecore.controller.WebServiceClient;
 import com.igniva.indiecore.model.CommentPojo;
 import com.igniva.indiecore.model.ResponsePojo;
-import com.igniva.indiecore.model.UsersWallPostPojo;
+import com.igniva.indiecore.model.PostPojo;
+import com.igniva.indiecore.ui.activities.CommentActivity;
 import com.igniva.indiecore.ui.activities.CreatePostActivity;
 import com.igniva.indiecore.ui.activities.DashBoardActivity;
 import com.igniva.indiecore.ui.adapters.PostCommentAdapter;
 import com.igniva.indiecore.ui.adapters.WallPostAdapter;
 import com.igniva.indiecore.utils.Constants;
+import com.igniva.indiecore.utils.Log;
 import com.igniva.indiecore.utils.PreferenceHandler;
 import com.igniva.indiecore.utils.Utility;
 
@@ -44,7 +46,7 @@ public class ChatsFragment extends BaseFragment {
     ImageView mUserImage;
     public DashBoardActivity mDashBoard;
     private WallPostAdapter mAdapter;
-    private ArrayList<UsersWallPostPojo> mWallPostList;
+    private ArrayList<PostPojo> mWallPostList;
     private ArrayList<CommentPojo> mCommentList;
     private LinearLayoutManager mLlManager;
     private LinearLayoutManager mLlmanager;
@@ -76,7 +78,7 @@ public class ChatsFragment extends BaseFragment {
     @Override
     protected void setUpLayout() {
 
-        mWallPostList = new ArrayList<UsersWallPostPojo>();
+        mWallPostList = new ArrayList<PostPojo>();
         try {
 
             mBusinessId = DashBoardActivity.businessId;
@@ -99,6 +101,28 @@ public class ChatsFragment extends BaseFragment {
 
         mUserName = (TextView) rootView.findViewById(R.id.tv_user_name_chat_fragment);
         mUserImage = (ImageView) rootView.findViewById(R.id.iv_user_img_chat_fragment);
+
+
+
+/*
+*
+* TODO add scroll listner
+* */
+
+//        mRvWallPosts.addOnScrollListener(new RecyclerView.OnScrollListener() {
+//            @Override
+//            public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
+//                super.onScrollStateChanged(recyclerView, newState);
+//            }
+//
+//            @Override
+//            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+//                super.onScrolled(recyclerView, dx, dy);
+//
+//
+//                }
+//
+//        });
 
 
 //        viewAllPost();
@@ -172,7 +196,7 @@ public class ChatsFragment extends BaseFragment {
 
     OnListItemClickListner onListItemClickListner = new OnListItemClickListner() {
         @Override
-        public void onListItemClicked(final WallPostAdapter.RecyclerViewHolders holder, int position, final String postId) {
+        public void onListItemClicked(final WallPostAdapter.RecyclerViewHolders holder, final int position, final String postId) {
 
 
             holder.like.setOnClickListener(new View.OnClickListener() {
@@ -204,35 +228,47 @@ public class ChatsFragment extends BaseFragment {
             holder.comment.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    holder.mCommentSection.setVisibility(View.VISIBLE);
-                    mRvComment = holder.mRvComments;
-                    mRvComment.setLayoutManager(mLlmanager);
-                    holder.mCommentSection.setVisibility(View.VISIBLE);
-                    viewAllComments(postId);
+//                    holder.mCommentSection.setVisibility(View.VISIBLE);
+//                    mRvComment = holder.mRvComments;
+//                    mRvComment.setLayoutManager(mLlmanager);
+//                    holder.mCommentSection.setVisibility(View.VISIBLE);
+//                    viewAllComments(postId);
+                    Bundle bundle= new Bundle();
+                    bundle.putSerializable("POST",mWallPostList.get(position));
+
+                    Intent intent= new Intent(getActivity(), CommentActivity.class);
+                    intent.putExtras(bundle);
+                    startActivity(intent);
 
 
                 }
             });
 
-
-            holder.mIvPostComment.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    if (holder.mEtComment.getText().toString().isEmpty()) {
-
-                        Utility.showAlertDialog("Please write a comment", getActivity());
-                    } else {
-
-                        postComment(postId, holder.mEtComment.getText().toString());
-                    }
-
-                }
-            });
+//
+//            holder.mIvPostComment.setOnClickListener(new View.OnClickListener() {
+//                @Override
+//                public void onClick(View v) {
+//                    if (holder.mEtComment.getText().toString().isEmpty()) {
+//
+//                        Utility.showAlertDialog("Please write a comment", getActivity());
+//                    } else {
+//
+//                        postComment(postId, holder.mEtComment.getText().toString());
+//                    }
+//
+//                }
+//            });
 
         }
     };
 
 
+
+    /*
+    * payload to write  a comment to a post
+    *
+    *
+    * */
     public String genratePayload(String postId, String text) {
         JSONObject payload = null;
         try {
@@ -340,7 +376,7 @@ public class ChatsFragment extends BaseFragment {
 
     /*
     *
-    * response all comments
+    * response all get comments
     * */
     ResponseHandlerListener responseHandle = new ResponseHandlerListener() {
         @Override
@@ -576,4 +612,147 @@ public class ChatsFragment extends BaseFragment {
 
         }
     };
+
+
+
+    /*
+    * create payload to flag/remove a post
+    *
+    *
+    * */
+
+
+    public String genratePayload(String postId) {
+        JSONObject payload = null;
+        try {
+            payload = new JSONObject();
+            payload.put(Constants.TOKEN, PreferenceHandler.readString(getActivity(), PreferenceHandler.PREF_KEY_USER_TOKEN, ""));
+            payload.put(Constants.USERID, PreferenceHandler.readString(getActivity(), PreferenceHandler.PREF_KEY_USER_ID, ""));
+            payload.put(Constants.POST_ID, postId);
+
+
+        } catch (Exception e) {
+
+            e.printStackTrace();
+        }
+
+        return payload.toString();
+    }
+
+/*
+* remove post call
+*
+* */
+    public void removePost(String postId) {
+
+        String payload = genratePayload(postId);
+        if (!payload.isEmpty()) {
+
+            WebNotificationManager.registerResponseListener(responseRemovePost);
+            WebServiceClient.remove_a_post(getActivity(), payload, responseRemovePost);
+        }
+    }
+
+
+    /*
+    * response Remove post
+    *
+    *
+    * */
+    ResponseHandlerListener responseRemovePost = new ResponseHandlerListener() {
+        @Override
+        public void onComplete(ResponsePojo result, WebServiceClient.WebError error, ProgressDialog mProgressDialog) {
+            WebNotificationManager.unRegisterResponseListener(responseRemovePost);
+
+            try {
+                if (error == null) {
+                    if (result.getSuccess().equalsIgnoreCase("true")) {
+
+                        Utility.showToastMessageLong(getActivity(), "post removed");
+
+                    } else {
+
+                    }
+
+                } else {
+
+
+                }
+
+
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+//            finish the dialog
+            if (mProgressDialog != null && mProgressDialog.isShowing()) {
+                mProgressDialog.dismiss();
+            }
+
+
+        }
+    };
+
+
+    /*
+    *
+    * flag post call
+    *
+    *
+    * */
+    public void FlagPost(String postId) {
+
+        String payload = genratePayload(postId);
+        if (payload != null) {
+
+            WebNotificationManager.registerResponseListener(responseFlagPost);
+            WebServiceClient.flag_a_post(getActivity(), payload, responseFlagPost);
+
+        }
+
+    }
+
+
+    /*
+    * response flag post
+    *
+    *
+    * */
+    ResponseHandlerListener responseFlagPost = new ResponseHandlerListener() {
+        @Override
+        public void onComplete(ResponsePojo result, WebServiceClient.WebError error, ProgressDialog mProgressDialog) {
+            WebNotificationManager.unRegisterResponseListener(responseFlagPost);
+            try {
+
+                if (error == null) {
+                    if (result.getSuccess().equalsIgnoreCase("true")) {
+                        Utility.showToastMessageLong(getActivity(), "post reported");
+
+
+                    }
+                    else
+                    {
+
+
+                    }
+
+
+                }
+                else
+                {
+
+
+                }
+
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+
+
+            //            finish the dialog
+            if (mProgressDialog != null && mProgressDialog.isShowing()) {
+                mProgressDialog.dismiss();
+            }
+        }
+    };
+
 }

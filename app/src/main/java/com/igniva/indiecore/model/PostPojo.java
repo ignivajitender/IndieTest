@@ -1,9 +1,11 @@
 package com.igniva.indiecore.model;
 
+import java.io.Serializable;
+
 /**
  * Created by igniva-andriod-05 on 18/7/16.
  */
-public class UsersWallPostPojo {
+public class PostPojo implements Serializable{
 
     private String roomId;
     private String postType;

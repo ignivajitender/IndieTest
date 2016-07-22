@@ -6,17 +6,13 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.igniva.indiecore.R;
-import com.igniva.indiecore.controller.OnCommentListItemClickListner;
-import com.igniva.indiecore.controller.OnListItemClickListner;
 import com.igniva.indiecore.controller.WebServiceClient;
 import com.igniva.indiecore.model.CommentPojo;
-import com.igniva.indiecore.model.UsersWallPostPojo;
 
 import java.util.ArrayList;
 
@@ -31,17 +27,19 @@ public class PostCommentAdapter extends RecyclerView.Adapter<PostCommentAdapter.
 
 
     public PostCommentAdapter(Context context, ArrayList<CommentPojo> commentList) {
-
         this.mCommentList = commentList;
         this.context = context;
-
     }
 
     @Override
     public RecyclerViewHolders onCreateViewHolder(ViewGroup parent, int viewType) {
 
 
-        View layoutView = LayoutInflater.from(parent.getContext()).inflate(R.layout.comments_list_items, parent, false);
+//        View layoutView = LayoutInflater.from(parent.getContext()).inflate(R.layout.comments_list_items, parent, false);
+//        RecyclerViewHolders rcv = new RecyclerViewHolders(layoutView);
+//        return rcv;
+
+        View layoutView = LayoutInflater.from(parent.getContext()).inflate(R.layout.comments_list_items, null);
         RecyclerViewHolders rcv = new RecyclerViewHolders(layoutView);
         return rcv;
     }
