@@ -70,6 +70,7 @@ public class BadgesActivity extends BaseActivity {
             WebNotificationManager.registerResponseListener(responseHandlerListener);
             // Step 2 - Webservice Call
             WebServiceClient.getBadges(BadgesActivity.this, payload, responseHandlerListener);
+
         }
 
     }

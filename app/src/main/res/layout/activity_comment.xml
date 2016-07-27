@@ -149,6 +149,7 @@
                         android:layout_height="wrap_content"
                         android:layout_gravity="center"
                         android:layout_weight="1"
+                        android:onClick="onClick"
                         android:drawableLeft="@drawable/like_grey_icon_circle"
                         android:drawablePadding="5dp"
                         android:text="2" />
@@ -159,6 +160,7 @@
                         android:layout_height="wrap_content"
                         android:layout_gravity="center"
                         android:layout_weight="1"
+                        android:onClick="onClick"
                         android:drawableLeft="@drawable/hand_grey_icon_circle"
                         android:drawablePadding="5dp"
                         android:text="2" />
@@ -169,6 +171,7 @@
                         android:layout_height="wrap_content"
                         android:layout_gravity="center"
                         android:layout_weight="1"
+                        android:onClick="onClick"
                         android:drawableLeft="@drawable/dislike_grey_icon_circle"
                         android:drawablePadding="5dp"
                         android:text="2" />
@@ -179,19 +182,20 @@
                         android:layout_height="wrap_content"
                         android:layout_gravity="center"
                         android:layout_weight="1"
+                        android:onClick="onClick"
                         android:drawableLeft="@drawable/comment_icon_grey_circle"
                         android:drawablePadding="5dp"
                         android:text="2" />
 
-                    <TextView
-                        android:id="@+id/tv_share_comment_activity"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center"
-                        android:layout_weight="1"
-                        android:drawableLeft="@drawable/share_grey_icon_circle"
-                        android:drawablePadding="5dp"
-                        android:text="2" />
+                    <!--<TextView-->
+                        <!--android:id="@+id/tv_share_comment_activity"-->
+                        <!--android:layout_width="0dp"-->
+                        <!--android:layout_height="wrap_content"-->
+                        <!--android:layout_gravity="center"-->
+                        <!--android:layout_weight="1"-->
+                        <!--android:drawableLeft="@drawable/share_grey_icon_circle"-->
+                        <!--android:drawablePadding="5dp"-->
+                        <!--android:text="2" />-->
 
                 </LinearLayout>
 

@@ -34,6 +34,38 @@ public class ResponsePojo {
     private ArrayList<BusinessPojo> business_list;
     private ArrayList<CommentPojo> commentList;
 
+
+    private int like;
+
+    public int getDislike() {
+        return dislike;
+    }
+
+    public void setDislike(int dislike) {
+        this.dislike = dislike;
+    }
+
+    public int getLike() {
+        return like;
+    }
+
+    public void setLike(int like) {
+        this.like = like;
+    }
+
+    public int getNeutral() {
+        return neutral;
+    }
+
+    public void setNeutral(int neutral) {
+        this.neutral = neutral;
+    }
+
+    private int dislike;
+    private int neutral;
+
+
+
     public ArrayList<CommentPojo> getCommentList() {
         return commentList;
     }

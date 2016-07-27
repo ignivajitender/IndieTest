@@ -126,7 +126,7 @@
                                 android:drawableLeft="@drawable/upload_icon"
                                 android:drawablePadding="10dp"
                                 android:onClick="onClick"
-                                android:text="Uplaod" />
+                                android:text="@string/upload" />
 
                             <TextView
                                 android:id="@+id/tv_camera"
