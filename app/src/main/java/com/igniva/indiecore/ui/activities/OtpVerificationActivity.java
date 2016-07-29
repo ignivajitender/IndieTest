@@ -11,6 +11,7 @@ import android.view.View;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.igniva.indiecore.R;
@@ -28,7 +29,7 @@ import org.json.JSONObject;
 /**
  * Created by igniva-andriod-05 on 3/6/16.
  */
-public class OtpVerificationActivity extends BaseActivity {
+public class OtpVerificationActivity extends BaseActivity implements View.OnClickListener{
 
     public static EditText mOtpField;
     private Button mSubmitOtp;
@@ -37,6 +38,7 @@ public class OtpVerificationActivity extends BaseActivity {
     private String mMobileNumber, mCountryId;
     private int numberLength;
     MyReceiver receiver;
+    TextView mTvResend;
     ProgressDialog progressDialog = null;
 
     @Override
@@ -58,6 +60,10 @@ public class OtpVerificationActivity extends BaseActivity {
         try {
             mOtpField = (EditText) findViewById(R.id.et_verification_code);
             mSubmitOtp = (Button) findViewById(R.id.btn_submit);
+            mSubmitOtp.setOnClickListener(this);
+
+            mTvResend=(TextView)findViewById(R.id.tv_resend);
+            mTvResend.setOnClickListener(this);
             Bundle bundle = getIntent().getExtras();
             mMobileNumber = bundle.getString(Constants.MOBILE_NO);
             mCountryId = bundle.getString(Constants.COUNTRY_CODE);
@@ -239,6 +245,7 @@ public class OtpVerificationActivity extends BaseActivity {
     public void updateOtp() {
         setDataInViewObjects();
     }
+
 
     @Override
     public void onClick(View v) {

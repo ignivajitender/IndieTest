@@ -170,8 +170,8 @@ public class BusinessDetailActivity extends BaseActivity implements OnMapReadyCa
             )).title("My Location"));
         }
     }
-    @Override
-    protected void onClick(View v) {
+
+    public void onClick(View v) {
 
     }
 }

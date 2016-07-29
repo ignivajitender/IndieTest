@@ -148,7 +148,7 @@ public class SplashActivity extends BaseActivity
 
     }
 
-    @Override
+
     public void onClick(View v) {
         switch (v.getId()){
 

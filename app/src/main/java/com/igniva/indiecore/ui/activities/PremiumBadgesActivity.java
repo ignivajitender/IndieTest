@@ -241,7 +241,7 @@ public class PremiumBadgesActivity extends BaseActivity implements IabBroadcastR
 
 
 
-    @Override
+
     protected void onClick(View v) {
 
 

@@ -33,7 +33,7 @@ import java.util.ArrayList;
 /**
  * Created by igniva-andriod-05 on 29/7/16.
  */
-public class CommentsReplyActivity extends BaseActivity {
+public class CommentsReplyActivity extends BaseActivity implements View.OnClickListener {
 
 
     private Toolbar mToolbar;
@@ -103,14 +103,19 @@ public class CommentsReplyActivity extends BaseActivity {
             mUserComment=(TextView) findViewById(R.id.tv_comment_text_comment_reply_activity);
             mUserImg=(ImageView) findViewById(R.id.iv_user_img_comment_reply_activity);
               mIvPostReply =(ImageView) findViewById(R.id.iv_post_reply);
+            mIvPostReply.setOnClickListener(this);
             mEtReplyText=(EditText) findViewById(R.id.et_reply_txt);
             mRvReplies=(RecyclerView) findViewById(R.id.rv_replies);
             
             
             mTvCommentLike=(TextView) findViewById(R.id.tv_like_comment_reply);
+            mTvCommentLike.setOnClickListener(this);
             mTvCommentDislike=(TextView) findViewById(R.id.tv_dislike_comment_reply);
+            mTvCommentDislike.setOnClickListener(this);
             mTvCommentNeutral=(TextView) findViewById(R.id.tv_neutral_comment_reply);
+            mTvCommentNeutral.setOnClickListener(this);
             mTvCommentReply=(TextView) findViewById(R.id.tv_reply_comment_reply);
+            mTvCommentReply.setOnClickListener(this);
 
             final LinearLayoutManager layoutManager = new LinearLayoutManager(this);
             layoutManager.setOrientation(LinearLayoutManager.VERTICAL);
@@ -184,7 +189,7 @@ try {
     }
 
     @Override
-    protected void onClick(View v) {
+    public void onClick(View v) {
         switch (v.getId()){
 
             case R.id.iv_post_reply:

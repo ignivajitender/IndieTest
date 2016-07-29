@@ -45,8 +45,9 @@ public class SyncContactsActivity extends BaseActivity implements View.OnClickLi
     FABProgressCircle fabProgressCircle;
     public ArrayList<UsersPojo> mUSers = new ArrayList<UsersPojo>();
     FloatingActionButton fab;
-    ImageView img_btn;
+    ImageView img_btn,mIvSyncContacts;
     BadgesDb dbContacts;
+    TextView mTvSkipStep;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -119,7 +120,13 @@ public class SyncContactsActivity extends BaseActivity implements View.OnClickLi
             Bundle bundle = getIntent().getExtras();
             numberLength = bundle.getInt(Constants.NUMBER_LENGTH, 0);
             mCountryCode = bundle.getString(Constants.COUNTRY_CODE);
+            mTvSkipStep=(TextView)findViewById(R.id.tv_skip_step);
+            mTvSkipStep.setOnClickListener(this);
+            mIvSyncContacts=(ImageView)findViewById(R.id.iv_syncbtn);
+            mIvSyncContacts.setOnClickListener(this);
 
+               img_btn=(ImageView)findViewById(R.id.img_btn);
+            img_btn.setOnClickListener(this);
             COUNTRY_PREFIX = mCountryCode.trim();
         } catch (Exception e) {
             e.printStackTrace();

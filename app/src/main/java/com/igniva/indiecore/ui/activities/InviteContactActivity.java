@@ -186,7 +186,7 @@ public class InviteContactActivity extends BaseActivity {
 
     }
 
-    @Override
+
     protected void onClick(View v) {
 
     }

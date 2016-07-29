@@ -176,7 +176,7 @@ public class EnterMobileActivity extends BaseActivity {
 
     }
 
-    @Override
+
     public void onClick(View v) {
 
 

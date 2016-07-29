@@ -156,7 +156,7 @@ public class DashBoardActivity extends BaseActivity {
         bottomNavigation.setCurrentItem(0);
     }
 
-    @Override
+
     protected void onClick(View v) {
 
     }
