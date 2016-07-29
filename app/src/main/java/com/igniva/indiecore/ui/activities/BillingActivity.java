@@ -573,13 +573,7 @@ public class BillingActivity extends Activity implements IabBroadcastReceiver.Ia
         alert("Error: " + message);
     }
 
-    void alert(String message) {
-        AlertDialog.Builder bld = new AlertDialog.Builder(this);
-        bld.setMessage(message);
-        bld.setNeutralButton("OK", null);
-        Log.d(TAG, "Showing alert dialog: " + message);
-        bld.create().show();
-    }
+
 
     void saveData() {
 
@@ -599,5 +593,14 @@ public class BillingActivity extends Activity implements IabBroadcastReceiver.Ia
         SharedPreferences sp = getPreferences(MODE_PRIVATE);
         mTank = sp.getInt("tank", 2);
         Log.d(TAG, "Loaded data: tank = " + String.valueOf(mTank));
+    }
+
+
+    void alert(String message) {
+        AlertDialog.Builder bld = new AlertDialog.Builder(this);
+        bld.setMessage(message);
+        bld.setNeutralButton("OK", null);
+        android.util.Log.d(TAG, "Showing alert dialog: " + message);
+        bld.create().show();
     }
 }

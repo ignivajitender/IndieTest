@@ -3,7 +3,6 @@ package com.igniva.indiecore.ui.fragments;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.graphics.Color;
-import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
@@ -15,7 +14,6 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
-import com.bumptech.glide.load.data.StreamAssetPathFetcher;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.igniva.indiecore.R;
 import com.igniva.indiecore.controller.OnListItemClickListner;
@@ -31,7 +29,6 @@ import com.igniva.indiecore.ui.activities.DashBoardActivity;
 import com.igniva.indiecore.ui.adapters.PostCommentAdapter;
 import com.igniva.indiecore.ui.adapters.WallPostAdapter;
 import com.igniva.indiecore.utils.Constants;
-import com.igniva.indiecore.utils.Log;
 import com.igniva.indiecore.utils.PreferenceHandler;
 import com.igniva.indiecore.utils.Utility;
 
@@ -62,6 +59,7 @@ public class ChatsFragment extends BaseFragment {
     String LIMIT = "10";
     String mBusinessId = "";
     int action = 0;
+    int POSITION=-1;
 
     //    (like/dislike/neutral), post_id
     public static final String mActionTypeLike = "like";
@@ -137,7 +135,6 @@ public class ChatsFragment extends BaseFragment {
     @Override
     protected void setDataInViewObjects() {
 
-
         try {
             if (!PreferenceHandler.readString(getActivity(), PreferenceHandler.PREF_KEY_FIRST_NAME, "").isEmpty()) {
                 String Name = (PreferenceHandler.readString(getActivity(), PreferenceHandler.PREF_KEY_FIRST_NAME, "") + " " + (PreferenceHandler.readString(getActivity(), PreferenceHandler.PREF_KEY_LAST_NAME, "")).charAt(0) + ".");
@@ -207,8 +204,10 @@ public class ChatsFragment extends BaseFragment {
             holder.like.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
+                    POSITION=position;
                     action = 1;
-                    likeUnlikePost(mActionTypeLike, postId);
+                   // likeUnlikePost(mActionTypeLike, postId);
+                    //Utility.showToastMessageShort(getActivity()," position is "+position);
                 }
             });
 
@@ -217,7 +216,7 @@ public class ChatsFragment extends BaseFragment {
                 public void onClick(View v) {
                     action = 2;
 
-                    likeUnlikePost(mActionTypeDislike, postId);
+                    //likeUnlikePost(mActionTypeDislike, postId);
                 }
             });
 
@@ -227,29 +226,29 @@ public class ChatsFragment extends BaseFragment {
                 public void onClick(View v) {
                     action = 3;
 
-                    likeUnlikePost(mActionTypeNeutral, postId);
+                   // likeUnlikePost(mActionTypeNeutral, postId);
 
                 }
             });
-
-            holder.comment.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-//                    holder.mCommentSection.setVisibility(View.VISIBLE);
-//                    mRvComment = holder.mRvComments;
-//                    mRvComment.setLayoutManager(mLlmanager);
-//                    holder.mCommentSection.setVisibility(View.VISIBLE);
-//                    viewAllComments(postId);
-                    Bundle bundle = new Bundle();
-                    bundle.putSerializable("POST", mWallPostList.get(position));
-
-                    Intent intent = new Intent(getActivity(), CommentActivity.class);
-                    intent.putExtras(bundle);
-                    startActivity(intent);
-
-
-                }
-            });
+//
+//            holder.comment.setOnClickListener(new View.OnClickListener() {
+//                @Override
+//                public void onClick(View v) {
+////                    holder.mCommentSection.setVisibility(View.VISIBLE);
+////                    mRvComment = holder.mRvComments;
+////                    mRvComment.setLayoutManager(mLlmanager);
+////                    holder.mCommentSection.setVisibility(View.VISIBLE);
+////                    viewAllComments(postId);
+//                    Bundle bundle = new Bundle();
+//                    bundle.putSerializable("POST", mWallPostList.get(position));
+//
+//                    Intent intent = new Intent(getActivity(), CommentActivity.class);
+//                    intent.putExtras(bundle);
+//                    startActivity(intent);
+//
+//
+//                }
+//            });
 
 //
 //            holder.mIvPostComment.setOnClickListener(new View.OnClickListener() {
@@ -445,6 +444,8 @@ public class ChatsFragment extends BaseFragment {
 
             mAdapter = null;
             mAdapter = new WallPostAdapter(getActivity(), mWallPostList, onListItemClickListner);
+            RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getActivity());
+            mRvWallPosts.setLayoutManager(mLayoutManager);
             mRvWallPosts.setAdapter(mAdapter);
 
 
@@ -458,13 +459,10 @@ public class ChatsFragment extends BaseFragment {
         try {
             mChat.setTextColor(Color.parseColor("#1C6DCE"));
             mChat.setBackgroundResource(R.drawable.simple_border_line_style);
-
             mBoard.setTextColor(Color.parseColor("#1C6DCE"));
             mBoard.setBackgroundResource(R.drawable.simple_border_line_style);
-
             mPeople.setTextColor(Color.parseColor("#FFFFFF"));
             mPeople.setBackgroundColor(Color.parseColor("#1C6DCE"));
-
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -590,44 +588,43 @@ public class ChatsFragment extends BaseFragment {
         String payload = createPayload(type, postId);
 
         if (!payload.isEmpty()) {
-
-            WebNotificationManager.registerResponseListener(responseHandl);
-            WebServiceClient.like_unlike_post(getActivity(), payload, responseHandl);
+            WebNotificationManager.registerResponseListener(responseHandlerLikeUnlike);
+            WebServiceClient.like_unlike_post(getActivity(), payload, responseHandlerLikeUnlike);
         }
     }
 
     /*
     * like unlike response
     * */
-    ResponseHandlerListener responseHandl = new ResponseHandlerListener() {
+    ResponseHandlerListener responseHandlerLikeUnlike = new ResponseHandlerListener() {
         @Override
         public void onComplete(ResponsePojo result, WebServiceClient.WebError error, ProgressDialog mProgressDialog) {
-            WebNotificationManager.unRegisterResponseListener(responseHandl);
+            WebNotificationManager.unRegisterResponseListener(responseHandlerLikeUnlike);
             try {
 
                 if (error == null) {
 
                     if (result.getSuccess().equalsIgnoreCase("true")) {
                         if (action == 1) {
-//action like
-                            String num_like = mHolder.like.getText().toString();
+                            //action like
+                            String num_like = mWallPostList.get(POSITION).getLike();
                             int a = Integer.parseInt(num_like.trim());
 
                             if (result.getLike() == 1) {
-                                mHolder.like.setText(a + 1 + "");
-
+                                //mHolder.like.setText(a + 1 + "");
                                 mHolder.like.setCompoundDrawablesWithIntrinsicBounds(R.drawable.like_blue_icon_circle, 0, 0, 0);
-
+                                mWallPostList.get(POSITION).setLike(a + 1 + "");
                             } else {
                                 if (a > 0) {
-                                    mHolder.like.setText(a - 1 + "");
+                                    //mHolder.like.setText(a - 1 + "");
+                                    mWallPostList.get(POSITION).setLike(a - 1 + "");
                                 }
                                 mHolder.like.setCompoundDrawablesWithIntrinsicBounds(R.drawable.like_grey_icon_circle, 0, 0, 0);
 
 
                             }
                         } else if (action == 2) {
-//    action dislike
+                      //    action dislike
 
                             String num_dislike = mHolder.dislike.getText().toString();
                             int b = Integer.parseInt(num_dislike.trim());
@@ -648,18 +645,14 @@ public class ChatsFragment extends BaseFragment {
 
 
                         } else if (action == 3) {
-//    action neutral
+                            // action neutral
 
                             String num_neutral = mHolder.neutral.getText().toString();
                             int c = Integer.parseInt(num_neutral.trim());
 
-
                             if (result.getNeutral() == 1) {
                                 mHolder.neutral.setText(c + 1 + "");
-
                                 mHolder.neutral.setCompoundDrawablesWithIntrinsicBounds(R.drawable.hand_icon_blue_circle, 0, 0, 0);
-
-
                             } else {
                                 if (c > 0) {
                                     mHolder.neutral.setText(c - 1 + "");
@@ -668,6 +661,9 @@ public class ChatsFragment extends BaseFragment {
 
                             }
                         }
+
+                        mAdapter.notifyDataSetChanged();
+                        mWallPostAdapter.notifyDataSetChanged();
                     }
                 }
             } catch (Exception e) {

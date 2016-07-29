@@ -39,7 +39,7 @@
                         android:id="@+id/tv_user_name"
                         android:layout_width="match_parent"
                         android:layout_height="30dp"
-                        android:layout_toRightOf="@+id/iv_user_img"
+                        android:layout_toRightOf="@+id/iv_user_img_create_post"
                         android:paddingLeft="60dp"
                         android:text="User Name"
                         android:textColor="@color/black"

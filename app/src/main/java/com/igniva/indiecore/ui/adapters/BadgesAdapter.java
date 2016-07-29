@@ -200,15 +200,12 @@ public class BadgesAdapter extends RecyclerView.Adapter<BadgesAdapter.RecyclerVi
             super(itemView);
             itemView.setOnClickListener(this);
             try {
-
-
                 mTvBadgeName = (TextView) itemView.findViewById(R.id.tv_badge_name);
                 mIvBadgeIcon = (ImageView) itemView.findViewById(R.id.iv_badge);
                 mIvActivateBadge = (ImageView) itemView.findViewById(R.id.iv_badge_selected);
             } catch (Exception e) {
                 e.printStackTrace();
             }
-
 
 //            mIvBadgeIcon.setOnClickListener(new View.OnClickListener() {
 //                @Override
