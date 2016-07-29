@@ -1,14 +1,12 @@
 package com.igniva.indiecore.ui.adapters;
 
+import android.app.Activity;
 import android.content.Context;
-import android.graphics.drawable.Drawable;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
@@ -18,6 +16,7 @@ import com.igniva.indiecore.controller.OnListItemClickListner;
 import com.igniva.indiecore.controller.WebServiceClient;
 import com.igniva.indiecore.model.PostPojo;
 import com.igniva.indiecore.utils.Constants;
+import com.igniva.indiecore.utils.Utility;
 
 import java.util.ArrayList;
 
@@ -27,7 +26,8 @@ import java.util.ArrayList;
 public class WallPostAdapter extends RecyclerView.Adapter<WallPostAdapter.RecyclerViewHolders> {
 
     private ArrayList<PostPojo> wallItemsList;
-    private Context context;
+    private Context mContext;
+    private boolean deletePostVisible = false;
     String LOG_TAG = "PhonebookAdapter";
     OnListItemClickListner mOnListItemClickListner;
 
@@ -35,7 +35,7 @@ public class WallPostAdapter extends RecyclerView.Adapter<WallPostAdapter.Recycl
     public WallPostAdapter(Context context, ArrayList<PostPojo> wallItemsList, OnListItemClickListner onListItemClickListner) {
 
         this.wallItemsList = wallItemsList;
-        this.context = context;
+        this.mContext = context;
         this.mOnListItemClickListner = onListItemClickListner;
 
     }
@@ -44,7 +44,7 @@ public class WallPostAdapter extends RecyclerView.Adapter<WallPostAdapter.Recycl
     public RecyclerViewHolders onCreateViewHolder(ViewGroup parent, int viewType) {
 
 
-        View layoutView = LayoutInflater.from(parent.getContext()).inflate(R.layout.wall_post_items, parent, false);
+        View layoutView = LayoutInflater.from(parent.getContext()).inflate(R.layout.wall_post_items, parent,false);
         RecyclerViewHolders rcv = new RecyclerViewHolders(layoutView);
         return rcv;
     }
@@ -57,7 +57,7 @@ public class WallPostAdapter extends RecyclerView.Adapter<WallPostAdapter.Recycl
                 holder.mUserName.setText(Name);
             }
             if (wallItemsList.get(position).getProfile_pic() != null) {
-                Glide.with(context).load(WebServiceClient.HTTP_STAGING + wallItemsList.get(position).getProfile_pic())
+                Glide.with(mContext).load(WebServiceClient.HTTP_STAGING + wallItemsList.get(position).getProfile_pic())
                         .thumbnail(1f)
                         .crossFade()
                         .diskCacheStrategy(DiskCacheStrategy.ALL)
@@ -68,7 +68,7 @@ public class WallPostAdapter extends RecyclerView.Adapter<WallPostAdapter.Recycl
 
             if (wallItemsList.get(position).getMediaUrl() != null) {
                 holder.mMediaPost.setVisibility(View.VISIBLE);
-                Glide.with(context).load(WebServiceClient.HTTP_STAGING + wallItemsList.get(position).getMediaUrl())
+                Glide.with(mContext).load(WebServiceClient.HTTP_STAGING + wallItemsList.get(position).getMediaUrl())
                         .thumbnail(1f)
                         .crossFade()
                         .diskCacheStrategy(DiskCacheStrategy.ALL)
@@ -78,55 +78,96 @@ public class WallPostAdapter extends RecyclerView.Adapter<WallPostAdapter.Recycl
                 holder.mMediaPost.setVisibility(View.GONE);
             }
 
+
             holder.mTextPost.setText(wallItemsList.get(position).getText());
-
-
             holder.like.setText(wallItemsList.get(position).getLike());
-
             holder.dislike.setText(wallItemsList.get(position).getDislike());
-
             holder.neutral.setText(wallItemsList.get(position).getNeutral());
-
             holder.comment.setText(wallItemsList.get(position).getComment());
 
-
+            // Post has been liked/disliked or set neutral by user
             if (wallItemsList.get(position).getAction() != null) {
+
                 if (wallItemsList.get(position).getAction().equalsIgnoreCase(Constants.LIKE)) {
-                    Drawable img_like_blu = context.getResources().getDrawable(R.drawable.like_blue_icon_circle);
-                    holder.like.setCompoundDrawablesWithIntrinsicBounds(img_like_blu, null, null, null);
-                    holder.dislike.setEnabled(false);
-                    holder.neutral.setEnabled(false);
+                    holder.like.setCompoundDrawablesWithIntrinsicBounds(R.drawable.like_blue_icon_circle, 0, 0, 0);
+                    holder.dislike.setCompoundDrawablesWithIntrinsicBounds(mContext.getResources().getDrawable(R.drawable.dislike_grey_icon_circle), null, null, null);
+                    holder.neutral.setCompoundDrawablesWithIntrinsicBounds(mContext.getResources().getDrawable(R.drawable.hand_grey_icon_circle), null, null, null);
+                    //holder.dislike.setEnabled(false);
+                  //  holder.neutral.setEnabled(false);
+
 
                 } else if (wallItemsList.get(position).getAction().equalsIgnoreCase(Constants.DISLIKE)) {
 
-                    Drawable img_dislike_blu = context.getResources().getDrawable(R.drawable.dislike_blue_icon_circle);
-                    holder.dislike.setCompoundDrawablesWithIntrinsicBounds(img_dislike_blu, null, null, null);
-                    holder.like.setEnabled(false);
-                    holder.neutral.setEnabled(false);
+                    holder.dislike.setCompoundDrawablesWithIntrinsicBounds(R.drawable.dislike_blue_icon_circle, 0, 0, 0);
 
+                    holder.like.setCompoundDrawablesWithIntrinsicBounds(mContext.getResources().getDrawable(R.drawable.like_grey_icon_circle), null, null, null);
+                    holder.neutral.setCompoundDrawablesWithIntrinsicBounds(mContext.getResources().getDrawable(R.drawable.hand_grey_icon_circle), null, null, null);
+                //    holder.like.setEnabled(false);
+//
 
                 } else if (wallItemsList.get(position).getAction().equalsIgnoreCase(Constants.NEUTRAL)) {
 
-                    Drawable img_neutral_blu = context.getResources().getDrawable(R.drawable.hand_icon_blue_circle);
-                    holder.neutral.setCompoundDrawablesWithIntrinsicBounds(img_neutral_blu, null, null, null);
-                    holder.dislike.setEnabled(false);
-                    holder.like.setEnabled(false);
+                    holder.neutral.setCompoundDrawablesWithIntrinsicBounds(R.drawable.hand_icon_blue_circle, 0, 0, 0);
+                    holder.like.setCompoundDrawablesWithIntrinsicBounds(mContext.getResources().getDrawable(R.drawable.like_grey_icon_circle), null, null, null);
+                    holder.dislike.setCompoundDrawablesWithIntrinsicBounds(mContext.getResources().getDrawable(R.drawable.dislike_grey_icon_circle), null, null, null);
+                //    holder.dislike.setEnabled(false);
+                 //   holder.like.setEnabled(false);
+
+                } else {
+
+                    holder.like.setCompoundDrawablesWithIntrinsicBounds(mContext.getResources().getDrawable(R.drawable.like_grey_icon_circle), null, null, null);
+                    holder.dislike.setCompoundDrawablesWithIntrinsicBounds(mContext.getResources().getDrawable(R.drawable.dislike_grey_icon_circle), null, null, null);
+                    holder.neutral.setCompoundDrawablesWithIntrinsicBounds(mContext.getResources().getDrawable(R.drawable.hand_grey_icon_circle), null, null, null);
+//                    holder.like.setEnabled(true);
+//                    holder.dislike.setEnabled(true);
+//                    holder.neutral.setEnabled(true);
 
                 }
-            } else {
+            }
+            // Post has not been  like/dislike or neutral
+            else {
 
-                holder.like.setCompoundDrawablesWithIntrinsicBounds(context.getResources().getDrawable(R.drawable.like_grey_icon_circle), null, null, null);
-                holder.dislike.setCompoundDrawablesWithIntrinsicBounds(context.getResources().getDrawable(R.drawable.dislike_grey_icon_circle), null, null, null);
-                holder.neutral.setCompoundDrawablesWithIntrinsicBounds(context.getResources().getDrawable(R.drawable.hand_grey_icon_circle), null, null, null);
-                holder.like.setEnabled(true);
-                holder.dislike.setEnabled(true);
-                holder.neutral.setEnabled(true);
+                holder.like.setCompoundDrawablesWithIntrinsicBounds(mContext.getResources().getDrawable(R.drawable.like_grey_icon_circle), null, null, null);
+                holder.dislike.setCompoundDrawablesWithIntrinsicBounds(mContext.getResources().getDrawable(R.drawable.dislike_grey_icon_circle), null, null, null);
+                holder.neutral.setCompoundDrawablesWithIntrinsicBounds(mContext.getResources().getDrawable(R.drawable.hand_grey_icon_circle), null, null, null);
+//                holder.like.setEnabled(true);
+//                holder.dislike.setEnabled(true);
+//                holder.neutral.setEnabled(true);
 
 
             }
 
 
-            mOnListItemClickListner.onListItemClicked(holder, position, wallItemsList.get(position).getPostId());
+            holder.like.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    //Utility.showToastMessageLong(((Activity) mContext)," position is "+position);
+                    mOnListItemClickListner.onListItemClicked(holder, position, wallItemsList.get(position).getPostId());
+                }
+            });
+            holder.dislike.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Utility.showToastMessageLong(((Activity) mContext)," position is "+position);
+                   // mOnListItemClickListner.onListItemClicked(holder, position, wallItemsList.get(position).getPostId());
+                }
+            });
+            holder.neutral.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Utility.showToastMessageLong(((Activity) mContext)," position is "+position);
+                  //  mOnListItemClickListner.onListItemClicked(holder, position, wallItemsList.get(position).getPostId());
+                }
+            });
+
+            holder.comment.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    mOnListItemClickListner.onListItemClicked(holder, position, wallItemsList.get(position).getPostId());
+
+                }
+            });
+
 
 //
         } catch (Exception e) {
@@ -143,7 +184,7 @@ public class WallPostAdapter extends RecyclerView.Adapter<WallPostAdapter.Recycl
     }
 
 
-    public class RecyclerViewHolders extends RecyclerView.ViewHolder implements View.OnClickListener {
+    public class RecyclerViewHolders extends RecyclerView.ViewHolder {
 
         public TextView mUserName;
         public ImageView mUserIcon;
@@ -155,6 +196,8 @@ public class WallPostAdapter extends RecyclerView.Adapter<WallPostAdapter.Recycl
         public TextView dislike;
         public TextView neutral;
         public TextView comment;
+        public ImageView dropDownOptions;
+        public ImageView mDeletePost;
 //        public TextView  share;
 //        public LinearLayout mCommentSection;
 //        public EditText mEtComment;
@@ -164,7 +207,7 @@ public class WallPostAdapter extends RecyclerView.Adapter<WallPostAdapter.Recycl
 
         public RecyclerViewHolders(final View itemView) {
             super(itemView);
-            itemView.setOnClickListener(this);
+
             mUserName = (TextView) itemView.findViewById(R.id.tv_user_name_);
             mUserIcon = (ImageView) itemView.findViewById(R.id.iv_user_img_);
 
@@ -177,6 +220,10 @@ public class WallPostAdapter extends RecyclerView.Adapter<WallPostAdapter.Recycl
             dislike = (TextView) itemView.findViewById(R.id.tv_dislike);
             neutral = (TextView) itemView.findViewById(R.id.tv_neutral);
             comment = (TextView) itemView.findViewById(R.id.tv_comment);
+
+
+            dropDownOptions = (ImageView) itemView.findViewById(R.id.iv_drop_down_options);
+            mDeletePost = (ImageView) itemView.findViewById(R.id.iv_delete_post);
 //            share=(TextView) itemView.findViewById(R.id.tv_share);
 //            mCommentSection=(LinearLayout) itemView.findViewById(R.id.ll_comment_part);
 
@@ -186,11 +233,7 @@ public class WallPostAdapter extends RecyclerView.Adapter<WallPostAdapter.Recycl
 
         }
 
-        @Override
-        public void onClick(View view) {
 
-
-        }
     }
 
 

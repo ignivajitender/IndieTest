@@ -156,6 +156,13 @@
             android:windowSoftInputMode="adjustPan"
             android:label="@string/comment_activity"/>
 
+        <activity
+            android:theme="@style/AppTheme"
+            android:name=".ui.activities.CommentsReplyActivity"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="adjustPan"
+            android:label="@string/comment_reply_activity"/>
+
 
 
         <meta-data

@@ -69,11 +69,16 @@
                     android:textColor="@color/light_black"
                     android:textSize="12sp" />
                 <ImageView
+                    android:id="@+id/iv_drop_down_options"
                     android:layout_width="0dp"
                     android:layout_weight="1"
+                    android:padding="10dp"
+                    android:onClick="onClick"
                     android:src="@drawable/dropdown_icon"
                     android:layout_gravity="center"
                     android:layout_height="wrap_content" />
+
+
 
 
             </LinearLayout>
@@ -88,6 +93,12 @@
 
 
         </RelativeLayout>
+
+
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
 
 
         <LinearLayout
@@ -246,6 +257,20 @@
             <!--</LinearLayout>-->
             </LinearLayout>
         </LinearLayout>
+
+            <ImageView
+                android:id="@+id/iv_delete_post"
+                android:layout_width="100dp"
+                android:src="@drawable/delete_icon"
+                android:layout_gravity="right"
+                android:visibility="gone"
+                android:onClick="onClick"
+                android:layout_marginTop="-8dp"
+                android:layout_marginRight="8dp"
+                android:layout_height="50dp" />
+
+
+        </FrameLayout>
 
 
     </LinearLayout>

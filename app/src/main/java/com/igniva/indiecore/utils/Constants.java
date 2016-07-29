@@ -59,10 +59,12 @@ public class Constants {
     public static  final String COMMENTID="commentId";
 
 
-
+public static  final String SELF="self";
     public static  final String LIKE="like";
     public static  final String DISLIKE="dislike";
     public static  final String NEUTRAL="neutral";
+    public static  final String RELATION_SELF="self";
+    public static  final String RELATION_UNKNOWN="unknown";
 
 
 

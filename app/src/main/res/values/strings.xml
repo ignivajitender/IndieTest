@@ -21,6 +21,9 @@
     <!--commentActivity-->
     <string name="comment_activity">Comment Activity</string>
 
+    <!--comment_reply_activity-->
+    <string name="comment_reply_activity">Comment Reply Activity</string>
+
     <!--splash-->
 
     <string name="get_started">Get Started Now</string>
@@ -113,6 +116,8 @@
     <!--board-->
     <string name="add_comment">Add comment</string>
     <string name="upload">Upload</string>
+    <string name="write_reply">Write reply</string>
+
 
     <string name="comment_text_validation_message">Please do write a comment to post</string>
     <!--Busines room-->

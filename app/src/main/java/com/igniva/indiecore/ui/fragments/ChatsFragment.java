@@ -3,7 +3,6 @@ package com.igniva.indiecore.ui.fragments;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.graphics.Color;
-import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
@@ -15,9 +14,9 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
-import com.bumptech.glide.load.data.StreamAssetPathFetcher;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.igniva.indiecore.R;
+import com.igniva.indiecore.controller.OnCommentListItemClickListner;
 import com.igniva.indiecore.controller.OnListItemClickListner;
 import com.igniva.indiecore.controller.ResponseHandlerListener;
 import com.igniva.indiecore.controller.WebNotificationManager;
@@ -31,7 +30,6 @@ import com.igniva.indiecore.ui.activities.DashBoardActivity;
 import com.igniva.indiecore.ui.adapters.PostCommentAdapter;
 import com.igniva.indiecore.ui.adapters.WallPostAdapter;
 import com.igniva.indiecore.utils.Constants;
-import com.igniva.indiecore.utils.Log;
 import com.igniva.indiecore.utils.PreferenceHandler;
 import com.igniva.indiecore.utils.Utility;
 
@@ -48,6 +46,8 @@ public class ChatsFragment extends BaseFragment {
     ImageView mUserImage;
     public DashBoardActivity mDashBoard;
     private WallPostAdapter mAdapter;
+    private ImageView mDeletePost;
+    private String ACTION = "DELETE";
     private ArrayList<PostPojo> mWallPostList;
     private ArrayList<CommentPojo> mCommentList;
     private LinearLayoutManager mLlManager;
@@ -56,6 +56,8 @@ public class ChatsFragment extends BaseFragment {
     private PostCommentAdapter mCommentAdapter;
     private RecyclerView mRvWallPosts;
     private RecyclerView mRvComment;
+    public static int POSTION=-1;
+    private boolean deletePostVisible = false;
     public final static String BUSINESS = "business";
     WallPostAdapter.RecyclerViewHolders mHolder;
     String PAGE = "1";
@@ -105,6 +107,8 @@ public class ChatsFragment extends BaseFragment {
 
         mUserName = (TextView) rootView.findViewById(R.id.tv_user_name_chat_fragment);
         mUserImage = (ImageView) rootView.findViewById(R.id.iv_user_img_chat_fragment);
+
+        mDeletePost = (ImageView) rootView.findViewById(R.id.iv_delete_post);
 
 
 
@@ -191,6 +195,10 @@ public class ChatsFragment extends BaseFragment {
                     intent.putExtra(Constants.BUSINESS_ID, mBusinessId);
                     startActivity(intent);
                     break;
+                case R.id.iv_drop_down_options:
+
+
+                    break;
                 default:
                     break;
             }
@@ -200,38 +208,50 @@ public class ChatsFragment extends BaseFragment {
 
     OnListItemClickListner onListItemClickListner = new OnListItemClickListner() {
         @Override
-        public void onListItemClicked(final WallPostAdapter.RecyclerViewHolders holder, final int position, final String postId) {
+        public void onListItemClicked(final WallPostAdapter.RecyclerViewHolders holder,  int position, final String postId) {
 
             mHolder = holder;
+            POSTION=position;
+
+
+
+
+            /*
+            * action=1-like
+            * action=2-dislike
+            * action=3-neutral
+            *
+            * */
 
             holder.like.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    action = 1;
-                    likeUnlikePost(mActionTypeLike, postId);
+                    Utility.showToastMessageLong(getActivity()," position is "+POSTION);
+                    //action = 1;
+                    //likeUnlikePost(mActionTypeLike, postId);
                 }
             });
-
-            holder.dislike.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    action = 2;
-
-                    likeUnlikePost(mActionTypeDislike, postId);
-                }
-            });
-
-
-            holder.neutral.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    action = 3;
-
-                    likeUnlikePost(mActionTypeNeutral, postId);
-
-                }
-            });
-
+//
+//            holder.dislike.setOnClickListener(new View.OnClickListener() {
+//                @Override
+//                public void onClick(View v) {
+//                    action = 2;
+//
+//                    likeUnlikePost(mActionTypeDislike, postId);
+//                }
+//            });
+//
+//
+//            holder.neutral.setOnClickListener(new View.OnClickListener() {
+//                @Override
+//                public void onClick(View v) {
+//                    action = 3;
+//
+//                    likeUnlikePost(mActionTypeNeutral, postId);
+//
+//                }
+//            });
+//
             holder.comment.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -241,7 +261,7 @@ public class ChatsFragment extends BaseFragment {
 //                    holder.mCommentSection.setVisibility(View.VISIBLE);
 //                    viewAllComments(postId);
                     Bundle bundle = new Bundle();
-                    bundle.putSerializable("POST", mWallPostList.get(position));
+                    bundle.putSerializable("POST", mWallPostList.get(POSTION));
 
                     Intent intent = new Intent(getActivity(), CommentActivity.class);
                     intent.putExtras(bundle);
@@ -250,6 +270,54 @@ public class ChatsFragment extends BaseFragment {
 
                 }
             });
+//
+//            holder.dropDownOptions.setOnClickListener(new View.OnClickListener() {
+//                @Override
+//                public void onClick(View v) {
+//                    try {
+//
+//                        if (deletePostVisible == false) {
+//                            holder.mDeletePost.setVisibility(View.VISIBLE);
+//                            if (mWallPostList.get(POSTION).getRelation().equalsIgnoreCase("self")) {
+//                                holder.mDeletePost.setImageResource(R.drawable.delete_icon);
+//                                ACTION = "DELETE";
+//                            } else {
+//                                holder.mDeletePost.setImageResource(R.drawable.report_abuse);
+//                                ACTION = "REPORT";
+//                            }
+//                            deletePostVisible = true;
+//                        } else {
+//                            holder.mDeletePost.setVisibility(View.GONE);
+//                            deletePostVisible = false;
+//
+//                        }
+//
+//                    } catch (Exception e) {
+//                        e.printStackTrace();
+//                    }
+//                }
+//            });
+//
+//
+//            holder.mDeletePost.setOnClickListener(new View.OnClickListener() {
+//                @Override
+//                public void onClick(View v) {
+//                    try {
+//
+//                        if (ACTION.equalsIgnoreCase("DELETE")) {
+//
+//                         removePost(postId);
+//
+//                        } else if (ACTION.equalsIgnoreCase("REPORT")) {
+//
+//                            flagPost(postId);
+//                        }
+//
+//                    } catch (Exception e) {
+//                        e.printStackTrace();
+//                    }
+//                }
+//            });
 
 //
 //            holder.mIvPostComment.setOnClickListener(new View.OnClickListener() {
@@ -590,86 +658,108 @@ public class ChatsFragment extends BaseFragment {
         String payload = createPayload(type, postId);
 
         if (!payload.isEmpty()) {
-
-            WebNotificationManager.registerResponseListener(responseHandl);
-            WebServiceClient.like_unlike_post(getActivity(), payload, responseHandl);
+            WebNotificationManager.registerResponseListener(responseHandlerLike);
+            WebServiceClient.like_unlike_post(getActivity(), payload, responseHandlerLike);
         }
     }
 
     /*
     * like unlike response
     * */
-    ResponseHandlerListener responseHandl = new ResponseHandlerListener() {
+    ResponseHandlerListener responseHandlerLike = new ResponseHandlerListener() {
         @Override
         public void onComplete(ResponsePojo result, WebServiceClient.WebError error, ProgressDialog mProgressDialog) {
-            WebNotificationManager.unRegisterResponseListener(responseHandl);
+            WebNotificationManager.unRegisterResponseListener(responseHandlerLike);
             try {
 
                 if (error == null) {
 
                     if (result.getSuccess().equalsIgnoreCase("true")) {
+
+
+
                         if (action == 1) {
-//action like
-                            String num_like = mHolder.like.getText().toString();
+                            //action like
+                            String num_like = mWallPostList.get(POSTION).getLike();
                             int a = Integer.parseInt(num_like.trim());
 
                             if (result.getLike() == 1) {
+
+
                                 mHolder.like.setText(a + 1 + "");
 
                                 mHolder.like.setCompoundDrawablesWithIntrinsicBounds(R.drawable.like_blue_icon_circle, 0, 0, 0);
-
+                                mWallPostList.get(POSTION).setAction(Constants.LIKE);
+                                mWallPostList.get(POSTION).setLike(a + 1 + "");
                             } else {
                                 if (a > 0) {
                                     mHolder.like.setText(a - 1 + "");
                                 }
                                 mHolder.like.setCompoundDrawablesWithIntrinsicBounds(R.drawable.like_grey_icon_circle, 0, 0, 0);
-
-
+                                mWallPostList.get(POSTION).setAction(null);
+                                mWallPostList.get(POSTION).setLike(a - 1 + "");
                             }
-                        } else if (action == 2) {
-//    action dislike
 
+
+                        } else if (action == 2) {
+                            //action dislike
                             String num_dislike = mHolder.dislike.getText().toString();
                             int b = Integer.parseInt(num_dislike.trim());
-
 
                             if (result.getDislike() == 1) {
                                 mHolder.dislike.setText(b + 1 + "");
                                 mHolder.dislike.setCompoundDrawablesWithIntrinsicBounds(R.drawable.dislike_blue_icon_circle, 0, 0, 0);
-
-
+                                mWallPostList.get(POSTION).setAction(Constants.DISLIKE);
+                                mWallPostList.get(POSTION).setDislike(b + 1 + "");
                             } else {
                                 if (b > 0) {
                                     mHolder.dislike.setText(b - 1 + "");
                                 }
                                 mHolder.dislike.setCompoundDrawablesWithIntrinsicBounds(R.drawable.dislike_grey_icon_circle, 0, 0, 0);
+                                mWallPostList.get(POSTION).setAction(null);
+                                mWallPostList.get(POSTION).setDislike(b - 1 + "");
 
                             }
 
 
                         } else if (action == 3) {
-//    action neutral
+                            //    action neutral
 
                             String num_neutral = mHolder.neutral.getText().toString();
                             int c = Integer.parseInt(num_neutral.trim());
 
-
                             if (result.getNeutral() == 1) {
                                 mHolder.neutral.setText(c + 1 + "");
-
                                 mHolder.neutral.setCompoundDrawablesWithIntrinsicBounds(R.drawable.hand_icon_blue_circle, 0, 0, 0);
-
-
+                                mWallPostList.get(POSTION).setAction(Constants.NEUTRAL);
+                                mWallPostList.get(POSTION).setNeutral(c + 1 + "");
                             } else {
                                 if (c > 0) {
                                     mHolder.neutral.setText(c - 1 + "");
                                 }
                                 mHolder.neutral.setCompoundDrawablesWithIntrinsicBounds(R.drawable.hand_grey_icon_circle, 0, 0, 0);
-
+                                mWallPostList.get(POSTION).setAction(null);
+                                mWallPostList.get(POSTION).setNeutral(c - 1 + "");
                             }
                         }
                     }
                 }
+
+
+                // Refresh adapter
+                //mWallPostAdapter.notifyDataSetChanged();
+
+                mWallPostAdapter = new WallPostAdapter(getActivity(), mWallPostList, onListItemClickListner);
+                mWallPostAdapter.notifyDataSetChanged();
+                mRvWallPosts.setAdapter(mWallPostAdapter);
+
+                mRvWallPosts.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+
+                    }
+                });
+
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -712,12 +802,17 @@ public class ChatsFragment extends BaseFragment {
     *
     * */
     public void removePost(String postId) {
+        try {
 
-        String payload = genratePayload(postId);
-        if (!payload.isEmpty()) {
 
-            WebNotificationManager.registerResponseListener(responseRemovePost);
-            WebServiceClient.remove_a_post(getActivity(), payload, responseRemovePost);
+            String payload = genratePayload(postId);
+            if (!payload.isEmpty()) {
+
+                WebNotificationManager.registerResponseListener(responseRemovePost);
+                WebServiceClient.remove_a_post(getActivity(), payload, responseRemovePost);
+            }
+        }catch (Exception e){
+            e.printStackTrace();
         }
     }
 
@@ -735,6 +830,9 @@ public class ChatsFragment extends BaseFragment {
             try {
                 if (error == null) {
                     if (result.getSuccess().equalsIgnoreCase("true")) {
+
+
+                        mWallPostList.remove(POSTION);
 
                         Utility.showToastMessageLong(getActivity(), "post removed");
 
@@ -767,7 +865,7 @@ public class ChatsFragment extends BaseFragment {
     *
     *
     * */
-    public void FlagPost(String postId) {
+    public void flagPost(String postId) {
 
         String payload = genratePayload(postId);
         if (payload != null) {
@@ -818,5 +916,16 @@ public class ChatsFragment extends BaseFragment {
             }
         }
     };
+
+
+
+
+//    OnCommentListItemClickListner onCommentListItemClickListner= new OnCommentListItemClickListner() {
+//        @Override
+//        public void onCommentListItemClicked(PostCommentAdapter.RecyclerViewHolders view, int position, String commentId) {
+//
+//        }
+//    };
+
 
 }

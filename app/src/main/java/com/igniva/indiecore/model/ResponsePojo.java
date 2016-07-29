@@ -33,6 +33,17 @@ public class ResponsePojo {
     private ProfilePojo profile;
     private ArrayList<BusinessPojo> business_list;
     private ArrayList<CommentPojo> commentList;
+    private ArrayList<RepliesPojo> repliesList;
+
+
+    public ArrayList<RepliesPojo> getRepliesList() {
+        return repliesList;
+    }
+
+    public void setRepliesList(ArrayList<RepliesPojo> repliesList) {
+        this.repliesList = repliesList;
+    }
+
 
 
     private int like;

@@ -1,27 +1,25 @@
 package com.igniva.indiecore.model;
 
-import java.io.Serializable;
-
 /**
- * Created by igniva-andriod-05 on 21/7/16.
+ * Created by igniva-andriod-05 on 29/7/16.
  */
-public class CommentPojo implements Serializable{
+public class RepliesPojo {
 
-    private String text;
-    private String date_created ;
-    private String date_updated ;
-    private String commentId;
+
+    private  String text;
+    private  String date_created;
+     private String date_updated;
+    private String replyId;
     private String userId;
     private String firstName;
     private String lastName;
     private String profile_pic;
     private String relation;
     private String badges;
-    private String action ;
+    private String action;
     private String like;
     private String neutral;
     private String dislike;
-    private String replie;
 
     public String getLastName() {
         return lastName;
@@ -55,12 +53,12 @@ public class CommentPojo implements Serializable{
         this.date_updated = date_updated;
     }
 
-    public String getCommentId() {
-        return commentId;
+    public String getReplyId() {
+        return replyId;
     }
 
-    public void setCommentId(String commentId) {
-        this.commentId = commentId;
+    public void setReplyId(String replyId) {
+        this.replyId = replyId;
     }
 
     public String getUserId() {
@@ -133,14 +131,6 @@ public class CommentPojo implements Serializable{
 
     public void setDislike(String dislike) {
         this.dislike = dislike;
-    }
-
-    public String getReplie() {
-        return replie;
-    }
-
-    public void setReplie(String replie) {
-        this.replie = replie;
     }
 
 
