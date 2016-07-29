@@ -125,7 +125,6 @@
                                 android:layout_weight="1"
                                 android:drawableLeft="@drawable/upload_icon"
                                 android:drawablePadding="10dp"
-                                android:onClick="onClick"
                                 android:text="@string/upload" />
 
                             <TextView
@@ -136,7 +135,6 @@
                                 android:layout_weight="1"
                                 android:drawableLeft="@drawable/camera_icon"
                                 android:drawablePadding="10dp"
-                                android:onClick="onClick"
                                 android:text="Camera" />
 
                         </LinearLayout>
