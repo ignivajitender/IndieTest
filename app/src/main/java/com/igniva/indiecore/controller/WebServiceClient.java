@@ -68,6 +68,10 @@ public class WebServiceClient {
     public  static  final String HTTP_FLAG_POST=HTTP_PROTOCOL+HTTP_HOST_IP+"post/flag";
     public static  final String HTTP_LIKE_UNLIKE_COMMENT=HTTP_PROTOCOL+HTTP_HOST_IP+"post/comment/action";
     public  static  final String HTTP_REMOVE_A_COMMENT=HTTP_PROTOCOL+HTTP_HOST_IP+"post/comment/remove";
+    public static  final String HTTP_MAKE_A_REPLY=HTTP_PROTOCOL+HTTP_HOST_IP+"post/comment/reply/make";
+    public static  final String HTTP_VIEW_ALL_REPLY=HTTP_PROTOCOL+HTTP_HOST_IP+"post/comment/reply/view";
+    public static  final String HTTP_LIKE_UNLIKE_REPLY=HTTP_PROTOCOL+HTTP_HOST_IP+"post/comment/reply/action";
+    public static  final String HTTP_REMOVEREPLY=HTTP_PROTOCOL+HTTP_HOST_IP+"post/comment/reply/remove";
 
 
 
@@ -238,6 +242,39 @@ public class WebServiceClient {
 
     public static void remove_a_comment(final Context context,String payload,ResponseHandlerListener responseHandlerListener){
         url=HTTP_REMOVE_A_COMMENT;
+        method=HttpMethod.HTTP_POST;
+        mResponseHandlerListener=responseHandlerListener;
+        checkNetworkState(url,payload,method,context);
+    }
+
+
+    public static void reply_to_comment(final Context context,String payload,ResponseHandlerListener responseHandlerListener){
+        url=HTTP_MAKE_A_REPLY;
+        method=HttpMethod.HTTP_POST;
+        mResponseHandlerListener=responseHandlerListener;
+        checkNetworkState(url,payload,method,context);
+    }
+
+
+
+    public static void view_all_replies(final Context context,String payload,ResponseHandlerListener responseHandlerListener){
+        url=HTTP_VIEW_ALL_REPLY;
+        method=HttpMethod.HTTP_POST;
+        mResponseHandlerListener=responseHandlerListener;
+        checkNetworkState(url,payload,method,context);
+    }
+
+    public static void like_unlike_a_reply(final Context context,String payload,ResponseHandlerListener responseHandlerListener){
+        url=HTTP_LIKE_UNLIKE_REPLY;
+        method=HttpMethod.HTTP_POST;
+        mResponseHandlerListener=responseHandlerListener;
+        checkNetworkState(url,payload,method,context);
+    }
+
+
+
+    public static void remove_a_reply(final Context context,String payload,ResponseHandlerListener responseHandlerListener){
+        url=HTTP_REMOVEREPLY;
         method=HttpMethod.HTTP_POST;
         mResponseHandlerListener=responseHandlerListener;
         checkNetworkState(url,payload,method,context);
