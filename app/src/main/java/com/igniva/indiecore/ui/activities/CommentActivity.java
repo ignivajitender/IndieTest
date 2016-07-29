@@ -637,7 +637,7 @@ public class CommentActivity extends BaseActivity {
         @Override
         public void onComplete(ResponsePojo result, WebServiceClient.WebError error, ProgressDialog mProgressDialog) {
 
-            WebNotificationManager.unRegisterResponseListener(responseHandlerComment);
+            WebNotificationManager.unRegisterResponseListener(responseCommentAction);
 
 
             try {
@@ -653,13 +653,18 @@ public class CommentActivity extends BaseActivity {
                             if (result.getLike() == 1) {
                                 mHolder.mCommentLike.setText(a + 1 + "");
                                 mHolder.mCommentLike.setCompoundDrawablesWithIntrinsicBounds(R.drawable.like_icon, 0, 0, 0);
-
+                                mHolder.mCommentLike.setEnabled(true);
+                                mHolder.mCommentDislike.setEnabled(false);
+                                mHolder.mCommentNeutral.setEnabled(false);
 
                             } else {
                                 if (a > 0) {
                                     mHolder.mCommentLike.setText(a - 1 + "");
                                 }
                                 mHolder.mCommentLike.setCompoundDrawablesWithIntrinsicBounds(R.drawable.like_grey_icon, 0, 0, 0);
+                                mHolder.mCommentLike.setEnabled(true);
+                                mHolder.mCommentDislike.setEnabled(true);
+                                mHolder.mCommentNeutral.setEnabled(true);
 
 
                             }
@@ -674,6 +679,9 @@ public class CommentActivity extends BaseActivity {
                             if (result.getDislike() == 1) {
                                 mHolder.mCommentDislike.setText(b + 1 + "");
                                 mHolder.mCommentDislike.setCompoundDrawablesWithIntrinsicBounds(R.drawable.dislike_icon_grey, 0, 0, 0);
+                                mHolder.mCommentLike.setEnabled(false);
+                                mHolder.mCommentDislike.setEnabled(true);
+                                mHolder.mCommentNeutral.setEnabled(false);
 
 
                             } else {
@@ -681,6 +689,9 @@ public class CommentActivity extends BaseActivity {
                                     mHolder.mCommentDislike.setText(b - 1 + "");
                                 }
                                 mHolder.mCommentDislike.setCompoundDrawablesWithIntrinsicBounds(R.drawable.dislike_icon_without_circle, 0, 0, 0);
+                                mHolder.mCommentLike.setEnabled(true);
+                                mHolder.mCommentDislike.setEnabled(true);
+                                mHolder.mCommentNeutral.setEnabled(true);
 
                             }
 
@@ -694,6 +705,9 @@ public class CommentActivity extends BaseActivity {
                             if (result.getNeutral() == 1) {
                                 mHolder.mCommentNeutral.setText(c + 1 + "");
                                 mHolder.mCommentNeutral.setCompoundDrawablesWithIntrinsicBounds(R.drawable.hand_icon, 0, 0, 0);
+                                mHolder.mCommentLike.setEnabled(false);
+                                mHolder.mCommentDislike.setEnabled(false);
+                                mHolder.mCommentNeutral.setEnabled(true);
 
 
                             } else {
@@ -702,6 +716,9 @@ public class CommentActivity extends BaseActivity {
 
                                 }
                                 mHolder.mCommentNeutral.setCompoundDrawablesWithIntrinsicBounds(R.drawable.hand_icon_grey, 0, 0, 0);
+                                mHolder.mCommentLike.setEnabled(true);
+                                mHolder.mCommentDislike.setEnabled(true);
+                                mHolder.mCommentNeutral.setEnabled(true);
 
 
 
@@ -944,9 +961,9 @@ public class CommentActivity extends BaseActivity {
             mHolder.mCommentLike.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-
-                    commentAction(mActionTypeLike, commentId);
                     action = 1;
+                    commentAction(mActionTypeLike, commentId);
+
 
                 }
             });
@@ -954,18 +971,18 @@ public class CommentActivity extends BaseActivity {
             mHolder.mCommentDislike.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-
-                    commentAction(mActionTypeDislike, commentId);
                     action = 2;
+                    commentAction(mActionTypeDislike, commentId);
+
 
                 }
             });
             mHolder.mCommentNeutral.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-
-                    commentAction(mActionTypeNeutral, commentId);
                     action = 3;
+                    commentAction(mActionTypeNeutral, commentId);
+
 
                 }
             });

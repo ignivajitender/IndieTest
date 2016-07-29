@@ -77,7 +77,7 @@
             android:drawableLeft="@drawable/like_grey_icon"
             android:drawablePadding="6dp"
             android:gravity="center_vertical"
-            android:text="2" />
+            android:text="0" />
 
         <TextView
             android:id="@+id/tv_neutral_comment"
@@ -88,7 +88,7 @@
             android:drawableLeft="@drawable/hand_icon_grey"
             android:drawablePadding="6dp"
             android:gravity="center_vertical"
-            android:text="2" />
+            android:text="0" />
 
         <TextView
             android:id="@+id/tv_dislike_comment"
@@ -99,7 +99,7 @@
             android:drawableLeft="@drawable/dislike_icon_grey"
             android:drawablePadding="6dp"
             android:gravity="center_vertical"
-            android:text="2" />
+            android:text="0" />
 
         <TextView
             android:id="@+id/tv_comment_reply"
@@ -110,7 +110,7 @@
             android:drawableLeft="@drawable/share_icon_grey"
             android:drawablePadding="6dp"
             android:gravity="center_vertical"
-            android:text="2" />
+            android:text="0" />
 
     </LinearLayout>
 

@@ -45,6 +45,10 @@ public class CommentsReplyActivity extends BaseActivity {
     private String commentId = "";
     private TextView mUserName, mUserComment;
     private ImageView mUserImg;
+    public static final String mActionTypeLike = "like";
+    public static final String mActionTypeDislike = "dislike";
+    public static final String mActionTypeNeutral = "neutral";
+    private int action=0;
     private String page="1";
     private String limit="10";
     private ArrayList<RepliesPojo> mRelpiesLIst;
@@ -188,7 +192,7 @@ try {
                 String reply_txt=mEtReplyText.getText().toString();
 
                     if(reply_txt.isEmpty()) {
-                        Utility.showToastMessageLong(CommentsReplyActivity.this, "Please write a comment");
+                        Utility.showToastMessageLong(CommentsReplyActivity.this, "Please write a reply");
                     }else {
                         replyToComment(commentId,reply_txt);
 
@@ -197,15 +201,21 @@ try {
 
 
             case R.id.tv_like_comment_reply:
+                action = 1;
+                commentAction(mActionTypeLike, commentId);
 
                 break;
 
             case R.id.tv_dislike_comment_reply:
+                action = 2;
+                commentAction(mActionTypeDislike, commentId);
 
                 break;
 
 
             case R.id.tv_neutral_comment_reply:
+                action = 3;
+                commentAction(mActionTypeNeutral, commentId);
 
                 break;
             default:
@@ -353,6 +363,166 @@ try {
 
         }
     };
+
+
+
+
+      /*
+   * token, userId, type(like/dislike/neutral), commentId
+   * generate payload to like unlike a comment
+   *
+   *
+   * */
+
+    public String createPayloadLikeUNLikeComment(String type, String commentId) {
+        JSONObject payload = null;
+        try {
+            payload = new JSONObject();
+            payload.put(Constants.TOKEN, PreferenceHandler.readString(this, PreferenceHandler.PREF_KEY_USER_TOKEN, ""));
+            payload.put(Constants.USERID, PreferenceHandler.readString(this, PreferenceHandler.PREF_KEY_USER_ID, ""));
+            payload.put(Constants.TYPE, type);
+            payload.put(Constants.COMMENTID, commentId);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return payload.toString();
+    }
+
+    /*
+    *
+    * call request to like unlike a comment
+    *
+    *
+    * */
+
+
+    public void commentAction(String type, String commentId) {
+
+        String payload = createPayloadLikeUNLikeComment(type, commentId);
+        if (payload != null) {
+
+            WebNotificationManager.registerResponseListener(responseCommentActionReply);
+            WebServiceClient.like_unlike_a_comment(this, payload, responseCommentActionReply);
+        }
+
+    }
+
+    /*
+    * response LIke unlike a comment
+    *
+    *
+    * */
+    ResponseHandlerListener responseCommentActionReply = new ResponseHandlerListener() {
+        @Override
+        public void onComplete(ResponsePojo result, WebServiceClient.WebError error, ProgressDialog mProgressDialog) {
+
+            WebNotificationManager.unRegisterResponseListener(responseCommentActionReply);
+
+
+            try {
+                if (error == null) {
+
+                    if (result.getSuccess().equalsIgnoreCase("true")) {
+
+                        if (action == 1) {
+                            //                        like
+                            String likes_count = mTvCommentLike.getText().toString();
+                            int a = 0;
+                            a=Integer.parseInt(likes_count.trim());
+                            if (result.getLike() == 1) {
+                                mTvCommentLike.setText(a + 1 + "");
+                                mTvCommentLike.setCompoundDrawablesWithIntrinsicBounds(R.drawable.like_icon, 0, 0, 0);
+                                mTvCommentLike.setEnabled(true);
+                                mTvCommentDislike.setEnabled(false);
+                                mTvCommentNeutral.setEnabled(false);
+
+                            } else {
+                                if (a > 0) {
+                                    mTvCommentLike.setText(a - 1 + "");
+                                }
+                                mTvCommentLike.setCompoundDrawablesWithIntrinsicBounds(R.drawable.like_grey_icon, 0, 0, 0);
+                                mTvCommentLike.setEnabled(true);
+                                mTvCommentDislike.setEnabled(true);
+                                mTvCommentNeutral.setEnabled(true);
+
+
+                            }
+
+                        } else if (action == 2) {
+                            //                        dislike
+
+
+                            String dislikes_count = mTvCommentDislike.getText().toString();
+                            int b = 0;
+                            b=Integer.parseInt(dislikes_count.trim());
+                            if (result.getDislike() == 1) {
+                                mTvCommentDislike.setText(b + 1 + "");
+                                mTvCommentDislike.setCompoundDrawablesWithIntrinsicBounds(R.drawable.dislike_icon_without_circle, 0, 0, 0);
+                                mTvCommentLike.setEnabled(false);
+                                mTvCommentDislike.setEnabled(true);
+                                mTvCommentNeutral.setEnabled(false);
+
+                            } else {
+                                if (b > 0) {
+                                    mTvCommentDislike.setText(b - 1 + "");
+                                }
+                                mTvCommentDislike.setCompoundDrawablesWithIntrinsicBounds(R.drawable.dislike_icon_grey, 0, 0, 0);
+                                mTvCommentLike.setEnabled(true);
+                                mTvCommentDislike.setEnabled(true);
+                                mTvCommentNeutral.setEnabled(true);
+
+                            }
+
+                        } else {
+
+                            //                        neutral
+
+                            String neutral_count = mTvCommentNeutral.getText().toString();
+                            int c=0;
+                            c=Integer.parseInt(neutral_count.trim());
+                            if (result.getNeutral() == 1) {
+                                mTvCommentNeutral.setText(c + 1 + "");
+                                mTvCommentNeutral.setCompoundDrawablesWithIntrinsicBounds(R.drawable.hand_icon, 0, 0, 0);
+                                mTvCommentLike.setEnabled(false);
+                                mTvCommentDislike.setEnabled(false);
+                                mTvCommentNeutral.setEnabled(true);
+
+                            } else {
+                                if (c > 0) {
+                                    mTvCommentNeutral.setText(c - 1 + "");
+
+                                }
+                                mTvCommentNeutral.setCompoundDrawablesWithIntrinsicBounds(R.drawable.hand_icon_grey, 0, 0, 0);
+                                mTvCommentLike.setEnabled(true);
+                                mTvCommentDislike.setEnabled(true);
+                                mTvCommentNeutral.setEnabled(true);
+
+
+
+                            }
+                        }
+
+
+                    }
+
+                    //                Utility.showToastMessageLong(CommentActivity.this,"Comment like/unlike");
+
+
+                }
+            } catch (NumberFormatException e) {
+                e.printStackTrace();
+            }
+
+
+            if (mProgressDialog != null && mProgressDialog.isShowing()) {
+                mProgressDialog.dismiss();
+            }
+        }
+    };
+
+
 
 
 }

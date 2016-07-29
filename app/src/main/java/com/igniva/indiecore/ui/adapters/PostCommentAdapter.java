@@ -45,13 +45,13 @@ public class PostCommentAdapter extends RecyclerView.Adapter<PostCommentAdapter.
     public RecyclerViewHolders onCreateViewHolder(ViewGroup parent, int viewType) {
 
 
-//        View layoutView = LayoutInflater.from(parent.getContext()).inflate(R.layout.comments_list_items, parent, false);
-//        RecyclerViewHolders rcv = new RecyclerViewHolders(layoutView);
-//        return rcv;
-
-        View layoutView = LayoutInflater.from(parent.getContext()).inflate(R.layout.comments_list_items, null);
+        View layoutView = LayoutInflater.from(parent.getContext()).inflate(R.layout.comments_list_items, parent, false);
         RecyclerViewHolders rcv = new RecyclerViewHolders(layoutView);
         return rcv;
+
+//        View layoutView = LayoutInflater.from(parent.getContext()).inflate(R.layout.comments_list_items, null);
+//        RecyclerViewHolders rcv = new RecyclerViewHolders(layoutView);
+//        return rcv;
     }
 
     @Override
@@ -74,9 +74,6 @@ public class PostCommentAdapter extends RecyclerView.Adapter<PostCommentAdapter.
             holder.mCommentDislike.setText(mCommentList.get(position).getDislike());
             holder.mReply.setText(mCommentList.get(position).getReplie());
 
-            if (mCommentList.get(position).getRelation() != null) {
-
-                if (mCommentList.get(position).getRelation().equalsIgnoreCase(Constants.SELF)) {
 
                     if (mCommentList.get(position).getAction() != null) {
 
@@ -100,15 +97,15 @@ public class PostCommentAdapter extends RecyclerView.Adapter<PostCommentAdapter.
                             holder.mCommentNeutral.setEnabled(true);
                             holder.mCommentNeutral.setCompoundDrawablesWithIntrinsicBounds(R.drawable.hand_icon, 0, 0, 0);
 
+
                         }
-                    }
                 } else {
 
                     holder.mCommentLike.setEnabled(true);
                     holder.mCommentDislike.setEnabled(true);
                     holder.mCommentNeutral.setEnabled(true);
                 }
-            }
+
 
 
 
@@ -116,7 +113,7 @@ public class PostCommentAdapter extends RecyclerView.Adapter<PostCommentAdapter.
                 @Override
                 public void onClick(View v) {
 
-                    mOnCommentListItemClickLitner.onCommentListItemClicked(holder,position,mCommentList.get(position).getCommentId());
+//                    mOnCommentListItemClickLitner.onCommentListItemClicked(holder,position,mCommentList.get(position).getCommentId());
                 }
             });
 
