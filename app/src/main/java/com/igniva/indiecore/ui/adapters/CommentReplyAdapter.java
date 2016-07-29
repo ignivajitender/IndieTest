@@ -12,6 +12,7 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.igniva.indiecore.R;
 import com.igniva.indiecore.controller.OnCommentListItemClickListner;
+import com.igniva.indiecore.controller.OnReplyListItemClickListner;
 import com.igniva.indiecore.controller.WebServiceClient;
 import com.igniva.indiecore.model.CommentPojo;
 import com.igniva.indiecore.model.RepliesPojo;
@@ -27,11 +28,13 @@ public class CommentReplyAdapter extends RecyclerView.Adapter<CommentReplyAdapte
     private ArrayList<RepliesPojo> mRelpiesList;
     private Context context;
     String LOG_TAG = "PostRepliesAdapter";
+    OnReplyListItemClickListner mOnReplyListItemClick;
 
 
-    public CommentReplyAdapter(Context context, ArrayList<RepliesPojo> repliesList) {
+    public CommentReplyAdapter(Context context, ArrayList<RepliesPojo> repliesList, OnReplyListItemClickListner onReplyitemClick) {
         this.mRelpiesList = repliesList;
         this.context = context;
+        this.mOnReplyListItemClick = onReplyitemClick;
     }
 
 
@@ -66,61 +69,100 @@ public class CommentReplyAdapter extends RecyclerView.Adapter<CommentReplyAdapte
             holder.mReply.setText(mRelpiesList.get(position).getText());
             holder.mReplyLike.setText(mRelpiesList.get(position).getLike());
             holder.mReplyDislike.setText(mRelpiesList.get(position).getDislike());
-//
-//            if (mRelpiesList.get(position).getRelation() != null) {
-//
-//                if (mRelpiesList.get(position).getRelation().equalsIgnoreCase(Constants.SELF)) {
-//
-//                    if (mRelpiesList.get(position).getAction() != null) {
-//
-//                        if (mRelpiesList.get(position).getAction().equalsIgnoreCase(Constants.LIKE)) {
-//
-//                            holder.mCommentLike.setCompoundDrawablesWithIntrinsicBounds(R.drawable.like_icon, 0, 0, 0);
-//                            holder.mCommentLike.setEnabled(true);
-//                            holder.mCommentDislike.setEnabled(false);
-//                            holder.mCommentNeutral.setEnabled(false);
-//
-//
-//                        } else if (mRelpiesList.get(position).getAction().equalsIgnoreCase(Constants.DISLIKE)) {
-//                            holder.mCommentLike.setEnabled(false);
-//                            holder.mCommentDislike.setEnabled(true);
-//                            holder.mCommentDislike.setCompoundDrawablesWithIntrinsicBounds(R.drawable.dislike_icon_without_circle, 0, 0, 0);
-//                            holder.mCommentNeutral.setEnabled(false);
-//
-//                        } else {
-//                            holder.mCommentLike.setEnabled(false);
-//                            holder.mCommentDislike.setEnabled(false);
-//                            holder.mCommentNeutral.setEnabled(true);
-//                            holder.mCommentNeutral.setCompoundDrawablesWithIntrinsicBounds(R.drawable.hand_icon, 0, 0, 0);
-//
-//                        }
-//                    }
-//                } else {
-//
-//                    holder.mCommentLike.setEnabled(true);
-//                    holder.mCommentDislike.setEnabled(true);
-//                    holder.mCommentNeutral.setEnabled(true);
-//                }
-//            }
+            holder.mReplyNeutral.setText(mRelpiesList.get(position).getNeutral());
 
 
+            if (mRelpiesList.get(position).getRelation().equalsIgnoreCase(Constants.SELF)) {
 
-//            holder.mReply.setOnClickListener(new View.OnClickListener() {
-//                @Override
-//                public void onClick(View v) {
-//
-//                    mOnCommentListItemClickLitner.onCommentListItemClicked(holder,position, mRelpiesList.get(position).getCommentId());
-//                }
-//            });
-//
+                holder.mImageDelete.setVisibility(View.VISIBLE);
+            } else {
+                holder.mImageDelete.setVisibility(View.GONE);
 
-//
-        } catch (Exception e) {
-            e.printStackTrace();
+            }
+
+
+            if (mRelpiesList.get(position).getAction() != null) {
+
+                if (mRelpiesList.get(position).getAction().equalsIgnoreCase(Constants.LIKE)) {
+
+                    holder.mReplyLike.setCompoundDrawablesWithIntrinsicBounds(R.drawable.like_icon, 0, 0, 0);
+                    holder.mReplyLike.setEnabled(true);
+                    holder.mReplyDislike.setEnabled(false);
+                    holder.mReplyNeutral.setEnabled(false);
+
+
+                } else if (mRelpiesList.get(position).getAction().equalsIgnoreCase(Constants.DISLIKE)) {
+                    holder.mReplyLike.setEnabled(false);
+                    holder.mReplyDislike.setEnabled(true);
+                    holder.mReplyDislike.setCompoundDrawablesWithIntrinsicBounds(R.drawable.dislike_icon_without_circle, 0, 0, 0);
+                    holder.mReplyNeutral.setEnabled(false);
+
+                } else {
+                    holder.mReplyLike.setEnabled(false);
+                    holder.mReplyDislike.setEnabled(false);
+                    holder.mReplyNeutral.setEnabled(true);
+                    holder.mReplyNeutral.setCompoundDrawablesWithIntrinsicBounds(R.drawable.hand_icon, 0, 0, 0);
+
+                }
+            
+        }else{
+
+            holder.mReplyLike.setEnabled(true);
+            holder.mReplyDislike.setEnabled(true);
+            holder.mReplyNeutral.setEnabled(true);
+
         }
+
+            holder.mReplyLike.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+
+                    mOnReplyListItemClick.onReplyListItemClick(holder, position, mRelpiesList.get(position).getReplyId());
+
+
+                }
+            });
+
+            holder.mReplyDislike.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    mOnReplyListItemClick.onReplyListItemClick(holder, position, mRelpiesList.get(position).getReplyId());
+
+
+                }
+            });
+
+            holder.mReplyNeutral.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    mOnReplyListItemClick.onReplyListItemClick(holder, position, mRelpiesList.get(position).getReplyId());
+
+
+                }
+            });
+
+
+        holder.mImageDelete.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                mOnReplyListItemClick.onReplyListItemClick(holder, position, mRelpiesList.get(position).getReplyId());
+            }
+        });
 
 
     }
+
+    catch(
+    Exception e
+    )
+
+    {
+        e.printStackTrace();
+    }
+
+
+}
 
 
     @Override
@@ -137,6 +179,7 @@ public class CommentReplyAdapter extends RecyclerView.Adapter<CommentReplyAdapte
         public TextView mReplyDislike;
         public TextView mReplyNeutral;
         public TextView mReply;
+        public  ImageView mImageDelete;
 
 
         public RecyclerViewHolders(final View itemView) {
@@ -148,6 +191,7 @@ public class CommentReplyAdapter extends RecyclerView.Adapter<CommentReplyAdapte
             mReplyDislike = (TextView) itemView.findViewById(R.id.tv_dislike_reply);
             mReplyLike = (TextView) itemView.findViewById(R.id.tv_like_reply);
             mReplyNeutral = (TextView) itemView.findViewById(R.id.tv_neutral_reply);
+            mImageDelete=(ImageView) itemView.findViewById(R.id.iv_delete_reply);
 
         }
 

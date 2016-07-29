@@ -74,6 +74,14 @@ public class PostCommentAdapter extends RecyclerView.Adapter<PostCommentAdapter.
             holder.mCommentDislike.setText(mCommentList.get(position).getDislike());
             holder.mReply.setText(mCommentList.get(position).getReplie());
 
+            if(mCommentList.get(position).getRelation().equalsIgnoreCase(Constants.SELF)){
+
+                holder.mDelete.setVisibility(View.VISIBLE);
+            }else {
+                holder.mDelete.setVisibility(View.GONE);
+
+            }
+
 
                     if (mCommentList.get(position).getAction() != null) {
 
@@ -106,14 +114,44 @@ public class PostCommentAdapter extends RecyclerView.Adapter<PostCommentAdapter.
                     holder.mCommentNeutral.setEnabled(true);
                 }
 
+            holder.mCommentLike.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
 
+                    mOnCommentListItemClickLitner.onCommentListItemClicked(holder,position,mCommentList.get(position).getCommentId());
+                }
+            });
 
+            holder.mCommentDislike.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+
+                    mOnCommentListItemClickLitner.onCommentListItemClicked(holder,position,mCommentList.get(position).getCommentId());
+                }
+            });
+
+            holder.mCommentNeutral.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+
+                    mOnCommentListItemClickLitner.onCommentListItemClicked(holder,position,mCommentList.get(position).getCommentId());
+                }
+            });
 
             holder.mReply.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
 
-//                    mOnCommentListItemClickLitner.onCommentListItemClicked(holder,position,mCommentList.get(position).getCommentId());
+                    mOnCommentListItemClickLitner.onCommentListItemClicked(holder,position,mCommentList.get(position).getCommentId());
+                }
+            });
+
+            holder.mDelete.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+
+                    mOnCommentListItemClickLitner.onCommentListItemClicked(holder,position,mCommentList.get(position).getCommentId());
+
                 }
             });
 
@@ -142,7 +180,7 @@ public class PostCommentAdapter extends RecyclerView.Adapter<PostCommentAdapter.
         public TextView mCommentDislike;
         public TextView mCommentNeutral;
         public TextView mReply;
-
+        public  ImageView mDelete;
 
         public RecyclerViewHolders(final View itemView) {
             super(itemView);
@@ -154,6 +192,7 @@ public class PostCommentAdapter extends RecyclerView.Adapter<PostCommentAdapter.
             mCommentDislike = (TextView) itemView.findViewById(R.id.tv_dislike_comment);
             mCommentNeutral = (TextView) itemView.findViewById(R.id.tv_neutral_comment);
             mReply = (TextView) itemView.findViewById(R.id.tv_comment_reply);
+            mDelete=(ImageView) itemView.findViewById(R.id.iv_delete_comment);
 
         }
 

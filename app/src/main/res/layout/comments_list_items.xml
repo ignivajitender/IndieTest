@@ -42,7 +42,10 @@
                     android:id="@+id/iv_delete_comment"
                     android:layout_width="0dp"
                     android:layout_weight="1"
-                    android:layout_gravity="center_vertical" android:src="@drawable/delete_icon_red"
+                    android:padding="10dp"
+                    android:visibility="gone"
+                    android:layout_gravity="center_vertical"
+                    android:src="@drawable/delete_icon_red"
                     android:layout_height="wrap_content" />
             </LinearLayout>
 

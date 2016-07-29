@@ -73,14 +73,14 @@
                     android:text="yesterday 14:30"
                     android:textColor="@color/light_black"
                     android:textSize="12sp" />
-                <ImageView
-                    android:layout_width="0dp"
-                    android:layout_weight="1"
-                    android:onClick="onClick"
-                    android:src="@drawable/dropdown_icon"
-                    android:layout_gravity="center"
-                    android:padding="10dp"
-                    android:layout_height="wrap_content" />
+                <!--<ImageView-->
+                    <!--android:layout_width="0dp"-->
+                    <!--android:layout_weight="1"-->
+                    <!--android:onClick="onClick"-->
+                    <!--android:src="@drawable/dropdown_icon"-->
+                    <!--android:layout_gravity="center"-->
+                    <!--android:padding="10dp"-->
+                    <!--android:layout_height="wrap_content" />-->
 
 
             </LinearLayout>

@@ -47,7 +47,7 @@ public class CommentActivity extends BaseActivity {
     private ArrayList<CommentPojo> mCommentList;
     private PostCommentAdapter mCommentAdapter;
     private String ACTION = "";
-    private int Action = 0;
+    private int INDEX = 0;
     private boolean isDeleteBtnVisible = false;
     public static final String mActionTypeLike = "like";
     public static final String mActionTypeDislike = "dislike";
@@ -489,6 +489,10 @@ public class CommentActivity extends BaseActivity {
                 if (result.getSuccess().equalsIgnoreCase("true")) {
 
                     Utility.showToastMessageLong(CommentActivity.this, "comment posted");
+                    String comment_count=mPostComments.getText().toString();
+                    int count=Integer.parseInt(comment_count.trim());
+                    mPostComments.setText(count+1+"");
+                    mEtCommentText.setText("");
                     viewAllComments(postId);
 
                 } else {
@@ -565,7 +569,7 @@ public class CommentActivity extends BaseActivity {
                         mCommentList.addAll(result.getCommentList());
 
                         mCommentAdapter = null;
-                        mCommentAdapter = new PostCommentAdapter(CommentActivity.this, mCommentList,onCommentListItemClickListner);
+                        mCommentAdapter = new PostCommentAdapter(CommentActivity.this, mCommentList, onCommentListItemClickListner);
 //                           mCommentAdapter.notifyDataSetChanged();
 
                         LinearLayout.LayoutParams lp =
@@ -645,11 +649,11 @@ public class CommentActivity extends BaseActivity {
 
                     if (result.getSuccess().equalsIgnoreCase("true")) {
 
-                        if (action == 1) {
-    //                        like
+                        if (INDEX == 1) {
+                            //                        like
                             String likes_count = mHolder.mCommentLike.getText().toString();
                             int a = 0;
-                                    a=Integer.parseInt(likes_count.trim());
+                            a = Integer.parseInt(likes_count.trim());
                             if (result.getLike() == 1) {
                                 mHolder.mCommentLike.setText(a + 1 + "");
                                 mHolder.mCommentLike.setCompoundDrawablesWithIntrinsicBounds(R.drawable.like_icon, 0, 0, 0);
@@ -669,13 +673,13 @@ public class CommentActivity extends BaseActivity {
 
                             }
 
-                        } else if (action == 2) {
-    //                        dislike
+                        } else if (INDEX == 2) {
+                            //                        dislike
 
 
                             String dislikes_count = mHolder.mCommentDislike.getText().toString();
                             int b = 0;
-                                    b=Integer.parseInt(dislikes_count.trim());
+                            b = Integer.parseInt(dislikes_count.trim());
                             if (result.getDislike() == 1) {
                                 mHolder.mCommentDislike.setText(b + 1 + "");
                                 mHolder.mCommentDislike.setCompoundDrawablesWithIntrinsicBounds(R.drawable.dislike_icon_grey, 0, 0, 0);
@@ -696,12 +700,10 @@ public class CommentActivity extends BaseActivity {
                             }
 
                         } else {
-
-    //                        neutral
-
+                            //                        neutral
                             String neutral_count = mHolder.mCommentNeutral.getText().toString();
-                            int c=0;
-                                    c=Integer.parseInt(neutral_count.trim());
+                            int c = 0;
+                            c = Integer.parseInt(neutral_count.trim());
                             if (result.getNeutral() == 1) {
                                 mHolder.mCommentNeutral.setText(c + 1 + "");
                                 mHolder.mCommentNeutral.setCompoundDrawablesWithIntrinsicBounds(R.drawable.hand_icon, 0, 0, 0);
@@ -721,14 +723,13 @@ public class CommentActivity extends BaseActivity {
                                 mHolder.mCommentNeutral.setEnabled(true);
 
 
-
                             }
                         }
 
 
                     }
 
-    //                Utility.showToastMessageLong(CommentActivity.this,"Comment like/unlike");
+                    //                Utility.showToastMessageLong(CommentActivity.this,"Comment like/unlike");
 
 
                 }
@@ -794,7 +795,32 @@ public class CommentActivity extends BaseActivity {
         public void onComplete(ResponsePojo result, WebServiceClient.WebError error, ProgressDialog mProgressDialog) {
 
             WebNotificationManager.unRegisterResponseListener(responseCommentRemove);
+            try {
 
+                if(error==null){
+                    if(result.getSuccess().equalsIgnoreCase("true")){
+
+                        Utility.showToastMessageLong(CommentActivity.this,"comment deleted");
+
+                        String comment_count=mPostComments.getText().toString();
+                        int count=Integer.parseInt(comment_count.trim());
+                        mPostComments.setText(count-1+"");
+                        mCommentList.remove(POSTION);
+                        mCommentAdapter.notifyDataSetChanged();
+
+                    }else {
+
+
+
+                    }
+
+
+                }
+
+
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
 
             if (mProgressDialog != null && mProgressDialog.isShowing()) {
                 mProgressDialog.dismiss();
@@ -865,7 +891,7 @@ public class CommentActivity extends BaseActivity {
 
 //remove this post from list
 //                        mWallPostList.remove(POSTION);
-
+                        mReportPost.setVisibility(View.GONE);
                         Utility.showToastMessageLong(CommentActivity.this, "post removed");
                         finish();
 
@@ -924,6 +950,7 @@ public class CommentActivity extends BaseActivity {
 
                 if (error == null) {
                     if (result.getSuccess().equalsIgnoreCase("true")) {
+                        mReportPost.setVisibility(View.GONE);
                         Utility.showToastMessageLong(CommentActivity.this, "post reported");
 
 
@@ -958,10 +985,18 @@ public class CommentActivity extends BaseActivity {
             mHolder = view;
             POSTION = position;
 
+
+            mHolder.mDelete.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    removeComment(commentId);
+                }
+            });
+
             mHolder.mCommentLike.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    action = 1;
+                    INDEX = 1;
                     commentAction(mActionTypeLike, commentId);
 
 
@@ -971,7 +1006,7 @@ public class CommentActivity extends BaseActivity {
             mHolder.mCommentDislike.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    action = 2;
+                    INDEX = 2;
                     commentAction(mActionTypeDislike, commentId);
 
 
@@ -980,7 +1015,7 @@ public class CommentActivity extends BaseActivity {
             mHolder.mCommentNeutral.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    action = 3;
+                    INDEX = 3;
                     commentAction(mActionTypeNeutral, commentId);
 
 

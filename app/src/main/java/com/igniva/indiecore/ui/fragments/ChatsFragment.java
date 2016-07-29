@@ -227,30 +227,30 @@ public class ChatsFragment extends BaseFragment {
                 @Override
                 public void onClick(View v) {
                     Utility.showToastMessageLong(getActivity()," position is "+POSTION);
-                    //action = 1;
-                    //likeUnlikePost(mActionTypeLike, postId);
+                    action = 1;
+                    likeUnlikePost(mActionTypeLike, postId);
                 }
             });
-//
-//            holder.dislike.setOnClickListener(new View.OnClickListener() {
-//                @Override
-//                public void onClick(View v) {
-//                    action = 2;
-//
-//                    likeUnlikePost(mActionTypeDislike, postId);
-//                }
-//            });
-//
-//
-//            holder.neutral.setOnClickListener(new View.OnClickListener() {
-//                @Override
-//                public void onClick(View v) {
-//                    action = 3;
-//
-//                    likeUnlikePost(mActionTypeNeutral, postId);
-//
-//                }
-//            });
+
+            holder.dislike.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    action = 2;
+
+                    likeUnlikePost(mActionTypeDislike, postId);
+                }
+            });
+
+
+            holder.neutral.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    action = 3;
+
+                    likeUnlikePost(mActionTypeNeutral, postId);
+
+                }
+            });
 //
             holder.comment.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -271,56 +271,56 @@ public class ChatsFragment extends BaseFragment {
                 }
             });
 //
-//            holder.dropDownOptions.setOnClickListener(new View.OnClickListener() {
-//                @Override
-//                public void onClick(View v) {
-//                    try {
-//
-//                        if (deletePostVisible == false) {
-//                            holder.mDeletePost.setVisibility(View.VISIBLE);
-//                            if (mWallPostList.get(POSTION).getRelation().equalsIgnoreCase("self")) {
-//                                holder.mDeletePost.setImageResource(R.drawable.delete_icon);
-//                                ACTION = "DELETE";
-//                            } else {
-//                                holder.mDeletePost.setImageResource(R.drawable.report_abuse);
-//                                ACTION = "REPORT";
-//                            }
-//                            deletePostVisible = true;
-//                        } else {
-//                            holder.mDeletePost.setVisibility(View.GONE);
-//                            deletePostVisible = false;
-//
-//                        }
-//
-//                    } catch (Exception e) {
-//                        e.printStackTrace();
-//                    }
-//                }
-//            });
-//
-//
-//            holder.mDeletePost.setOnClickListener(new View.OnClickListener() {
-//                @Override
-//                public void onClick(View v) {
-//                    try {
-//
-//                        if (ACTION.equalsIgnoreCase("DELETE")) {
-//
-//                         removePost(postId);
-//
-//                        } else if (ACTION.equalsIgnoreCase("REPORT")) {
-//
-//                            flagPost(postId);
-//                        }
-//
-//                    } catch (Exception e) {
-//                        e.printStackTrace();
-//                    }
-//                }
-//            });
+            holder.dropDownOptions.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    try {
 
-//
-//            holder.mIvPostComment.setOnClickListener(new View.OnClickListener() {
+                        if (deletePostVisible == false) {
+                            holder.mDeletePost.setVisibility(View.VISIBLE);
+                            if (mWallPostList.get(POSTION).getRelation().equalsIgnoreCase("self")) {
+                                holder.mDeletePost.setImageResource(R.drawable.delete_icon);
+                                ACTION = "DELETE";
+                            } else {
+                                holder.mDeletePost.setImageResource(R.drawable.report_abuse);
+                                ACTION = "REPORT";
+                            }
+                            deletePostVisible = true;
+                        } else {
+                            holder.mDeletePost.setVisibility(View.GONE);
+                            deletePostVisible = false;
+
+                        }
+
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                }
+            });
+
+
+            holder.mDeletePost.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    try {
+
+                        if (ACTION.equalsIgnoreCase("DELETE")) {
+
+                         removePost(postId);
+
+                        } else if (ACTION.equalsIgnoreCase("REPORT")) {
+
+                            flagPost(postId);
+                        }
+
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                }
+            });
+
+
+//            holder.comment.setOnClickListener(new View.OnClickListener() {
 //                @Override
 //                public void onClick(View v) {
 //                    if (holder.mEtComment.getText().toString().isEmpty()) {
@@ -691,6 +691,9 @@ public class ChatsFragment extends BaseFragment {
                                 mHolder.like.setCompoundDrawablesWithIntrinsicBounds(R.drawable.like_blue_icon_circle, 0, 0, 0);
                                 mWallPostList.get(POSTION).setAction(Constants.LIKE);
                                 mWallPostList.get(POSTION).setLike(a + 1 + "");
+                                mHolder.like.setEnabled(true);
+                                mHolder.dislike.setEnabled(false);
+                                mHolder.neutral.setEnabled(false);
                             } else {
                                 if (a > 0) {
                                     mHolder.like.setText(a - 1 + "");
@@ -698,6 +701,9 @@ public class ChatsFragment extends BaseFragment {
                                 mHolder.like.setCompoundDrawablesWithIntrinsicBounds(R.drawable.like_grey_icon_circle, 0, 0, 0);
                                 mWallPostList.get(POSTION).setAction(null);
                                 mWallPostList.get(POSTION).setLike(a - 1 + "");
+                                mHolder.like.setEnabled(true);
+                                mHolder.dislike.setEnabled(true);
+                                mHolder.neutral.setEnabled(true);
                             }
 
 
@@ -711,6 +717,9 @@ public class ChatsFragment extends BaseFragment {
                                 mHolder.dislike.setCompoundDrawablesWithIntrinsicBounds(R.drawable.dislike_blue_icon_circle, 0, 0, 0);
                                 mWallPostList.get(POSTION).setAction(Constants.DISLIKE);
                                 mWallPostList.get(POSTION).setDislike(b + 1 + "");
+                                mHolder.like.setEnabled(false);
+                                mHolder.dislike.setEnabled(true);
+                                mHolder.neutral.setEnabled(false);
                             } else {
                                 if (b > 0) {
                                     mHolder.dislike.setText(b - 1 + "");
@@ -718,6 +727,9 @@ public class ChatsFragment extends BaseFragment {
                                 mHolder.dislike.setCompoundDrawablesWithIntrinsicBounds(R.drawable.dislike_grey_icon_circle, 0, 0, 0);
                                 mWallPostList.get(POSTION).setAction(null);
                                 mWallPostList.get(POSTION).setDislike(b - 1 + "");
+                                mHolder.like.setEnabled(true);
+                                mHolder.dislike.setEnabled(true);
+                                mHolder.neutral.setEnabled(true);
 
                             }
 
@@ -733,6 +745,9 @@ public class ChatsFragment extends BaseFragment {
                                 mHolder.neutral.setCompoundDrawablesWithIntrinsicBounds(R.drawable.hand_icon_blue_circle, 0, 0, 0);
                                 mWallPostList.get(POSTION).setAction(Constants.NEUTRAL);
                                 mWallPostList.get(POSTION).setNeutral(c + 1 + "");
+                                mHolder.like.setEnabled(false);
+                                mHolder.dislike.setEnabled(false);
+                                mHolder.neutral.setEnabled(true);
                             } else {
                                 if (c > 0) {
                                     mHolder.neutral.setText(c - 1 + "");
@@ -740,6 +755,9 @@ public class ChatsFragment extends BaseFragment {
                                 mHolder.neutral.setCompoundDrawablesWithIntrinsicBounds(R.drawable.hand_grey_icon_circle, 0, 0, 0);
                                 mWallPostList.get(POSTION).setAction(null);
                                 mWallPostList.get(POSTION).setNeutral(c - 1 + "");
+                                mHolder.like.setEnabled(true);
+                                mHolder.dislike.setEnabled(true);
+                                mHolder.neutral.setEnabled(true);
                             }
                         }
                     }
@@ -748,10 +766,10 @@ public class ChatsFragment extends BaseFragment {
 
                 // Refresh adapter
                 //mWallPostAdapter.notifyDataSetChanged();
-
-                mWallPostAdapter = new WallPostAdapter(getActivity(), mWallPostList, onListItemClickListner);
-                mWallPostAdapter.notifyDataSetChanged();
-                mRvWallPosts.setAdapter(mWallPostAdapter);
+//
+//                mWallPostAdapter = new WallPostAdapter(getActivity(), mWallPostList, onListItemClickListner);
+//                mWallPostAdapter.notifyDataSetChanged();
+//                mRvWallPosts.setAdapter(mWallPostAdapter);
 
                 mRvWallPosts.setOnClickListener(new View.OnClickListener() {
                     @Override

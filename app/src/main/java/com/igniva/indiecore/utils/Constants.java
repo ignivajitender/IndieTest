@@ -57,6 +57,7 @@ public class Constants {
     public static  final String BADGE_NAME="badgeName";
 
     public static  final String COMMENTID="commentId";
+    public static  final String REPLYID="replyId";
 
 
 public static  final String SELF="self";

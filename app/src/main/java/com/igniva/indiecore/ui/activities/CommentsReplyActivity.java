@@ -15,6 +15,7 @@ import android.widget.TextView;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.igniva.indiecore.R;
+import com.igniva.indiecore.controller.OnReplyListItemClickListner;
 import com.igniva.indiecore.controller.ResponseHandlerListener;
 import com.igniva.indiecore.controller.WebNotificationManager;
 import com.igniva.indiecore.controller.WebServiceClient;
@@ -38,7 +39,7 @@ public class CommentsReplyActivity extends BaseActivity {
 
     private Toolbar mToolbar;
     private EditText mEtReplyText;
-    private TextView mTvCommentLike,mTvCommentDislike,mTvCommentNeutral,mTvCommentReply;
+    private TextView mTvCommentLike, mTvCommentDislike, mTvCommentNeutral, mTvCommentReply;
     private ImageView mIvPostReply;
     private RecyclerView mRvReplies;
     private CommentPojo selected_comment_data = null;
@@ -48,11 +49,14 @@ public class CommentsReplyActivity extends BaseActivity {
     public static final String mActionTypeLike = "like";
     public static final String mActionTypeDislike = "dislike";
     public static final String mActionTypeNeutral = "neutral";
-    private int action=0;
-    private String page="1";
-    private String limit="10";
+    private int action = 0;
+    private int INDEX=0;
+    private String page = "1";
+    private String limit = "10";
     private ArrayList<RepliesPojo> mRelpiesLIst;
     private CommentReplyAdapter mAdapter;
+    CommentReplyAdapter.RecyclerViewHolders mHolder;
+    int POSTION = 0;
 
 
     @Override
@@ -99,23 +103,23 @@ public class CommentsReplyActivity extends BaseActivity {
             selected_comment_data = (CommentPojo) bundle.getSerializable("COMMENT");
             commentId = selected_comment_data.getCommentId();
 
-            mUserName=(TextView) findViewById(R.id.tv_user_name_comment_reply_activity);
-            mUserComment=(TextView) findViewById(R.id.tv_comment_text_comment_reply_activity);
-            mUserImg=(ImageView) findViewById(R.id.iv_user_img_comment_reply_activity);
-              mIvPostReply =(ImageView) findViewById(R.id.iv_post_reply);
-            mEtReplyText=(EditText) findViewById(R.id.et_reply_txt);
-            mRvReplies=(RecyclerView) findViewById(R.id.rv_replies);
-            
-            
-            mTvCommentLike=(TextView) findViewById(R.id.tv_like_comment_reply);
-            mTvCommentDislike=(TextView) findViewById(R.id.tv_dislike_comment_reply);
-            mTvCommentNeutral=(TextView) findViewById(R.id.tv_neutral_comment_reply);
-            mTvCommentReply=(TextView) findViewById(R.id.tv_reply_comment_reply);
+            mUserName = (TextView) findViewById(R.id.tv_user_name_comment_reply_activity);
+            mUserComment = (TextView) findViewById(R.id.tv_comment_text_comment_reply_activity);
+            mUserImg = (ImageView) findViewById(R.id.iv_user_img_comment_reply_activity);
+            mIvPostReply = (ImageView) findViewById(R.id.iv_post_reply);
+            mEtReplyText = (EditText) findViewById(R.id.et_reply_txt);
+            mRvReplies = (RecyclerView) findViewById(R.id.rv_replies);
+
+
+            mTvCommentLike = (TextView) findViewById(R.id.tv_like_comment_reply);
+            mTvCommentDislike = (TextView) findViewById(R.id.tv_dislike_comment_reply);
+            mTvCommentNeutral = (TextView) findViewById(R.id.tv_neutral_comment_reply);
+            mTvCommentReply = (TextView) findViewById(R.id.tv_reply_comment_reply);
 
             final LinearLayoutManager layoutManager = new LinearLayoutManager(this);
             layoutManager.setOrientation(LinearLayoutManager.VERTICAL);
             mRvReplies.setLayoutManager(layoutManager);
-             viewAllReplies(commentId,page,limit);
+            viewAllReplies(commentId, page, limit);
 
 
         } catch (Exception e) {
@@ -127,77 +131,82 @@ public class CommentsReplyActivity extends BaseActivity {
 
     @Override
     protected void setDataInViewObjects() {
-try {
+        try {
 
-    String Name = ((selected_comment_data.getFirstName()) + " " + (selected_comment_data.getLastName()).charAt(0) + ".");
-    mUserName.setText(Name);
+            String Name = ((selected_comment_data.getFirstName()) + " " + (selected_comment_data.getLastName()).charAt(0) + ".");
+            mUserName.setText(Name);
 
-    mUserComment.setText(selected_comment_data.getText());
+            mUserComment.setText(selected_comment_data.getText());
 
-    if (!selected_comment_data.getProfile_pic().isEmpty()) {
-        Glide.with(this).load(WebServiceClient.HTTP_STAGING + selected_comment_data.getProfile_pic())
-                .thumbnail(1f)
-                .crossFade()
-                .diskCacheStrategy(DiskCacheStrategy.ALL)
-                .into(mUserImg);
-    } else {
-        mUserImg.setImageResource(R.drawable.default_user);
-    }
+            if (!selected_comment_data.getProfile_pic().isEmpty()) {
+                Glide.with(this).load(WebServiceClient.HTTP_STAGING + selected_comment_data.getProfile_pic())
+                        .thumbnail(1f)
+                        .crossFade()
+                        .diskCacheStrategy(DiskCacheStrategy.ALL)
+                        .into(mUserImg);
+            } else {
+                mUserImg.setImageResource(R.drawable.default_user);
+            }
 
-    if (selected_comment_data.getAction() != null) {
-        if (selected_comment_data.getAction().equalsIgnoreCase(Constants.LIKE)) {
-            mTvCommentLike.setCompoundDrawablesWithIntrinsicBounds(R.drawable.like_icon, 0, 0, 0);
-            mTvCommentLike.setEnabled(true);
-            mTvCommentDislike.setEnabled(false);
-            mTvCommentNeutral.setEnabled(false);
-        } else if (selected_comment_data.getAction().equalsIgnoreCase(Constants.DISLIKE)) {
-            mTvCommentDislike.setCompoundDrawablesWithIntrinsicBounds(R.drawable.dislike_icon, 0, 0, 0);
-            mTvCommentLike.setEnabled(false);
-            mTvCommentDislike.setEnabled(true);
-            mTvCommentNeutral.setEnabled(false);
+            mTvCommentLike.setText(selected_comment_data.getLike());
+            mTvCommentDislike.setText(selected_comment_data.getDislike());
+            mTvCommentNeutral.setText(selected_comment_data.getNeutral());
+            mTvCommentReply.setText(selected_comment_data.getReplie());
+
+            if (selected_comment_data.getAction() != null) {
+                if (selected_comment_data.getAction().equalsIgnoreCase(Constants.LIKE)) {
+                    mTvCommentLike.setCompoundDrawablesWithIntrinsicBounds(R.drawable.like_icon, 0, 0, 0);
+                    mTvCommentLike.setEnabled(true);
+                    mTvCommentDislike.setEnabled(false);
+                    mTvCommentNeutral.setEnabled(false);
+                } else if (selected_comment_data.getAction().equalsIgnoreCase(Constants.DISLIKE)) {
+                    mTvCommentDislike.setCompoundDrawablesWithIntrinsicBounds(R.drawable.dislike_icon, 0, 0, 0);
+                    mTvCommentLike.setEnabled(false);
+                    mTvCommentDislike.setEnabled(true);
+                    mTvCommentNeutral.setEnabled(false);
 
 
-        } else if (selected_comment_data.getAction().equalsIgnoreCase(Constants.NEUTRAL)) {
-            mTvCommentNeutral.setCompoundDrawablesWithIntrinsicBounds(R.drawable.hand_icon, 0, 0, 0);
-            mTvCommentLike.setEnabled(false);
-            mTvCommentDislike.setEnabled(false);
-            mTvCommentNeutral.setEnabled(true);
+                } else if (selected_comment_data.getAction().equalsIgnoreCase(Constants.NEUTRAL)) {
+                    mTvCommentNeutral.setCompoundDrawablesWithIntrinsicBounds(R.drawable.hand_icon, 0, 0, 0);
+                    mTvCommentLike.setEnabled(false);
+                    mTvCommentDislike.setEnabled(false);
+                    mTvCommentNeutral.setEnabled(true);
 
+                }
+            } else {
+                mTvCommentLike.setCompoundDrawablesWithIntrinsicBounds(R.drawable.like_grey_icon, 0, 0, 0);
+
+                mTvCommentDislike.setCompoundDrawablesWithIntrinsicBounds(R.drawable.dislike_icon_grey, 0, 0, 0);
+
+                mTvCommentNeutral.setCompoundDrawablesWithIntrinsicBounds(R.drawable.hand_icon_grey, 0, 0, 0);
+
+                mTvCommentLike.setEnabled(true);
+                mTvCommentDislike.setEnabled(true);
+                mTvCommentNeutral.setEnabled(true);
+            }
+
+
+        } catch (Exception e) {
+            e.printStackTrace();
         }
-    } else {
-        mTvCommentLike.setCompoundDrawablesWithIntrinsicBounds(R.drawable.like_grey_icon, 0, 0, 0);
-
-        mTvCommentDislike.setCompoundDrawablesWithIntrinsicBounds(R.drawable.dislike_icon_grey, 0, 0, 0);
-
-        mTvCommentNeutral.setCompoundDrawablesWithIntrinsicBounds(R.drawable.hand_icon_grey, 0, 0, 0);
-
-        mTvCommentLike.setEnabled(true);
-        mTvCommentDislike.setEnabled(true);
-        mTvCommentNeutral.setEnabled(true);
-    }
-
-
-}catch (Exception e){
-    e.printStackTrace();
-}
 
     }
 
     @Override
     protected void onClick(View v) {
-        switch (v.getId()){
+        switch (v.getId()) {
 
             case R.id.iv_post_reply:
 
-                String reply_txt=mEtReplyText.getText().toString();
+                String reply_txt = mEtReplyText.getText().toString();
 
-                    if(reply_txt.isEmpty()) {
-                        Utility.showToastMessageLong(CommentsReplyActivity.this, "Please write a reply");
-                    }else {
-                        replyToComment(commentId,reply_txt);
+                if (reply_txt.isEmpty()) {
+                    Utility.showToastMessageLong(CommentsReplyActivity.this, "Please write a reply");
+                } else {
+                    replyToComment(commentId, reply_txt);
 
-                    }
-                        break;
+                }
+                break;
 
 
             case R.id.tv_like_comment_reply:
@@ -227,22 +236,22 @@ try {
     /*
     * payload to reply to a comment
     * */
-    public String createPayload(String commentId,String text) {
+    public String createPayload(String commentId, String text) {
         JSONObject payload = null;
 //        token, userId, commentId, text
 
-            try {
-                    payload = new JSONObject();
-                    payload.put(Constants.TOKEN, PreferenceHandler.readString(this, PreferenceHandler.PREF_KEY_USER_TOKEN, ""));
-                    payload.put(Constants.USERID, PreferenceHandler.readString(this, PreferenceHandler.PREF_KEY_USER_ID, ""));
-                    payload.put(Constants.COMMENTID, commentId);
-                    payload.put(Constants.TEXT, text);
+        try {
+            payload = new JSONObject();
+            payload.put(Constants.TOKEN, PreferenceHandler.readString(this, PreferenceHandler.PREF_KEY_USER_TOKEN, ""));
+            payload.put(Constants.USERID, PreferenceHandler.readString(this, PreferenceHandler.PREF_KEY_USER_ID, ""));
+            payload.put(Constants.COMMENTID, commentId);
+            payload.put(Constants.TEXT, text);
 
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
 
-            return payload.toString();
+        return payload.toString();
 
     }
 
@@ -251,9 +260,9 @@ try {
     * reply to a comment post request
     *
     * */
-    public void replyToComment(String commentId,String text) {
+    public void replyToComment(String commentId, String text) {
 
-        String payload = createPayload(commentId,text);
+        String payload = createPayload(commentId, text);
         if (payload != null) {
 
             try {
@@ -275,10 +284,15 @@ try {
                 WebNotificationManager.unRegisterResponseListener(responseReplyToComment);
 
                 if (error == null) {
-                    if(result.getSuccess().equalsIgnoreCase("true")){
-                        viewAllReplies(commentId,page,limit);
+                    if (result.getSuccess().equalsIgnoreCase("true")) {
 
-                    }else {
+                        mEtReplyText.setText("");
+                        String reply_count=mTvCommentReply.getText().toString();
+                        int count=Integer.parseInt(reply_count.trim());
+                        mTvCommentReply.setText(count+1+"");
+                        viewAllReplies(commentId, page, limit);
+
+                    } else {
 
 
                     }
@@ -344,11 +358,11 @@ try {
             WebNotificationManager.unRegisterResponseListener(responseViewAllReply);
 
             try {
-                mRelpiesLIst= new ArrayList<RepliesPojo>();
+                mRelpiesLIst = new ArrayList<RepliesPojo>();
                 mRelpiesLIst.addAll(result.getRepliesList());
 
-                mAdapter=null;
-                mAdapter=new CommentReplyAdapter(CommentsReplyActivity.this,mRelpiesLIst);
+                mAdapter = null;
+                mAdapter = new CommentReplyAdapter(CommentsReplyActivity.this, mRelpiesLIst, onReplyListItemClicked);
                 mRvReplies.setAdapter(mAdapter);
 
 
@@ -430,7 +444,7 @@ try {
                             //                        like
                             String likes_count = mTvCommentLike.getText().toString();
                             int a = 0;
-                            a=Integer.parseInt(likes_count.trim());
+                            a = Integer.parseInt(likes_count.trim());
                             if (result.getLike() == 1) {
                                 mTvCommentLike.setText(a + 1 + "");
                                 mTvCommentLike.setCompoundDrawablesWithIntrinsicBounds(R.drawable.like_icon, 0, 0, 0);
@@ -456,7 +470,7 @@ try {
 
                             String dislikes_count = mTvCommentDislike.getText().toString();
                             int b = 0;
-                            b=Integer.parseInt(dislikes_count.trim());
+                            b = Integer.parseInt(dislikes_count.trim());
                             if (result.getDislike() == 1) {
                                 mTvCommentDislike.setText(b + 1 + "");
                                 mTvCommentDislike.setCompoundDrawablesWithIntrinsicBounds(R.drawable.dislike_icon_without_circle, 0, 0, 0);
@@ -480,8 +494,8 @@ try {
                             //                        neutral
 
                             String neutral_count = mTvCommentNeutral.getText().toString();
-                            int c=0;
-                            c=Integer.parseInt(neutral_count.trim());
+                            int c = 0;
+                            c = Integer.parseInt(neutral_count.trim());
                             if (result.getNeutral() == 1) {
                                 mTvCommentNeutral.setText(c + 1 + "");
                                 mTvCommentNeutral.setCompoundDrawablesWithIntrinsicBounds(R.drawable.hand_icon, 0, 0, 0);
@@ -498,7 +512,6 @@ try {
                                 mTvCommentLike.setEnabled(true);
                                 mTvCommentDislike.setEnabled(true);
                                 mTvCommentNeutral.setEnabled(true);
-
 
 
                             }
@@ -523,6 +536,266 @@ try {
     };
 
 
+        /*
+   *  token, userId, replyId
+   * generate payload to remove a reply
+   *
+   *
+   * */
+
+    public String createPayloadRemoveReply(String replyId) {
+        JSONObject payload = null;
+        try {
+            payload = new JSONObject();
+            payload.put(Constants.TOKEN, PreferenceHandler.readString(this, PreferenceHandler.PREF_KEY_USER_TOKEN, ""));
+            payload.put(Constants.USERID, PreferenceHandler.readString(this, PreferenceHandler.PREF_KEY_USER_ID, ""));
+            payload.put(Constants.REPLYID, replyId);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return payload.toString();
+    }
+
+    /*
+    *
+    * call request to like unlike a comment
+    *
+    *
+    * */
+
+
+    public void removeReply(String replyId) {
+
+        String payload = createPayloadRemoveReply(replyId);
+        if (payload != null) {
+
+            WebNotificationManager.registerResponseListener(responseRemoveReply);
+            WebServiceClient.remove_a_reply(this, payload, responseRemoveReply);
+        }
+
+    }
+
+
+    ResponseHandlerListener responseRemoveReply = new ResponseHandlerListener() {
+        @Override
+        public void onComplete(ResponsePojo result, WebServiceClient.WebError error, ProgressDialog mProgressDialog) {
+
+            WebNotificationManager.unRegisterResponseListener(responseRemoveReply);
+            if (error == null) {
+
+                if (result.getSuccess().equalsIgnoreCase("true")) {
+                    Utility.showToastMessageLong(CommentsReplyActivity.this, "reply deleted");
+                    String reply_Count=mTvCommentReply.getText().toString();
+                    int count=Integer.parseInt(reply_Count.trim());
+                    mTvCommentReply.setText(count-1+"");
+                    mRelpiesLIst.remove(POSTION);
+                    mAdapter.notifyDataSetChanged();
+
+                }
+
+            }
+
+            if (mProgressDialog != null && mProgressDialog.isShowing()) {
+                mProgressDialog.dismiss();
+            }
+
+
+        }
+    };
+
+
+
+/*
+*
+* payload to like unlike a reply
+* token, userId, type(like/dislike/neutral), replyId
+*
+* */
+
+    public String genratePayload(String replyId, String type) {
+        JSONObject payload = null;
+        try {
+            payload = new JSONObject();
+            payload.put(Constants.TOKEN, PreferenceHandler.readString(this, PreferenceHandler.PREF_KEY_USER_TOKEN, ""));
+            payload.put(Constants.USERID, PreferenceHandler.readString(this, PreferenceHandler.PREF_KEY_USER_ID, ""));
+            payload.put(Constants.REPLYID, replyId);
+            payload.put(Constants.TYPE, type);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return payload.toString();
+    }
+
+
+
+    /*
+    * like unlike a reply call
+    *
+    * */
+
+    public void actionOnReply(String replyId, String type) {
+
+        String payload = genratePayload(replyId, type);
+        if (payload != null) {
+
+            WebNotificationManager.registerResponseListener(responseReplyAction);
+            WebServiceClient.like_unlike_a_reply(CommentsReplyActivity.this, payload, responseReplyAction);
+
+        }
+
+    }
+
+    ResponseHandlerListener responseReplyAction = new ResponseHandlerListener() {
+        @Override
+        public void onComplete(ResponsePojo result, WebServiceClient.WebError error, ProgressDialog mProgressDialog) {
+
+
+            WebNotificationManager.unRegisterResponseListener(responseReplyAction);
+
+
+            if (error == null) {
+
+
+
+                if(result.getSuccess().equalsIgnoreCase("true")){
+
+                    if (INDEX == 1) {
+                        //                        like
+                        String likes_count = mHolder.mReplyLike.getText().toString();
+                        int a = 0;
+                        a = Integer.parseInt(likes_count.trim());
+                        if (result.getLike() == 1) {
+                            mHolder.mReplyLike.setText(a + 1 + "");
+                            mHolder.mReplyLike.setCompoundDrawablesWithIntrinsicBounds(R.drawable.like_icon, 0, 0, 0);
+                            mHolder.mReplyLike.setEnabled(true);
+                            mHolder.mReplyDislike.setEnabled(false);
+                            mHolder.mReplyNeutral.setEnabled(false);
+
+                        } else {
+                            if (a > 0) {
+                                mHolder.mReplyLike.setText(a - 1 + "");
+                            }
+                            mHolder.mReplyLike.setCompoundDrawablesWithIntrinsicBounds(R.drawable.like_grey_icon, 0, 0, 0);
+                            mHolder.mReplyLike.setEnabled(true);
+                           mHolder.mReplyDislike.setEnabled(true);
+                            mHolder.mReplyNeutral.setEnabled(true);
+
+
+                        }
+
+                    } else if (INDEX == 2) {
+                        //                        dislike
+
+
+                        String dislikes_count = mHolder.mReplyDislike.getText().toString();
+                        int b = 0;
+                        b = Integer.parseInt(dislikes_count.trim());
+                        if (result.getDislike() == 1) {
+                            mHolder.mReplyDislike.setText(b + 1 + "");
+                            mHolder.mReplyDislike.setCompoundDrawablesWithIntrinsicBounds(R.drawable.dislike_icon_without_circle, 0, 0, 0);
+                            mHolder.mReplyLike.setEnabled(false);
+                            mHolder.mReplyDislike.setEnabled(true);
+                            mHolder.mReplyNeutral.setEnabled(false);
+
+                        } else {
+                            if (b > 0) {
+                                mHolder.mReplyDislike.setText(b - 1 + "");
+                            }
+                            mHolder.mReplyDislike.setCompoundDrawablesWithIntrinsicBounds(R.drawable.dislike_icon_grey, 0, 0, 0);
+                            mHolder.mReplyLike.setEnabled(true);
+                            mHolder.mReplyDislike.setEnabled(true);
+                            mHolder.mReplyNeutral.setEnabled(true);
+
+                        }
+
+                    } else {
+
+                        //                        neutral
+
+                        String neutral_count = mHolder.mReplyNeutral.getText().toString();
+                        int c = 0;
+                        c = Integer.parseInt(neutral_count.trim());
+                        if (result.getNeutral() == 1) {
+                            mHolder.mReplyNeutral.setText(c + 1 + "");
+                            mHolder.mReplyNeutral.setCompoundDrawablesWithIntrinsicBounds(R.drawable.hand_icon, 0, 0, 0);
+                            mHolder.mReplyLike.setEnabled(false);
+                            mHolder.mReplyDislike.setEnabled(false);
+                            mHolder.mReplyNeutral.setEnabled(true);
+
+                        } else {
+                            if (c > 0) {
+                                mHolder.mReplyNeutral.setText(c - 1 + "");
+
+                            }
+                            mHolder.mReplyNeutral.setCompoundDrawablesWithIntrinsicBounds(R.drawable.hand_icon_grey, 0, 0, 0);
+                            mHolder.mReplyLike.setEnabled(true);
+                            mHolder.mReplyDislike.setEnabled(true);
+                            mHolder.mReplyNeutral.setEnabled(true);
+
+
+                        }
+                    }
+
+
+
+                }
+
+
+
+            }
+
+            if (mProgressDialog != null && mProgressDialog.isShowing()) {
+                mProgressDialog.dismiss();
+            }
+
+        }
+    };
+
+
+    OnReplyListItemClickListner onReplyListItemClicked = new OnReplyListItemClickListner() {
+        @Override
+        public void onReplyListItemClick(CommentReplyAdapter.RecyclerViewHolders holder, int position, final String replyId) {
+
+            mHolder = holder;
+            POSTION = position;
+
+            mHolder.mImageDelete.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    removeReply(replyId);
+                }
+            });
+
+
+            mHolder.mReplyLike.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    INDEX=1;
+                    actionOnReply(replyId, mActionTypeLike);
+                }
+            });
+            mHolder.mReplyDislike.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    INDEX=2;
+                    actionOnReply(replyId, mActionTypeDislike);
+                }
+            });
+            mHolder.mReplyNeutral.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    INDEX=3;
+                    actionOnReply(replyId, mActionTypeNeutral);
+                }
+            });
+
+
+        }
+    };
 
 
 }

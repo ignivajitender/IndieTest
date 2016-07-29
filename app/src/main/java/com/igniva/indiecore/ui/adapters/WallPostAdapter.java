@@ -44,7 +44,7 @@ public class WallPostAdapter extends RecyclerView.Adapter<WallPostAdapter.Recycl
     public RecyclerViewHolders onCreateViewHolder(ViewGroup parent, int viewType) {
 
 
-        View layoutView = LayoutInflater.from(parent.getContext()).inflate(R.layout.wall_post_items, parent,false);
+        View layoutView = LayoutInflater.from(parent.getContext()).inflate(R.layout.wall_post_items,null);
         RecyclerViewHolders rcv = new RecyclerViewHolders(layoutView);
         return rcv;
     }
@@ -92,8 +92,9 @@ public class WallPostAdapter extends RecyclerView.Adapter<WallPostAdapter.Recycl
                     holder.like.setCompoundDrawablesWithIntrinsicBounds(R.drawable.like_blue_icon_circle, 0, 0, 0);
                     holder.dislike.setCompoundDrawablesWithIntrinsicBounds(mContext.getResources().getDrawable(R.drawable.dislike_grey_icon_circle), null, null, null);
                     holder.neutral.setCompoundDrawablesWithIntrinsicBounds(mContext.getResources().getDrawable(R.drawable.hand_grey_icon_circle), null, null, null);
-                    //holder.dislike.setEnabled(false);
-                  //  holder.neutral.setEnabled(false);
+                    holder.like.setEnabled(true);
+                    holder.dislike.setEnabled(false);
+                    holder.neutral.setEnabled(false);
 
 
                 } else if (wallItemsList.get(position).getAction().equalsIgnoreCase(Constants.DISLIKE)) {
@@ -102,7 +103,9 @@ public class WallPostAdapter extends RecyclerView.Adapter<WallPostAdapter.Recycl
 
                     holder.like.setCompoundDrawablesWithIntrinsicBounds(mContext.getResources().getDrawable(R.drawable.like_grey_icon_circle), null, null, null);
                     holder.neutral.setCompoundDrawablesWithIntrinsicBounds(mContext.getResources().getDrawable(R.drawable.hand_grey_icon_circle), null, null, null);
-                //    holder.like.setEnabled(false);
+                    holder.like.setEnabled(false);
+                    holder.dislike.setEnabled(true);
+                    holder.neutral.setEnabled(false);
 //
 
                 } else if (wallItemsList.get(position).getAction().equalsIgnoreCase(Constants.NEUTRAL)) {
@@ -110,17 +113,18 @@ public class WallPostAdapter extends RecyclerView.Adapter<WallPostAdapter.Recycl
                     holder.neutral.setCompoundDrawablesWithIntrinsicBounds(R.drawable.hand_icon_blue_circle, 0, 0, 0);
                     holder.like.setCompoundDrawablesWithIntrinsicBounds(mContext.getResources().getDrawable(R.drawable.like_grey_icon_circle), null, null, null);
                     holder.dislike.setCompoundDrawablesWithIntrinsicBounds(mContext.getResources().getDrawable(R.drawable.dislike_grey_icon_circle), null, null, null);
-                //    holder.dislike.setEnabled(false);
-                 //   holder.like.setEnabled(false);
+                    holder.like.setEnabled(false);
+                    holder.dislike.setEnabled(false);
+                    holder.neutral.setEnabled(true);
 
                 } else {
 
                     holder.like.setCompoundDrawablesWithIntrinsicBounds(mContext.getResources().getDrawable(R.drawable.like_grey_icon_circle), null, null, null);
                     holder.dislike.setCompoundDrawablesWithIntrinsicBounds(mContext.getResources().getDrawable(R.drawable.dislike_grey_icon_circle), null, null, null);
                     holder.neutral.setCompoundDrawablesWithIntrinsicBounds(mContext.getResources().getDrawable(R.drawable.hand_grey_icon_circle), null, null, null);
-//                    holder.like.setEnabled(true);
-//                    holder.dislike.setEnabled(true);
-//                    holder.neutral.setEnabled(true);
+                    holder.like.setEnabled(true);
+                    holder.dislike.setEnabled(true);
+                    holder.neutral.setEnabled(true);
 
                 }
             }
@@ -130,9 +134,9 @@ public class WallPostAdapter extends RecyclerView.Adapter<WallPostAdapter.Recycl
                 holder.like.setCompoundDrawablesWithIntrinsicBounds(mContext.getResources().getDrawable(R.drawable.like_grey_icon_circle), null, null, null);
                 holder.dislike.setCompoundDrawablesWithIntrinsicBounds(mContext.getResources().getDrawable(R.drawable.dislike_grey_icon_circle), null, null, null);
                 holder.neutral.setCompoundDrawablesWithIntrinsicBounds(mContext.getResources().getDrawable(R.drawable.hand_grey_icon_circle), null, null, null);
-//                holder.like.setEnabled(true);
-//                holder.dislike.setEnabled(true);
-//                holder.neutral.setEnabled(true);
+                holder.like.setEnabled(true);
+                holder.dislike.setEnabled(true);
+                holder.neutral.setEnabled(true);
 
 
             }
@@ -148,15 +152,15 @@ public class WallPostAdapter extends RecyclerView.Adapter<WallPostAdapter.Recycl
             holder.dislike.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    Utility.showToastMessageLong(((Activity) mContext)," position is "+position);
-                   // mOnListItemClickListner.onListItemClicked(holder, position, wallItemsList.get(position).getPostId());
+//                    Utility.showToastMessageLong(((Activity) mContext)," position is "+position);
+                    mOnListItemClickListner.onListItemClicked(holder, position, wallItemsList.get(position).getPostId());
                 }
             });
             holder.neutral.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    Utility.showToastMessageLong(((Activity) mContext)," position is "+position);
-                  //  mOnListItemClickListner.onListItemClicked(holder, position, wallItemsList.get(position).getPostId());
+//                    Utility.showToastMessageLong(((Activity) mContext)," position is "+position);
+                    mOnListItemClickListner.onListItemClicked(holder, position, wallItemsList.get(position).getPostId());
                 }
             });
 
