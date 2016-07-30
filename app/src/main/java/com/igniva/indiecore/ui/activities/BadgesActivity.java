@@ -134,8 +134,8 @@ public class BadgesActivity extends BaseActivity {
         }
     }
 
-    @Override
-    protected void onClick(View v) {
+
+    public void onClick(View v) {
 
 
     }

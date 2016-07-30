@@ -71,7 +71,6 @@
                 android:layout_marginRight="15dp"
                 android:layout_marginTop="10dp"
                 android:background="@drawable/button_bg"
-                android:onClick="onClick"
                 android:text="Submit"
                 android:textColor="@color/white"
                 android:textSize="20sp" />
@@ -103,7 +102,6 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:layout_marginLeft="2dp"
-                android:onClick="onClick"
                 android:text="@string/resend_verification_code"
                 android:textColor="@drawable/text_selector_resend_otp"
                 android:textSize="14sp" />

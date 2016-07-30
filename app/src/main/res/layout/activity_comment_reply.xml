@@ -151,7 +151,6 @@
                             android:layout_height="wrap_content"
                             android:layout_gravity="center"
                             android:layout_weight="1"
-                            android:onClick="onClick"
                             android:drawableLeft="@drawable/like_grey_icon"
                             android:drawablePadding="5dp"
                             android:text="0" />
@@ -162,7 +161,6 @@
                             android:layout_height="wrap_content"
                             android:layout_gravity="center"
                             android:layout_weight="1"
-                            android:onClick="onClick"
                             android:drawableLeft="@drawable/hand_icon_grey"
                             android:drawablePadding="5dp"
                             android:text="0" />
@@ -173,7 +171,6 @@
                             android:layout_height="wrap_content"
                             android:layout_gravity="center"
                             android:layout_weight="1"
-                            android:onClick="onClick"
                             android:drawableLeft="@drawable/dislike_icon_grey"
                             android:drawablePadding="5dp"
                             android:text="0" />
@@ -184,7 +181,6 @@
                             android:layout_height="wrap_content"
                             android:layout_gravity="center"
                             android:layout_weight="1"
-                            android:onClick="onClick"
                             android:drawableLeft="@drawable/share_icon_grey"
                             android:drawablePadding="5dp"
                             android:text="0" />
@@ -239,7 +235,6 @@
                                 android:id="@+id/iv_post_reply"
                                 android:layout_width="0dp"
                                 android:layout_weight="1"
-                                android:onClick="onClick"
                                 android:layout_marginRight="2dp"
                                 android:layout_gravity="center_vertical"
                                 android:src="@drawable/post_button"
@@ -265,7 +260,6 @@
                 android:src="@drawable/delete_icon"
                 android:layout_gravity="right"
                 android:visibility="gone"
-                android:onClick="onClick"
                 android:layout_marginTop="-8dp"
                 android:layout_marginRight="8dp"
                 android:layout_height="50dp" />

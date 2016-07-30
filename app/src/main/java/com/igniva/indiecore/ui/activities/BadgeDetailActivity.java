@@ -23,7 +23,7 @@ import com.igniva.indiecore.utils.Utility;
 /**
  * Created by igniva-andriod-05 on 16/6/16.
  */
-public class BadgeDetailActivity extends BaseActivity {
+public class BadgeDetailActivity extends BaseActivity implements View.OnClickListener {
     Toolbar mToolbar;
     private ImageView mBadgeIcon;
     private TextView mBadgeName, mBadgeDesc;
@@ -86,6 +86,7 @@ public class BadgeDetailActivity extends BaseActivity {
             mBadgeName = (TextView) findViewById(R.id.tv_badge_name);
             mBadgeDesc = (TextView) findViewById(R.id.tv_badge_desc);
             mGetThisBadge = (ImageView) findViewById(R.id.btn_get_this_badge);
+            mGetThisBadge.setOnClickListener(this);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -135,8 +136,8 @@ public class BadgeDetailActivity extends BaseActivity {
     }
 
 
-    @Override
-    protected void onClick(View v) {
+
+    public void onClick(View v) {
 
         switch (v.getId()) {
 

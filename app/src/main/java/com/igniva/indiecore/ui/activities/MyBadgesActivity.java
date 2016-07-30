@@ -38,7 +38,7 @@ import java.util.ArrayList;
 /**
  * Created by igniva-andriod-11 on 15/6/16.
  */
-public class MyBadgesActivity extends BaseActivity {
+public class MyBadgesActivity extends BaseActivity implements View.OnClickListener{
     Toolbar mToolbar;
     private TextView mTVMyBadegs, mTVBadgesMArket, mTvDone;
     private RecyclerView mRvMyBadges;
@@ -85,7 +85,12 @@ public class MyBadgesActivity extends BaseActivity {
 
         try {
             mTVMyBadegs = (TextView) findViewById(R.id.tv_my_badge);
+            mTVMyBadegs.setOnClickListener(this);
             mTVBadgesMArket = (TextView) findViewById(R.id.tv_badge_market);
+            mTVBadgesMArket.setOnClickListener(this);
+
+            findViewById(R.id.btn_load_more).setOnClickListener(this);
+
             mGlMAnager = new GridLayoutManager(MyBadgesActivity.this, 4);
             mRvMyBadges = (RecyclerView) findViewById(R.id.recycler_view_activity_mybadges);
             mRvMyBadges.setHasFixedSize(true);
@@ -207,30 +212,25 @@ public class MyBadgesActivity extends BaseActivity {
         }
     }
 
-    @Override
-    protected void onClick(View v) {
-        switch (v.getId()) {
 
+
+
+    @Override
+    public void onClick(View v) {
+        switch (v.getId()) {
             case R.id.tv_my_badge:
                 buttonIndex = 1;
-
-
                 setDataInViewObjects();
-
                 break;
             case R.id.tv_badge_market:
                 buttonIndex = 2;
-
                 setDataInViewObjects();
-
                 break;
             case R.id.btn_load_more:
                 mPageNumber += 1;
                 getBadgeMarketBadges();
-
                 break;
             default:
-
                 break;
         }
 

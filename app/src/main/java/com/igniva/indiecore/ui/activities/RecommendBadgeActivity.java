@@ -25,7 +25,7 @@ import org.json.JSONObject;
 /**
  * Created by igniva-andriod-05 on 11/7/16.
  */
-public class RecommendBadgeActivity extends BaseActivity {
+public class RecommendBadgeActivity extends BaseActivity implements View.OnClickListener{
     Toolbar mToolbar;
     private EditText mEtBadgeName;
     private Button mSubmit;
@@ -43,7 +43,8 @@ public class RecommendBadgeActivity extends BaseActivity {
     protected void setUpLayout() {
 
         mEtBadgeName = (EditText) findViewById(R.id.et_recommended_badge_name);
-//        mSubmit = (Button) findViewById(R.id.btn_submit);
+       mSubmit = (Button) findViewById(R.id.btn_submit);
+        mSubmit.setOnClickListener(this);
 
     }
 
@@ -52,8 +53,9 @@ public class RecommendBadgeActivity extends BaseActivity {
 
     }
 
+
     @Override
-    protected void onClick(View v) {
+    public void onClick(View v) {
         switch (v.getId()) {
             case R.id.btn_submit:
                 recommend_a_badge();

@@ -46,7 +46,6 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:layout_marginTop="50dp"
-        android:onClick="onClick"
         android:src="@drawable/start_btn" />
 
 
@@ -76,7 +75,6 @@
             android:layout_height="35dp"
             android:layout_gravity="center"
             android:background="@drawable/done"
-            android:onClick="onClick"
             android:visibility="gone" />
 
         <TextView
@@ -100,7 +98,6 @@
         android:layout_marginBottom="20dp"
         android:layout_marginLeft="30dp"
         android:layout_marginRight="30dp"
-        android:onClick="onClick"
         android:text="Skip this step"
         android:textColor="@color/blue"
         android:textSize="18sp" />

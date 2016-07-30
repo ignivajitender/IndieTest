@@ -57,7 +57,7 @@ import java.util.Calendar;
 /**
  * Created by siddharth-05 on 3/6/16.
  */
-public class CreateProfileActivity extends BaseActivity implements AsyncResult {
+public class CreateProfileActivity extends BaseActivity implements AsyncResult,View.OnClickListener {
 
     Toolbar mToolbar;
     private DatePicker datePicker;
@@ -144,21 +144,27 @@ public class CreateProfileActivity extends BaseActivity implements AsyncResult {
 
         cal = Calendar.getInstance();
         try {
-
             mEtFirstName = (EditText) findViewById(R.id.et_first_name);
             mEtLastName = (EditText) findViewById(R.id.et_last_name);
             mEtDescription = (EditText) findViewById(R.id.et_description);
             mTvDateOfBirth = (TextView) findViewById(R.id.tv_dob);
-
             mIvProfileImage = (ImageView) findViewById(R.id.iv_profile);
             mIvCoverImage = (ImageView) findViewById(R.id.iv_cover_pic);
-
             mTvMale = (TextView) findViewById(R.id.textView);
             mTvFemale = (TextView) findViewById(R.id.tv_female);
             mTvOther = (TextView) findViewById(R.id.tv_other);
-
             mTvMale.setBackgroundResource(R.drawable.left_rounded_corner_selected);
             mTvMale.setTextColor(Color.parseColor("#ffffff"));
+
+            mImCameraCoverbtn=(ImageView) findViewById(R.id.iv_camerabtn_coverpic);
+            mImCameraCoverbtn.setOnClickListener(this);
+
+
+            mImCameraProfilebtn=(ImageView) findViewById(R.id.iv_camerabtn_profile_pic);
+            mImCameraProfilebtn.setOnClickListener(this);
+
+
+
 
 
             Bundle bundle = getIntent().getExtras();
@@ -172,11 +178,9 @@ public class CreateProfileActivity extends BaseActivity implements AsyncResult {
 ////            String coverPic = bundle.getString(Constants.COVERPIC);
             numberLenth = bundle.getInt(Constants.NUMBER_LENGTH);
             mCountryCode = bundle.getString(Constants.COUNTRY_CODE);
-
         } catch (Exception e) {
             e.printStackTrace();
         }
-
     }
 
     public void DateDialog() {
@@ -185,12 +189,9 @@ public class CreateProfileActivity extends BaseActivity implements AsyncResult {
 
             @Override
             public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
-
                 int month = monthOfYear + 1;
                 mTvDateOfBirth.setText(month + "/" + dayOfMonth + "/" + year);
                 mYear = year;
-
-
             }
         };
 

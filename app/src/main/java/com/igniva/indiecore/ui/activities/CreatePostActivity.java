@@ -50,7 +50,7 @@ import java.io.IOException;
 /**
  * Created by igniva-andriod-05 on 18/7/16.
  */
-public class CreatePostActivity extends BaseActivity implements AsyncResult {
+public class CreatePostActivity extends BaseActivity implements AsyncResult,View.OnClickListener {
 
     private TextView mCamera, mGallary, mUserName;
     private EditText mPostText;
@@ -85,7 +85,9 @@ public class CreatePostActivity extends BaseActivity implements AsyncResult {
         mUserImage = (ImageView) findViewById(R.id.iv_user_img_create_post);
 
         mCamera = (TextView) findViewById(R.id.tv_camera);
+        mCamera.setOnClickListener(this);
         mGallary = (TextView) findViewById(R.id.tv_upload);
+        mGallary.setOnClickListener(this);
         mIvMediaPost = (ImageView) findViewById(R.id.iv_media_post);
         mPostText = (EditText) findViewById(R.id.et_write_post);
 
@@ -115,7 +117,7 @@ public class CreatePostActivity extends BaseActivity implements AsyncResult {
     }
 
     @Override
-    protected void onClick(View v) {
+    public void onClick(View v) {
         switch (v.getId()) {
             case R.id.tv_camera:
                 cameraEvent();
@@ -181,7 +183,6 @@ public class CreatePostActivity extends BaseActivity implements AsyncResult {
             if (!mPostText.getText().toString().isEmpty()) {
                 payload.put(Constants.TEXT,mPostText.getText().toString());
             }
-
 
         } catch (Exception e) {
             e.printStackTrace();

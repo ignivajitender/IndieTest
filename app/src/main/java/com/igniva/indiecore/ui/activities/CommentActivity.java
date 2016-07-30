@@ -36,7 +36,7 @@ import java.util.ArrayList;
 /**
  * Created by igniva-andriod-05 on 22/7/16.
  */
-public class CommentActivity extends BaseActivity {
+public class CommentActivity extends BaseActivity implements View.OnClickListener{
 
     private Toolbar mToolbar;
     private RecyclerView mRvComment;
@@ -103,19 +103,25 @@ public class CommentActivity extends BaseActivity {
 
 
             mIvPostComment = (ImageView) findViewById(R.id.iv_post_comment);
+            mIvPostComment.setOnClickListener(this);
             mEtCommentText = (EditText) findViewById(R.id.et_comment_text);
             mUserName = (TextView) findViewById(R.id.tv_user_name_comments);
             mUserImage = (ImageView) findViewById(R.id.iv_user_img_comment_activity);
             mPostText = (TextView) findViewById(R.id.tv_post_text_comment_activity);
             mPostLike = (TextView) findViewById(R.id.tv_like_comment_activity);
+            mPostLike.setOnClickListener(this);
             mPostDislike = (TextView) findViewById(R.id.tv_dislike_comment_activity);
+            mPostDislike.setOnClickListener(this);
             mPostNeutral = (TextView) findViewById(R.id.tv_neutral_comment_activity);
+            mPostNeutral.setOnClickListener(this);
             mPostComments = (TextView) findViewById(R.id.tv_comment_comment_activity);
             mPostTime = (TextView) findViewById(R.id.tv_post_time_comment_activity);
             mPostMedia = (ImageView) findViewById(R.id.iv_media_post_comment_activity);
 
             mDropDownOptions = (ImageView) findViewById(R.id.iv_drop_down_menu);
+            mDropDownOptions.setOnClickListener(this);
             mReportPost = (ImageView) findViewById(R.id.iv_delete_report_post);
+            mReportPost.setOnClickListener(this);
 
             Intent intent = this.getIntent();
             Bundle bundle = intent.getExtras();
@@ -197,7 +203,7 @@ public class CommentActivity extends BaseActivity {
     }
 
     @Override
-    protected void onClick(View v) {
+    public void onClick(View v) {
 
         postId = selected_post_data.getPostId();
 
