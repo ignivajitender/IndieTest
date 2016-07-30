@@ -330,7 +330,7 @@ public class CreatePostActivity extends BaseActivity implements AsyncResult,View
                 myBitmap.compress(Bitmap.CompressFormat.PNG, 80, bos);
                 contentPart = new ByteArrayBody(bos.toByteArray(), "Image.png");
             } else {
-                myBitmap.compress(Bitmap.CompressFormat.JPEG, 100, bos);
+                myBitmap.compress(Bitmap.CompressFormat.JPEG, 80, bos);
                 contentPart = new ByteArrayBody(bos.toByteArray(), "Image.jpg");
             }
 

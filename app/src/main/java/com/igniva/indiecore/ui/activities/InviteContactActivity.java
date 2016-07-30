@@ -30,7 +30,9 @@ import com.google.android.gms.appindexing.AppIndex;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.igniva.indiecore.R;
 import com.igniva.indiecore.model.ContactPojo;
+import com.igniva.indiecore.model.ProfilePojo;
 import com.igniva.indiecore.ui.adapters.InviteContactAdapter;
+import com.igniva.indiecore.ui.fragments.ContactsFragment;
 import com.igniva.indiecore.utils.Constants;
 import com.igniva.indiecore.utils.Log;
 import com.igniva.indiecore.utils.Utility;
@@ -165,6 +167,7 @@ public class InviteContactActivity extends BaseActivity {
              * */
             if(index==3) {
                 mMaxContacts=10;
+
                 mInviteContactAdapter = new InviteContactAdapter(this, mContactList, mMaxContacts);
                 recyclerView.setAdapter(mInviteContactAdapter);
             } else {

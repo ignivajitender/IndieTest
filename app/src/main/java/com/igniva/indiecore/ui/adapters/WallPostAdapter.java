@@ -45,8 +45,12 @@ public class WallPostAdapter extends RecyclerView.Adapter<WallPostAdapter.Recycl
 
 
         View layoutView = LayoutInflater.from(parent.getContext()).inflate(R.layout.wall_post_items,null);
-        RecyclerViewHolders rcv = new RecyclerViewHolders(layoutView);
-        return rcv;
+    return new RecyclerViewHolders(layoutView);
+//        return rcv;
+
+//        View layoutView = LayoutInflater.from(parent.getContext()).inflate(R.layout.wall_post_items,null);
+//        RecyclerViewHolders rcv = new RecyclerViewHolders(layoutView);
+//        return rcv;
     }
 
     @Override
@@ -63,8 +67,8 @@ public class WallPostAdapter extends RecyclerView.Adapter<WallPostAdapter.Recycl
                         .diskCacheStrategy(DiskCacheStrategy.ALL)
                         .into(holder.mUserIcon);
             }
-            String time = wallItemsList.get(position).getDate_created().replace("T", " @ ");
-            holder.mPostTime.setText(time);
+            String time = wallItemsList.get(position).getDate_created();
+            holder.mPostTime.setText(time.substring(0,10));
 
             if (wallItemsList.get(position).getMediaUrl() != null) {
                 holder.mMediaPost.setVisibility(View.VISIBLE);
@@ -171,6 +175,24 @@ public class WallPostAdapter extends RecyclerView.Adapter<WallPostAdapter.Recycl
 
                 }
             });
+            holder.mDeletePost.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    mOnListItemClickListner.onListItemClicked(holder, position, wallItemsList.get(position).getPostId());
+
+                }
+            });
+
+
+            holder.dropDownOptions.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    mOnListItemClickListner.onListItemClicked(holder, position, wallItemsList.get(position).getPostId());
+
+                }
+            });
+
+
 
 
 //

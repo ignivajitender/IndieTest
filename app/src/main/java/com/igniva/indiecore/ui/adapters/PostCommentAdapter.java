@@ -35,19 +35,23 @@ public class PostCommentAdapter extends RecyclerView.Adapter<PostCommentAdapter.
 //        this.mOnCommentListItemClickLitner= mOnCommentClick;
     }
 
-    public PostCommentAdapter(Context context, ArrayList<CommentPojo> commentList,OnCommentListItemClickListner mOnCommentListItemClickLitner ) {
+    public PostCommentAdapter(Context context, ArrayList<CommentPojo> commentList, OnCommentListItemClickListner mOnCommentListItemClickLitner) {
         this.mCommentList = commentList;
         this.context = context;
-        this.mOnCommentListItemClickLitner= mOnCommentListItemClickLitner;
+        this.mOnCommentListItemClickLitner = mOnCommentListItemClickLitner;
     }
 
     @Override
     public RecyclerViewHolders onCreateViewHolder(ViewGroup parent, int viewType) {
 
 
-        View layoutView = LayoutInflater.from(parent.getContext()).inflate(R.layout.comments_list_items, parent, false);
-        RecyclerViewHolders rcv = new RecyclerViewHolders(layoutView);
-        return rcv;
+        View layoutView = LayoutInflater.from(parent.getContext()).inflate(R.layout.comments_list_items, null);
+        return new RecyclerViewHolders(layoutView);
+
+
+
+//        View layoutView = LayoutInflater.from(parent.getContext()).inflate(R.layout.wall_post_items, null);
+//        return new RecyclerViewHolders(layoutView);
 
 //        View layoutView = LayoutInflater.from(parent.getContext()).inflate(R.layout.comments_list_items, null);
 //        RecyclerViewHolders rcv = new RecyclerViewHolders(layoutView);
@@ -74,51 +78,66 @@ public class PostCommentAdapter extends RecyclerView.Adapter<PostCommentAdapter.
             holder.mCommentDislike.setText(mCommentList.get(position).getDislike());
             holder.mReply.setText(mCommentList.get(position).getReplie());
 
-            if(mCommentList.get(position).getRelation().equalsIgnoreCase(Constants.SELF)){
+            if (mCommentList.get(position).getRelation().equalsIgnoreCase(Constants.SELF)) {
 
                 holder.mDelete.setVisibility(View.VISIBLE);
-            }else {
+            } else {
                 holder.mDelete.setVisibility(View.GONE);
 
             }
 
 
-                    if (mCommentList.get(position).getAction() != null) {
+            if (mCommentList.get(position).getAction() != null) {
 
-                        if (mCommentList.get(position).getAction().equalsIgnoreCase(Constants.LIKE)) {
+                if (mCommentList.get(position).getAction().equalsIgnoreCase(Constants.LIKE)) {
 
-                            holder.mCommentLike.setCompoundDrawablesWithIntrinsicBounds(R.drawable.like_icon, 0, 0, 0);
-                            holder.mCommentLike.setEnabled(true);
-                            holder.mCommentDislike.setEnabled(false);
-                            holder.mCommentNeutral.setEnabled(false);
-
-
-                        } else if (mCommentList.get(position).getAction().equalsIgnoreCase(Constants.DISLIKE)) {
-                            holder.mCommentLike.setEnabled(false);
-                            holder.mCommentDislike.setEnabled(true);
-                            holder.mCommentDislike.setCompoundDrawablesWithIntrinsicBounds(R.drawable.dislike_icon_without_circle, 0, 0, 0);
-                            holder.mCommentNeutral.setEnabled(false);
-
-                        } else {
-                            holder.mCommentLike.setEnabled(false);
-                            holder.mCommentDislike.setEnabled(false);
-                            holder.mCommentNeutral.setEnabled(true);
-                            holder.mCommentNeutral.setCompoundDrawablesWithIntrinsicBounds(R.drawable.hand_icon, 0, 0, 0);
+                    holder.mCommentLike.setCompoundDrawablesWithIntrinsicBounds(R.drawable.like_icon, 0, 0, 0);
+                    holder.mCommentDislike.setCompoundDrawablesWithIntrinsicBounds(R.drawable.dislike_icon_grey, 0, 0, 0);
+                    holder.mCommentNeutral.setCompoundDrawablesWithIntrinsicBounds(R.drawable.hand_icon_grey, 0, 0, 0);
+                    holder.mCommentLike.setEnabled(true);
+                    holder.mCommentDislike.setEnabled(false);
+                    holder.mCommentNeutral.setEnabled(false);
 
 
-                        }
+                } else if (mCommentList.get(position).getAction().equalsIgnoreCase(Constants.DISLIKE)) {
+                    holder.mCommentLike.setEnabled(false);
+                    holder.mCommentDislike.setEnabled(true);
+                    holder.mCommentDislike.setCompoundDrawablesWithIntrinsicBounds(R.drawable.dislike_icon_without_circle, 0, 0, 0);
+                    holder.mCommentLike.setCompoundDrawablesWithIntrinsicBounds(R.drawable.like_grey_icon, 0, 0, 0);
+                    holder.mCommentDislike.setCompoundDrawablesWithIntrinsicBounds(R.drawable.dislike_icon_grey, 0, 0, 0);
+                    holder.mCommentNeutral.setEnabled(false);
+
+                } else if (mCommentList.get(position).getAction().equalsIgnoreCase(Constants.NEUTRAL)) {
+                    holder.mCommentLike.setEnabled(false);
+                    holder.mCommentDislike.setEnabled(false);
+                    holder.mCommentNeutral.setEnabled(true);
+                    holder.mCommentLike.setCompoundDrawablesWithIntrinsicBounds(R.drawable.like_grey_icon, 0, 0, 0);
+                    holder.mCommentDislike.setCompoundDrawablesWithIntrinsicBounds(R.drawable.dislike_icon_grey, 0, 0, 0);
+                    holder.mCommentNeutral.setCompoundDrawablesWithIntrinsicBounds(R.drawable.hand_icon, 0, 0, 0);
                 } else {
 
                     holder.mCommentLike.setEnabled(true);
                     holder.mCommentDislike.setEnabled(true);
                     holder.mCommentNeutral.setEnabled(true);
+                    holder.mCommentLike.setCompoundDrawablesWithIntrinsicBounds(R.drawable.like_grey_icon, 0, 0, 0);
+                    holder.mCommentDislike.setCompoundDrawablesWithIntrinsicBounds(R.drawable.dislike_icon_grey, 0, 0, 0);
+                    holder.mCommentNeutral.setCompoundDrawablesWithIntrinsicBounds(R.drawable.hand_icon_grey, 0, 0, 0);
                 }
+            } else {
+
+                holder.mCommentLike.setEnabled(true);
+                holder.mCommentDislike.setEnabled(true);
+                holder.mCommentNeutral.setEnabled(true);
+                holder.mCommentLike.setCompoundDrawablesWithIntrinsicBounds(R.drawable.like_grey_icon, 0, 0, 0);
+                holder.mCommentDislike.setCompoundDrawablesWithIntrinsicBounds(R.drawable.dislike_icon_grey, 0, 0, 0);
+                holder.mCommentNeutral.setCompoundDrawablesWithIntrinsicBounds(R.drawable.hand_icon_grey, 0, 0, 0);
+            }
 
             holder.mCommentLike.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
 
-                    mOnCommentListItemClickLitner.onCommentListItemClicked(holder,position,mCommentList.get(position).getCommentId());
+                    mOnCommentListItemClickLitner.onCommentListItemClicked(holder, position, mCommentList.get(position).getCommentId());
                 }
             });
 
@@ -126,7 +145,7 @@ public class PostCommentAdapter extends RecyclerView.Adapter<PostCommentAdapter.
                 @Override
                 public void onClick(View v) {
 
-                    mOnCommentListItemClickLitner.onCommentListItemClicked(holder,position,mCommentList.get(position).getCommentId());
+                    mOnCommentListItemClickLitner.onCommentListItemClicked(holder, position, mCommentList.get(position).getCommentId());
                 }
             });
 
@@ -134,7 +153,7 @@ public class PostCommentAdapter extends RecyclerView.Adapter<PostCommentAdapter.
                 @Override
                 public void onClick(View v) {
 
-                    mOnCommentListItemClickLitner.onCommentListItemClicked(holder,position,mCommentList.get(position).getCommentId());
+                    mOnCommentListItemClickLitner.onCommentListItemClicked(holder, position, mCommentList.get(position).getCommentId());
                 }
             });
 
@@ -142,7 +161,7 @@ public class PostCommentAdapter extends RecyclerView.Adapter<PostCommentAdapter.
                 @Override
                 public void onClick(View v) {
 
-                    mOnCommentListItemClickLitner.onCommentListItemClicked(holder,position,mCommentList.get(position).getCommentId());
+                    mOnCommentListItemClickLitner.onCommentListItemClicked(holder, position, mCommentList.get(position).getCommentId());
                 }
             });
 
@@ -150,7 +169,7 @@ public class PostCommentAdapter extends RecyclerView.Adapter<PostCommentAdapter.
                 @Override
                 public void onClick(View v) {
 
-                    mOnCommentListItemClickLitner.onCommentListItemClicked(holder,position,mCommentList.get(position).getCommentId());
+                    mOnCommentListItemClickLitner.onCommentListItemClicked(holder, position, mCommentList.get(position).getCommentId());
 
                 }
             });
@@ -180,7 +199,7 @@ public class PostCommentAdapter extends RecyclerView.Adapter<PostCommentAdapter.
         public TextView mCommentDislike;
         public TextView mCommentNeutral;
         public TextView mReply;
-        public  ImageView mDelete;
+        public ImageView mDelete;
 
         public RecyclerViewHolders(final View itemView) {
             super(itemView);
@@ -192,7 +211,7 @@ public class PostCommentAdapter extends RecyclerView.Adapter<PostCommentAdapter.
             mCommentDislike = (TextView) itemView.findViewById(R.id.tv_dislike_comment);
             mCommentNeutral = (TextView) itemView.findViewById(R.id.tv_neutral_comment);
             mReply = (TextView) itemView.findViewById(R.id.tv_comment_reply);
-            mDelete=(ImageView) itemView.findViewById(R.id.iv_delete_comment);
+            mDelete = (ImageView) itemView.findViewById(R.id.iv_delete_comment);
 
         }
 

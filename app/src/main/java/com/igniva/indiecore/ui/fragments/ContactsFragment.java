@@ -12,6 +12,7 @@ import android.widget.TextView;
 
 import com.igniva.indiecore.R;
 import com.igniva.indiecore.db.BadgesDb;
+import com.igniva.indiecore.model.ContactPojo;
 import com.igniva.indiecore.model.ProfilePojo;
 import com.igniva.indiecore.ui.adapters.PhonebookAdapter;
 

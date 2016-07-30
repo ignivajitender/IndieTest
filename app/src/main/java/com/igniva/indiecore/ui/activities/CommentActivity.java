@@ -1,5 +1,6 @@
 package com.igniva.indiecore.ui.activities;
 
+import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
@@ -8,6 +9,7 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -25,7 +27,6 @@ import com.igniva.indiecore.model.PostPojo;
 import com.igniva.indiecore.model.ResponsePojo;
 import com.igniva.indiecore.ui.adapters.PostCommentAdapter;
 import com.igniva.indiecore.utils.Constants;
-import com.igniva.indiecore.utils.MyLinearLayoutManager;
 import com.igniva.indiecore.utils.PreferenceHandler;
 import com.igniva.indiecore.utils.Utility;
 
@@ -162,7 +163,7 @@ public class CommentActivity extends BaseActivity implements View.OnClickListene
 
 
         mPostComments.setText(selected_post_data.getComment());
-        mPostTime.setText(selected_post_data.getDate_created());
+        mPostTime.setText((selected_post_data.getDate_created()).substring(0,10));
         mPostText.setText(selected_post_data.getText());
         mPostLike.setText(selected_post_data.getLike());
         mPostDislike.setText(selected_post_data.getDislike());
@@ -211,6 +212,10 @@ public class CommentActivity extends BaseActivity implements View.OnClickListene
 
             case R.id.iv_post_comment:
                 try {
+
+                    InputMethodManager imm = (InputMethodManager) getSystemService(
+                            Activity.INPUT_METHOD_SERVICE);
+                    imm.toggleSoftInput(InputMethodManager.HIDE_IMPLICIT_ONLY, 0);
 
                     String comment_text = mEtCommentText.getText().toString().trim();
 
@@ -663,6 +668,8 @@ public class CommentActivity extends BaseActivity implements View.OnClickListene
                             if (result.getLike() == 1) {
                                 mHolder.mCommentLike.setText(a + 1 + "");
                                 mHolder.mCommentLike.setCompoundDrawablesWithIntrinsicBounds(R.drawable.like_icon, 0, 0, 0);
+                                mHolder.mCommentDislike.setCompoundDrawablesWithIntrinsicBounds(R.drawable.dislike_icon_grey, 0, 0, 0);
+                                mHolder.mCommentNeutral.setCompoundDrawablesWithIntrinsicBounds(R.drawable.hand_icon_grey, 0, 0, 0);
                                 mHolder.mCommentLike.setEnabled(true);
                                 mHolder.mCommentDislike.setEnabled(false);
                                 mHolder.mCommentNeutral.setEnabled(false);
@@ -672,6 +679,8 @@ public class CommentActivity extends BaseActivity implements View.OnClickListene
                                     mHolder.mCommentLike.setText(a - 1 + "");
                                 }
                                 mHolder.mCommentLike.setCompoundDrawablesWithIntrinsicBounds(R.drawable.like_grey_icon, 0, 0, 0);
+                                mHolder.mCommentDislike.setCompoundDrawablesWithIntrinsicBounds(R.drawable.dislike_icon_grey, 0, 0, 0);
+                                mHolder.mCommentNeutral.setCompoundDrawablesWithIntrinsicBounds(R.drawable.hand_icon_grey, 0, 0, 0);
                                 mHolder.mCommentLike.setEnabled(true);
                                 mHolder.mCommentDislike.setEnabled(true);
                                 mHolder.mCommentNeutral.setEnabled(true);
@@ -688,7 +697,9 @@ public class CommentActivity extends BaseActivity implements View.OnClickListene
                             b = Integer.parseInt(dislikes_count.trim());
                             if (result.getDislike() == 1) {
                                 mHolder.mCommentDislike.setText(b + 1 + "");
-                                mHolder.mCommentDislike.setCompoundDrawablesWithIntrinsicBounds(R.drawable.dislike_icon_grey, 0, 0, 0);
+                                mHolder.mCommentDislike.setCompoundDrawablesWithIntrinsicBounds(R.drawable.dislike_icon_without_circle, 0, 0, 0);
+                                mHolder.mCommentLike.setCompoundDrawablesWithIntrinsicBounds(R.drawable.like_grey_icon, 0, 0, 0);
+                                mHolder.mCommentNeutral.setCompoundDrawablesWithIntrinsicBounds(R.drawable.hand_icon_grey, 0, 0, 0);
                                 mHolder.mCommentLike.setEnabled(false);
                                 mHolder.mCommentDislike.setEnabled(true);
                                 mHolder.mCommentNeutral.setEnabled(false);
@@ -698,7 +709,9 @@ public class CommentActivity extends BaseActivity implements View.OnClickListene
                                 if (b > 0) {
                                     mHolder.mCommentDislike.setText(b - 1 + "");
                                 }
-                                mHolder.mCommentDislike.setCompoundDrawablesWithIntrinsicBounds(R.drawable.dislike_icon_without_circle, 0, 0, 0);
+                                mHolder.mCommentLike.setCompoundDrawablesWithIntrinsicBounds(R.drawable.like_grey_icon, 0, 0, 0);
+                                mHolder.mCommentDislike.setCompoundDrawablesWithIntrinsicBounds(R.drawable.dislike_icon_grey, 0, 0, 0);
+                                mHolder.mCommentNeutral.setCompoundDrawablesWithIntrinsicBounds(R.drawable.hand_icon_grey, 0, 0, 0);
                                 mHolder.mCommentLike.setEnabled(true);
                                 mHolder.mCommentDislike.setEnabled(true);
                                 mHolder.mCommentNeutral.setEnabled(true);
@@ -713,6 +726,8 @@ public class CommentActivity extends BaseActivity implements View.OnClickListene
                             if (result.getNeutral() == 1) {
                                 mHolder.mCommentNeutral.setText(c + 1 + "");
                                 mHolder.mCommentNeutral.setCompoundDrawablesWithIntrinsicBounds(R.drawable.hand_icon, 0, 0, 0);
+                                mHolder.mCommentLike.setCompoundDrawablesWithIntrinsicBounds(R.drawable.like_grey_icon, 0, 0, 0);
+                                mHolder.mCommentDislike.setCompoundDrawablesWithIntrinsicBounds(R.drawable.dislike_icon_grey, 0, 0, 0);
                                 mHolder.mCommentLike.setEnabled(false);
                                 mHolder.mCommentDislike.setEnabled(false);
                                 mHolder.mCommentNeutral.setEnabled(true);
@@ -723,6 +738,8 @@ public class CommentActivity extends BaseActivity implements View.OnClickListene
                                     mHolder.mCommentNeutral.setText(c - 1 + "");
 
                                 }
+                                mHolder.mCommentLike.setCompoundDrawablesWithIntrinsicBounds(R.drawable.like_grey_icon, 0, 0, 0);
+                                mHolder.mCommentDislike.setCompoundDrawablesWithIntrinsicBounds(R.drawable.dislike_icon_grey, 0, 0, 0);
                                 mHolder.mCommentNeutral.setCompoundDrawablesWithIntrinsicBounds(R.drawable.hand_icon_grey, 0, 0, 0);
                                 mHolder.mCommentLike.setEnabled(true);
                                 mHolder.mCommentDislike.setEnabled(true);

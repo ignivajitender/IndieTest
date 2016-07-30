@@ -83,7 +83,7 @@
                         <EditText
                             android:id="@+id/et_write_post"
                             android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
+                            android:layout_height="150dp"
                             android:layout_below="@+id/tv_user_name"
                             android:background="@color/white"
                             android:gravity="start"

@@ -1,5 +1,6 @@
 package com.igniva.indiecore.ui.activities;
 
+import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
@@ -8,6 +9,7 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -161,22 +163,41 @@ public class CommentsReplyActivity extends BaseActivity implements View.OnClickL
             if (selected_comment_data.getAction() != null) {
                 if (selected_comment_data.getAction().equalsIgnoreCase(Constants.LIKE)) {
                     mTvCommentLike.setCompoundDrawablesWithIntrinsicBounds(R.drawable.like_icon, 0, 0, 0);
+                    mTvCommentDislike.setCompoundDrawablesWithIntrinsicBounds(R.drawable.dislike_icon_grey, 0, 0, 0);
+                    mTvCommentNeutral.setCompoundDrawablesWithIntrinsicBounds(R.drawable.hand_icon_grey, 0, 0, 0);
                     mTvCommentLike.setEnabled(true);
                     mTvCommentDislike.setEnabled(false);
                     mTvCommentNeutral.setEnabled(false);
                 } else if (selected_comment_data.getAction().equalsIgnoreCase(Constants.DISLIKE)) {
                     mTvCommentDislike.setCompoundDrawablesWithIntrinsicBounds(R.drawable.dislike_icon, 0, 0, 0);
+                    mTvCommentLike.setCompoundDrawablesWithIntrinsicBounds(R.drawable.like_grey_icon, 0, 0, 0);
+                    mTvCommentNeutral.setCompoundDrawablesWithIntrinsicBounds(R.drawable.hand_icon_grey, 0, 0, 0);
                     mTvCommentLike.setEnabled(false);
                     mTvCommentDislike.setEnabled(true);
                     mTvCommentNeutral.setEnabled(false);
 
 
                 } else if (selected_comment_data.getAction().equalsIgnoreCase(Constants.NEUTRAL)) {
+
+                    mTvCommentDislike.setCompoundDrawablesWithIntrinsicBounds(R.drawable.dislike_icon_grey, 0, 0, 0);
+                    mTvCommentLike.setCompoundDrawablesWithIntrinsicBounds(R.drawable.like_grey_icon, 0, 0, 0);
                     mTvCommentNeutral.setCompoundDrawablesWithIntrinsicBounds(R.drawable.hand_icon, 0, 0, 0);
                     mTvCommentLike.setEnabled(false);
                     mTvCommentDislike.setEnabled(false);
                     mTvCommentNeutral.setEnabled(true);
 
+                }else {
+
+
+                    mTvCommentLike.setCompoundDrawablesWithIntrinsicBounds(R.drawable.like_grey_icon, 0, 0, 0);
+
+                    mTvCommentDislike.setCompoundDrawablesWithIntrinsicBounds(R.drawable.dislike_icon_grey, 0, 0, 0);
+
+                    mTvCommentNeutral.setCompoundDrawablesWithIntrinsicBounds(R.drawable.hand_icon_grey, 0, 0, 0);
+
+                    mTvCommentLike.setEnabled(true);
+                    mTvCommentDislike.setEnabled(true);
+                    mTvCommentNeutral.setEnabled(true);
                 }
             } else {
                 mTvCommentLike.setCompoundDrawablesWithIntrinsicBounds(R.drawable.like_grey_icon, 0, 0, 0);
@@ -204,13 +225,21 @@ public class CommentsReplyActivity extends BaseActivity implements View.OnClickL
 
             case R.id.iv_post_reply:
 
-                String reply_txt = mEtReplyText.getText().toString();
+                try {
+                    InputMethodManager imm = (InputMethodManager) getSystemService(
+                            Activity.INPUT_METHOD_SERVICE);
+                    imm.toggleSoftInput(InputMethodManager.HIDE_IMPLICIT_ONLY, 0);
 
-                if (reply_txt.isEmpty()) {
-                    Utility.showToastMessageLong(CommentsReplyActivity.this, "Please write a reply");
-                } else {
-                    replyToComment(commentId, reply_txt);
+                    String reply_txt = mEtReplyText.getText().toString();
 
+                    if (reply_txt.isEmpty()) {
+                        Utility.showToastMessageLong(CommentsReplyActivity.this, "Please write a reply");
+                    } else {
+                        replyToComment(commentId, reply_txt);
+
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
                 }
                 break;
 
