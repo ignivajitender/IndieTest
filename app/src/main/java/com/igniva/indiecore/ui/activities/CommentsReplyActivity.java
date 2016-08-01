@@ -41,7 +41,7 @@ public class CommentsReplyActivity extends BaseActivity implements View.OnClickL
 
     private Toolbar mToolbar;
     private EditText mEtReplyText;
-    private TextView mTvCommentLike, mTvCommentDislike, mTvCommentNeutral, mTvCommentReply;
+    private TextView mTvCommentLike, mTvCommentDislike, mTvCommentNeutral, mTvCommentReply, mTvCommentTime;
     private ImageView mIvPostReply;
     private RecyclerView mRvReplies;
     private CommentPojo selected_comment_data = null;
@@ -123,6 +123,9 @@ public class CommentsReplyActivity extends BaseActivity implements View.OnClickL
             mTvCommentReply=(TextView) findViewById(R.id.tv_reply_comment_reply);
             mTvCommentReply.setOnClickListener(this);
 
+
+            mTvCommentTime =(TextView) findViewById(R.id.tv_post_time_comment_reply_activity);
+
             final LinearLayoutManager layoutManager = new LinearLayoutManager(this);
             layoutManager.setOrientation(LinearLayoutManager.VERTICAL);
             mRvReplies.setLayoutManager(layoutManager);
@@ -159,6 +162,8 @@ public class CommentsReplyActivity extends BaseActivity implements View.OnClickL
             mTvCommentDislike.setText(selected_comment_data.getDislike());
             mTvCommentNeutral.setText(selected_comment_data.getNeutral());
             mTvCommentReply.setText(selected_comment_data.getReplie());
+
+            mTvCommentTime.setText(selected_comment_data.getDate_created().substring(0,10));
 
             if (selected_comment_data.getAction() != null) {
                 if (selected_comment_data.getAction().equalsIgnoreCase(Constants.LIKE)) {

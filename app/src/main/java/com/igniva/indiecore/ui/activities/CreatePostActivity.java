@@ -153,9 +153,6 @@ public class CreatePostActivity extends BaseActivity implements AsyncResult,View
                 public void onClick(View v) {
 
                         createPost();
-
-
-
                 }
             });
 
