@@ -221,9 +221,6 @@ public class InviteContactActivity extends BaseActivity {
 
                 contactID = phones.getString(phones.getColumnIndex(ContactsContract.Contacts._ID));
 
-//                 bm=getPhotoThumbnailInputStream(contactID);
-//            Bitmap    b = BitmapFactory.decodeStream(bm);
-
                 image_uri = phones.getString(phones.getColumnIndex(ContactsContract.CommonDataKinds.Phone.PHOTO_URI));
 
                 if (image_uri != null) {

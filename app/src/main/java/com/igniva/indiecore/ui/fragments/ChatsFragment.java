@@ -17,6 +17,8 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.igniva.indiecore.R;
 import com.igniva.indiecore.controller.OnCommentListItemClickListner;
+import com.igniva.indiecore.controller.OnCommentListItemClickListnerTest;
+import com.igniva.indiecore.controller.OnCommentListItemClickListnerTest2;
 import com.igniva.indiecore.controller.OnListItemClickListner;
 import com.igniva.indiecore.controller.ResponseHandlerListener;
 import com.igniva.indiecore.controller.WebNotificationManager;
@@ -27,7 +29,9 @@ import com.igniva.indiecore.model.PostPojo;
 import com.igniva.indiecore.ui.activities.CommentActivity;
 import com.igniva.indiecore.ui.activities.CreatePostActivity;
 import com.igniva.indiecore.ui.activities.DashBoardActivity;
+import com.igniva.indiecore.ui.activities.TestActivity;
 import com.igniva.indiecore.ui.adapters.PostCommentAdapter;
+import com.igniva.indiecore.ui.adapters.TestAdapter;
 import com.igniva.indiecore.ui.adapters.WallPostAdapter;
 import com.igniva.indiecore.utils.Constants;
 import com.igniva.indiecore.utils.PreferenceHandler;
@@ -69,6 +73,8 @@ public class ChatsFragment extends BaseFragment {
     public static final String mActionTypeLike = "like";
     public static final String mActionTypeDislike = "dislike";
     public static final String mActionTypeNeutral = "neutral";
+    WallPostAdapter.RecyclerViewHolders mHolder2;
+
 
     @Nullable
     @Override
@@ -170,10 +176,10 @@ public class ChatsFragment extends BaseFragment {
     }
 
 
-    @Override
-    protected void onClick(View v) {
-
-    }
+//    @Override
+//    protected void onClick(View v) {
+//
+//    }
 
 
     public View.OnClickListener onclickListner = new View.OnClickListener() {
@@ -203,136 +209,256 @@ public class ChatsFragment extends BaseFragment {
     };
 
 
-    OnListItemClickListner onListItemClickListner = new OnListItemClickListner() {
-        @Override
-        public void onListItemClicked(final WallPostAdapter.RecyclerViewHolders holder,  int position, final String postId) {
+   OnCommentListItemClickListnerTest2 onCommentListItemClickListnerTest2=new OnCommentListItemClickListnerTest2() {
+       @Override
+       public void onCommentListItemClicked(final WallPostAdapter.RecyclerViewHolders holder, final int position , final String postId) {
+           {
 
-            mHolder = holder;
-            POSTION=position;
+               try {
+                   mHolder = holder;
+                   POSTION=position;
+                   mHolder.like.setOnClickListener(new View.OnClickListener() {
+                       @Override
+                       public void onClick(View v) {
 
+                           Utility.showToastMessageShort(getActivity()," position is "+position);
+                           action = 1;
+                        likeUnlikePost(mActionTypeLike, postId);
 
+                       }
+                   });
 
+                   mHolder.dislike.setOnClickListener(new View.OnClickListener() {
+                       @Override
+                       public void onClick(View v) {
 
-            /*
-            * action=1-like
-            * action=2-dislike
-            * action=3-neutral
-            *
-            * */
+                           action = 2;
+                           Utility.showToastMessageShort(getActivity()," position is "+position);
 
-            holder.like.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    Utility.showToastMessageLong(getActivity()," position is "+POSTION);
-                    action = 1;
-                    likeUnlikePost(mActionTypeLike, postId);
-                }
-            });
+                           likeUnlikePost(mActionTypeDislike, postId);
 
-            holder.dislike.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    action = 2;
-
-                    likeUnlikePost(mActionTypeDislike, postId);
-                }
-            });
+                       }
+                   });
 
 
-            holder.neutral.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    action = 3;
+                   mHolder.neutral.setOnClickListener(new View.OnClickListener() {
+                       @Override
+                       public void onClick(View v) {
+                           action = 3;
+                           Utility.showToastMessageShort(getActivity()," position is "+position);
 
-                    likeUnlikePost(mActionTypeNeutral, postId);
+                           likeUnlikePost(mActionTypeNeutral, postId);
 
-                }
-            });
+
+                       }
+                   });
+
+                   mHolder.comment.setOnClickListener(new View.OnClickListener() {
+                       @Override
+                       public void onClick(View v) {
+
+                           Bundle bundle = new Bundle();
+                           bundle.putSerializable("POST", mWallPostList.get(POSTION));
+                           Utility.showToastMessageShort(getActivity()," position is "+position);
+
+                           Intent intent = new Intent(getActivity(), CommentActivity.class);
+                           intent.putExtras(bundle);
+                           startActivity(intent);
+
+                       }
+                   });
+
+
+                   mHolder.dropDownOptions.setOnClickListener(new View.OnClickListener() {
+                       @Override
+                       public void onClick(View v) {
+                           try {
+                               Utility.showToastMessageShort(getActivity()," position is "+position);
+
+                               if (deletePostVisible == false) {
+
+                                   if (mWallPostList.get(POSTION).getRelation().equalsIgnoreCase("self")) {
+                                       mHolder.mDeletePost.setVisibility(View.VISIBLE);
+                                       mHolder.mDeletePost.setImageResource(R.drawable.delete_icon);
+                                       ACTION = "DELETE";
+                                   } else {
+                                       mHolder.mDeletePost.setVisibility(View.VISIBLE);
+                                       mHolder.mDeletePost.setImageResource(R.drawable.report_abuse);
+                                       ACTION = "REPORT";
+                                   }
+                                   deletePostVisible = true;
+                               } else if(deletePostVisible==true) {
+                                   mHolder.mDeletePost.setVisibility(View.GONE);
+                                   deletePostVisible = false;
+
+                               }
+
+                           } catch (Exception e) {
+                               e.printStackTrace();
+                           }
+                       }
+                   });
+
+
+                   mHolder.mDeletePost.setOnClickListener(new View.OnClickListener() {
+                       @Override
+                       public void onClick(View v) {
+                           try {
+                               Utility.showToastMessageShort(getActivity()," position is "+position);
+
+                               if (ACTION.equalsIgnoreCase("DELETE")) {
+
+                                   removePost(postId);
+
+                               } else if (ACTION.equalsIgnoreCase("REPORT")) {
+
+                                   flagPost(postId);
+                               }
+
+                           } catch (Exception e) {
+                               e.printStackTrace();
+                           }
+                       }
+                   });
+               } catch (Exception e) {
+                   e.printStackTrace();
+               }
+
+
+           }
+       }
+   };
+
+//    OnListItemClickListner onListItemClickListner = new OnListItemClickListner() {
+//        @Override
+//        public void onListItemClicked(final WallPostAdapter.RecyclerViewHolders holder,  int position, final String postId) {
 //
-            holder.comment.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-//                    holder.mCommentSection.setVisibility(View.VISIBLE);
-//                    mRvComment = holder.mRvComments;
-//                    mRvComment.setLayoutManager(mLlmanager);
-//                    holder.mCommentSection.setVisibility(View.VISIBLE);
-//                    viewAllComments(postId);
-                    Bundle bundle = new Bundle();
-                    bundle.putSerializable("POST", mWallPostList.get(POSTION));
-
-                    Intent intent = new Intent(getActivity(), CommentActivity.class);
-                    intent.putExtras(bundle);
-                    startActivity(intent);
-
-
-                }
-            });
+//            mHolder = holder;
+////            POSTION=position;
 //
-            holder.dropDownOptions.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    try {
-
-                        if (deletePostVisible == false) {
-                            holder.mDeletePost.setVisibility(View.VISIBLE);
-                            if (mWallPostList.get(POSTION).getRelation().equalsIgnoreCase("self")) {
-                                holder.mDeletePost.setImageResource(R.drawable.delete_icon);
-                                ACTION = "DELETE";
-                            } else {
-                                holder.mDeletePost.setImageResource(R.drawable.report_abuse);
-                                ACTION = "REPORT";
-                            }
-                            deletePostVisible = true;
-                        } else {
-                            holder.mDeletePost.setVisibility(View.GONE);
-                            deletePostVisible = false;
-
-                        }
-
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
-                }
-            });
-
-
-            holder.mDeletePost.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    try {
-
-                        if (ACTION.equalsIgnoreCase("DELETE")) {
-
-                         removePost(postId);
-
-                        } else if (ACTION.equalsIgnoreCase("REPORT")) {
-
-                            flagPost(postId);
-                        }
-
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
-                }
-            });
-
-
-//            holder.comment.setOnClickListener(new View.OnClickListener() {
+//
+//
+//
+//            /*
+//            * action=1-like
+//            * action=2-dislike
+//            * action=3-neutral
+//            *
+//            * */
+//
+//            holder.like.setOnClickListener(new View.OnClickListener() {
 //                @Override
 //                public void onClick(View v) {
-//                    if (holder.mEtComment.getText().toString().isEmpty()) {
+//                    Utility.showToastMessageLong(getActivity()," position is "+POSTION);
+////                    action = 1;
+////                    likeUnlikePost(mActionTypeLike, postId);
+//                }
+//            });
 //
-//                        Utility.showAlertDialog("Please write a comment", getActivity());
-//                    } else {
+//            holder.dislike.setOnClickListener(new View.OnClickListener() {
+//                @Override
+//                public void onClick(View v) {
+//                    action = 2;
 //
-//                        postComment(postId, holder.mEtComment.getText().toString());
-//                    }
+//                    likeUnlikePost(mActionTypeDislike, postId);
+//                }
+//            });
+//
+//
+//            holder.neutral.setOnClickListener(new View.OnClickListener() {
+//                @Override
+//                public void onClick(View v) {
+//                    action = 3;
+//
+//                    likeUnlikePost(mActionTypeNeutral, postId);
 //
 //                }
 //            });
-
-        }
-    };
+////
+//            holder.comment.setOnClickListener(new View.OnClickListener() {
+//                @Override
+//                public void onClick(View v) {
+////                    holder.mCommentSection.setVisibility(View.VISIBLE);
+////                    mRvComment = holder.mRvComments;
+////                    mRvComment.setLayoutManager(mLlmanager);
+////                    holder.mCommentSection.setVisibility(View.VISIBLE);
+////                    viewAllComments(postId);
+//                    Bundle bundle = new Bundle();
+//                    bundle.putSerializable("POST", mWallPostList.get(POSTION));
+//
+//                    Intent intent = new Intent(getActivity(), CommentActivity.class);
+//                    intent.putExtras(bundle);
+//                    startActivity(intent);
+//
+//
+//                }
+//            });
+////
+//            holder.dropDownOptions.setOnClickListener(new View.OnClickListener() {
+//                @Override
+//                public void onClick(View v) {
+//                    try {
+//
+//                        if (deletePostVisible == false) {
+//                            holder.mDeletePost.setVisibility(View.VISIBLE);
+//                            if (mWallPostList.get(POSTION).getRelation().equalsIgnoreCase("self")) {
+//                                holder.mDeletePost.setImageResource(R.drawable.delete_icon);
+//                                ACTION = "DELETE";
+//                            } else {
+//                                holder.mDeletePost.setImageResource(R.drawable.report_abuse);
+//                                ACTION = "REPORT";
+//                            }
+//                            deletePostVisible = true;
+//                        } else {
+//                            holder.mDeletePost.setVisibility(View.GONE);
+//                            deletePostVisible = false;
+//
+//                        }
+//
+//                    } catch (Exception e) {
+//                        e.printStackTrace();
+//                    }
+//                }
+//            });
+//
+//
+//            holder.mDeletePost.setOnClickListener(new View.OnClickListener() {
+//                @Override
+//                public void onClick(View v) {
+//                    try {
+//
+//                        if (ACTION.equalsIgnoreCase("DELETE")) {
+//
+//                         removePost(postId);
+//
+//                        } else if (ACTION.equalsIgnoreCase("REPORT")) {
+//
+//                            flagPost(postId);
+//                        }
+//
+//                    } catch (Exception e) {
+//                        e.printStackTrace();
+//                    }
+//                }
+//            });
+//
+//
+////            holder.comment.setOnClickListener(new View.OnClickListener() {
+////                @Override
+////                public void onClick(View v) {
+////                    if (holder.mEtComment.getText().toString().isEmpty()) {
+////
+////                        Utility.showAlertDialog("Please write a comment", getActivity());
+////                    } else {
+////
+////                        postComment(postId, holder.mEtComment.getText().toString());
+////                    }
+////
+////                }
+////            });
+//
+//        }
+//    };
 
 
     /*
@@ -509,7 +635,7 @@ public class ChatsFragment extends BaseFragment {
             mPeople.setBackgroundResource(R.drawable.simple_border_line_style);
 
             mAdapter = null;
-            mAdapter = new WallPostAdapter(getActivity(), mWallPostList, onListItemClickListner);
+            mAdapter = new WallPostAdapter(getActivity(), mWallPostList, onCommentListItemClickListnerTest2);
             mRvWallPosts.setAdapter(mAdapter);
 
 
@@ -592,7 +718,7 @@ public class ChatsFragment extends BaseFragment {
                         if (mWallPostList.size() > 0) {
                             try {
                                 mWallPostAdapter = null;
-                                mWallPostAdapter = new WallPostAdapter(getActivity(), mWallPostList, onListItemClickListner);
+                                mWallPostAdapter = new WallPostAdapter(getActivity(), mWallPostList, onCommentListItemClickListnerTest2);
                                 mWallPostAdapter.notifyDataSetChanged();
                                 mRvWallPosts.setAdapter(mWallPostAdapter);
 
@@ -672,8 +798,6 @@ public class ChatsFragment extends BaseFragment {
                 if (error == null) {
 
                     if (result.getSuccess().equalsIgnoreCase("true")) {
-
-
 
                         if (action == 1) {
                             //action like
@@ -858,9 +982,9 @@ public class ChatsFragment extends BaseFragment {
 
                         mHolder.mDeletePost.setVisibility(View.GONE);
                         mWallPostList.remove(POSTION);
-                        mWallPostAdapter = new WallPostAdapter(getActivity(), mWallPostList, onListItemClickListner);
-//                       mWallPostAdapter.notifyDataSetChanged();
-                      mRvWallPosts.setAdapter(mWallPostAdapter);
+//                        mWallPostAdapter = new WallPostAdapter(getActivity(), mWallPostList, onListItemClickListner);
+                       mWallPostAdapter.notifyDataSetChanged();
+//                      mRvWallPosts.setAdapter(mWallPostAdapter);
 
 
 

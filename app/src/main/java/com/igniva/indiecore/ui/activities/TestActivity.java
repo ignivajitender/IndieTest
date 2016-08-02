@@ -102,7 +102,7 @@ public class TestActivity extends BaseActivity {
     protected void setDataInViewObjects() {
         mAdapter = null;
 
-        for (int i=0;i<10;i++){
+        for (int i=0;i<12;i++){
             mWallPostList.add(new PostPojo());
         }
 

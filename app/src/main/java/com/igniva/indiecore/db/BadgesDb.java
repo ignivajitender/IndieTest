@@ -69,6 +69,9 @@ public class BadgesDb extends SQLiteOpenHelper {
 
     public static String createUsersTable() {
 
+
+//        type=0 non-indiecore user
+//           type=1 indiecore user
         return "CREATE TABLE IF NOT EXISTS " + TABLE_USERS
                 + "(" + MOBILE_NO + " TEXT PRIMARY KEY," +
                 FIRST_NAME + " TEXT," + LAST_NAME + " TEXT," + DESCERIPTION + " TEXT," + CONTACT_IMG + " TEXT,"

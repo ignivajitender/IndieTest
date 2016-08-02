@@ -193,11 +193,11 @@ public class SettingsFragment extends BaseFragment {
     protected void setDataInViewObjects() {
 
     }
-
-    @Override
-    protected void onClick(View v) {
-
-    }
+//
+//    @Override
+//    protected void onClick(View v) {
+//
+//    }
 
 
     public void onClickWhatsApp() {

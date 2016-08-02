@@ -11,6 +11,6 @@ public abstract class BaseFragment extends Fragment{
 
     protected abstract void setUpLayout();
     protected abstract void setDataInViewObjects();
-    protected abstract void onClick(View v);
+//    protected abstract void onClick(View v);
 
 }

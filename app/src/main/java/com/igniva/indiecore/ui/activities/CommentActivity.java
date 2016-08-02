@@ -27,6 +27,7 @@ import com.igniva.indiecore.model.PostPojo;
 import com.igniva.indiecore.model.ResponsePojo;
 import com.igniva.indiecore.ui.adapters.PostCommentAdapter;
 import com.igniva.indiecore.utils.Constants;
+import com.igniva.indiecore.utils.MyLinearLayoutManager;
 import com.igniva.indiecore.utils.PreferenceHandler;
 import com.igniva.indiecore.utils.Utility;
 
@@ -54,7 +55,7 @@ public class CommentActivity extends BaseActivity implements View.OnClickListene
     public static final String mActionTypeDislike = "dislike";
     public static final String mActionTypeNeutral = "neutral";
     PostCommentAdapter.RecyclerViewHolders mHolder;
-    private int POSTION = 0;
+    private int POSITION = 0;
     String postId = "";
     int action = 0;
     PostPojo selected_post_data = null;
@@ -97,9 +98,15 @@ public class CommentActivity extends BaseActivity implements View.OnClickListene
             mRvComment = (RecyclerView) findViewById(R.id.rv_comment_activity);
             //mRvComment.setLayoutManager(mLlmanager);
 
-            final LinearLayoutManager layoutManager = new LinearLayoutManager(this);
-            layoutManager.setOrientation(LinearLayoutManager.VERTICAL);
-            mRvComment.setLayoutManager(layoutManager);
+//            final LinearLayoutManager layoutManager = new LinearLayoutManager(this);
+//            layoutManager.setOrientation(LinearLayoutManager.VERTICAL);
+//            mRvComment.setLayoutManager(layoutManager);
+
+
+            MyLinearLayoutManager manager = new MyLinearLayoutManager(CommentActivity.this,LinearLayoutManager.VERTICAL,false);
+            mRvComment.setLayoutManager(manager);
+            mRvComment.setNestedScrollingEnabled(false);
+//            holder.childList.setAdapter(adapter);
 //            mRvComment.setLayoutManager(new MyLinearLayoutManager(getApplicationContext(),1,false));
 
 
@@ -172,30 +179,37 @@ public class CommentActivity extends BaseActivity implements View.OnClickListene
         if (selected_post_data.getAction() != null) {
             if (selected_post_data.getAction().equalsIgnoreCase(Constants.LIKE)) {
                 mPostLike.setCompoundDrawablesWithIntrinsicBounds(R.drawable.like_blue_icon_circle, 0, 0, 0);
+                mPostDislike.setCompoundDrawablesWithIntrinsicBounds(R.drawable.dislike_grey_icon_circle, 0, 0, 0);
+                mPostNeutral.setCompoundDrawablesWithIntrinsicBounds(R.drawable.hand_grey_icon_circle, 0, 0, 0);
                 mPostLike.setEnabled(true);
                 mPostDislike.setEnabled(false);
                 mPostNeutral.setEnabled(false);
             } else if (selected_post_data.getAction().equalsIgnoreCase(Constants.DISLIKE)) {
                 mPostDislike.setCompoundDrawablesWithIntrinsicBounds(R.drawable.dislike_blue_icon_circle, 0, 0, 0);
+                mPostLike.setCompoundDrawablesWithIntrinsicBounds(R.drawable.like_grey_icon_circle, 0, 0, 0);
+                mPostNeutral.setCompoundDrawablesWithIntrinsicBounds(R.drawable.hand_grey_icon_circle, 0, 0, 0);
                 mPostLike.setEnabled(false);
                 mPostDislike.setEnabled(true);
                 mPostNeutral.setEnabled(false);
-
-
             } else if (selected_post_data.getAction().equalsIgnoreCase(Constants.NEUTRAL)) {
                 mPostNeutral.setCompoundDrawablesWithIntrinsicBounds(R.drawable.hand_icon_blue_circle, 0, 0, 0);
+                mPostLike.setCompoundDrawablesWithIntrinsicBounds(R.drawable.like_grey_icon_circle, 0, 0, 0);
+                mPostDislike.setCompoundDrawablesWithIntrinsicBounds(R.drawable.dislike_grey_icon_circle, 0, 0, 0);
                 mPostLike.setEnabled(false);
                 mPostDislike.setEnabled(false);
                 mPostNeutral.setEnabled(true);
-
+            }else {
+                mPostLike.setCompoundDrawablesWithIntrinsicBounds(R.drawable.like_grey_icon_circle, 0, 0, 0);
+                mPostDislike.setCompoundDrawablesWithIntrinsicBounds(R.drawable.dislike_grey_icon_circle, 0, 0, 0);
+                mPostNeutral.setCompoundDrawablesWithIntrinsicBounds(R.drawable.hand_grey_icon_circle, 0, 0, 0);
+                mPostLike.setEnabled(true);
+                mPostDislike.setEnabled(true);
+                mPostNeutral.setEnabled(true);
             }
         } else {
             mPostLike.setCompoundDrawablesWithIntrinsicBounds(R.drawable.like_grey_icon_circle, 0, 0, 0);
-
             mPostDislike.setCompoundDrawablesWithIntrinsicBounds(R.drawable.dislike_grey_icon_circle, 0, 0, 0);
-
             mPostNeutral.setCompoundDrawablesWithIntrinsicBounds(R.drawable.hand_grey_icon_circle, 0, 0, 0);
-
             mPostLike.setEnabled(true);
             mPostDislike.setEnabled(true);
             mPostNeutral.setEnabled(true);
@@ -213,9 +227,9 @@ public class CommentActivity extends BaseActivity implements View.OnClickListene
             case R.id.iv_post_comment:
                 try {
 
-                    InputMethodManager imm = (InputMethodManager) getSystemService(
-                            Activity.INPUT_METHOD_SERVICE);
-                    imm.toggleSoftInput(InputMethodManager.HIDE_IMPLICIT_ONLY, 0);
+//                    InputMethodManager imm = (InputMethodManager) getSystemService(
+//                            Activity.INPUT_METHOD_SERVICE);
+//                    imm.toggleSoftInput(InputMethodManager.HIDE_IMPLICIT_ONLY, 0);
 
                     String comment_text = mEtCommentText.getText().toString().trim();
 
@@ -254,15 +268,14 @@ public class CommentActivity extends BaseActivity implements View.OnClickListene
                 try {
                     if (isDeleteBtnVisible == false) {
 
-                        mReportPost.setVisibility(View.VISIBLE);
-
                         if (selected_post_data.getRelation().equalsIgnoreCase("self")) {
+                            mReportPost.setVisibility(View.VISIBLE);
                             mReportPost.setImageResource(R.drawable.delete_icon);
                             ACTION = "DELETE";
                             isDeleteBtnVisible = true;
 
                         } else {
-
+                            mReportPost.setVisibility(View.VISIBLE);
                             mReportPost.setImageResource(R.drawable.report_abuse);
                             ACTION = "REPORT";
                             isDeleteBtnVisible = true;
@@ -270,7 +283,6 @@ public class CommentActivity extends BaseActivity implements View.OnClickListene
                         }
                     } else {
                         mReportPost.setVisibility(View.GONE);
-
                         isDeleteBtnVisible = false;
                     }
 
@@ -360,7 +372,8 @@ public class CommentActivity extends BaseActivity implements View.OnClickListene
                             if (result.getLike() == 1) {
                                 mPostLike.setText(a + 1 + "");
                                 mPostLike.setCompoundDrawablesWithIntrinsicBounds(R.drawable.like_blue_icon_circle, 0, 0, 0);
-
+                                mPostDislike.setCompoundDrawablesWithIntrinsicBounds(R.drawable.dislike_grey_icon_circle, 0, 0, 0);
+                                mPostNeutral.setCompoundDrawablesWithIntrinsicBounds(R.drawable.hand_grey_icon_circle, 0, 0, 0);
                                 mPostLike.setEnabled(true);
                                 mPostDislike.setEnabled(false);
                                 mPostNeutral.setEnabled(false);
@@ -370,6 +383,8 @@ public class CommentActivity extends BaseActivity implements View.OnClickListene
                                     mPostLike.setText(a - 1 + "");
                                 }
                                 mPostLike.setCompoundDrawablesWithIntrinsicBounds(R.drawable.like_grey_icon_circle, 0, 0, 0);
+                                mPostDislike.setCompoundDrawablesWithIntrinsicBounds(R.drawable.dislike_grey_icon_circle, 0, 0, 0);
+                                mPostNeutral.setCompoundDrawablesWithIntrinsicBounds(R.drawable.hand_grey_icon_circle, 0, 0, 0);
                                 mPostLike.setEnabled(true);
                                 mPostDislike.setEnabled(true);
                                 mPostNeutral.setEnabled(true);
@@ -385,6 +400,9 @@ public class CommentActivity extends BaseActivity implements View.OnClickListene
                             if (result.getDislike() == 1) {
                                 mPostDislike.setText(b + 1 + "");
                                 mPostDislike.setCompoundDrawablesWithIntrinsicBounds(R.drawable.dislike_blue_icon_circle, 0, 0, 0);
+                                mPostLike.setCompoundDrawablesWithIntrinsicBounds(R.drawable.like_grey_icon_circle, 0, 0, 0);
+                                mPostNeutral.setCompoundDrawablesWithIntrinsicBounds(R.drawable.hand_grey_icon_circle, 0, 0, 0);
+
                                 mPostLike.setEnabled(false);
                                 mPostDislike.setEnabled(true);
                                 mPostNeutral.setEnabled(false);
@@ -395,8 +413,9 @@ public class CommentActivity extends BaseActivity implements View.OnClickListene
                                 if (b > 0) {
                                     mPostDislike.setText(b - 1 + "");
                                 }
+                                mPostLike.setCompoundDrawablesWithIntrinsicBounds(R.drawable.like_grey_icon_circle, 0, 0, 0);
                                 mPostDislike.setCompoundDrawablesWithIntrinsicBounds(R.drawable.dislike_grey_icon_circle, 0, 0, 0);
-
+                                mPostNeutral.setCompoundDrawablesWithIntrinsicBounds(R.drawable.hand_grey_icon_circle, 0, 0, 0);
                                 mPostLike.setEnabled(true);
                                 mPostDislike.setEnabled(true);
                                 mPostNeutral.setEnabled(true);
@@ -416,6 +435,9 @@ public class CommentActivity extends BaseActivity implements View.OnClickListene
                                 mPostNeutral.setText(c + 1 + "");
 
                                 mPostNeutral.setCompoundDrawablesWithIntrinsicBounds(R.drawable.hand_icon_blue_circle, 0, 0, 0);
+                                mPostLike.setCompoundDrawablesWithIntrinsicBounds(R.drawable.like_grey_icon_circle, 0, 0, 0);
+                                mPostDislike.setCompoundDrawablesWithIntrinsicBounds(R.drawable.dislike_grey_icon_circle, 0, 0, 0);
+
                                 mPostLike.setEnabled(false);
                                 mPostDislike.setEnabled(false);
                                 mPostNeutral.setEnabled(true);
@@ -427,7 +449,8 @@ public class CommentActivity extends BaseActivity implements View.OnClickListene
                                 }
 
                                 mPostNeutral.setCompoundDrawablesWithIntrinsicBounds(R.drawable.hand_grey_icon_circle, 0, 0, 0);
-
+                                mPostLike.setCompoundDrawablesWithIntrinsicBounds(R.drawable.like_grey_icon_circle, 0, 0, 0);
+                                mPostDislike.setCompoundDrawablesWithIntrinsicBounds(R.drawable.dislike_grey_icon_circle, 0, 0, 0);
                                 mPostLike.setEnabled(true);
                                 mPostDislike.setEnabled(true);
                                 mPostNeutral.setEnabled(true);
@@ -498,6 +521,11 @@ public class CommentActivity extends BaseActivity implements View.OnClickListene
             if (error == null) {
 
                 if (result.getSuccess().equalsIgnoreCase("true")) {
+
+                                        InputMethodManager imm = (InputMethodManager) getSystemService(
+                            Activity.INPUT_METHOD_SERVICE);
+                    imm.toggleSoftInput(InputMethodManager.HIDE_IMPLICIT_ONLY, 0);
+
 
                     Utility.showToastMessageLong(CommentActivity.this, "comment posted");
                     String comment_count=mPostComments.getText().toString();
@@ -828,7 +856,7 @@ public class CommentActivity extends BaseActivity implements View.OnClickListene
                         String comment_count=mPostComments.getText().toString();
                         int count=Integer.parseInt(comment_count.trim());
                         mPostComments.setText(count-1+"");
-                        mCommentList.remove(POSTION);
+                        mCommentList.remove(POSITION);
                         mCommentAdapter.notifyDataSetChanged();
 
                     }else {
@@ -913,7 +941,7 @@ public class CommentActivity extends BaseActivity implements View.OnClickListene
                     if (result.getSuccess().equalsIgnoreCase("true")) {
 
 //remove this post from list
-//                        mWallPostList.remove(POSTION);
+//                        mWallPostList.remove(POSITION);
                         mReportPost.setVisibility(View.GONE);
                         Utility.showToastMessageLong(CommentActivity.this, "post removed");
                         finish();
@@ -1003,10 +1031,10 @@ public class CommentActivity extends BaseActivity implements View.OnClickListene
 
     OnCommentListItemClickListner onCommentListItemClickListner = new OnCommentListItemClickListner() {
         @Override
-        public void onCommentListItemClicked(final PostCommentAdapter.RecyclerViewHolders view, int position, final String commentId) {
+        public void onCommentListItemClicked(final PostCommentAdapter.RecyclerViewHolders view, final int position, final String commentId) {
 
             mHolder = view;
-            POSTION = position;
+            POSITION = position;
 
 
             mHolder.mDelete.setOnClickListener(new View.OnClickListener() {
@@ -1020,6 +1048,7 @@ public class CommentActivity extends BaseActivity implements View.OnClickListene
                 @Override
                 public void onClick(View v) {
                     INDEX = 1;
+                    Utility.showToastMessageLong(CommentActivity.this,""+position);
                     commentAction(mActionTypeLike, commentId);
 
 
@@ -1030,6 +1059,7 @@ public class CommentActivity extends BaseActivity implements View.OnClickListene
                 @Override
                 public void onClick(View v) {
                     INDEX = 2;
+                    Utility.showToastMessageLong(CommentActivity.this,""+position);
                     commentAction(mActionTypeDislike, commentId);
 
 
@@ -1039,6 +1069,7 @@ public class CommentActivity extends BaseActivity implements View.OnClickListene
                 @Override
                 public void onClick(View v) {
                     INDEX = 3;
+                    Utility.showToastMessageLong(CommentActivity.this,""+position);
                     commentAction(mActionTypeNeutral, commentId);
 
 
@@ -1050,7 +1081,7 @@ public class CommentActivity extends BaseActivity implements View.OnClickListene
                 public void onClick(View v) {
 
                     Bundle bundle = new Bundle();
-                    bundle.putSerializable("COMMENT", mCommentList.get(POSTION));
+                    bundle.putSerializable("COMMENT", mCommentList.get(POSITION));
 
                     Intent intent = new Intent(CommentActivity.this, CommentsReplyActivity.class);
                     intent.putExtras(bundle);

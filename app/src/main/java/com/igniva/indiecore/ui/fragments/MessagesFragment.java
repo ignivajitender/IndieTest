@@ -31,8 +31,8 @@ public class MessagesFragment extends BaseFragment{
 
     }
 
-    @Override
-    protected void onClick(View v) {
-
-    }
+//    @Override
+//    protected void onClick(View v) {
+//
+//    }
 }

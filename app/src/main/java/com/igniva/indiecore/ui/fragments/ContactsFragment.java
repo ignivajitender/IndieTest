@@ -66,11 +66,11 @@ public class ContactsFragment extends BaseFragment {
         updatePhoneBookUi();
 
     }
-
-    @Override
-    protected void onClick(View v) {
-
-    }
+//
+//    @Override
+//    protected void onClick(View v) {
+//
+//    }
 
 
     private View.OnClickListener onClickListener = new View.OnClickListener() {

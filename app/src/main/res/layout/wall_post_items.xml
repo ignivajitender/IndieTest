@@ -157,7 +157,7 @@
                         android:layout_weight="1"
                         android:drawableLeft="@drawable/like_grey_icon_circle"
                         android:drawablePadding="5dp"
-                        android:text="2" />
+                        android:text="0" />
 
                     <TextView
                         android:id="@+id/tv_neutral"
@@ -167,7 +167,7 @@
                         android:layout_weight="1"
                         android:drawableLeft="@drawable/hand_grey_icon_circle"
                         android:drawablePadding="5dp"
-                        android:text="2" />
+                        android:text="0" />
 
                     <TextView
                         android:id="@+id/tv_dislike"
@@ -177,7 +177,7 @@
                         android:layout_weight="1"
                         android:drawableLeft="@drawable/dislike_grey_icon_circle"
                         android:drawablePadding="5dp"
-                        android:text="2" />
+                        android:text="0" />
 
                     <TextView
                         android:id="@+id/tv_comment"
@@ -187,7 +187,7 @@
                         android:layout_weight="1"
                         android:drawableLeft="@drawable/comment_icon_grey_circle"
                         android:drawablePadding="5dp"
-                        android:text="2" />
+                        android:text="0" />
 
                     <!--<TextView-->
                         <!--android:id="@+id/tv_share"-->

@@ -187,10 +187,10 @@ public class CheckInFragment extends BaseFragment {
 
     }
 
-    @Override
-    protected void onClick(View v) {
-
-    }
+//    @Override
+//    protected void onClick(View v) {
+//
+//    }
 
 
     public void getBusinesses() {

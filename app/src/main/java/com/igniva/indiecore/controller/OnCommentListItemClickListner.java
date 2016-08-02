@@ -9,3 +9,4 @@ import com.igniva.indiecore.ui.adapters.WallPostAdapter;
 public interface OnCommentListItemClickListner {
       void onCommentListItemClicked(PostCommentAdapter.RecyclerViewHolders view, int position, String commentId);
 }
+

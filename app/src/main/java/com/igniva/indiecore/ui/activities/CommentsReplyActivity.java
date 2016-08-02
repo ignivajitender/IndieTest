@@ -488,6 +488,8 @@ public class CommentsReplyActivity extends BaseActivity implements View.OnClickL
                             if (result.getLike() == 1) {
                                 mTvCommentLike.setText(a + 1 + "");
                                 mTvCommentLike.setCompoundDrawablesWithIntrinsicBounds(R.drawable.like_icon, 0, 0, 0);
+                                mTvCommentDislike.setCompoundDrawablesWithIntrinsicBounds(R.drawable.dislike_icon_grey, 0, 0, 0);
+                                mTvCommentNeutral.setCompoundDrawablesWithIntrinsicBounds(R.drawable.hand_icon_grey, 0, 0, 0);
                                 mTvCommentLike.setEnabled(true);
                                 mTvCommentDislike.setEnabled(false);
                                 mTvCommentNeutral.setEnabled(false);
@@ -497,6 +499,8 @@ public class CommentsReplyActivity extends BaseActivity implements View.OnClickL
                                     mTvCommentLike.setText(a - 1 + "");
                                 }
                                 mTvCommentLike.setCompoundDrawablesWithIntrinsicBounds(R.drawable.like_grey_icon, 0, 0, 0);
+                                mTvCommentDislike.setCompoundDrawablesWithIntrinsicBounds(R.drawable.dislike_icon_grey, 0, 0, 0);
+                                mTvCommentNeutral.setCompoundDrawablesWithIntrinsicBounds(R.drawable.hand_icon_grey, 0, 0, 0);
                                 mTvCommentLike.setEnabled(true);
                                 mTvCommentDislike.setEnabled(true);
                                 mTvCommentNeutral.setEnabled(true);
@@ -514,6 +518,9 @@ public class CommentsReplyActivity extends BaseActivity implements View.OnClickL
                             if (result.getDislike() == 1) {
                                 mTvCommentDislike.setText(b + 1 + "");
                                 mTvCommentDislike.setCompoundDrawablesWithIntrinsicBounds(R.drawable.dislike_icon_without_circle, 0, 0, 0);
+                                mTvCommentLike.setCompoundDrawablesWithIntrinsicBounds(R.drawable.like_grey_icon, 0, 0, 0);
+                                mTvCommentNeutral.setCompoundDrawablesWithIntrinsicBounds(R.drawable.hand_icon_grey, 0, 0, 0);
+
                                 mTvCommentLike.setEnabled(false);
                                 mTvCommentDislike.setEnabled(true);
                                 mTvCommentNeutral.setEnabled(false);
@@ -522,7 +529,9 @@ public class CommentsReplyActivity extends BaseActivity implements View.OnClickL
                                 if (b > 0) {
                                     mTvCommentDislike.setText(b - 1 + "");
                                 }
+                                mTvCommentLike.setCompoundDrawablesWithIntrinsicBounds(R.drawable.like_grey_icon, 0, 0, 0);
                                 mTvCommentDislike.setCompoundDrawablesWithIntrinsicBounds(R.drawable.dislike_icon_grey, 0, 0, 0);
+                                mTvCommentNeutral.setCompoundDrawablesWithIntrinsicBounds(R.drawable.hand_icon_grey, 0, 0, 0);
                                 mTvCommentLike.setEnabled(true);
                                 mTvCommentDislike.setEnabled(true);
                                 mTvCommentNeutral.setEnabled(true);
@@ -539,6 +548,8 @@ public class CommentsReplyActivity extends BaseActivity implements View.OnClickL
                             if (result.getNeutral() == 1) {
                                 mTvCommentNeutral.setText(c + 1 + "");
                                 mTvCommentNeutral.setCompoundDrawablesWithIntrinsicBounds(R.drawable.hand_icon, 0, 0, 0);
+                                mTvCommentLike.setCompoundDrawablesWithIntrinsicBounds(R.drawable.like_grey_icon, 0, 0, 0);
+                                mTvCommentDislike.setCompoundDrawablesWithIntrinsicBounds(R.drawable.dislike_icon_grey, 0, 0, 0);
                                 mTvCommentLike.setEnabled(false);
                                 mTvCommentDislike.setEnabled(false);
                                 mTvCommentNeutral.setEnabled(true);
@@ -548,6 +559,8 @@ public class CommentsReplyActivity extends BaseActivity implements View.OnClickL
                                     mTvCommentNeutral.setText(c - 1 + "");
 
                                 }
+                                mTvCommentLike.setCompoundDrawablesWithIntrinsicBounds(R.drawable.like_grey_icon, 0, 0, 0);
+                                mTvCommentDislike.setCompoundDrawablesWithIntrinsicBounds(R.drawable.dislike_icon_grey, 0, 0, 0);
                                 mTvCommentNeutral.setCompoundDrawablesWithIntrinsicBounds(R.drawable.hand_icon_grey, 0, 0, 0);
                                 mTvCommentLike.setEnabled(true);
                                 mTvCommentDislike.setEnabled(true);
