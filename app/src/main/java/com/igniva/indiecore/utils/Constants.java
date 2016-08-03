@@ -64,6 +64,8 @@ public static  final String SELF="self";
     public static  final String LIKE="like";
     public static  final String DISLIKE="dislike";
     public static  final String NEUTRAL="neutral";
+    public static  final String COMMENT="COMMENT";
+    public static  final String DELETE="DELETE";
     public static  final String RELATION_SELF="self";
     public static  final String RELATION_UNKNOWN="unknown";
 

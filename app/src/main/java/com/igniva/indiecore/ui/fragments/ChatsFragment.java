@@ -214,12 +214,30 @@ public class ChatsFragment extends BaseFragment {
 
     OnCommentListItemClickListnerTest2 onCommentListItemClickListnerTest2 = new OnCommentListItemClickListnerTest2() {
         @Override
-        public void onCommentListItemClicked(final WallPostAdapter.RecyclerViewHolders holder, final int position, final String postId) {
+        public void onCommentListItemClicked(final WallPostAdapter.RecyclerViewHolders holder, final int position, final String postId,String type) {
             {
                 try {
                     mHolder = holder;
-
                     postID = postId;
+
+//                    switch (type){
+//                        case Constants.LIKE:
+//                            mHolder.like.performClick();
+//                            break;
+//                        case Constants.DISLIKE:
+//                            mHolder.dislike.performClick();
+//                            break;
+//                        case Constants.COMMENT:
+//                            mHolder.comment.performClick();
+//                            break;
+//                        case Constants.DELETE:
+//                            mHolder.mDeletePost.performClick();
+//                            break;
+//
+//
+//                    }
+
+
                     mHolder.like.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
@@ -283,6 +301,9 @@ public class ChatsFragment extends BaseFragment {
                     mHolder.dropDownOptions.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
+
+                            mDeletePost = (ImageView) v.findViewById(R.id.iv_delete_post);
+
                             POSTION = position;
                             try {
 //                                Utility.showToastMessageShort(getActivity(), " position is " + position);
@@ -290,17 +311,17 @@ public class ChatsFragment extends BaseFragment {
                                 if (deletePostVisible == false) {
 
                                     if (mWallPostList.get(POSTION).getRelation().equalsIgnoreCase("self")) {
-                                        mHolder.mDeletePost.setVisibility(View.VISIBLE);
-                                        mHolder.mDeletePost.setImageResource(R.drawable.delete_icon);
+                                        mDeletePost.setVisibility(View.VISIBLE);
+                                        mDeletePost.setImageResource(R.drawable.delete_icon);
                                         ACTION = "DELETE";
                                     } else {
-                                        mHolder.mDeletePost.setVisibility(View.VISIBLE);
-                                        mHolder.mDeletePost.setImageResource(R.drawable.report_abuse);
+                                        mDeletePost.setVisibility(View.VISIBLE);
+                                        mDeletePost.setImageResource(R.drawable.report_abuse);
                                         ACTION = "REPORT";
                                     }
                                     deletePostVisible = true;
                                 } else if (deletePostVisible == true) {
-                                    mHolder.mDeletePost.setVisibility(View.GONE);
+                                    mDeletePost.setVisibility(View.GONE);
                                     deletePostVisible = false;
 
                                 }
@@ -831,7 +852,6 @@ public class ChatsFragment extends BaseFragment {
                                 if (a > 0) {
                                     mWallPostList.get(POSTION).setLike(a - 1 );
                                 }
-
 
 
 //                                mHolder.like.setCompoundDrawablesWithIntrinsicBounds(R.drawable.like_grey_icon_circle, 0, 0, 0);

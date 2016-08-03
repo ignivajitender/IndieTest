@@ -9,6 +9,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
@@ -34,6 +35,7 @@ public class WallPostAdapter extends RecyclerView.Adapter<WallPostAdapter.Recycl
 
     private ArrayList<PostPojo> wallItemsList;
     private Context mContext;
+    public ImageView mDeletePostOld;
     ImageView mDelete;
     WallPostAdapter mAdapter;
     private boolean deletePostVisible = false;
@@ -70,6 +72,7 @@ PostPojo postPojo;
     @Override
     public void onBindViewHolder(final RecyclerViewHolders holder, final int position) {
         try {
+
             postPojo=wallItemsList.get(position);
             if (!postPojo.getFirstName().isEmpty()) {
                 String Name = (postPojo.getFirstName() + " " + (postPojo.getLastName()).charAt(0) + ".");
@@ -158,15 +161,13 @@ PostPojo postPojo;
                 holder.dislike.setEnabled(true);
                 holder.neutral.setEnabled(true);
 
-
             }
-
 
             holder.like.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     //Utility.showToastMessageLong(((Activity) mContext)," position is "+position);
-                    onCommentListItemClickListnerTest2l.onCommentListItemClicked(holder, position, postPojo.getPostId());
+                    onCommentListItemClickListnerTest2l.onCommentListItemClicked(holder, position, postPojo.getPostId(),Constants.LIKE);
 //                    mOnListItemClickListner.onListItemClicked(holder, position, postPojo.getPostId());
                 }
             });
@@ -174,21 +175,21 @@ PostPojo postPojo;
                 @Override
                 public void onClick(View v) {
 //                    Utility.showToastMessageLong(((Activity) mContext)," position is "+position);
-                    onCommentListItemClickListnerTest2l.onCommentListItemClicked(holder, position, postPojo.getPostId());
+                    onCommentListItemClickListnerTest2l.onCommentListItemClicked(holder, position, postPojo.getPostId(),Constants.DISLIKE);
                 }
             });
             holder.neutral.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
 //                    Utility.showToastMessageLong(((Activity) mContext)," position is "+position);
-                    onCommentListItemClickListnerTest2l.onCommentListItemClicked(holder, position, postPojo.getPostId());
+                    onCommentListItemClickListnerTest2l.onCommentListItemClicked(holder, position, postPojo.getPostId(),Constants.NEUTRAL);
                 }
             });
 
             holder.comment.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    onCommentListItemClickListnerTest2l.onCommentListItemClicked(holder, position, postPojo.getPostId());
+                    onCommentListItemClickListnerTest2l.onCommentListItemClicked(holder, position, postPojo.getPostId(),Constants.COMMENT);
 
                 }
             });
@@ -197,7 +198,7 @@ PostPojo postPojo;
             holder.mDeletePost.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-//                    onCommentListItemClickListnerTest2l.onCommentListItemClicked(holder, position, postPojo.getPostId());
+                    onCommentListItemClickListnerTest2l.onCommentListItemClicked(holder, position, postPojo.getPostId(),Constants.DELETE);
 //                    mDelete=holder.mDeletePost;
 //                    try {
 //
@@ -221,30 +222,40 @@ PostPojo postPojo;
             holder.dropDownOptions.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    onCommentListItemClickListnerTest2l.onCommentListItemClicked(holder, position, postPojo.getPostId());
-//                    try {
-//
-//                        if (deletePostVisible == false) {
-//
-//                            if (postPojo.getRelation().equalsIgnoreCase("self")) {
-//                                holder.mDeletePost.setVisibility(View.VISIBLE);
-//                                holder.mDeletePost.setImageResource(R.drawable.delete_icon);
-//                                ACTION = "DELETE";
-//                            } else {
-//                                holder.mDeletePost.setVisibility(View.VISIBLE);
-//                                holder.mDeletePost.setImageResource(R.drawable.report_abuse);
-//                                ACTION = "REPORT";
-//                            }
-//                            deletePostVisible = true;
-//                        } else if(deletePostVisible==true) {
-//                            holder.mDeletePost.setVisibility(View.GONE);
-//                            deletePostVisible = false;
-//
-//                        }
-//
-//                    } catch (Exception e) {
-//                        e.printStackTrace();
-//                    }
+                    postPojo=wallItemsList.get(position);
+                //    onCommentListItemClickListnerTest2l.onCommentListItemClicked(holder, position, postPojo.getPostId());
+                    try {
+
+                        Utility.showToastMessageShort((Activity) mContext," position "+position+" rel:"+wallItemsList.get(position).getRelation());
+
+                        if (deletePostVisible == false) {
+                            // Remove previously opened view
+                            try {
+                                mDeletePostOld.setVisibility(View.GONE);
+                            }catch (Exception e){
+                                e.printStackTrace();
+                            }
+                            //
+                            holder.mDeletePost.setVisibility(View.VISIBLE);
+
+                            if (postPojo.getRelation().equalsIgnoreCase("self")) {
+                                holder.mDeletePost.setImageResource(R.drawable.delete_icon);
+                                ACTION = "DELETE";
+                            } else {
+                                holder.mDeletePost.setImageResource(R.drawable.report_abuse);
+                                ACTION = "REPORT";
+                            }
+                            deletePostVisible = true;
+                            mDeletePostOld= holder.mDeletePost;
+                        } else if(deletePostVisible==true) {
+                            holder.mDeletePost.setVisibility(View.GONE);
+                            deletePostVisible = false;
+
+                        }
+
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
                 }
             });
 
