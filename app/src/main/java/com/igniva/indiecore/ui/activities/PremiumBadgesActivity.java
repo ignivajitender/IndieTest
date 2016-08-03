@@ -252,6 +252,11 @@ public class PremiumBadgesActivity extends BaseActivity implements IabBroadcastR
                     if(result.getSuccess().equalsIgnoreCase("true")){
 
                         mPremiumBadgesList.clear();
+
+                        for (int i=0;i<mPremiumBadgesList.size();i++){
+
+                            result.getBadges().get(i).setSelected(false);
+                        }
                         mPremiumBadgesList.addAll(result.getBadges());
                         setDataInViewObjects();
 
@@ -295,7 +300,7 @@ public class PremiumBadgesActivity extends BaseActivity implements IabBroadcastR
 
     OnPremiumBadgeClick onPremiumBadgeClick= new OnPremiumBadgeClick() {
         @Override
-        public void onPremiumBadgeClicked(RelativeLayout view, int position) {
+        public void onPremiumBadgeClicked(BadgesPojo mPremiumBadge) {
 
 
 
