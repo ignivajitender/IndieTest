@@ -66,10 +66,10 @@ public class CommentReplyAdapter extends RecyclerView.Adapter<CommentReplyAdapte
                         .into(holder.mUserIcon);
             }
 
-            holder.mReply.setText(mRelpiesList.get(position).getText());
-            holder.mReplyLike.setText(mRelpiesList.get(position).getLike());
-            holder.mReplyDislike.setText(mRelpiesList.get(position).getDislike());
-            holder.mReplyNeutral.setText(mRelpiesList.get(position).getNeutral());
+            holder.mReply.setText(mRelpiesList.get(position).getText()+"");
+            holder.mReplyLike.setText(mRelpiesList.get(position).getLike()+"");
+            holder.mReplyDislike.setText(mRelpiesList.get(position).getDislike()+"");
+            holder.mReplyNeutral.setText(mRelpiesList.get(position).getNeutral()+"");
 
 
             if (mRelpiesList.get(position).getRelation().equalsIgnoreCase(Constants.SELF)) {
@@ -86,6 +86,8 @@ public class CommentReplyAdapter extends RecyclerView.Adapter<CommentReplyAdapte
                 if (mRelpiesList.get(position).getAction().equalsIgnoreCase(Constants.LIKE)) {
 
                     holder.mReplyLike.setCompoundDrawablesWithIntrinsicBounds(R.drawable.like_icon, 0, 0, 0);
+                    holder.mReplyDislike.setCompoundDrawablesWithIntrinsicBounds(R.drawable.dislike_icon_grey_without_circle,0,0,0);
+                    holder.mReplyNeutral.setCompoundDrawablesWithIntrinsicBounds(R.drawable.hand_icon_grey,0,0,0);
                     holder.mReplyLike.setEnabled(true);
                     holder.mReplyDislike.setEnabled(false);
                     holder.mReplyNeutral.setEnabled(false);
@@ -95,14 +97,27 @@ public class CommentReplyAdapter extends RecyclerView.Adapter<CommentReplyAdapte
                     holder.mReplyLike.setEnabled(false);
                     holder.mReplyDislike.setEnabled(true);
                     holder.mReplyDislike.setCompoundDrawablesWithIntrinsicBounds(R.drawable.dislike_icon_without_circle, 0, 0, 0);
+                    holder.mReplyLike.setCompoundDrawablesWithIntrinsicBounds(R.drawable.like_grey_icon,0,0,0);
+                    holder.mReplyNeutral.setCompoundDrawablesWithIntrinsicBounds(R.drawable.hand_icon_grey,0,0,0);
                     holder.mReplyNeutral.setEnabled(false);
 
-                } else {
+                } else if(mRelpiesList.get(position).getAction().equalsIgnoreCase(Constants.NEUTRAL)){
                     holder.mReplyLike.setEnabled(false);
                     holder.mReplyDislike.setEnabled(false);
                     holder.mReplyNeutral.setEnabled(true);
                     holder.mReplyNeutral.setCompoundDrawablesWithIntrinsicBounds(R.drawable.hand_icon, 0, 0, 0);
+                    holder.mReplyLike.setCompoundDrawablesWithIntrinsicBounds(R.drawable.like_grey_icon,0,0,0);
+                    holder.mReplyDislike.setCompoundDrawablesWithIntrinsicBounds(R.drawable.dislike_icon_grey_without_circle,0,0,0);
 
+
+                } else {
+
+                    holder.mReplyLike.setEnabled(true);
+                    holder.mReplyDislike.setEnabled(true);
+                    holder.mReplyNeutral.setEnabled(true);
+                    holder.mReplyLike.setCompoundDrawablesWithIntrinsicBounds(R.drawable.like_grey_icon,0,0,0);
+                    holder.mReplyDislike.setCompoundDrawablesWithIntrinsicBounds(R.drawable.dislike_icon_grey_without_circle,0,0,0);
+                    holder.mReplyNeutral.setCompoundDrawablesWithIntrinsicBounds(R.drawable.hand_icon_grey,0,0,0);
                 }
             
         }else{
@@ -110,6 +125,9 @@ public class CommentReplyAdapter extends RecyclerView.Adapter<CommentReplyAdapte
             holder.mReplyLike.setEnabled(true);
             holder.mReplyDislike.setEnabled(true);
             holder.mReplyNeutral.setEnabled(true);
+                holder.mReplyLike.setCompoundDrawablesWithIntrinsicBounds(R.drawable.like_grey_icon,0,0,0);
+                holder.mReplyDislike.setCompoundDrawablesWithIntrinsicBounds(R.drawable.dislike_icon_grey_without_circle,0,0,0);
+                holder.mReplyNeutral.setCompoundDrawablesWithIntrinsicBounds(R.drawable.hand_icon_grey,0,0,0);
 
         }
 
@@ -118,8 +136,6 @@ public class CommentReplyAdapter extends RecyclerView.Adapter<CommentReplyAdapte
                 public void onClick(View v) {
 
                     mOnReplyListItemClick.onReplyListItemClick(holder, position, mRelpiesList.get(position).getReplyId());
-
-
                 }
             });
 
@@ -127,8 +143,6 @@ public class CommentReplyAdapter extends RecyclerView.Adapter<CommentReplyAdapte
                 @Override
                 public void onClick(View v) {
                     mOnReplyListItemClick.onReplyListItemClick(holder, position, mRelpiesList.get(position).getReplyId());
-
-
                 }
             });
 
@@ -136,27 +150,17 @@ public class CommentReplyAdapter extends RecyclerView.Adapter<CommentReplyAdapte
                 @Override
                 public void onClick(View v) {
                     mOnReplyListItemClick.onReplyListItemClick(holder, position, mRelpiesList.get(position).getReplyId());
-
-
                 }
             });
-
 
         holder.mImageDelete.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
                 mOnReplyListItemClick.onReplyListItemClick(holder, position, mRelpiesList.get(position).getReplyId());
             }
         });
-
-
     }
-
-    catch(
-    Exception e
-    )
-
+    catch(Exception e)
     {
         e.printStackTrace();
     }

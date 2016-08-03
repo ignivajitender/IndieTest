@@ -19,14 +19,63 @@ public class PostPojo implements Serializable{
     private String profile_pic;
 
     private String relation;
-    private String userStatus;
+    private int userStatus;
     private String is_reported;
-    private String badges;
+    private int badges;
     private String action;
-    private String like;
-    private String neutral;
-    private String dislike;
-    private String comment;
+
+    public int getLike() {
+        return like;
+    }
+
+    public void setLike(int like) {
+        this.like = like;
+    }
+
+    public int getUserStatus() {
+        return userStatus;
+    }
+
+    public void setUserStatus(int userStatus) {
+        this.userStatus = userStatus;
+    }
+
+    public int getBadges() {
+        return badges;
+    }
+
+    public void setBadges(int badges) {
+        this.badges = badges;
+    }
+
+    public int getNeutral() {
+        return neutral;
+    }
+
+    public void setNeutral(int neutral) {
+        this.neutral = neutral;
+    }
+
+    public int getDislike() {
+        return dislike;
+    }
+
+    public void setDislike(int dislike) {
+        this.dislike = dislike;
+    }
+
+    public int getComment() {
+        return comment;
+    }
+
+    public void setComment(int comment) {
+        this.comment = comment;
+    }
+
+    private int like;
+    private int neutral;
+    private int dislike;
+    private int comment;
     private String mediaUrl;
     private String mediaType;
 
@@ -119,13 +168,6 @@ public class PostPojo implements Serializable{
         this.relation = relation;
     }
 
-    public String getUserStatus() {
-        return userStatus;
-    }
-
-    public void setUserStatus(String userStatus) {
-        this.userStatus = userStatus;
-    }
 
     public String getIs_reported() {
         return is_reported;
@@ -135,13 +177,6 @@ public class PostPojo implements Serializable{
         this.is_reported = is_reported;
     }
 
-    public String getBadges() {
-        return badges;
-    }
-
-    public void setBadges(String badges) {
-        this.badges = badges;
-    }
 
     public String getAction() {
         return action;
@@ -151,37 +186,7 @@ public class PostPojo implements Serializable{
         this.action = action;
     }
 
-    public String getLike() {
-        return like;
-    }
 
-    public void setLike(String like) {
-        this.like = like;
-    }
-
-    public String getNeutral() {
-        return neutral;
-    }
-
-    public void setNeutral(String neutral) {
-        this.neutral = neutral;
-    }
-
-    public String getDislike() {
-        return dislike;
-    }
-
-    public void setDislike(String dislike) {
-        this.dislike = dislike;
-    }
-
-    public String getComment() {
-        return comment;
-    }
-
-    public void setComment(String comment) {
-        this.comment = comment;
-    }
 
     public String getMediaUrl() {
         return mediaUrl;

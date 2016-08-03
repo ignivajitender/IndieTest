@@ -87,23 +87,27 @@ PostPojo postPojo;
             String time = postPojo.getDate_created();
             holder.mPostTime.setText(time.substring(0,10));
 
-            if (postPojo.getMediaUrl() != null) {
-                holder.mMediaPost.setVisibility(View.VISIBLE);
-                Glide.with(mContext).load(WebServiceClient.HTTP_STAGING + postPojo.getMediaUrl())
-                        .thumbnail(1f)
-                        .crossFade()
-                        .diskCacheStrategy(DiskCacheStrategy.ALL)
-                        .into(holder.mMediaPost);
-            } else {
-                holder.mMediaPost.setVisibility(View.GONE);
+            try {
+                if (postPojo.getMediaUrl() != null) {
+                    holder.mMediaPost.setVisibility(View.VISIBLE);
+                    Glide.with(mContext).load(WebServiceClient.HTTP_STAGING + postPojo.getMediaUrl())
+                            .thumbnail(1f)
+                            .crossFade()
+                            .diskCacheStrategy(DiskCacheStrategy.ALL)
+                            .into(holder.mMediaPost);
+                } else {
+                    holder.mMediaPost.setVisibility(View.GONE);
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
             }
 //
 //
             holder.mTextPost.setText(postPojo.getText());
-            holder.like.setText(postPojo.getLike());
-            holder.dislike.setText(postPojo.getDislike());
-            holder.neutral.setText(postPojo.getNeutral());
-            holder.comment.setText(postPojo.getComment());
+            holder.like.setText(postPojo.getLike()+"");
+            holder.dislike.setText(postPojo.getDislike()+"");
+            holder.neutral.setText(postPojo.getNeutral()+"");
+            holder.comment.setText(postPojo.getComment()+"");
 
             // Post has been liked/disliked or set neutral by user
             if (postPojo.getAction() != null) {
@@ -193,7 +197,7 @@ PostPojo postPojo;
             holder.mDeletePost.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    onCommentListItemClickListnerTest2l.onCommentListItemClicked(holder, position, postPojo.getPostId());
+//                    onCommentListItemClickListnerTest2l.onCommentListItemClicked(holder, position, postPojo.getPostId());
 //                    mDelete=holder.mDeletePost;
 //                    try {
 //
@@ -372,8 +376,8 @@ PostPojo postPojo;
                     if (result.getSuccess().equalsIgnoreCase("true")) {
 
                         mDelete.setVisibility(View.GONE);
-//                        wallItemsList.remove(POSTION);
-//                        mAdapter.notifyDataSetChanged();
+                        wallItemsList.remove(POSTION);
+                        mAdapter.notifyDataSetChanged();
 //                        mWallPostAdapter = new WallPostAdapter(getActivity(), mWallPostList, onListItemClickListner);
 //                        mWallPostAdapter.notifyDataSetChanged();
 //                      mRvWallPosts.setAdapter(mWallPostAdapter);

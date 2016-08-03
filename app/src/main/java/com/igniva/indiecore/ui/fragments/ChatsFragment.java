@@ -216,7 +216,6 @@ public class ChatsFragment extends BaseFragment {
         @Override
         public void onCommentListItemClicked(final WallPostAdapter.RecyclerViewHolders holder, final int position, final String postId) {
             {
-
                 try {
                     mHolder = holder;
 
@@ -225,14 +224,14 @@ public class ChatsFragment extends BaseFragment {
                         @Override
                         public void onClick(View v) {
                             POSTION = position;
-                            Log.d(LOG_TAG, " my position is list is " + position);
-                            Log.d(LOG_TAG, " global variable position is  " + POSTION);
-                            Log.d(LOG_TAG, " my post id is  " + postId);
-                            Log.d(LOG_TAG, " global variable post id is  " + postID);
-                            Log.d(LOG_TAG, " from object  my position post id is  " + mWallPostList.get(position).getPostId());
-                            Log.d(LOG_TAG, " from object global variable post id is  " + mWallPostList.get(POSTION).getPostId());
+//                            Log.d(LOG_TAG, " my position is list is " + position);
+//                            Log.d(LOG_TAG, " global variable position is  " + POSTION);
+//                            Log.d(LOG_TAG, " my post id is  " + postId);
+//                            Log.d(LOG_TAG, " global variable post id is  " + postID);
+//                            Log.d(LOG_TAG, " from object  my position post id is  " + mWallPostList.get(position).getPostId());
+//                            Log.d(LOG_TAG, " from object global variable post id is  " + mWallPostList.get(POSTION).getPostId());
 
-                            Utility.showToastMessageShort(getActivity(), " position is " + position);
+//                            Utility.showToastMessageShort(getActivity(), " position is " + position);
                             action = 1;
                             likeUnlikePost(mActionTypeLike, mWallPostList.get(position).getPostId());
 
@@ -244,7 +243,7 @@ public class ChatsFragment extends BaseFragment {
                         public void onClick(View v) {
                             POSTION = position;
                             action = 2;
-                            Utility.showToastMessageShort(getActivity(), " position is " + position);
+//                            Utility.showToastMessageShort(getActivity(), " position is " + position);
 
                             likeUnlikePost(mActionTypeDislike, postId);
 
@@ -257,7 +256,7 @@ public class ChatsFragment extends BaseFragment {
                         public void onClick(View v) {
                             POSTION = position;
                             action = 3;
-                            Utility.showToastMessageShort(getActivity(), " position is " + position);
+//                            Utility.showToastMessageShort(getActivity(), " position is " + position);
 
                             likeUnlikePost(mActionTypeNeutral, postId);
 
@@ -286,7 +285,7 @@ public class ChatsFragment extends BaseFragment {
                         public void onClick(View v) {
                             POSTION = position;
                             try {
-                                Utility.showToastMessageShort(getActivity(), " position is " + position);
+//                                Utility.showToastMessageShort(getActivity(), " position is " + position);
 
                                 if (deletePostVisible == false) {
 
@@ -318,7 +317,7 @@ public class ChatsFragment extends BaseFragment {
                         public void onClick(View v) {
                             try {
                                 POSTION = position;
-                                Utility.showToastMessageShort(getActivity(), " position is " + position);
+//                                Utility.showToastMessageShort(getActivity(), " position is " + position);
 
                                 if (ACTION.equalsIgnoreCase("DELETE")) {
 
@@ -816,26 +815,21 @@ public class ChatsFragment extends BaseFragment {
 
                         if (action == 1) {
                             //action like
-                            String num_like = mWallPostList.get(POSTION).getLike();
+                            int num_like = mWallPostList.get(POSTION).getLike();
 
-                            int a = Integer.parseInt(num_like.trim());
+                            int a =num_like;
 
                             Log.d(LOG_TAG, " orinal count of like " + a);
 
                             if (result.getLike() == 1) {
-//                                mHolder.like.setText(a + 1 + "");
-//                                mHolder.like.setCompoundDrawablesWithIntrinsicBounds(R.drawable.like_blue_icon_circle, 0, 0, 0);
+//
                                 mWallPostList.get(POSTION).setAction(Constants.LIKE);
-                                mWallPostList.get(POSTION).setLike(a + 1 + "");
-//                                mHolder.like.setEnabled(true);
-//                                mHolder.dislike.setEnabled(false);
-//                                mHolder.neutral.setEnabled(false);
-//                                mHolder.dislike.setCompoundDrawablesWithIntrinsicBounds(R.drawable.dislike_grey_icon_circle, 0, 0, 0);
-//                                mHolder.neutral.setCompoundDrawablesWithIntrinsicBounds(R.drawable.hand_grey_icon_circle, 0, 0, 0);
+                                mWallPostList.get(POSTION).setLike(a + 1);
+//
                             } else if(result.getLike()==0) {
                                 mWallPostList.get(POSTION).setAction(null);
                                 if (a > 0) {
-                                    mWallPostList.get(POSTION).setLike(a - 1 + "");
+                                    mWallPostList.get(POSTION).setLike(a - 1 );
                                 }
 
 
@@ -854,14 +848,14 @@ public class ChatsFragment extends BaseFragment {
 
                         } else if (action == 2) {
                             //action dislike
-                            String num_dislike = mWallPostList.get(POSTION).getDislike();
-                            int b = Integer.parseInt(num_dislike.trim());
+                            int num_dislike = mWallPostList.get(POSTION).getDislike();
+                            int b = num_dislike;
 
                             if (result.getDislike() == 1) {
 
 
                                 mWallPostList.get(POSTION).setAction(Constants.DISLIKE);
-                                mWallPostList.get(POSTION).setDislike(b + 1 + "");
+                                mWallPostList.get(POSTION).setDislike(b + 1);
 
 //                                mHolder.dislike.setText(b + 1 + "");
 //                                mHolder.dislike.setCompoundDrawablesWithIntrinsicBounds(R.drawable.dislike_blue_icon_circle, 0, 0, 0);
@@ -875,7 +869,7 @@ public class ChatsFragment extends BaseFragment {
                             } else if(result.getDislike()==0){
                                 mWallPostList.get(POSTION).setAction(null);
                                 if (b > 0) {
-                                    mWallPostList.get(POSTION).setDislike(b - 1 + "");
+                                    mWallPostList.get(POSTION).setDislike(b - 1 );
                                 } mHolder.like.setCompoundDrawablesWithIntrinsicBounds(R.drawable.like_grey_icon_circle, 0, 0, 0);
 //                                mHolder.dislike.setCompoundDrawablesWithIntrinsicBounds(R.drawable.dislike_grey_icon_circle, 0, 0, 0);
 //                                mHolder.neutral.setCompoundDrawablesWithIntrinsicBounds(R.drawable.hand_grey_icon_circle, 0, 0, 0);
@@ -891,12 +885,12 @@ public class ChatsFragment extends BaseFragment {
                         } else if (action == 3) {
                             //    action neutral
 
-                            String num_neutral = mWallPostList.get(POSTION).getNeutral();
-                            int c = Integer.parseInt(num_neutral.trim());
+                            int num_neutral = mWallPostList.get(POSTION).getNeutral();
+                            int c = num_neutral;
 
                             if (result.getNeutral() == 1) {
                                 mWallPostList.get(POSTION).setAction(Constants.NEUTRAL);
-                                mWallPostList.get(POSTION).setNeutral(c + 1 + "");
+                                mWallPostList.get(POSTION).setNeutral(c + 1);
 
 //                                mHolder.neutral.setText(c + 1 + "");
 //                                mHolder.neutral.setCompoundDrawablesWithIntrinsicBounds(R.drawable.hand_icon_blue_circle, 0, 0, 0);
@@ -910,7 +904,7 @@ public class ChatsFragment extends BaseFragment {
                             } else if(result.getNeutral()==0) {
                                 mWallPostList.get(POSTION).setAction(null);
                                 if (c > 0) {
-                                    mWallPostList.get(POSTION).setNeutral(c - 1 + "");
+                                    mWallPostList.get(POSTION).setNeutral(c - 1 );
                                 }
 //                                mHolder.like.setCompoundDrawablesWithIntrinsicBounds(R.drawable.like_grey_icon_circle, 0, 0, 0);
 //                                mHolder.dislike.setCompoundDrawablesWithIntrinsicBounds(R.drawable.dislike_grey_icon_circle, 0, 0, 0);

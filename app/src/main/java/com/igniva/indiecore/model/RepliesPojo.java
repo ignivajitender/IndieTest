@@ -15,11 +15,44 @@ public class RepliesPojo {
     private String lastName;
     private String profile_pic;
     private String relation;
-    private String badges;
+    private int badges;
     private String action;
-    private String like;
-    private String neutral;
-    private String dislike;
+
+    public int getLike() {
+        return like;
+    }
+
+    public void setLike(int like) {
+        this.like = like;
+    }
+
+    public int getBadges() {
+        return badges;
+    }
+
+    public void setBadges(int badges) {
+        this.badges = badges;
+    }
+
+    public int getNeutral() {
+        return neutral;
+    }
+
+    public void setNeutral(int neutral) {
+        this.neutral = neutral;
+    }
+
+    public int getDislike() {
+        return dislike;
+    }
+
+    public void setDislike(int dislike) {
+        this.dislike = dislike;
+    }
+
+    private int like;
+    private int neutral;
+    private int dislike;
 
     public String getLastName() {
         return lastName;
@@ -93,13 +126,7 @@ public class RepliesPojo {
         this.relation = relation;
     }
 
-    public String getBadges() {
-        return badges;
-    }
 
-    public void setBadges(String badges) {
-        this.badges = badges;
-    }
 
     public String getAction() {
         return action;
@@ -107,30 +134,6 @@ public class RepliesPojo {
 
     public void setAction(String action) {
         this.action = action;
-    }
-
-    public String getLike() {
-        return like;
-    }
-
-    public void setLike(String like) {
-        this.like = like;
-    }
-
-    public String getNeutral() {
-        return neutral;
-    }
-
-    public void setNeutral(String neutral) {
-        this.neutral = neutral;
-    }
-
-    public String getDislike() {
-        return dislike;
-    }
-
-    public void setDislike(String dislike) {
-        this.dislike = dislike;
     }
 
 

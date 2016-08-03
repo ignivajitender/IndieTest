@@ -134,9 +134,7 @@ public class CommentActivity extends BaseActivity implements View.OnClickListene
             selected_post_data = (PostPojo) bundle.getSerializable("POST");
             postId = selected_post_data.getPostId();
 
-            selected_post_data.getText();
-
-            viewAllComments(selected_post_data.getPostId());
+//            viewAllComments(selected_post_data.getPostId());
             setDataInViewObjects();
         } catch (Exception e) {
        e.printStackTrace();
@@ -160,22 +158,28 @@ public class CommentActivity extends BaseActivity implements View.OnClickListene
                 mUserImage.setImageResource(R.drawable.default_user);
             }
 
-            if (!selected_post_data.getMediaUrl().isEmpty()) {
-                Glide.with(this).load(WebServiceClient.HTTP_STAGING + selected_post_data.getMediaUrl())
-                        .thumbnail(1f)
-                        .crossFade()
-                        .diskCacheStrategy(DiskCacheStrategy.ALL)
-                        .into(mPostMedia);
-                mPostMedia.setVisibility(View.VISIBLE);
+            try {
+
+                if (!selected_post_data.getMediaUrl().isEmpty()) {
+                    Glide.with(this).load(WebServiceClient.HTTP_STAGING + selected_post_data.getMediaUrl())
+                            .thumbnail(1f)
+                            .crossFade()
+                            .diskCacheStrategy(DiskCacheStrategy.ALL)
+                            .into(mPostMedia);
+                    mPostMedia.setVisibility(View.VISIBLE);
+                }
+            }catch (Exception e){
+                e.printStackTrace();
             }
 
 
-            mPostComments.setText(selected_post_data.getComment());
+
             mPostTime.setText((selected_post_data.getDate_created()).substring(0,10));
             mPostText.setText(selected_post_data.getText());
-            mPostLike.setText(selected_post_data.getLike());
-            mPostDislike.setText(selected_post_data.getDislike());
-            mPostNeutral.setText(selected_post_data.getNeutral());
+            mPostLike.setText(selected_post_data.getLike()+"");
+            mPostDislike.setText(selected_post_data.getDislike()+"");
+            mPostNeutral.setText(selected_post_data.getNeutral()+"");
+            mPostComments.setText(selected_post_data.getComment()+"");
 
             if (selected_post_data.getAction() != null) {
                 if (selected_post_data.getAction().equalsIgnoreCase(Constants.LIKE)) {
@@ -218,6 +222,8 @@ public class CommentActivity extends BaseActivity implements View.OnClickListene
         } catch (Exception e) {
             e.printStackTrace();
         }
+
+        viewAllComments(postId);
 
     }
 
@@ -356,7 +362,7 @@ public class CommentActivity extends BaseActivity implements View.OnClickListene
 
 
     /*
- * like unlike response
+ * like unlike response to  a post
  * */
     ResponseHandlerListener responseHandl = new ResponseHandlerListener() {
         @Override
@@ -369,7 +375,6 @@ public class CommentActivity extends BaseActivity implements View.OnClickListene
                     if (result.getSuccess().equalsIgnoreCase("true")) {
                         if (action == 1) {
 //action like
-
                             String num_like = mPostLike.getText().toString();
                             int a = Integer.parseInt(num_like);
 
@@ -613,11 +618,6 @@ public class CommentActivity extends BaseActivity implements View.OnClickListene
 
                         mCommentAdapter = null;
                         mCommentAdapter = new PostCommentAdapter(CommentActivity.this, mCommentList, onCommentListItemClickListner);
-//                           mCommentAdapter.notifyDataSetChanged();
-
-                        LinearLayout.LayoutParams lp =
-                                new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, mCommentList.size() * 300);
-                        mRvComment.setLayoutParams(lp);
                         mRvComment.setAdapter(mCommentAdapter);
                     }
                 }
@@ -694,101 +694,111 @@ public class CommentActivity extends BaseActivity implements View.OnClickListene
 
                         if (INDEX == 1) {
                             //                        like
-                            String likes_count = mHolder.mCommentLike.getText().toString();
+                            int likes_count = mCommentList.get(POSITION).getLike();
                             int a = 0;
-                            a = Integer.parseInt(likes_count.trim());
+                            a =likes_count;
                             if (result.getLike() == 1) {
-                                mHolder.mCommentLike.setText(a + 1 + "");
-                                mHolder.mCommentLike.setCompoundDrawablesWithIntrinsicBounds(R.drawable.like_icon, 0, 0, 0);
-                                mHolder.mCommentDislike.setCompoundDrawablesWithIntrinsicBounds(R.drawable.dislike_icon_grey, 0, 0, 0);
-                                mHolder.mCommentNeutral.setCompoundDrawablesWithIntrinsicBounds(R.drawable.hand_icon_grey, 0, 0, 0);
-                                mHolder.mCommentLike.setEnabled(true);
-                                mHolder.mCommentDislike.setEnabled(false);
-                                mHolder.mCommentNeutral.setEnabled(false);
 
-                            } else {
+                                mCommentList.get(POSITION).setAction(Constants.LIKE);
+                                mCommentList.get(POSITION).setLike(a+1);
+//                                mHolder.mCommentLike.setText(a + 1 + "");
+//                                mHolder.mCommentLike.setCompoundDrawablesWithIntrinsicBounds(R.drawable.like_icon, 0, 0, 0);
+//                                mHolder.mCommentDislike.setCompoundDrawablesWithIntrinsicBounds(R.drawable.dislike_icon_grey, 0, 0, 0);
+//                                mHolder.mCommentNeutral.setCompoundDrawablesWithIntrinsicBounds(R.drawable.hand_icon_grey, 0, 0, 0);
+//                                mHolder.mCommentLike.setEnabled(true);
+//                                mHolder.mCommentDislike.setEnabled(false);
+//                                mHolder.mCommentNeutral.setEnabled(false);
+
+                            } else if(result.getLike()==0){
+                                mCommentList.get(POSITION).setAction(null);
                                 if (a > 0) {
-                                    mHolder.mCommentLike.setText(a - 1 + "");
+                                    mCommentList.get(POSITION).setLike(a-1);
+//
                                 }
-                                mHolder.mCommentLike.setCompoundDrawablesWithIntrinsicBounds(R.drawable.like_grey_icon, 0, 0, 0);
-                                mHolder.mCommentDislike.setCompoundDrawablesWithIntrinsicBounds(R.drawable.dislike_icon_grey, 0, 0, 0);
-                                mHolder.mCommentNeutral.setCompoundDrawablesWithIntrinsicBounds(R.drawable.hand_icon_grey, 0, 0, 0);
-                                mHolder.mCommentLike.setEnabled(true);
-                                mHolder.mCommentDislike.setEnabled(true);
-                                mHolder.mCommentNeutral.setEnabled(true);
+//                                mHolder.mCommentLike.setCompoundDrawablesWithIntrinsicBounds(R.drawable.like_grey_icon, 0, 0, 0);
+//                                mHolder.mCommentDislike.setCompoundDrawablesWithIntrinsicBounds(R.drawable.dislike_icon_grey, 0, 0, 0);
+//                                mHolder.mCommentNeutral.setCompoundDrawablesWithIntrinsicBounds(R.drawable.hand_icon_grey, 0, 0, 0);
+//                                mHolder.mCommentLike.setEnabled(true);
+//                                mHolder.mCommentDislike.setEnabled(true);
+//                                mHolder.mCommentNeutral.setEnabled(true);
 
 
                             }
 
                         } else if (INDEX == 2) {
                             //                        dislike
-
-
-                            String dislikes_count = mHolder.mCommentDislike.getText().toString();
+                            int dislikes_count = mCommentList.get(POSITION).getDislike();
                             int b = 0;
-                            b = Integer.parseInt(dislikes_count.trim());
+                            b = dislikes_count;
                             if (result.getDislike() == 1) {
-                                mHolder.mCommentDislike.setText(b + 1 + "");
-                                mHolder.mCommentDislike.setCompoundDrawablesWithIntrinsicBounds(R.drawable.dislike_icon_without_circle, 0, 0, 0);
-                                mHolder.mCommentLike.setCompoundDrawablesWithIntrinsicBounds(R.drawable.like_grey_icon, 0, 0, 0);
-                                mHolder.mCommentNeutral.setCompoundDrawablesWithIntrinsicBounds(R.drawable.hand_icon_grey, 0, 0, 0);
-                                mHolder.mCommentLike.setEnabled(false);
-                                mHolder.mCommentDislike.setEnabled(true);
-                                mHolder.mCommentNeutral.setEnabled(false);
+                                mCommentList.get(POSITION).setAction(Constants.DISLIKE);
+                                mCommentList.get(POSITION).setDislike(b+1);
+//                                mHolder.mCommentDislike.setText(b + 1 + "");
+//                                mHolder.mCommentDislike.setCompoundDrawablesWithIntrinsicBounds(R.drawable.dislike_icon_without_circle, 0, 0, 0);
+//                                mHolder.mCommentLike.setCompoundDrawablesWithIntrinsicBounds(R.drawable.like_grey_icon, 0, 0, 0);
+//                                mHolder.mCommentNeutral.setCompoundDrawablesWithIntrinsicBounds(R.drawable.hand_icon_grey, 0, 0, 0);
+//                                mHolder.mCommentLike.setEnabled(false);
+//                                mHolder.mCommentDislike.setEnabled(true);
+//                                mHolder.mCommentNeutral.setEnabled(false);
+//
 
-
-                            } else {
+                            } else if(result.getDislike()==0) {
+                                mCommentList.get(POSITION).setAction(null);
                                 if (b > 0) {
-                                    mHolder.mCommentDislike.setText(b - 1 + "");
+                                    mCommentList.get(POSITION).setDislike(b-1);
                                 }
-                                mHolder.mCommentLike.setCompoundDrawablesWithIntrinsicBounds(R.drawable.like_grey_icon, 0, 0, 0);
-                                mHolder.mCommentDislike.setCompoundDrawablesWithIntrinsicBounds(R.drawable.dislike_icon_grey, 0, 0, 0);
-                                mHolder.mCommentNeutral.setCompoundDrawablesWithIntrinsicBounds(R.drawable.hand_icon_grey, 0, 0, 0);
-                                mHolder.mCommentLike.setEnabled(true);
-                                mHolder.mCommentDislike.setEnabled(true);
-                                mHolder.mCommentNeutral.setEnabled(true);
+//                                mHolder.mCommentLike.setCompoundDrawablesWithIntrinsicBounds(R.drawable.like_grey_icon, 0, 0, 0);
+//                                mHolder.mCommentDislike.setCompoundDrawablesWithIntrinsicBounds(R.drawable.dislike_icon_grey, 0, 0, 0);
+//                                mHolder.mCommentNeutral.setCompoundDrawablesWithIntrinsicBounds(R.drawable.hand_icon_grey, 0, 0, 0);
+//                                mHolder.mCommentLike.setEnabled(true);
+//                                mHolder.mCommentDislike.setEnabled(true);
+//                                mHolder.mCommentNeutral.setEnabled(true);
 
                             }
 
-                        } else {
+                        } else  if(INDEX==3) {
                             //                        neutral
-                            String neutral_count = mHolder.mCommentNeutral.getText().toString();
+                            int neutral_count =mCommentList.get(POSITION).getNeutral();
                             int c = 0;
-                            c = Integer.parseInt(neutral_count.trim());
+                            c = neutral_count;
                             if (result.getNeutral() == 1) {
-                                mHolder.mCommentNeutral.setText(c + 1 + "");
-                                mHolder.mCommentNeutral.setCompoundDrawablesWithIntrinsicBounds(R.drawable.hand_icon, 0, 0, 0);
-                                mHolder.mCommentLike.setCompoundDrawablesWithIntrinsicBounds(R.drawable.like_grey_icon, 0, 0, 0);
-                                mHolder.mCommentDislike.setCompoundDrawablesWithIntrinsicBounds(R.drawable.dislike_icon_grey, 0, 0, 0);
-                                mHolder.mCommentLike.setEnabled(false);
-                                mHolder.mCommentDislike.setEnabled(false);
-                                mHolder.mCommentNeutral.setEnabled(true);
+
+                                mCommentList.get(POSITION).setAction(Constants.NEUTRAL);
+                                mCommentList.get(POSITION).setNeutral(c+1);
+//                                mHolder.mCommentNeutral.setText(c + 1 + "");
+//                                mHolder.mCommentNeutral.setCompoundDrawablesWithIntrinsicBounds(R.drawable.hand_icon, 0, 0, 0);
+//                                mHolder.mCommentLike.setCompoundDrawablesWithIntrinsicBounds(R.drawable.like_grey_icon, 0, 0, 0);
+//                                mHolder.mCommentDislike.setCompoundDrawablesWithIntrinsicBounds(R.drawable.dislike_icon_grey, 0, 0, 0);
+//                                mHolder.mCommentLike.setEnabled(false);
+//                                mHolder.mCommentDislike.setEnabled(false);
+//                                mHolder.mCommentNeutral.setEnabled(true);
 
 
-                            } else {
+                            } else if(result.getNeutral()==0) {
+                                mCommentList.get(POSITION).setAction(null);
                                 if (c > 0) {
-                                    mHolder.mCommentNeutral.setText(c - 1 + "");
-
+                                    mCommentList.get(POSITION).setNeutral(c-1);
                                 }
-                                mHolder.mCommentLike.setCompoundDrawablesWithIntrinsicBounds(R.drawable.like_grey_icon, 0, 0, 0);
-                                mHolder.mCommentDislike.setCompoundDrawablesWithIntrinsicBounds(R.drawable.dislike_icon_grey, 0, 0, 0);
-                                mHolder.mCommentNeutral.setCompoundDrawablesWithIntrinsicBounds(R.drawable.hand_icon_grey, 0, 0, 0);
-                                mHolder.mCommentLike.setEnabled(true);
-                                mHolder.mCommentDislike.setEnabled(true);
-                                mHolder.mCommentNeutral.setEnabled(true);
+//                                mHolder.mCommentLike.setCompoundDrawablesWithIntrinsicBounds(R.drawable.like_grey_icon, 0, 0, 0);
+//                                mHolder.mCommentDislike.setCompoundDrawablesWithIntrinsicBounds(R.drawable.dislike_icon_grey, 0, 0, 0);
+//                                mHolder.mCommentNeutral.setCompoundDrawablesWithIntrinsicBounds(R.drawable.hand_icon_grey, 0, 0, 0);
+//                                mHolder.mCommentLike.setEnabled(true);
+//                                mHolder.mCommentDislike.setEnabled(true);
+//                                mHolder.mCommentNeutral.setEnabled(true);
 
 
                             }
                         }
 
-
+                        mCommentAdapter.notifyDataSetChanged();
                     }
+                    mCommentAdapter.notifyDataSetChanged();
 
                     //                Utility.showToastMessageLong(CommentActivity.this,"Comment like/unlike");
 
 
                 }
-            } catch (NumberFormatException e) {
+            } catch (Exception e) {
                 e.printStackTrace();
             }
 
@@ -1038,12 +1048,13 @@ public class CommentActivity extends BaseActivity implements View.OnClickListene
         public void onCommentListItemClicked(final PostCommentAdapter.RecyclerViewHolders view, final int position, final String commentId) {
 
             mHolder = view;
-            POSITION = position;
+
 
 
             mHolder.mDelete.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
+                    POSITION = position;
                     removeComment(commentId);
                 }
             });
@@ -1052,6 +1063,7 @@ public class CommentActivity extends BaseActivity implements View.OnClickListene
                 @Override
                 public void onClick(View v) {
                     INDEX = 1;
+                    POSITION = position;
                     Utility.showToastMessageLong(CommentActivity.this,""+position);
                     commentAction(mActionTypeLike, commentId);
 
@@ -1063,6 +1075,7 @@ public class CommentActivity extends BaseActivity implements View.OnClickListene
                 @Override
                 public void onClick(View v) {
                     INDEX = 2;
+                    POSITION = position;
                     Utility.showToastMessageLong(CommentActivity.this,""+position);
                     commentAction(mActionTypeDislike, commentId);
 
@@ -1073,6 +1086,7 @@ public class CommentActivity extends BaseActivity implements View.OnClickListene
                 @Override
                 public void onClick(View v) {
                     INDEX = 3;
+                    POSITION = position;
                     Utility.showToastMessageLong(CommentActivity.this,""+position);
                     commentAction(mActionTypeNeutral, commentId);
 
@@ -1083,7 +1097,7 @@ public class CommentActivity extends BaseActivity implements View.OnClickListene
             mHolder.mReply.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-
+                    POSITION = position;
                     Bundle bundle = new Bundle();
                     bundle.putSerializable("COMMENT", mCommentList.get(POSITION));
 

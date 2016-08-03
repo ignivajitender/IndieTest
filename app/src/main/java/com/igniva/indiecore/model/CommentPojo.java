@@ -16,12 +16,54 @@ public class CommentPojo implements Serializable{
     private String lastName;
     private String profile_pic;
     private String relation;
-    private String badges;
+
+    public int getBadges() {
+        return badges;
+    }
+
+    public void setBadges(int badges) {
+        this.badges = badges;
+    }
+
+    private int badges;
     private String action ;
-    private String like;
-    private String neutral;
-    private String dislike;
-    private String replie;
+    private int like;
+    private int neutral;
+
+    public int getDislike() {
+        return dislike;
+    }
+
+    public void setDislike(int dislike) {
+        this.dislike = dislike;
+    }
+
+    public int getLike() {
+        return like;
+    }
+
+    public void setLike(int like) {
+        this.like = like;
+    }
+
+    public int getNeutral() {
+        return neutral;
+    }
+
+    public void setNeutral(int neutral) {
+        this.neutral = neutral;
+    }
+
+    public int getReplie() {
+        return replie;
+    }
+
+    public void setReplie(int replie) {
+        this.replie = replie;
+    }
+
+    private int dislike;
+    private int replie;
 
     public String getLastName() {
         return lastName;
@@ -95,13 +137,6 @@ public class CommentPojo implements Serializable{
         this.relation = relation;
     }
 
-    public String getBadges() {
-        return badges;
-    }
-
-    public void setBadges(String badges) {
-        this.badges = badges;
-    }
 
     public String getAction() {
         return action;
@@ -111,37 +146,7 @@ public class CommentPojo implements Serializable{
         this.action = action;
     }
 
-    public String getLike() {
-        return like;
-    }
 
-    public void setLike(String like) {
-        this.like = like;
-    }
-
-    public String getNeutral() {
-        return neutral;
-    }
-
-    public void setNeutral(String neutral) {
-        this.neutral = neutral;
-    }
-
-    public String getDislike() {
-        return dislike;
-    }
-
-    public void setDislike(String dislike) {
-        this.dislike = dislike;
-    }
-
-    public String getReplie() {
-        return replie;
-    }
-
-    public void setReplie(String replie) {
-        this.replie = replie;
-    }
 
 
 

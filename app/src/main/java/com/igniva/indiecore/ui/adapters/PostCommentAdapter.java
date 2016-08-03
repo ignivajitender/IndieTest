@@ -73,10 +73,11 @@ public class PostCommentAdapter extends RecyclerView.Adapter<PostCommentAdapter.
                         .into(holder.mUserIcon);
             }
 
-            holder.mComment.setText(mCommentList.get(position).getText());
-            holder.mCommentLike.setText(mCommentList.get(position).getLike());
-            holder.mCommentDislike.setText(mCommentList.get(position).getDislike());
-            holder.mReply.setText(mCommentList.get(position).getReplie());
+            holder.mComment.setText(mCommentList.get(position).getText()+"");
+            holder.mCommentLike.setText(mCommentList.get(position).getLike()+"");
+            holder.mCommentDislike.setText(mCommentList.get(position).getDislike()+"");
+            holder.mCommentNeutral.setText(mCommentList.get(position).getNeutral()+"");
+            holder.mReply.setText(mCommentList.get(position).getReplie()+"");
 
             if (mCommentList.get(position).getRelation().equalsIgnoreCase(Constants.SELF)) {
 
@@ -104,7 +105,7 @@ public class PostCommentAdapter extends RecyclerView.Adapter<PostCommentAdapter.
                     holder.mCommentDislike.setEnabled(true);
                     holder.mCommentDislike.setCompoundDrawablesWithIntrinsicBounds(R.drawable.dislike_icon_without_circle, 0, 0, 0);
                     holder.mCommentLike.setCompoundDrawablesWithIntrinsicBounds(R.drawable.like_grey_icon, 0, 0, 0);
-                    holder.mCommentDislike.setCompoundDrawablesWithIntrinsicBounds(R.drawable.dislike_icon_grey, 0, 0, 0);
+                    holder.mCommentNeutral.setCompoundDrawablesWithIntrinsicBounds(R.drawable.hand_icon_grey, 0, 0, 0);
                     holder.mCommentNeutral.setEnabled(false);
 
                 } else if (mCommentList.get(position).getAction().equalsIgnoreCase(Constants.NEUTRAL)) {
@@ -123,13 +124,6 @@ public class PostCommentAdapter extends RecyclerView.Adapter<PostCommentAdapter.
                     holder.mCommentDislike.setCompoundDrawablesWithIntrinsicBounds(R.drawable.dislike_icon_grey, 0, 0, 0);
                     holder.mCommentNeutral.setCompoundDrawablesWithIntrinsicBounds(R.drawable.hand_icon_grey, 0, 0, 0);
                 }
-
-                holder.mCommentLike.setEnabled(true);
-                holder.mCommentDislike.setEnabled(true);
-                holder.mCommentNeutral.setEnabled(true);
-                holder.mCommentLike.setCompoundDrawablesWithIntrinsicBounds(R.drawable.like_grey_icon, 0, 0, 0);
-                holder.mCommentDislike.setCompoundDrawablesWithIntrinsicBounds(R.drawable.dislike_icon_grey, 0, 0, 0);
-                holder.mCommentNeutral.setCompoundDrawablesWithIntrinsicBounds(R.drawable.hand_icon_grey, 0, 0, 0);
             } else {
 
                 holder.mCommentLike.setEnabled(true);
