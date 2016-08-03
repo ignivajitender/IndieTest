@@ -14,7 +14,6 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.igniva.indiecore.R;
 import com.igniva.indiecore.controller.OnCommentListItemClickListnerTest2;
-import com.igniva.indiecore.controller.OnListItemClickListner;
 import com.igniva.indiecore.controller.ResponseHandlerListener;
 import com.igniva.indiecore.controller.WebNotificationManager;
 import com.igniva.indiecore.controller.WebServiceClient;
@@ -40,7 +39,7 @@ public class WallPostAdapter extends RecyclerView.Adapter<WallPostAdapter.Recycl
     private boolean deletePostVisible = false;
     private String ACTION = "";
     private int POSTION=-1;
-    String LOG_TAG = "PhonebookAdapter";
+    String LOG_TAG = "WallPostAdapter";
 //    OnListItemClickListner mOnListItemClickListner;
 PostPojo postPojo;
     OnCommentListItemClickListnerTest2 onCommentListItemClickListnerTest2l;
@@ -48,7 +47,7 @@ PostPojo postPojo;
 
     public WallPostAdapter(Context context, ArrayList<PostPojo> wallItemsList, OnCommentListItemClickListnerTest2 onListItemClickListner) {
 
-        this.wallItemsList = wallItemsList;
+           this.wallItemsList = wallItemsList;
         this.mContext = context;
         this.onCommentListItemClickListnerTest2l = onListItemClickListner;
 
@@ -71,8 +70,7 @@ PostPojo postPojo;
     @Override
     public void onBindViewHolder(final RecyclerViewHolders holder, final int position) {
         try {
-
-             postPojo=wallItemsList.get(position);
+            postPojo=wallItemsList.get(position);
             if (!postPojo.getFirstName().isEmpty()) {
                 String Name = (postPojo.getFirstName() + " " + (postPojo.getLastName()).charAt(0) + ".");
                 holder.mUserName.setText(Name);
@@ -219,9 +217,7 @@ PostPojo postPojo;
             holder.dropDownOptions.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-
                     onCommentListItemClickListnerTest2l.onCommentListItemClicked(holder, position, postPojo.getPostId());
-//
 //                    try {
 //
 //                        if (deletePostVisible == false) {
@@ -245,12 +241,8 @@ PostPojo postPojo;
 //                    } catch (Exception e) {
 //                        e.printStackTrace();
 //                    }
-
-
                 }
             });
-
-
 
 
 //
