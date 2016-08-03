@@ -194,6 +194,14 @@ PostPojo postPojo;
                 }
             });
 
+            holder.mMediaPost.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    onCommentListItemClickListnerTest2l.onCommentListItemClicked(holder, position, postPojo.getPostId(),Constants.MEDIA);
+
+                }
+            });
+
 
             holder.mDeletePost.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -226,7 +234,7 @@ PostPojo postPojo;
                 //    onCommentListItemClickListnerTest2l.onCommentListItemClicked(holder, position, postPojo.getPostId());
                     try {
 
-                        Utility.showToastMessageShort((Activity) mContext," position "+position+" rel:"+wallItemsList.get(position).getRelation());
+//                        Utility.showToastMessageShort((Activity) mContext," position "+position+" rel:"+wallItemsList.get(position).getRelation());
 
                         if (deletePostVisible == false) {
                             // Remove previously opened view

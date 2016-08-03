@@ -62,6 +62,7 @@
 
 
     <LinearLayout
+        android:id="@+id/ll_board"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginLeft="10dp"
@@ -134,5 +135,15 @@
 
 
     </LinearLayout>
+    <TextView
+        android:id="@+id/tv_cuming_soon"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        android:text="Coming Soon"
+        android:layout_marginTop="100dp"
+        android:textColor="@color/black"
+        android:textSize="20dp"
+        android:gravity="center_horizontal"/>
 
 </LinearLayout>

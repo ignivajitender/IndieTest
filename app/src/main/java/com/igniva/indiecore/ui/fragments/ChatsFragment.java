@@ -11,6 +11,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
@@ -47,7 +48,8 @@ import java.util.ArrayList;
  */
 public class ChatsFragment extends BaseFragment {
     View rootView;
-    private TextView mChat, mBoard, mPeople, mCreatePost, mUserName;
+    private TextView mChat, mBoard, mPeople, mCreatePost, mUserName,mComingSoon;
+    private LinearLayout mLlBOard;
     ImageView mUserImage;
     String LOG_TAG = "LOG_TAG";
     public DashBoardActivity mDashBoard;
@@ -83,9 +85,6 @@ public class ChatsFragment extends BaseFragment {
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         rootView = inflater.inflate(R.layout.fragment_chats, container, false);
-
-//        mDashBoard=(DashBoardActivity) getActivity();
-//        mDashBoard.bottomNavigation.setCurrentItem(2);
         setUpLayout();
         return rootView;
     }
@@ -118,6 +117,9 @@ public class ChatsFragment extends BaseFragment {
         mUserImage = (ImageView) rootView.findViewById(R.id.iv_user_img_chat_fragment);
 
         mDeletePost = (ImageView) rootView.findViewById(R.id.iv_delete_post);
+
+        mLlBOard=(LinearLayout) rootView.findViewById(R.id.ll_board);
+        mComingSoon=(TextView) rootView.findViewById(R.id.tv_cuming_soon);
 
 
 
@@ -288,7 +290,7 @@ public class ChatsFragment extends BaseFragment {
                             POSTION = position;
                             Bundle bundle = new Bundle();
                             bundle.putSerializable("POST", mWallPostList.get(position));
-                            Utility.showToastMessageShort(getActivity(), " position is " + position);
+//                            Utility.showToastMessageShort(getActivity(), " position is " + position);
 
                             Intent intent = new Intent(getActivity(), CommentActivity.class);
                             intent.putExtras(bundle);
@@ -296,6 +298,24 @@ public class ChatsFragment extends BaseFragment {
 
                         }
                     });
+
+
+                    mHolder.mMediaPost.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            POSTION = position;
+                            Bundle bundle = new Bundle();
+                            bundle.putSerializable("POST", mWallPostList.get(position));
+//                            Utility.showToastMessageShort(getActivity(), " position is " + position);
+
+                            Intent intent = new Intent(getActivity(), CommentActivity.class);
+                            intent.putExtras(bundle);
+                            startActivity(intent);
+
+                        }
+                    });
+
+
 
 
                     mHolder.dropDownOptions.setOnClickListener(new View.OnClickListener() {
@@ -647,6 +667,9 @@ public class ChatsFragment extends BaseFragment {
             mPeople.setTextColor(Color.parseColor("#1C6DCE"));
             mPeople.setBackgroundResource(R.drawable.simple_border_line_style);
 
+            mComingSoon.setVisibility(View.VISIBLE);
+            mLlBOard.setVisibility(View.GONE);
+
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -665,6 +688,8 @@ public class ChatsFragment extends BaseFragment {
 
             mPeople.setTextColor(Color.parseColor("#1C6DCE"));
             mPeople.setBackgroundResource(R.drawable.simple_border_line_style);
+            mComingSoon.setVisibility(View.GONE);
+            mLlBOard.setVisibility(View.VISIBLE);
 
             mAdapter = null;
                 mAdapter = new WallPostAdapter(getActivity(), mWallPostList, onCommentListItemClickListnerTest2);
@@ -687,6 +712,8 @@ public class ChatsFragment extends BaseFragment {
 
             mPeople.setTextColor(Color.parseColor("#FFFFFF"));
             mPeople.setBackgroundColor(Color.parseColor("#1C6DCE"));
+            mComingSoon.setVisibility(View.VISIBLE);
+            mLlBOard.setVisibility(View.GONE);
 
         } catch (Exception e) {
             e.printStackTrace();
