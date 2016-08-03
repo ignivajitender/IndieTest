@@ -66,7 +66,7 @@ public class PostCommentAdapter extends RecyclerView.Adapter<PostCommentAdapter.
                 holder.mUserName.setText(Name);
             }
             if (mCommentList.get(position).getProfile_pic() != null) {
-                Glide.with(context).load(WebServiceClient.HTTP_STAGING + mCommentList.get(position).getProfile_pic())
+                Glide.with(context).load(WebServiceClient.HTTP_STAGING+mCommentList.get(position).getProfile_pic())
                         .thumbnail(1f)
                         .crossFade()
                         .diskCacheStrategy(DiskCacheStrategy.ALL)
@@ -105,7 +105,7 @@ public class PostCommentAdapter extends RecyclerView.Adapter<PostCommentAdapter.
                     holder.mCommentDislike.setEnabled(true);
                     holder.mCommentDislike.setCompoundDrawablesWithIntrinsicBounds(R.drawable.dislike_icon_without_circle, 0, 0, 0);
                     holder.mCommentLike.setCompoundDrawablesWithIntrinsicBounds(R.drawable.like_grey_icon, 0, 0, 0);
-                    holder.mCommentNeutral.setCompoundDrawablesWithIntrinsicBounds(R.drawable.hand_icon_grey, 0, 0, 0);
+                    holder.mCommentNeutral.setCompoundDrawablesWithIntrinsicBounds(R.drawable.dislike_icon_grey, 0, 0, 0);
                     holder.mCommentNeutral.setEnabled(false);
 
                 } else if (mCommentList.get(position).getAction().equalsIgnoreCase(Constants.NEUTRAL)) {

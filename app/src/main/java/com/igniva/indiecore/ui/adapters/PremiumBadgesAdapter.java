@@ -6,12 +6,15 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.igniva.indiecore.R;
+import com.igniva.indiecore.controller.OnPremiumBadgeClick;
 import com.igniva.indiecore.controller.WebServiceClient;
+import com.igniva.indiecore.model.BadgesPojo;
 import com.igniva.indiecore.model.CommentPojo;
 import com.igniva.indiecore.model.PremiumBadgePojo;
 
@@ -22,15 +25,18 @@ import java.util.ArrayList;
  */
 public class PremiumBadgesAdapter extends RecyclerView.Adapter<PremiumBadgesAdapter.RecyclerViewHolders> {
 
-    private ArrayList<PremiumBadgePojo> mPremiumBadgeList;
+    private ArrayList<BadgesPojo> mPremiumBadgeList;
     private Context context;
+    private Boolean IsSelected=false;
     String LOG_TAG = "PremiumBadgeAdapter";
+    OnPremiumBadgeClick onPremiumBadgeClick;
 
 
-    public PremiumBadgesAdapter(Context context, ArrayList<PremiumBadgePojo> premiumBadgeList) {
+    public PremiumBadgesAdapter(Context context, ArrayList<BadgesPojo> premiumBadgeList ,OnPremiumBadgeClick onPremiumBadgeClick) {
 
         this.mPremiumBadgeList = premiumBadgeList;
         this.context = context;
+        this.onPremiumBadgeClick=onPremiumBadgeClick;
 
     }
 
@@ -45,16 +51,32 @@ public class PremiumBadgesAdapter extends RecyclerView.Adapter<PremiumBadgesAdap
 
     @Override
     public void onBindViewHolder(final RecyclerViewHolders holder, final int position) {
+
         try {
+            if (mPremiumBadgeList.get(position).getIcon() != null) {
+                Glide.with(context).load(mPremiumBadgeList.get(position).getIcon())
+                        .thumbnail(1f)
+                        .crossFade()
+                        .diskCacheStrategy(DiskCacheStrategy.ALL)
+                        .into(holder.mBadgeIcon);
+            }else {
+
+                holder.mBadgeIcon.setImageResource(R.drawable.albino_icon);
+            }
+            holder.mBadgeName.setText(mPremiumBadgeList.get(position).getName());
+            holder.mBadgePrice.setText("£"+mPremiumBadgeList.get(position).getPrice()+" /");
 
 
-            holder.mBadgeIcon.setImageResource(R.drawable.albino_icon);
-            holder.mBadgeName.setText(mPremiumBadgeList.get(position).getBadgeName());
-            holder.mBadgePrice.setText(mPremiumBadgeList.get(position).getBadgePrice());
+              holder.mRlPremiumBadge.setOnClickListener(new View.OnClickListener() {
+                  @Override
+                  public void onClick(View v) {
 
 
 
-//            mOnCommentListItemClickListner.onCommentListItemClicked(holder,position,wallItemsList.get(position).getPostId());
+                      onPremiumBadgeClick.onPremiumBadgeClicked(holder.mRlPremiumBadge,position);
+
+                  }
+              });
 
 //
         } catch (Exception e) {
@@ -76,6 +98,7 @@ public class PremiumBadgesAdapter extends RecyclerView.Adapter<PremiumBadgesAdap
         public TextView mBadgeName;
         public ImageView mBadgeIcon;
         public TextView mBadgePrice;
+        private RelativeLayout mRlPremiumBadge;
 
 
 
@@ -86,6 +109,7 @@ public class PremiumBadgesAdapter extends RecyclerView.Adapter<PremiumBadgesAdap
             mBadgeIcon=(ImageView) itemView.findViewById(R.id.iv_premium_badge_icon);
             mBadgeName = (TextView) itemView.findViewById(R.id.tv_premium_badge_name);
             mBadgePrice = (TextView) itemView.findViewById(R.id.tv_premium_badge_price);
+            mRlPremiumBadge=(RelativeLayout) itemView.findViewById(R.id.rl_premiumbadge);
         }
 
         @Override

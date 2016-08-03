@@ -2,6 +2,7 @@ package com.igniva.indiecore.ui.activities;
 
 import android.annotation.TargetApi;
 import android.app.AlertDialog;
+import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
@@ -13,18 +14,29 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.igniva.indiecore.R;
+import com.igniva.indiecore.controller.OnPremiumBadgeClick;
+import com.igniva.indiecore.controller.ResponseHandlerListener;
+import com.igniva.indiecore.controller.WebNotificationManager;
+import com.igniva.indiecore.controller.WebServiceClient;
+import com.igniva.indiecore.model.BadgesPojo;
 import com.igniva.indiecore.model.PremiumBadgePojo;
+import com.igniva.indiecore.model.ResponsePojo;
 import com.igniva.indiecore.ui.adapters.PremiumBadgesAdapter;
+import com.igniva.indiecore.utils.Constants;
 import com.igniva.indiecore.utils.Log;
+import com.igniva.indiecore.utils.PreferenceHandler;
 import com.igniva.indiecore.utils.Utility;
 import com.igniva.indiecore.utils.iab.IabBroadcastReceiver;
 import com.igniva.indiecore.utils.iab.IabHelper;
 import com.igniva.indiecore.utils.iab.IabResult;
 import com.igniva.indiecore.utils.iab.Inventory;
 import com.igniva.indiecore.utils.iab.Purchase;
+
+import org.json.JSONObject;
 
 import java.util.ArrayList;
 
@@ -34,9 +46,9 @@ import java.util.ArrayList;
 public class PremiumBadgesActivity extends BaseActivity implements IabBroadcastReceiver.IabBroadcastListener,
         DialogInterface.OnClickListener {
 
-    private ArrayList<PremiumBadgePojo> mPremiumBadgesList;
+    private ArrayList<BadgesPojo> mPremiumBadgesList;
     private PremiumBadgesAdapter premiumBadgesAdapter;
-    PremiumBadgePojo premiumBadgePojo;
+    public static int pageNumber = 1, badgeCount = 20, category = 2, mTotalBadgeCount = 0;
     private Toolbar mToolbar;
     private RecyclerView mRvPremiumBadges;
     String LOG_TAG = "PremiumBadgesActivity";
@@ -183,18 +195,86 @@ public class PremiumBadgesActivity extends BaseActivity implements IabBroadcastR
         layoutManager.setOrientation(LinearLayoutManager.VERTICAL);
         mRvPremiumBadges.setLayoutManager(layoutManager);
 
-        mPremiumBadgesList = new ArrayList<PremiumBadgePojo>();
-        for (int i = 0; i < 7; i++) {
-            premiumBadgePojo = new PremiumBadgePojo();
-            premiumBadgePojo.setBadgeIcon(getResources().getDrawable(R.drawable.adopted_icon, null));
-            premiumBadgePojo.setBadgeName("Albino");
-            premiumBadgePojo.setBadgePrice("$22.00");
-            mPremiumBadgesList.add(premiumBadgePojo);
-        }
+        mPremiumBadgesList = new ArrayList<BadgesPojo>();
+//        for (int i = 0; i < 7; i++) {
+//            premiumBadgePojo = new PremiumBadgePojo();
+//            premiumBadgePojo.setBadgeIcon(getResources().getDrawable(R.drawable.adopted_icon, null));
+//            premiumBadgePojo.setBadgeName("Albino");
+//            premiumBadgePojo.setBadgePrice("$22.00");
+//            mPremiumBadgesList.add(premiumBadgePojo);
+//        }
+        getPremiumBadges(pageNumber,badgeCount,category);
 
-        setDataInViewObjects();
 
     }
+
+
+    public String createPayload(int page, int limit, int category) {
+        JSONObject payloadJson = null;
+        try {
+            payloadJson = new JSONObject();
+            payloadJson.put(Constants.TOKEN, PreferenceHandler.readString(PremiumBadgesActivity.this, PreferenceHandler.PREF_KEY_USER_TOKEN, ""));
+            payloadJson.put(Constants.USERID, PreferenceHandler.readString(PremiumBadgesActivity.this, PreferenceHandler.PREF_KEY_USER_ID, ""));
+            payloadJson.put(Constants.PAGE, page + "");
+            payloadJson.put(Constants.LIMIT, limit + "");
+            payloadJson.put(Constants.CATEGORY, category + "");
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+        Log.d(LOG_TAG, "paload is " + payloadJson.toString());
+        return payloadJson.toString();
+    }
+
+
+    public  void getPremiumBadges(int page, int limit, int category){
+
+        String payload = createPayload(pageNumber, badgeCount, category);
+        if (payload != null) {
+            // Web service Call
+            // Step 1 - Register responsehandler
+            WebNotificationManager.registerResponseListener(responseHandlerListener);
+            // Step 2 - Webservice Call
+            WebServiceClient.getBadges(PremiumBadgesActivity.this, payload, responseHandlerListener);
+
+        }
+
+    }
+
+    ResponseHandlerListener responseHandlerListener= new ResponseHandlerListener() {
+        @Override
+        public void onComplete(ResponsePojo result, WebServiceClient.WebError error, ProgressDialog mProgressDialog) {
+            WebNotificationManager.unRegisterResponseListener(responseHandlerListener);
+            try {
+
+                if(error==null){
+
+                    if(result.getSuccess().equalsIgnoreCase("true")){
+
+                        mPremiumBadgesList.clear();
+                        mPremiumBadgesList.addAll(result.getBadges());
+                        setDataInViewObjects();
+
+                    }
+
+
+
+                }
+
+
+
+
+            }catch (Exception e){
+                e.printStackTrace();
+            }
+            // Always close the progressdialog
+            if (mProgressDialog != null && mProgressDialog.isShowing()) {
+                mProgressDialog.dismiss();
+            }
+
+        }
+    };
+
 
     @Override
     protected void setDataInViewObjects() {
@@ -203,7 +283,7 @@ public class PremiumBadgesActivity extends BaseActivity implements IabBroadcastR
 
             Log.e("premium", "" + mPremiumBadgesList.size());
             premiumBadgesAdapter = null;
-            premiumBadgesAdapter = new PremiumBadgesAdapter(this, mPremiumBadgesList);
+            premiumBadgesAdapter = new PremiumBadgesAdapter(this, mPremiumBadgesList,onPremiumBadgeClick);
             mRvPremiumBadges.setAdapter(premiumBadgesAdapter);
 
         } catch (Exception e) {
@@ -212,6 +292,15 @@ public class PremiumBadgesActivity extends BaseActivity implements IabBroadcastR
         }
 
     }
+
+    OnPremiumBadgeClick onPremiumBadgeClick= new OnPremiumBadgeClick() {
+        @Override
+        public void onPremiumBadgeClicked(RelativeLayout view, int position) {
+
+
+
+        }
+    };
 
 
     // User clicked the "Buy Gas" button
