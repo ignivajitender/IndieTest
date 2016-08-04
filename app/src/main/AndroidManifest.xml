@@ -164,8 +164,12 @@
             android:label="@string/comment_reply_activity"/>
 
 
-
-
+        <activity
+            android:theme="@style/AppTheme"
+            android:name=".ui.activities.MyProfileActivity"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="adjustPan"
+            android:label="@string/my_profile"/>
 
 
         <meta-data

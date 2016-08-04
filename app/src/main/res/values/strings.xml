@@ -165,6 +165,12 @@
 
     <string name="clear_chats">Clear Chats</string>
 
+
+
+    <!--my profile activity-->
+<string name="my_post">Posts</string>
+    <string name="my_profile">My Profile</string>
+
     <!--recommend a badge-->
     <string name="reccomend_badge">Recommend a Badge</string>
     <string name="dummy_txt">Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry\'s standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged.</string>

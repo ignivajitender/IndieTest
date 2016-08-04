@@ -15,6 +15,7 @@ import com.igniva.indiecore.R;
 import com.igniva.indiecore.ui.activities.CreateProfileActivity;
 import com.igniva.indiecore.ui.activities.InviteContactActivity;
 import com.igniva.indiecore.ui.activities.RecommendBadgeActivity;
+import com.igniva.indiecore.ui.activities.SyncContactsActivity;
 import com.igniva.indiecore.ui.adapters.ExpandableListAdapter;
 import com.igniva.indiecore.utils.Constants;
 import com.igniva.indiecore.utils.Log;
@@ -115,6 +116,8 @@ public class SettingsFragment extends BaseFragment {
                         case 4:
                             break;
                         case 5:
+
+
                             break;
                         case 6:
                             break;
@@ -159,13 +162,17 @@ public class SettingsFragment extends BaseFragment {
                         case 3:
                             break;
                         case 4:
+
+
                             break;
                         case 5:
+                            Intent intent= new Intent(getActivity(),SyncContactsActivity.class);
+                            getActivity().startActivity(intent);
 
                             break;
                         case 6:
-                            Intent intent = new Intent(getActivity(), RecommendBadgeActivity.class);
-                            getActivity().startActivity(intent);
+                            Intent in = new Intent(getActivity(), RecommendBadgeActivity.class);
+                            getActivity().startActivity(in);
                             break;
                         default:
                             break;

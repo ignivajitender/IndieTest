@@ -59,6 +59,9 @@ public class Constants {
     public static  final String COMMENTID="commentId";
     public static  final String REPLYID="replyId";
 
+    public static  final String CHATFRAGMENT="CHATFRAGMENT";
+    public static  final String MYPROFILEACTIVITY="MYPROFILEACTIVITY";
+
 
 public static  final String SELF="self";
     public static  final String LIKE="like";

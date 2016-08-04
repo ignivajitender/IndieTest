@@ -11,6 +11,17 @@
     android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
     app:titleTextColor="@color/black">
 
+
+    <ImageView
+        android:padding="10dp"
+        android:id="@+id/toolbar_img_left"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/news_feed"
+        android:layout_marginRight="7dp"
+        android:layout_gravity="left"
+        />
+
     <TextView
         android:textSize="18sp"
         android:fontFamily="sans-serif"

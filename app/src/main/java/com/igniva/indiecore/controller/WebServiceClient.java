@@ -2,30 +2,24 @@ package com.igniva.indiecore.controller;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
-import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
-import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
 import java.net.URL;
-import java.net.URLEncoder;
-import java.util.ArrayList;
+
 import com.igniva.indiecore.R;
-import com.igniva.indiecore.utils.AsyncResult;
 import com.igniva.indiecore.utils.Utility;
 import android.app.Activity;
 import android.app.ProgressDialog;
-import android.content.ContentResolver;
 import android.content.Context;
 import android.os.AsyncTask;
 import android.os.StrictMode;
 import com.google.gson.Gson;
 import org.apache.http.entity.mime.MultipartEntity;
-import org.json.JSONObject;
+
 import com.igniva.indiecore.utils.Log;
 import com.igniva.indiecore.model.ResponsePojo;
 
@@ -71,7 +65,9 @@ public class WebServiceClient {
     public static  final String HTTP_MAKE_A_REPLY=HTTP_PROTOCOL+HTTP_HOST_IP+"post/comment/reply/make";
     public static  final String HTTP_VIEW_ALL_REPLY=HTTP_PROTOCOL+HTTP_HOST_IP+"post/comment/reply/view";
     public static  final String HTTP_LIKE_UNLIKE_REPLY=HTTP_PROTOCOL+HTTP_HOST_IP+"post/comment/reply/action";
-    public static  final String HTTP_REMOVEREPLY=HTTP_PROTOCOL+HTTP_HOST_IP+"post/comment/reply/remove";
+    public static  final String HTTP_REMOVE_REPLY =HTTP_PROTOCOL+HTTP_HOST_IP+"post/comment/reply/remove";
+    public static  final  String HTTP_VIEW_USER_PROFILE=HTTP_PROTOCOL+HTTP_HOST_IP+"user/profile/uId";
+
 
 
 
@@ -274,7 +270,14 @@ public class WebServiceClient {
 
 
     public static void remove_a_reply(final Context context,String payload,ResponseHandlerListener responseHandlerListener){
-        url=HTTP_REMOVEREPLY;
+        url= HTTP_REMOVE_REPLY;
+        method=HttpMethod.HTTP_POST;
+        mResponseHandlerListener=responseHandlerListener;
+        checkNetworkState(url,payload,method,context);
+    }
+
+    public static void view_user_profile(final Context context,String payload,ResponseHandlerListener responseHandlerListener){
+        url=HTTP_VIEW_USER_PROFILE;
         method=HttpMethod.HTTP_POST;
         mResponseHandlerListener=responseHandlerListener;
         checkNetworkState(url,payload,method,context);

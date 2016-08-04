@@ -362,6 +362,8 @@ public class MyBadgesActivity extends BaseActivity implements View.OnClickListen
                     startActivity(intent);
                 }
             });
+            ImageView mMyProfile = (ImageView) mToolbar.findViewById(R.id.toolbar_img_left);
+            mMyProfile.setVisibility(View.GONE);
             //
             setSupportActionBar(mToolbar);
             getSupportActionBar().setDisplayShowTitleEnabled(false);

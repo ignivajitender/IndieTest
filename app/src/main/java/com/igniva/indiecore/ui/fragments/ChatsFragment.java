@@ -55,7 +55,7 @@ public class ChatsFragment extends BaseFragment {
     public DashBoardActivity mDashBoard;
     private WallPostAdapter mAdapter;
     private ImageView mDeletePost;
-    private String ACTION = "DELETE";
+    private String ACTION = "";
     private ArrayList<PostPojo> mWallPostList;
     private ArrayList<CommentPojo> mCommentList;
     private LinearLayoutManager mLlManager;
@@ -692,7 +692,7 @@ public class ChatsFragment extends BaseFragment {
             mLlBOard.setVisibility(View.VISIBLE);
 
             mAdapter = null;
-                mAdapter = new WallPostAdapter(getActivity(), mWallPostList, onCommentListItemClickListnerTest2);
+                mAdapter = new WallPostAdapter(getActivity(), mWallPostList, onCommentListItemClickListnerTest2,Constants.CHATFRAGMENT);
                 mRvWallPosts.setAdapter(mAdapter);
 
 
@@ -780,7 +780,7 @@ public class ChatsFragment extends BaseFragment {
                             try {
                                 Log.d(LOG_TAG," original list is "+mWallPostList);
                                 mWallPostAdapter = null;
-                                mWallPostAdapter = new WallPostAdapter(getActivity(), mWallPostList, onCommentListItemClickListnerTest2);
+                                mWallPostAdapter = new WallPostAdapter(getActivity(), mWallPostList, onCommentListItemClickListnerTest2,Constants.CHATFRAGMENT);
                                 mWallPostAdapter.notifyDataSetChanged();
                                 mRvWallPosts.setAdapter(mWallPostAdapter);
 

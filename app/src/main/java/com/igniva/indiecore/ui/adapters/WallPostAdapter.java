@@ -40,26 +40,29 @@ public class WallPostAdapter extends RecyclerView.Adapter<WallPostAdapter.Recycl
     WallPostAdapter mAdapter;
     private boolean deletePostVisible = false;
     private String ACTION = "";
-    private int POSTION=-1;
+    private int POSTION = -1;
+    private String ACTIVITYNAME = "";
     String LOG_TAG = "WallPostAdapter";
-//    OnListItemClickListner mOnListItemClickListner;
-PostPojo postPojo;
+    //    OnListItemClickListner mOnListItemClickListner;
+    PostPojo postPojo;
     OnCommentListItemClickListnerTest2 onCommentListItemClickListnerTest2l;
 
 
-    public WallPostAdapter(Context context, ArrayList<PostPojo> wallItemsList, OnCommentListItemClickListnerTest2 onListItemClickListner) {
+    public WallPostAdapter(Context context, ArrayList<PostPojo> wallItemsList, OnCommentListItemClickListnerTest2 onListItemClickListner, String contextName) {
 
-           this.wallItemsList = wallItemsList;
+        this.wallItemsList = wallItemsList;
         this.mContext = context;
         this.onCommentListItemClickListnerTest2l = onListItemClickListner;
+        this.ACTIVITYNAME = contextName;
 
     }
+
 
     @Override
     public RecyclerViewHolders onCreateViewHolder(ViewGroup parent, int viewType) {
 
 
-        View layoutView = LayoutInflater.from(parent.getContext()).inflate(R.layout.wall_post_items,null);
+        View layoutView = LayoutInflater.from(parent.getContext()).inflate(R.layout.wall_post_items, parent, false);
         return new RecyclerViewHolders(layoutView);
 //        return rcv;
 
@@ -72,8 +75,7 @@ PostPojo postPojo;
     @Override
     public void onBindViewHolder(final RecyclerViewHolders holder, final int position) {
         try {
-
-            postPojo=wallItemsList.get(position);
+            postPojo = wallItemsList.get(position);
             if (!postPojo.getFirstName().isEmpty()) {
                 String Name = (postPojo.getFirstName() + " " + (postPojo.getLastName()).charAt(0) + ".");
                 holder.mUserName.setText(Name);
@@ -84,11 +86,11 @@ PostPojo postPojo;
                         .crossFade()
                         .diskCacheStrategy(DiskCacheStrategy.ALL)
                         .into(holder.mUserIcon);
-            }else {
+            } else {
                 holder.mUserIcon.setImageResource(R.drawable.default_user);
             }
             String time = postPojo.getDate_created();
-            holder.mPostTime.setText(time.substring(0,10));
+            holder.mPostTime.setText(time.substring(0, 10));
 
             try {
                 if (postPojo.getMediaUrl() != null) {
@@ -107,26 +109,26 @@ PostPojo postPojo;
 //
 //
             holder.mTextPost.setText(postPojo.getText());
-            holder.like.setText(postPojo.getLike()+"");
-            holder.dislike.setText(postPojo.getDislike()+"");
-            holder.neutral.setText(postPojo.getNeutral()+"");
-            holder.comment.setText(postPojo.getComment()+"");
+            holder.like.setText(postPojo.getLike() + "");
+            holder.dislike.setText(postPojo.getDislike() + "");
+            holder.neutral.setText(postPojo.getNeutral() + "");
+            holder.comment.setText(postPojo.getComment() + "");
 
             // Post has been liked/disliked or set neutral by user
             if (postPojo.getAction() != null) {
 
                 if (postPojo.getAction().equalsIgnoreCase(Constants.LIKE)) {
                     holder.like.setCompoundDrawablesWithIntrinsicBounds(R.drawable.like_blue_icon_circle, 0, 0, 0);
-                    holder.dislike.setCompoundDrawablesWithIntrinsicBounds(R.drawable.dislike_grey_icon_circle,0,0,0);
-                    holder.neutral.setCompoundDrawablesWithIntrinsicBounds(R.drawable.hand_grey_icon_circle,0,0,0);
+                    holder.dislike.setCompoundDrawablesWithIntrinsicBounds(R.drawable.dislike_grey_icon_circle, 0, 0, 0);
+                    holder.neutral.setCompoundDrawablesWithIntrinsicBounds(R.drawable.hand_grey_icon_circle, 0, 0, 0);
                     holder.like.setEnabled(true);
                     holder.dislike.setEnabled(false);
                     holder.neutral.setEnabled(false);
 
                 } else if (postPojo.getAction().equalsIgnoreCase(Constants.DISLIKE)) {
                     holder.dislike.setCompoundDrawablesWithIntrinsicBounds(R.drawable.dislike_blue_icon_circle, 0, 0, 0);
-                    holder.like.setCompoundDrawablesWithIntrinsicBounds(R.drawable.like_grey_icon_circle,0,0,0);
-                    holder.neutral.setCompoundDrawablesWithIntrinsicBounds(R.drawable.hand_grey_icon_circle,0,0,0);
+                    holder.like.setCompoundDrawablesWithIntrinsicBounds(R.drawable.like_grey_icon_circle, 0, 0, 0);
+                    holder.neutral.setCompoundDrawablesWithIntrinsicBounds(R.drawable.hand_grey_icon_circle, 0, 0, 0);
                     holder.like.setEnabled(false);
                     holder.dislike.setEnabled(true);
                     holder.neutral.setEnabled(false);
@@ -134,17 +136,17 @@ PostPojo postPojo;
                 } else if (postPojo.getAction().equalsIgnoreCase(Constants.NEUTRAL)) {
 
                     holder.neutral.setCompoundDrawablesWithIntrinsicBounds(R.drawable.hand_icon_blue_circle, 0, 0, 0);
-                    holder.like.setCompoundDrawablesWithIntrinsicBounds(R.drawable.like_grey_icon_circle, 0,0,0);
-                    holder.dislike.setCompoundDrawablesWithIntrinsicBounds(R.drawable.dislike_grey_icon_circle,0,0,0);
+                    holder.like.setCompoundDrawablesWithIntrinsicBounds(R.drawable.like_grey_icon_circle, 0, 0, 0);
+                    holder.dislike.setCompoundDrawablesWithIntrinsicBounds(R.drawable.dislike_grey_icon_circle, 0, 0, 0);
                     holder.like.setEnabled(false);
                     holder.dislike.setEnabled(false);
                     holder.neutral.setEnabled(true);
 
                 } else {
 
-                    holder.like.setCompoundDrawablesWithIntrinsicBounds(R.drawable.like_grey_icon_circle,0,0,0);
-                    holder.dislike.setCompoundDrawablesWithIntrinsicBounds(R.drawable.dislike_grey_icon_circle,0,0,0);
-                    holder.neutral.setCompoundDrawablesWithIntrinsicBounds(R.drawable.hand_grey_icon_circle,0, 0,0);
+                    holder.like.setCompoundDrawablesWithIntrinsicBounds(R.drawable.like_grey_icon_circle, 0, 0, 0);
+                    holder.dislike.setCompoundDrawablesWithIntrinsicBounds(R.drawable.dislike_grey_icon_circle, 0, 0, 0);
+                    holder.neutral.setCompoundDrawablesWithIntrinsicBounds(R.drawable.hand_grey_icon_circle, 0, 0, 0);
                     holder.like.setEnabled(true);
                     holder.dislike.setEnabled(true);
                     holder.neutral.setEnabled(true);
@@ -154,9 +156,9 @@ PostPojo postPojo;
             // Post has not been  like/dislike or neutral
             else {
 
-                holder.like.setCompoundDrawablesWithIntrinsicBounds(R.drawable.like_grey_icon_circle,0,0,0);
-                holder.dislike.setCompoundDrawablesWithIntrinsicBounds(R.drawable.dislike_grey_icon_circle,0,0,0);
-                holder.neutral.setCompoundDrawablesWithIntrinsicBounds(R.drawable.hand_grey_icon_circle,0, 0,0);
+                holder.like.setCompoundDrawablesWithIntrinsicBounds(R.drawable.like_grey_icon_circle, 0, 0, 0);
+                holder.dislike.setCompoundDrawablesWithIntrinsicBounds(R.drawable.dislike_grey_icon_circle, 0, 0, 0);
+                holder.neutral.setCompoundDrawablesWithIntrinsicBounds(R.drawable.hand_grey_icon_circle, 0, 0, 0);
                 holder.like.setEnabled(true);
                 holder.dislike.setEnabled(true);
                 holder.neutral.setEnabled(true);
@@ -167,7 +169,7 @@ PostPojo postPojo;
                 @Override
                 public void onClick(View v) {
                     //Utility.showToastMessageLong(((Activity) mContext)," position is "+position);
-                    onCommentListItemClickListnerTest2l.onCommentListItemClicked(holder, position, postPojo.getPostId(),Constants.LIKE);
+                    onCommentListItemClickListnerTest2l.onCommentListItemClicked(holder, position, postPojo.getPostId(), Constants.LIKE);
 //                    mOnListItemClickListner.onListItemClicked(holder, position, postPojo.getPostId());
                 }
             });
@@ -175,21 +177,21 @@ PostPojo postPojo;
                 @Override
                 public void onClick(View v) {
 //                    Utility.showToastMessageLong(((Activity) mContext)," position is "+position);
-                    onCommentListItemClickListnerTest2l.onCommentListItemClicked(holder, position, postPojo.getPostId(),Constants.DISLIKE);
+                    onCommentListItemClickListnerTest2l.onCommentListItemClicked(holder, position, postPojo.getPostId(), Constants.DISLIKE);
                 }
             });
             holder.neutral.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
 //                    Utility.showToastMessageLong(((Activity) mContext)," position is "+position);
-                    onCommentListItemClickListnerTest2l.onCommentListItemClicked(holder, position, postPojo.getPostId(),Constants.NEUTRAL);
+                    onCommentListItemClickListnerTest2l.onCommentListItemClicked(holder, position, postPojo.getPostId(), Constants.NEUTRAL);
                 }
             });
 
             holder.comment.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    onCommentListItemClickListnerTest2l.onCommentListItemClicked(holder, position, postPojo.getPostId(),Constants.COMMENT);
+                    onCommentListItemClickListnerTest2l.onCommentListItemClicked(holder, position, postPojo.getPostId(), Constants.COMMENT);
 
                 }
             });
@@ -197,7 +199,7 @@ PostPojo postPojo;
             holder.mMediaPost.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    onCommentListItemClickListnerTest2l.onCommentListItemClicked(holder, position, postPojo.getPostId(),Constants.MEDIA);
+                    onCommentListItemClickListnerTest2l.onCommentListItemClicked(holder, position, postPojo.getPostId(), Constants.MEDIA);
 
                 }
             });
@@ -206,7 +208,7 @@ PostPojo postPojo;
             holder.mDeletePost.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    onCommentListItemClickListnerTest2l.onCommentListItemClicked(holder, position, postPojo.getPostId(),Constants.DELETE);
+                    onCommentListItemClickListnerTest2l.onCommentListItemClicked(holder, position, postPojo.getPostId(), Constants.DELETE);
 //                    mDelete=holder.mDeletePost;
 //                    try {
 //
@@ -230,8 +232,8 @@ PostPojo postPojo;
             holder.dropDownOptions.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    postPojo=wallItemsList.get(position);
-                //    onCommentListItemClickListnerTest2l.onCommentListItemClicked(holder, position, postPojo.getPostId());
+                    postPojo = wallItemsList.get(position);
+                    //    onCommentListItemClickListnerTest2l.onCommentListItemClicked(holder, position, postPojo.getPostId());
                     try {
 
 //                        Utility.showToastMessageShort((Activity) mContext," position "+position+" rel:"+wallItemsList.get(position).getRelation());
@@ -240,22 +242,26 @@ PostPojo postPojo;
                             // Remove previously opened view
                             try {
                                 mDeletePostOld.setVisibility(View.GONE);
-                            }catch (Exception e){
+                            } catch (Exception e) {
                                 e.printStackTrace();
                             }
                             //
                             holder.mDeletePost.setVisibility(View.VISIBLE);
-
-                            if (postPojo.getRelation().equalsIgnoreCase("self")) {
-                                holder.mDeletePost.setImageResource(R.drawable.delete_icon);
-                                ACTION = "DELETE";
+                            if (ACTIVITYNAME == Constants.CHATFRAGMENT) {
+                                if (postPojo.getRelation().equalsIgnoreCase("self")) {
+                                    holder.mDeletePost.setImageResource(R.drawable.delete_icon);
+                                    ACTION = "DELETE";
+                                } else {
+                                    holder.mDeletePost.setImageResource(R.drawable.report_abuse);
+                                    ACTION = "REPORT";
+                                }
                             } else {
-                                holder.mDeletePost.setImageResource(R.drawable.report_abuse);
-                                ACTION = "REPORT";
+                                holder.mDeletePost.setImageResource(R.drawable.delete_icon);
+
                             }
                             deletePostVisible = true;
-                            mDeletePostOld= holder.mDeletePost;
-                        } else if(deletePostVisible==true) {
+                            mDeletePostOld = holder.mDeletePost;
+                        } else if (deletePostVisible == true) {
                             holder.mDeletePost.setVisibility(View.GONE);
                             deletePostVisible = false;
 
@@ -372,9 +378,9 @@ PostPojo postPojo;
             if (!payload.isEmpty()) {
 
                 WebNotificationManager.registerResponseListener(responseRemovePost);
-                WebServiceClient.remove_a_post((Activity)mContext, payload, responseRemovePost);
+                WebServiceClient.remove_a_post((Activity) mContext, payload, responseRemovePost);
             }
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
@@ -400,7 +406,6 @@ PostPojo postPojo;
 //                        mWallPostAdapter = new WallPostAdapter(getActivity(), mWallPostList, onListItemClickListner);
 //                        mWallPostAdapter.notifyDataSetChanged();
 //                      mRvWallPosts.setAdapter(mWallPostAdapter);
-
 
 
                         Utility.showToastMessageLong((Activity) mContext, "post removed");
@@ -440,7 +445,7 @@ PostPojo postPojo;
         if (payload != null) {
 
             WebNotificationManager.registerResponseListener(responseFlagPost);
-            WebServiceClient.flag_a_post((Activity)mContext, payload, responseFlagPost);
+            WebServiceClient.flag_a_post((Activity) mContext, payload, responseFlagPost);
 
         }
 
