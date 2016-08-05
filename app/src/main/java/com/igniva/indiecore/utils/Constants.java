@@ -61,6 +61,7 @@ public class Constants {
 
     public static  final String CHATFRAGMENT="CHATFRAGMENT";
     public static  final String MYPROFILEACTIVITY="MYPROFILEACTIVITY";
+    public static  final String USERPROFILEACTIVITY="USERPROFILEACTIVITY";
 
 
 public static  final String SELF="self";

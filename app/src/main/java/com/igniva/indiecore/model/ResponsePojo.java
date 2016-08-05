@@ -11,15 +11,9 @@ public class ResponsePojo {
     private String description;
     private String success;
     private ArrayList<BadgesPojo> badges;
-
-    public ArrayList<PostPojo> getPostList() {
-        return postList;
-    }
-
-    public void setPostList(ArrayList<PostPojo> postList) {
-        this.postList = postList;
-    }
-
+    private boolean  is_favourite;
+    private  boolean  is_block;
+    private String  relation;
     private ArrayList<PostPojo> postList;
     private String postId;
     private ArrayList<UsersPojo> users;
@@ -34,7 +28,41 @@ public class ResponsePojo {
     private ArrayList<BusinessPojo> business_list;
     private ArrayList<CommentPojo> commentList;
     private ArrayList<RepliesPojo> repliesList;
+    private int like;
+    private int dislike;
+    private int neutral;
 
+    public boolean is_favourite() {
+        return is_favourite;
+    }
+
+    public void setIs_favourite(boolean is_favourite) {
+        this.is_favourite = is_favourite;
+    }
+
+    public boolean is_block() {
+        return is_block;
+    }
+
+    public void setIs_block(boolean is_block) {
+        this.is_block = is_block;
+    }
+
+    public String getRelation() {
+        return relation;
+    }
+
+    public void setRelation(String relation) {
+        this.relation = relation;
+    }
+
+    public ArrayList<PostPojo> getPostList() {
+        return postList;
+    }
+
+    public void setPostList(ArrayList<PostPojo> postList) {
+        this.postList = postList;
+    }
 
     public ArrayList<RepliesPojo> getRepliesList() {
         return repliesList;
@@ -43,10 +71,6 @@ public class ResponsePojo {
     public void setRepliesList(ArrayList<RepliesPojo> repliesList) {
         this.repliesList = repliesList;
     }
-
-
-
-    private int like;
 
     public int getDislike() {
         return dislike;
@@ -71,12 +95,6 @@ public class ResponsePojo {
     public void setNeutral(int neutral) {
         this.neutral = neutral;
     }
-
-    private int dislike;
-    private int neutral;
-
-
-
     public ArrayList<CommentPojo> getCommentList() {
         return commentList;
     }
@@ -84,11 +102,6 @@ public class ResponsePojo {
     public void setCommentList(ArrayList<CommentPojo> commentList) {
         this.commentList = commentList;
     }
-
-
-
-
-
     public String getPostId() {
         return postId;
     }
@@ -128,14 +141,6 @@ public class ResponsePojo {
     public void setBusiness_list(ArrayList<BusinessPojo> business_list) {
         this.business_list = business_list;
     }
-
-
-
-
-
-
-
-
     public String getError_text() {
         return error_text;
     }

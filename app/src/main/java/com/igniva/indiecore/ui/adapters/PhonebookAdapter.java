@@ -2,45 +2,40 @@ package com.igniva.indiecore.ui.adapters;
 
 import android.app.Activity;
 import android.content.Context;
-import android.net.Uri;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.CheckBox;
-import android.widget.Filter;
-import android.widget.Filterable;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.igniva.indiecore.R;
+import com.igniva.indiecore.controller.OnContactCardClickListner;
 import com.igniva.indiecore.controller.WebServiceClient;
-import com.igniva.indiecore.model.ContactPojo;
-import com.igniva.indiecore.model.ProfilePojo;
-import com.igniva.indiecore.ui.activities.InviteContactActivity;
-import com.igniva.indiecore.utils.Log;
+import com.igniva.indiecore.model.UsersPojo;
 import com.igniva.indiecore.utils.Utility;
 
 import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Created by igniva-andriod-11 on 10/6/16.
  */
 public class PhonebookAdapter extends RecyclerView.Adapter<PhonebookAdapter.RecyclerViewHolders> {
 
-    private ArrayList<ProfilePojo> itemList;
+    private ArrayList<UsersPojo> indieCoreUsersLIst;
     private Context context;
     String LOG_TAG = "PhonebookAdapter";
+    OnContactCardClickListner onContactCardClickListner;
 
 
-    public PhonebookAdapter(Context context, ArrayList<ProfilePojo> itemList) {
+    public PhonebookAdapter(Context context, ArrayList<UsersPojo> indieCoreUsersLIst, OnContactCardClickListner onContactCardClickListner) {
 
-        this.itemList = itemList;
+        this.indieCoreUsersLIst = indieCoreUsersLIst;
         this.context = context;
+        this.onContactCardClickListner=onContactCardClickListner;
 
     }
 
@@ -56,9 +51,9 @@ public class PhonebookAdapter extends RecyclerView.Adapter<PhonebookAdapter.Recy
     @Override
     public void onBindViewHolder(final RecyclerViewHolders holder, final int position) {
         try {
-            holder.mContactName.setText(itemList.get(position).getFirstName());
-            if (itemList.get(position).getProfilePic() != null) {
-                Glide.with(context).load(WebServiceClient.HTTP_STAGING + itemList.get(position).getProfilePic())
+            holder.mContactName.setText(indieCoreUsersLIst.get(position).getProfile().getFirstName());
+            if (indieCoreUsersLIst.get(position).getProfile().getProfilePic() != null) {
+                Glide.with(context).load(WebServiceClient.HTTP_STAGING + indieCoreUsersLIst.get(position).getProfile().getProfilePic())
                         .thumbnail(1f)
                         .crossFade()
                         .diskCacheStrategy(DiskCacheStrategy.ALL)
@@ -67,33 +62,40 @@ public class PhonebookAdapter extends RecyclerView.Adapter<PhonebookAdapter.Recy
 
                 holder.mContactImage.setImageResource(R.drawable.default_user);
             }
-            holder.mText.setText(itemList.get(position).getDesc());
+            holder.mText.setText(indieCoreUsersLIst.get(position).getProfile().getDesc());
         } catch (Exception e) {
             e.printStackTrace();
         }
 
-        holder.mCardView.setOnClickListener(new View.OnClickListener() {
+
+        holder.mContactImage.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View view) {
-                try {
-
-
-                    Utility.showToastMessageShort((Activity) context, "Coming soon");
-
-
-
-                }catch (Exception e){
-                    e.printStackTrace();
-                }
+            public void onClick(View v) {
+                onContactCardClickListner.onContactCardClicked(holder.mContactImage,position,indieCoreUsersLIst.get(position).getUserId());
             }
         });
+
+//        holder.mCardView.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//                try {
+//
+//                    Utility.showToastMessageShort((Activity) context, "Coming soon");
+//
+//
+//
+//                }catch (Exception e){
+//                    e.printStackTrace();
+//                }
+//            }
+//        });
 
     }
 
 
     @Override
     public int getItemCount() {
-        return this.itemList.size();
+        return this.indieCoreUsersLIst.size();
     }
 
 

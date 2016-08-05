@@ -1,5 +1,7 @@
 package com.igniva.indiecore.ui.fragments;
 
+import android.app.ProgressDialog;
+import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -8,13 +10,27 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.igniva.indiecore.R;
+import com.igniva.indiecore.controller.OnContactCardClickListner;
+import com.igniva.indiecore.controller.ResponseHandlerListener;
+import com.igniva.indiecore.controller.WebNotificationManager;
+import com.igniva.indiecore.controller.WebServiceClient;
 import com.igniva.indiecore.db.BadgesDb;
 import com.igniva.indiecore.model.ContactPojo;
 import com.igniva.indiecore.model.ProfilePojo;
+import com.igniva.indiecore.model.ResponsePojo;
+import com.igniva.indiecore.model.UsersPojo;
+import com.igniva.indiecore.ui.activities.UserProfileActivity;
 import com.igniva.indiecore.ui.adapters.PhonebookAdapter;
+import com.igniva.indiecore.utils.Constants;
+import com.igniva.indiecore.utils.Log;
+import com.igniva.indiecore.utils.PreferenceHandler;
+import com.igniva.indiecore.utils.Utility;
+
+import org.json.JSONObject;
 
 import java.util.ArrayList;
 
@@ -23,7 +39,7 @@ import java.util.ArrayList;
  */
 public class ContactsFragment extends BaseFragment {
 
-    private ArrayList<ProfilePojo> mSavedUsersList = null;
+    private ArrayList<UsersPojo> mSavedUsersList = new ArrayList<UsersPojo>();;
     private RecyclerView mRvUsers;
     private LinearLayoutManager mLlManager;
     private TextView mTvPhoneBook, mTvFavourite,mComingSoon;
@@ -46,14 +62,11 @@ public class ContactsFragment extends BaseFragment {
     protected void setUpLayout() {
         try {
         mRvUsers = (RecyclerView) rootView.findViewById(R.id.rv_users);
-        mSavedUsersList = new ArrayList<ProfilePojo>();
         mTvPhoneBook = (TextView) rootView.findViewById(R.id.tv_phonebook);
         mTvPhoneBook.setOnClickListener(onClickListener);
         mTvFavourite = (TextView) rootView.findViewById(R.id.tv_favourite);
         mTvFavourite.setOnClickListener(onClickListener);
-
         mComingSoon=(TextView) rootView.findViewById(R.id.tv_coming_soon);
-
         setDataInViewObjects();
         }catch (Exception e){
             e.printStackTrace();
@@ -66,12 +79,6 @@ public class ContactsFragment extends BaseFragment {
         updatePhoneBookUi();
 
     }
-//
-//    @Override
-//    protected void onClick(View v) {
-//
-//    }
-
 
     private View.OnClickListener onClickListener = new View.OnClickListener() {
         @Override
@@ -101,7 +108,7 @@ public class ContactsFragment extends BaseFragment {
 
             if(mSavedUsersList.size()>0) {
                 mPhoneBookAdapter = null;
-                mPhoneBookAdapter = new PhonebookAdapter(getActivity(), mSavedUsersList);
+                mPhoneBookAdapter = new PhonebookAdapter(getActivity(), mSavedUsersList,onContactCardClickListner);
                 mRvUsers.setAdapter(mPhoneBookAdapter);
                 mComingSoon.setVisibility(View.GONE);
                 rootView.findViewById(R.id.tv_coming_soon_two).setVisibility(View.GONE);
@@ -161,5 +168,28 @@ try {
             e.printStackTrace();
         }
     }
+
+     OnContactCardClickListner onContactCardClickListner= new OnContactCardClickListner() {
+         @Override
+         public void onContactCardClicked(ImageView UserImage, int position, final String userId ) {
+
+              UserImage.setOnClickListener(new View.OnClickListener() {
+                  @Override
+                  public void onClick(View v) {
+                      try {
+                          Bundle bundle=new Bundle();
+                          Intent intent= new Intent(getActivity(), UserProfileActivity.class);
+                          bundle.putString(Constants.USERID,userId);
+                          bundle.putInt(Constants.INDEX,12);
+                          intent.putExtras(bundle);
+                          startActivity(intent);
+                      } catch (Exception e) {
+                          e.printStackTrace();
+                      }
+                  }
+              });
+
+         }
+     };
 
 }

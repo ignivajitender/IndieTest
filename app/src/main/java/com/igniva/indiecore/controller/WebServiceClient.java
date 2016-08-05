@@ -66,7 +66,7 @@ public class WebServiceClient {
     public static  final String HTTP_VIEW_ALL_REPLY=HTTP_PROTOCOL+HTTP_HOST_IP+"post/comment/reply/view";
     public static  final String HTTP_LIKE_UNLIKE_REPLY=HTTP_PROTOCOL+HTTP_HOST_IP+"post/comment/reply/action";
     public static  final String HTTP_REMOVE_REPLY =HTTP_PROTOCOL+HTTP_HOST_IP+"post/comment/reply/remove";
-    public static  final  String HTTP_VIEW_USER_PROFILE=HTTP_PROTOCOL+HTTP_HOST_IP+"user/profile/uId";
+    public static  final  String HTTP_VIEW_USER_PROFILE=HTTP_PROTOCOL+HTTP_HOST_IP+"user/profile/";
 
 
 
@@ -276,8 +276,8 @@ public class WebServiceClient {
         checkNetworkState(url,payload,method,context);
     }
 
-    public static void view_user_profile(final Context context,String payload,ResponseHandlerListener responseHandlerListener){
-        url=HTTP_VIEW_USER_PROFILE;
+    public static void view_user_profile(final Context context,String payload,String user_Id,ResponseHandlerListener responseHandlerListener){
+        url=HTTP_VIEW_USER_PROFILE+user_Id;
         method=HttpMethod.HTTP_POST;
         mResponseHandlerListener=responseHandlerListener;
         checkNetworkState(url,payload,method,context);

@@ -39,37 +39,39 @@ import java.util.ArrayList;
 /**
  * Created by igniva-andriod-05 on 2/8/16.
  */
-public class MyProfileActivity extends  BaseActivity implements View.OnClickListener {
+public class MyProfileActivity extends BaseActivity implements View.OnClickListener {
 
-      Toolbar mToolbar;
-    private ImageView mCoverImage,mUserImage,mDropDown;
+    Toolbar mToolbar;
+    private ImageView mCoverImage, mUserImage, mDropDown;
     private RecyclerView mRvMyWallPosts;
     LinearLayoutManager mLlManager;
     GridLayoutManager mGlManager;
     private BadgesDb db_badges;
     private String ACTION = "";
-    private  TextView mUserName,mUserAddress,mTvDesc,mTvPosts,mTvBadges,mTitle;
-    ArrayList<BadgesPojo> mSelectedBadgesList = null;
+    private TextView mUserName, mUserAddress, mTvDesc, mTvPosts, mTvBadges, mTitle;
+    ArrayList<BadgesPojo> mSelectedBadgesList = new ArrayList<BadgesPojo>();
     MyBadgesAdapter mMyBadgeAdapter;
     private boolean deletePostVisible = false;
     private RecyclerView mRvComment;
     public static int POSTION = -1;
-    int mSelectedPostion=-1;
+    int mSelectedPostion = -1;
     private ImageView mDeletePost;
     private BadgesDb dbBadges;
     private ImageView onOffImage;
     WallPostAdapter.RecyclerViewHolders mHolder;
     public String postID = "-1";
-    private int action=0;
-    String LOG_TAG="MyProfileActivity";
-    public  static   int PAGE=1,LIMIT=20;
-    String PROFILE="profile";
-    private ArrayList<PostPojo> mMyWallPostList;
+    private int action = 0;
+    String LOG_TAG = "MyProfileActivity";
+    public static int PAGE = 1, LIMIT = 20;
+    String PROFILE = "profile";
+    private ArrayList<PostPojo> mMyWallPostList = new ArrayList<PostPojo>();
+    ;
     private WallPostAdapter mWallPostAdapter;
     //    (like/dislike/neutral), post_id
     public static final String mActionTypeLike = "like";
     public static final String mActionTypeDislike = "dislike";
     public static final String mActionTypeNeutral = "neutral";
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -82,21 +84,18 @@ public class MyProfileActivity extends  BaseActivity implements View.OnClickList
     @Override
     protected void setUpLayout() {
         try {
-            mMyWallPostList = new ArrayList<PostPojo>();
-            mSelectedBadgesList= new ArrayList<BadgesPojo>();
-            mLlManager= new LinearLayoutManager(this);
-            mCoverImage=(ImageView) findViewById(R.id.iv_cover_pic_activity_my_profile);
-            mUserImage=(ImageView) findViewById(R.id.iv_user_img_activity_my_profile);
-            mUserName=(TextView) findViewById(R.id.tv_user_name_activity_my_profile);
-            mUserAddress=(TextView) findViewById(R.id.tv_user_address_activity_my_profile);
-            mDropDown=(ImageView) findViewById(R.id.iv_dropdown_activity_my_profile);
-            mTvDesc=(TextView) findViewById(R.id.tv_desc_activity_my_profile);
-            mTvPosts=(TextView) findViewById(R.id.tv_posts_activity_my_profile);
+            mLlManager = new LinearLayoutManager(this);
+            mCoverImage = (ImageView) findViewById(R.id.iv_cover_pic_activity_my_profile);
+            mUserImage = (ImageView) findViewById(R.id.iv_user_img_activity_my_profile);
+            mUserName = (TextView) findViewById(R.id.tv_user_name_activity_my_profile);
+            mUserAddress = (TextView) findViewById(R.id.tv_user_address_activity_my_profile);
+            mDropDown = (ImageView) findViewById(R.id.iv_dropdown_activity_my_profile);
+            mTvDesc = (TextView) findViewById(R.id.tv_desc_activity_my_profile);
+            mTvPosts = (TextView) findViewById(R.id.tv_posts_activity_my_profile);
             mTvPosts.setOnClickListener(this);
-            mTvBadges=(TextView) findViewById(R.id.tv_badges_activity_my_profile);
+            mTvBadges = (TextView) findViewById(R.id.tv_badges_activity_my_profile);
             mTvBadges.setOnClickListener(this);
-
-            mRvMyWallPosts=(RecyclerView) findViewById(R.id.rv_posts_activity_my_profile);
+            mRvMyWallPosts = (RecyclerView) findViewById(R.id.rv_posts_activity_my_profile);
             mRvMyWallPosts.setLayoutManager(mLlManager);
             updatePostTabUi();
         } catch (Exception e) {
@@ -110,7 +109,7 @@ public class MyProfileActivity extends  BaseActivity implements View.OnClickList
 
 
         try {
-            if(!PreferenceHandler.readString(this,PreferenceHandler.PREF_KEY_FIRST_NAME,"").isEmpty()) {
+            if (!PreferenceHandler.readString(this, PreferenceHandler.PREF_KEY_FIRST_NAME, "").isEmpty()) {
                 String Name = ((PreferenceHandler.readString(this, PreferenceHandler.PREF_KEY_FIRST_NAME, "")) + " " + (PreferenceHandler.readString(this, PreferenceHandler.PREF_KEY_LAST_NAME, "")));
                 mUserName.setText(Name);
                 mTitle.setText(Name);
@@ -139,7 +138,7 @@ public class MyProfileActivity extends  BaseActivity implements View.OnClickList
             } else {
                 mCoverImage.setImageResource(R.drawable.default_user);
             }
-            mTvDesc.setText(PreferenceHandler.readString(this,PreferenceHandler.PREF_KEY_DESCRIPTION,""));
+            mTvDesc.setText(PreferenceHandler.readString(this, PreferenceHandler.PREF_KEY_DESCRIPTION, ""));
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -153,14 +152,14 @@ public class MyProfileActivity extends  BaseActivity implements View.OnClickList
 //            mTitle.setText(getResources().getString(R.string.my_profile));
             //
             ImageView mTvNext = (ImageView) mToolbar.findViewById(R.id.toolbar_img);
-                mTvNext.setVisibility(View.GONE);
+            mTvNext.setVisibility(View.GONE);
 
             ImageView mMyProfile = (ImageView) mToolbar.findViewById(R.id.toolbar_img_left);
             mMyProfile.setImageResource(R.drawable.backarrow_icon);
             mMyProfile.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                  finish();
+                    finish();
                 }
             });
 
@@ -173,24 +172,32 @@ public class MyProfileActivity extends  BaseActivity implements View.OnClickList
     }
 
 
-    public void updatePostTabUi(){
+    public void updatePostTabUi() {
 
         try {
-            mLlManager= new LinearLayoutManager(this);
+            mLlManager = new LinearLayoutManager(this);
             mRvMyWallPosts.setLayoutManager(mLlManager);
             mTvPosts.setTextColor(Color.parseColor("#FFFFFF"));
             mTvPosts.setBackgroundColor(Color.parseColor("#1C6DCE"));
             mTvBadges.setTextColor(Color.parseColor("#1C6DCE"));
             mTvBadges.setBackgroundResource(R.drawable.simple_border_line_style);
+
+            if (mMyWallPostList.size() == 0) {
                 viewMyPost();
+            } else {
+                mWallPostAdapter = null;
+                mWallPostAdapter = new WallPostAdapter(MyProfileActivity.this, mMyWallPostList, onCommentListItemClickListnerTest2, Constants.MYPROFILEACTIVITY);
+                mRvMyWallPosts.setAdapter(mWallPostAdapter);
+
+
+            }
 
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
-    public void updateBadgeTabUi(){
-
+    public void updateBadgeTabUi() {
         try {
             mGlManager = new GridLayoutManager(this, 3);
             mRvMyWallPosts.setLayoutManager(mGlManager);
@@ -198,6 +205,13 @@ public class MyProfileActivity extends  BaseActivity implements View.OnClickList
             mTvPosts.setBackgroundResource(R.drawable.simple_border_line_style);
             mTvBadges.setTextColor(Color.parseColor("#FFFFFF"));
             mTvBadges.setBackgroundColor(Color.parseColor("#1C6DCE"));
+            if (mSelectedBadgesList.size() == 0) {
+                getMyBadges();
+            } else {
+                mRvMyWallPosts.setAdapter(mMyBadgeAdapter);
+                mMyBadgeAdapter = new MyBadgesAdapter(MyProfileActivity.this, mSelectedBadgesList, onCardClickListner);
+                mRvMyWallPosts.setAdapter(mMyBadgeAdapter);
+            }
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -205,14 +219,12 @@ public class MyProfileActivity extends  BaseActivity implements View.OnClickList
 
     @Override
     public void onClick(View v) {
-        switch (v.getId()){
+        switch (v.getId()) {
             case R.id.tv_posts_activity_my_profile:
-           updatePostTabUi();
+                updatePostTabUi();
                 break;
             case R.id.tv_badges_activity_my_profile:
-
                 updateBadgeTabUi();
-                getMyBadges();
                 break;
             default:
                 break;
@@ -225,18 +237,18 @@ public class MyProfileActivity extends  BaseActivity implements View.OnClickList
     /*
   *
   * create payload to get all post of a business
+  * token, userId, roomId, postType, page, limit
   * */
     public String createPayload() {
         JSONObject payload = null;
-//    token, userId, roomId, postType, page, limit
         try {
             payload = new JSONObject();
             payload.put(Constants.TOKEN, PreferenceHandler.readString(this, PreferenceHandler.PREF_KEY_USER_TOKEN, ""));
             payload.put(Constants.USERID, PreferenceHandler.readString(this, PreferenceHandler.PREF_KEY_USER_ID, ""));
             payload.put(Constants.ROOM_ID, PreferenceHandler.readString(this, PreferenceHandler.PREF_KEY_USER_ID, ""));
             payload.put(Constants.POST_TYPE, PROFILE);
-            payload.put(Constants.PAGE, PAGE+"");
-            payload.put(Constants.LIMIT, LIMIT+"");
+            payload.put(Constants.PAGE, PAGE + "");
+            payload.put(Constants.LIMIT, LIMIT + "");
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -245,8 +257,6 @@ public class MyProfileActivity extends  BaseActivity implements View.OnClickList
     }
 
     /*
-    *
-    *
     * to get all the post of this business wall
     *
     * */
@@ -274,16 +284,14 @@ public class MyProfileActivity extends  BaseActivity implements View.OnClickList
 
                     if (result.getSuccess().equalsIgnoreCase("true")) {
 
-                        if (mMyWallPostList != null)
-                            mMyWallPostList.clear();
+//                        if (mMyWallPostList != null)
+//                            mMyWallPostList.clear();
                         mMyWallPostList.addAll(result.getPostList());
 
                         if (mMyWallPostList.size() > 0) {
                             try {
-                                Log.d(LOG_TAG," original list is "+ mMyWallPostList);
-                                Log.d(LOG_TAG," original list is "+ mMyWallPostList.size());
                                 mWallPostAdapter = null;
-                                mWallPostAdapter = new WallPostAdapter(MyProfileActivity.this, mMyWallPostList,onCommentListItemClickListnerTest2,Constants.MYPROFILEACTIVITY);
+                                mWallPostAdapter = new WallPostAdapter(MyProfileActivity.this, mMyWallPostList, onCommentListItemClickListnerTest2, Constants.MYPROFILEACTIVITY);
                                 mRvMyWallPosts.setAdapter(mWallPostAdapter);
 
                             } catch (Exception e) {
@@ -324,8 +332,6 @@ public class MyProfileActivity extends  BaseActivity implements View.OnClickList
             mSelectedBadgesList = db_badges.retrieveSelectedBadges();
             mMyBadgeAdapter = null;
             mRvMyWallPosts.setAdapter(mMyBadgeAdapter);
-            //
-            Log.e("", "set in adapter" + mSelectedBadgesList.size());
             mMyBadgeAdapter = new MyBadgesAdapter(MyProfileActivity.this, mSelectedBadgesList, onCardClickListner);
             mRvMyWallPosts.setAdapter(mMyBadgeAdapter);
         } catch (Exception e) {
@@ -333,9 +339,11 @@ public class MyProfileActivity extends  BaseActivity implements View.OnClickList
         }
     }
 
-
-    private String genratePayload(String badgeId,String badgestatus) {
-//        token, userId, badgeId, active (0/1)
+    /*
+    * create payload to call activate/inactivate a badge
+    *    Params:token, userId, badgeId, active (0/1)
+        * */
+    private String genratePayload(String badgeId, String badgestatus) {
         JSONObject payload = null;
         try {
             payload = new JSONObject();
@@ -351,20 +359,18 @@ public class MyProfileActivity extends  BaseActivity implements View.OnClickList
         return payload.toString();
     }
 
-    OnCardClickListner onCardClickListner= new OnCardClickListner() {
+    OnCardClickListner onCardClickListner = new OnCardClickListner() {
         @Override
         public void onCardClicked(ImageView view, int position) {
-            onOffImage=view;
+            onOffImage = view;
             if (mSelectedBadgesList.get(position).getActive() == 0) {
-//                view.setImageResource(R.drawable.badge_on);
                 mSelectedBadgesList.get(position).setActive(1);
 
-                String payload = genratePayload(mSelectedBadgesList.get(position).getBadgeId(),String.valueOf(mSelectedBadgesList.get(position).getActive()));
+                String payload = genratePayload(mSelectedBadgesList.get(position).getBadgeId(), String.valueOf(mSelectedBadgesList.get(position).getActive()));
                 try {
 
                     if (payload != null) {
-//                        Log.e("on payload","++"+payload.toString());
-                        mSelectedPostion=position;
+                        mSelectedPostion = position;
                         mSelectedBadgesList.get(position).setActive(1);
                         WebNotificationManager.registerResponseListener(responseListner);
                         WebServiceClient.onOffMyBadges(MyProfileActivity.this, payload, responseListner);
@@ -373,14 +379,12 @@ public class MyProfileActivity extends  BaseActivity implements View.OnClickList
                     e.printStackTrace();
                 }
             } else {
-//                view.setImageResource(R.drawable.badge_off);
                 mSelectedBadgesList.get(position).setActive(0);
-                String payload = genratePayload(mSelectedBadgesList.get(position).getBadgeId(),String.valueOf(mSelectedBadgesList.get(position).getActive()));
+                String payload = genratePayload(mSelectedBadgesList.get(position).getBadgeId(), String.valueOf(mSelectedBadgesList.get(position).getActive()));
                 try {
 
                     if (payload != null) {
-                        Log.e("off payload","++"+payload.toString());
-                        mSelectedPostion=position;
+                        mSelectedPostion = position;
                         mSelectedBadgesList.get(position).setActive(0);
                         WebNotificationManager.registerResponseListener(responseListner);
                         WebServiceClient.onOffMyBadges(MyProfileActivity.this, payload, responseListner);
@@ -393,31 +397,28 @@ public class MyProfileActivity extends  BaseActivity implements View.OnClickList
     };
 
 
-
-
     ResponseHandlerListener responseListner = new ResponseHandlerListener() {
         @Override
         public void onComplete(ResponsePojo result, WebServiceClient.WebError error, ProgressDialog mProgressDialog) {
 
             if (error == null) {
 
-                if(result.getSuccess().equalsIgnoreCase("true")){
+                if (result.getSuccess().equalsIgnoreCase("true")) {
 
 
-                    if(result.getActive()==1){
+                    if (result.getActive() == 1) {
                         onOffImage.setImageResource(R.drawable.badge_on);
                         updateRecord();
 
 
-                    }else {
+                    } else {
                         onOffImage.setImageResource(R.drawable.badge_off);
                         updateRecord();
                     }
 
 
-
-                }else {
-                    Utility.showToastMessageLong(MyProfileActivity.this,"Some error occurred.Please try later");
+                } else {
+                    Utility.showToastMessageLong(MyProfileActivity.this, "Some error occurred.Please try later");
                 }
             }
             // Always close the progressdialog
@@ -428,7 +429,7 @@ public class MyProfileActivity extends  BaseActivity implements View.OnClickList
         }
     };
 
-    public void updateRecord(){
+    public void updateRecord() {
         try {
             dbBadges = new BadgesDb(this);
             BadgesPojo selectedBadge;
@@ -445,7 +446,7 @@ public class MyProfileActivity extends  BaseActivity implements View.OnClickList
 
     OnCommentListItemClickListnerTest2 onCommentListItemClickListnerTest2 = new OnCommentListItemClickListnerTest2() {
         @Override
-        public void onCommentListItemClicked(final WallPostAdapter.RecyclerViewHolders holder, final int position, final String postId,String type) {
+        public void onCommentListItemClicked(final WallPostAdapter.RecyclerViewHolders holder, final int position, final String postId, String type) {
             {
                 try {
                     mHolder = holder;
@@ -503,16 +504,12 @@ public class MyProfileActivity extends  BaseActivity implements View.OnClickList
                             POSTION = position;
                             Bundle bundle = new Bundle();
                             bundle.putSerializable("POST", mMyWallPostList.get(position));
-//                            Utility.showToastMessageShort(getActivity(), " position is " + position);
-
                             Intent intent = new Intent(MyProfileActivity.this, CommentActivity.class);
                             intent.putExtras(bundle);
                             startActivity(intent);
 
                         }
                     });
-
-
 
 
 //                    mHolder.dropDownOptions.setOnClickListener(new View.OnClickListener() {
@@ -548,7 +545,7 @@ public class MyProfileActivity extends  BaseActivity implements View.OnClickList
                             try {
                                 POSTION = position;
                                 Utility.showToastMessageShort(MyProfileActivity.this, " position is " + position);
-                                    removePost(postId);
+                                removePost(postId);
 
                             } catch (Exception e) {
                                 e.printStackTrace();
@@ -569,8 +566,6 @@ public class MyProfileActivity extends  BaseActivity implements View.OnClickList
     *
     *
     * */
-
-
     public String genratePayload(String postId) {
         JSONObject payload = null;
         try {
@@ -621,14 +616,9 @@ public class MyProfileActivity extends  BaseActivity implements View.OnClickList
             try {
                 if (error == null) {
                     if (result.getSuccess().equalsIgnoreCase("true")) {
-
                         mHolder.mDeletePost.setVisibility(View.GONE);
                         mMyWallPostList.remove(POSTION);
-//                        mWallPostAdapter = new WallPostAdapter(getActivity(), mWallPostList, onListItemClickListner);
                         mWallPostAdapter.notifyDataSetChanged();
-//                      mRvWallPosts.setAdapter(mWallPostAdapter);
-
-
                         Utility.showToastMessageLong(MyProfileActivity.this, "post removed");
 
                     } else {
@@ -637,10 +627,7 @@ public class MyProfileActivity extends  BaseActivity implements View.OnClickList
 
                 } else {
 
-
                 }
-
-
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -654,17 +641,13 @@ public class MyProfileActivity extends  BaseActivity implements View.OnClickList
     };
 
 
-
-
     //
 // create payload to like unlike a post
-//
-//
+//Params:token, userId, type(like/dislike/neutral), post_id
 // */
     public String createPayload(String type, String postId) {
 
         JSONObject payload = null;
-//        token, userId, type(like/dislike/neutral), post_id
         try {
             payload = new JSONObject();
             payload.put(Constants.TOKEN, PreferenceHandler.readString(this, PreferenceHandler.PREF_KEY_USER_TOKEN, ""));
@@ -685,10 +668,7 @@ public class MyProfileActivity extends  BaseActivity implements View.OnClickList
     *
     * */
     public void likeUnlikePost(String type, String postId) {
-        //create payload with parameters is to be call here
-
         String payload = createPayload(type, postId);
-
         if (!payload.isEmpty()) {
             WebNotificationManager.registerResponseListener(responseHandlerLike);
             WebServiceClient.like_unlike_post(this, payload, responseHandlerLike);
@@ -702,8 +682,8 @@ public class MyProfileActivity extends  BaseActivity implements View.OnClickList
         @Override
         public void onComplete(ResponsePojo result, WebServiceClient.WebError error, ProgressDialog mProgressDialog) {
             WebNotificationManager.unRegisterResponseListener(responseHandlerLike);
-            try {
 
+            try {
                 if (error == null) {
 
                     if (result.getSuccess().equalsIgnoreCase("true")) {
@@ -712,30 +692,15 @@ public class MyProfileActivity extends  BaseActivity implements View.OnClickList
                             //action like
                             int num_like = mMyWallPostList.get(POSTION).getLike();
 
-                            int a =num_like;
-
-                            Log.d(LOG_TAG, " orinal count of like " + a);
-
+                            int a = num_like;
                             if (result.getLike() == 1) {
-//
                                 mMyWallPostList.get(POSTION).setAction(Constants.LIKE);
                                 mMyWallPostList.get(POSTION).setLike(a + 1);
-//
-                            } else if(result.getLike()==0) {
+                            } else if (result.getLike() == 0) {
                                 mMyWallPostList.get(POSTION).setAction(null);
                                 if (a > 0) {
-                                    mMyWallPostList.get(POSTION).setLike(a - 1 );
+                                    mMyWallPostList.get(POSTION).setLike(a - 1);
                                 }
-
-
-//                                mHolder.like.setCompoundDrawablesWithIntrinsicBounds(R.drawable.like_grey_icon_circle, 0, 0, 0);
-//                                mHolder.dislike.setCompoundDrawablesWithIntrinsicBounds(R.drawable.dislike_grey_icon_circle, 0, 0, 0);
-//                                mHolder.neutral.setCompoundDrawablesWithIntrinsicBounds(R.drawable.hand_grey_icon_circle, 0, 0, 0);
-//                                mMyWallPostList.get(POSTION).setAction(null);
-//                                mMyWallPostList.get(POSTION).setLike(a - 1 + "");
-//                                mHolder.like.setEnabled(true);
-//                                mHolder.dislike.setEnabled(true);
-//                                mHolder.neutral.setEnabled(true);
                             }
                             Log.d(LOG_TAG, " new count of like " + mHolder.like.getText());
 
@@ -746,32 +711,15 @@ public class MyProfileActivity extends  BaseActivity implements View.OnClickList
                             int b = num_dislike;
 
                             if (result.getDislike() == 1) {
-
-
                                 mMyWallPostList.get(POSTION).setAction(Constants.DISLIKE);
                                 mMyWallPostList.get(POSTION).setDislike(b + 1);
 
-//                                mHolder.dislike.setText(b + 1 + "");
-//                                mHolder.dislike.setCompoundDrawablesWithIntrinsicBounds(R.drawable.dislike_blue_icon_circle, 0, 0, 0);
-//                                mMyWallPostList.get(POSTION).setAction(Constants.DISLIKE);
-//                                mMyWallPostList.get(POSTION).setDislike(b + 1 + "");
-//                                mHolder.like.setEnabled(false);
-//                                mHolder.dislike.setEnabled(true);
-//                                mHolder.neutral.setEnabled(false);
-//                                mHolder.like.setCompoundDrawablesWithIntrinsicBounds(R.drawable.like_grey_icon_circle, 0, 0, 0);
-//                                mHolder.neutral.setCompoundDrawablesWithIntrinsicBounds(R.drawable.hand_grey_icon_circle, 0, 0, 0);
-                            } else if(result.getDislike()==0){
+                            } else if (result.getDislike() == 0) {
                                 mMyWallPostList.get(POSTION).setAction(null);
                                 if (b > 0) {
-                                    mMyWallPostList.get(POSTION).setDislike(b - 1 );
-                                } mHolder.like.setCompoundDrawablesWithIntrinsicBounds(R.drawable.like_grey_icon_circle, 0, 0, 0);
-//                                mHolder.dislike.setCompoundDrawablesWithIntrinsicBounds(R.drawable.dislike_grey_icon_circle, 0, 0, 0);
-//                                mHolder.neutral.setCompoundDrawablesWithIntrinsicBounds(R.drawable.hand_grey_icon_circle, 0, 0, 0);
-//                                mMyWallPostList.get(POSTION).setAction(null);
-//                                mMyWallPostList.get(POSTION).setDislike(b - 1 + "");
-//                                mHolder.like.setEnabled(true);
-//                                mHolder.dislike.setEnabled(true);
-//                                mHolder.neutral.setEnabled(true);
+                                    mMyWallPostList.get(POSTION).setDislike(b - 1);
+                                }
+                                mHolder.like.setCompoundDrawablesWithIntrinsicBounds(R.drawable.like_grey_icon_circle, 0, 0, 0);
 
                             }
 
@@ -785,64 +733,28 @@ public class MyProfileActivity extends  BaseActivity implements View.OnClickList
                             if (result.getNeutral() == 1) {
                                 mMyWallPostList.get(POSTION).setAction(Constants.NEUTRAL);
                                 mMyWallPostList.get(POSTION).setNeutral(c + 1);
-
-//                                mHolder.neutral.setText(c + 1 + "");
-//                                mHolder.neutral.setCompoundDrawablesWithIntrinsicBounds(R.drawable.hand_icon_blue_circle, 0, 0, 0);
-//                                mHolder.like.setCompoundDrawablesWithIntrinsicBounds(R.drawable.like_grey_icon_circle, 0, 0, 0);
-//                                mHolder.dislike.setCompoundDrawablesWithIntrinsicBounds(R.drawable.dislike_grey_icon_circle, 0, 0, 0);
-//                                mMyWallPostList.get(POSTION).setAction(Constants.NEUTRAL);
-//                                mMyWallPostList.get(POSTION).setNeutral(c + 1 + "");
-//                                mHolder.like.setEnabled(false);
-//                                mHolder.dislike.setEnabled(false);
-//                                mHolder.neutral.setEnabled(true);
-                            } else if(result.getNeutral()==0) {
+                            } else if (result.getNeutral() == 0) {
                                 mMyWallPostList.get(POSTION).setAction(null);
                                 if (c > 0) {
-                                    mMyWallPostList.get(POSTION).setNeutral(c - 1 );
+                                    mMyWallPostList.get(POSTION).setNeutral(c - 1);
                                 }
-//                                mHolder.like.setCompoundDrawablesWithIntrinsicBounds(R.drawable.like_grey_icon_circle, 0, 0, 0);
-//                                mHolder.dislike.setCompoundDrawablesWithIntrinsicBounds(R.drawable.dislike_grey_icon_circle, 0, 0, 0);
-//                                mHolder.neutral.setCompoundDrawablesWithIntrinsicBounds(R.drawable.hand_grey_icon_circle, 0, 0, 0);
-//                                mMyWallPostList.get(POSTION).setAction(null);
-//                                mMyWallPostList.get(POSTION).setNeutral(c - 1 + "");
-//                                mHolder.like.setEnabled(true);
-//                                mHolder.dislike.setEnabled(true);
-//                                mHolder.neutral.setEnabled(true);
-//                            }
                             }
                         }
                         mWallPostAdapter.notifyDataSetChanged();
-//                        mAdapter = null;
-//                        mAdapter = new WallPostAdapter(getActivity(), mMyWallPostList, onCommentListItemClickListnerTest2);
-//                        mRvWallPosts.setAdapter(mAdapter);
+
                     }
 
-
-                    // Refresh adapter
                     mWallPostAdapter.notifyDataSetChanged();
-//
-//                mWallPostAdapter = new WallPostAdapter(getActivity(), mMyWallPostList, onListItemClickListner);
-//                mWallPostAdapter.notifyDataSetChanged();
-//                mRvWallPosts.setAdapter(mWallPostAdapter);
-
-//                mRvWallPosts.setOnClickListener(new View.OnClickListener() {
-//                    @Override
-//                    public void onClick(View v) {
-//
-//                    }
-//                });
+                }
+//            finish the dialog
+                if (mProgressDialog != null && mProgressDialog.isShowing()) {
+                    mProgressDialog.dismiss();
                 }
             } catch (Exception e) {
                 e.printStackTrace();
             }
-//            finish the dialog
-            if (mProgressDialog != null && mProgressDialog.isShowing()) {
-                mProgressDialog.dismiss();
-            }
 
         }
+
     };
-
-
-
 }

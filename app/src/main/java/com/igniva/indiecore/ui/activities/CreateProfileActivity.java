@@ -163,19 +163,13 @@ public class CreateProfileActivity extends BaseActivity implements AsyncResult,V
             mImCameraProfilebtn=(ImageView) findViewById(R.id.iv_camerabtn_profile_pic);
             mImCameraProfilebtn.setOnClickListener(this);
 
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
 
-
-
-
+        try {
             Bundle bundle = getIntent().getExtras();
-//            String firstName = bundle.getString(Constants.FIRSTNAME);
-//            String lastName = bundle.getString(Constants.LASTNAME);
-//            String dateOfBirth = bundle.getString(Constants.DOB);
-//            String desc = bundle.getString(Constants.DESCRIPTION);
-//            String gender = bundle.getString(Constants.GENDER);
             index = bundle.getInt(Constants.INDEX);
-////            String profilePicUrl = bundle.getString(Constants.PROFILEPIC);
-////            String coverPic = bundle.getString(Constants.COVERPIC);
             numberLenth = bundle.getInt(Constants.NUMBER_LENGTH);
             mCountryCode = bundle.getString(Constants.COUNTRY_CODE);
         } catch (Exception e) {

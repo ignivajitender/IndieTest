@@ -11,6 +11,16 @@ public class UsersPojo {
     private String mobileNo;
     private ProfilePojo profile;
 
+    public CountryCodePojo getLocation() {
+        return location;
+    }
+
+    public void setLocation(CountryCodePojo location) {
+        this.location = location;
+    }
+
+    private CountryCodePojo location;
+
     public String getMobileNo() {
         return mobileNo;
     }

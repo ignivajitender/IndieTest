@@ -166,10 +166,15 @@
     <string name="clear_chats">Clear Chats</string>
 
 
-
     <!--my profile activity-->
-<string name="my_post">Posts</string>
+    <string name="my_post">Posts</string>
     <string name="my_profile">My Profile</string>
+
+
+    <!--user profile activity-->
+    <string name="user_profile">User Profile activity</string>
+    <string name="no_post_available">No post available</string>
+
 
     <!--recommend a badge-->
     <string name="reccomend_badge">Recommend a Badge</string>

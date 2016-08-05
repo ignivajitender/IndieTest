@@ -160,11 +160,8 @@ public class SyncContactsActivity extends BaseActivity implements View.OnClickLi
                     phnNumber = COUNTRY_PREFIX.trim() + phnNumber.trim();
                 }
                 mNumbersList.add(phnNumber);
-                Log.e(LOG_TAG, "*" + phnNumber + "*");
             }
 
-
-            Log.e("List of contacts", "" + mNumbersList.toString());
             phones.close();
         } catch (Exception e) {
             e.printStackTrace();
@@ -238,7 +235,6 @@ public class SyncContactsActivity extends BaseActivity implements View.OnClickLi
             dbContacts = new BadgesDb(this);
             ArrayList<UsersPojo> indiecoreUsers = new ArrayList<UsersPojo>();
             indiecoreUsers = mUSers;
-//        ArrayList<BadgesPojo> mTotalBadges=new ArrayList<BadgesPojo>();
             dbContacts.insertAllContacts(indiecoreUsers);
         } catch (Exception e) {
             e.printStackTrace();
@@ -251,10 +247,7 @@ public class SyncContactsActivity extends BaseActivity implements View.OnClickLi
         switch (v.getId()) {
             case R.id.tv_skip_step:
                 startActivity(new Intent(this, BadgesActivity.class));
-
                 break;
-
-
             case R.id.iv_syncbtn:
                 getAllContacts();
                 syncContacts();
@@ -268,7 +261,6 @@ public class SyncContactsActivity extends BaseActivity implements View.OnClickLi
             payloadJson = new JSONObject();
             payloadJson.put(Constants.TOKEN, PreferenceHandler.readString(SyncContactsActivity.this, PreferenceHandler.PREF_KEY_USER_TOKEN, ""));
             payloadJson.put(Constants.USERID, PreferenceHandler.readString(SyncContactsActivity.this, PreferenceHandler.PREF_KEY_USER_ID, ""));
-          //  String mNumber = mNumbersList.toString().substring(1, mNumbersList.toString().length() - 1);
             String mNumber = "";
             int sizeOfList=mNumbersList.size();
             for (int i=0;i<sizeOfList;i++){

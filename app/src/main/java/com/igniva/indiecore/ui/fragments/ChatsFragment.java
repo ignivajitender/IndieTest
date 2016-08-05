@@ -56,7 +56,7 @@ public class ChatsFragment extends BaseFragment {
     private WallPostAdapter mAdapter;
     private ImageView mDeletePost;
     private String ACTION = "";
-    private ArrayList<PostPojo> mWallPostList;
+    private ArrayList<PostPojo> mWallPostList= new ArrayList<PostPojo>();;
     private ArrayList<CommentPojo> mCommentList;
     private LinearLayoutManager mLlManager;
     private LinearLayoutManager mLlmanager;
@@ -64,21 +64,21 @@ public class ChatsFragment extends BaseFragment {
     private PostCommentAdapter mCommentAdapter;
     private RecyclerView mRvWallPosts;
     private RecyclerView mRvComment;
-    public static int POSTION = -1;
-    public String postID = "-1";
+
     private boolean deletePostVisible = false;
     public final static String BUSINESS = "business";
-    WallPostAdapter.RecyclerViewHolders mHolder;
+
     String PAGE = "1";
     String LIMIT = "10";
     String mBusinessId = "";
     int action = 0;
-
     //    (like/dislike/neutral), post_id
+    public static int POSTION = -1;
+    public String postID = "-1";
+    WallPostAdapter.RecyclerViewHolders mHolder;
     public static final String mActionTypeLike = "like";
     public static final String mActionTypeDislike = "dislike";
     public static final String mActionTypeNeutral = "neutral";
-    WallPostAdapter.RecyclerViewHolders mHolder2;
 
 
     @Nullable
@@ -92,7 +92,7 @@ public class ChatsFragment extends BaseFragment {
     @Override
     protected void setUpLayout() {
 
-        mWallPostList = new ArrayList<PostPojo>();
+
         try {
 
             mBusinessId = DashBoardActivity.businessId;
@@ -177,14 +177,15 @@ public class ChatsFragment extends BaseFragment {
     @Override
     public void onResume() {
         super.onResume();
-        viewAllPost();
+//        TODO
+//        if(mWallPostList.size()==0) {
+            viewAllPost();
+//        }else {
+//            mWallPostAdapter = null;
+//            mWallPostAdapter = new WallPostAdapter(getActivity(), mWallPostList, onCommentListItemClickListnerTest2,Constants.CHATFRAGMENT);
+//            mRvWallPosts.setAdapter(mWallPostAdapter);
+//        }
     }
-
-
-//    @Override
-//    protected void onClick(View v) {
-//
-//    }
 
 
     public View.OnClickListener onclickListner = new View.OnClickListener() {
@@ -221,37 +222,10 @@ public class ChatsFragment extends BaseFragment {
                 try {
                     mHolder = holder;
                     postID = postId;
-
-//                    switch (type){
-//                        case Constants.LIKE:
-//                            mHolder.like.performClick();
-//                            break;
-//                        case Constants.DISLIKE:
-//                            mHolder.dislike.performClick();
-//                            break;
-//                        case Constants.COMMENT:
-//                            mHolder.comment.performClick();
-//                            break;
-//                        case Constants.DELETE:
-//                            mHolder.mDeletePost.performClick();
-//                            break;
-//
-//
-//                    }
-
-
                     mHolder.like.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
                             POSTION = position;
-//                            Log.d(LOG_TAG, " my position is list is " + position);
-//                            Log.d(LOG_TAG, " global variable position is  " + POSTION);
-//                            Log.d(LOG_TAG, " my post id is  " + postId);
-//                            Log.d(LOG_TAG, " global variable post id is  " + postID);
-//                            Log.d(LOG_TAG, " from object  my position post id is  " + mWallPostList.get(position).getPostId());
-//                            Log.d(LOG_TAG, " from object global variable post id is  " + mWallPostList.get(POSTION).getPostId());
-
-//                            Utility.showToastMessageShort(getActivity(), " position is " + position);
                             action = 1;
                             likeUnlikePost(mActionTypeLike, mWallPostList.get(position).getPostId());
 
@@ -263,8 +237,6 @@ public class ChatsFragment extends BaseFragment {
                         public void onClick(View v) {
                             POSTION = position;
                             action = 2;
-//                            Utility.showToastMessageShort(getActivity(), " position is " + position);
-
                             likeUnlikePost(mActionTypeDislike, postId);
 
                         }
@@ -276,11 +248,7 @@ public class ChatsFragment extends BaseFragment {
                         public void onClick(View v) {
                             POSTION = position;
                             action = 3;
-//                            Utility.showToastMessageShort(getActivity(), " position is " + position);
-
                             likeUnlikePost(mActionTypeNeutral, postId);
-
-
                         }
                     });
 
@@ -290,8 +258,6 @@ public class ChatsFragment extends BaseFragment {
                             POSTION = position;
                             Bundle bundle = new Bundle();
                             bundle.putSerializable("POST", mWallPostList.get(position));
-//                            Utility.showToastMessageShort(getActivity(), " position is " + position);
-
                             Intent intent = new Intent(getActivity(), CommentActivity.class);
                             intent.putExtras(bundle);
                             startActivity(intent);
@@ -306,8 +272,6 @@ public class ChatsFragment extends BaseFragment {
                             POSTION = position;
                             Bundle bundle = new Bundle();
                             bundle.putSerializable("POST", mWallPostList.get(position));
-//                            Utility.showToastMessageShort(getActivity(), " position is " + position);
-
                             Intent intent = new Intent(getActivity(), CommentActivity.class);
                             intent.putExtras(bundle);
                             startActivity(intent);
@@ -326,7 +290,6 @@ public class ChatsFragment extends BaseFragment {
 
                             POSTION = position;
                             try {
-//                                Utility.showToastMessageShort(getActivity(), " position is " + position);
 
                                 if (deletePostVisible == false) {
 
@@ -382,277 +345,6 @@ public class ChatsFragment extends BaseFragment {
             }
         }
     };
-
-//    OnListItemClickListner onListItemClickListner = new OnListItemClickListner() {
-//        @Override
-//        public void onListItemClicked(final WallPostAdapter.RecyclerViewHolders holder,  int position, final String postId) {
-//
-//            mHolder = holder;
-////            POSTION=position;
-//
-//
-//
-//
-//            /*
-//            * action=1-like
-//            * action=2-dislike
-//            * action=3-neutral
-//            *
-//            * */
-//
-//            holder.like.setOnClickListener(new View.OnClickListener() {
-//                @Override
-//                public void onClick(View v) {
-//                    Utility.showToastMessageLong(getActivity()," position is "+POSTION);
-////                    action = 1;
-////                    likeUnlikePost(mActionTypeLike, postId);
-//                }
-//            });
-//
-//            holder.dislike.setOnClickListener(new View.OnClickListener() {
-//                @Override
-//                public void onClick(View v) {
-//                    action = 2;
-//
-//                    likeUnlikePost(mActionTypeDislike, postId);
-//                }
-//            });
-//
-//
-//            holder.neutral.setOnClickListener(new View.OnClickListener() {
-//                @Override
-//                public void onClick(View v) {
-//                    action = 3;
-//
-//                    likeUnlikePost(mActionTypeNeutral, postId);
-//
-//                }
-//            });
-////
-//            holder.comment.setOnClickListener(new View.OnClickListener() {
-//                @Override
-//                public void onClick(View v) {
-////                    holder.mCommentSection.setVisibility(View.VISIBLE);
-////                    mRvComment = holder.mRvComments;
-////                    mRvComment.setLayoutManager(mLlmanager);
-////                    holder.mCommentSection.setVisibility(View.VISIBLE);
-////                    viewAllComments(postId);
-//                    Bundle bundle = new Bundle();
-//                    bundle.putSerializable("POST", mWallPostList.get(POSTION));
-//
-//                    Intent intent = new Intent(getActivity(), CommentActivity.class);
-//                    intent.putExtras(bundle);
-//                    startActivity(intent);
-//
-//
-//                }
-//            });
-////
-//            holder.dropDownOptions.setOnClickListener(new View.OnClickListener() {
-//                @Override
-//                public void onClick(View v) {
-//                    try {
-//
-//                        if (deletePostVisible == false) {
-//                            holder.mDeletePost.setVisibility(View.VISIBLE);
-//                            if (mWallPostList.get(POSTION).getRelation().equalsIgnoreCase("self")) {
-//                                holder.mDeletePost.setImageResource(R.drawable.delete_icon);
-//                                ACTION = "DELETE";
-//                            } else {
-//                                holder.mDeletePost.setImageResource(R.drawable.report_abuse);
-//                                ACTION = "REPORT";
-//                            }
-//                            deletePostVisible = true;
-//                        } else {
-//                            holder.mDeletePost.setVisibility(View.GONE);
-//                            deletePostVisible = false;
-//
-//                        }
-//
-//                    } catch (Exception e) {
-//                        e.printStackTrace();
-//                    }
-//                }
-//            });
-//
-//
-//            holder.mDeletePost.setOnClickListener(new View.OnClickListener() {
-//                @Override
-//                public void onClick(View v) {
-//                    try {
-//
-//                        if (ACTION.equalsIgnoreCase("DELETE")) {
-//
-//                         removePost(postId);
-//
-//                        } else if (ACTION.equalsIgnoreCase("REPORT")) {
-//
-//                            flagPost(postId);
-//                        }
-//
-//                    } catch (Exception e) {
-//                        e.printStackTrace();
-//                    }
-//                }
-//            });
-//
-//
-////            holder.comment.setOnClickListener(new View.OnClickListener() {
-////                @Override
-////                public void onClick(View v) {
-////                    if (holder.mEtComment.getText().toString().isEmpty()) {
-////
-////                        Utility.showAlertDialog("Please write a comment", getActivity());
-////                    } else {
-////
-////                        postComment(postId, holder.mEtComment.getText().toString());
-////                    }
-////
-////                }
-////            });
-//
-//        }
-//    };
-
-
-    /*
-    * payload to write  a comment to a post
-    *
-    *
-    * */
-    public String genratePayload(String postId, String text) {
-        JSONObject payload = null;
-        try {
-            payload = new JSONObject();
-            payload.put(Constants.TOKEN, PreferenceHandler.readString(getActivity(), PreferenceHandler.PREF_KEY_USER_TOKEN, ""));
-            payload.put(Constants.USERID, PreferenceHandler.readString(getActivity(), PreferenceHandler.PREF_KEY_USER_ID, ""));
-            payload.put(Constants.POSTID, postId);
-            payload.put(Constants.TEXT, text);
-
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-        return payload.toString();
-    }
-
-    /*
-    * to post a comment for a businesspost
-    *
-    * */
-    public void postComment(String postId, String text) {
-
-        String payload = genratePayload(postId, text);
-        if (payload != null) {
-
-            WebNotificationManager.registerResponseListener(responseHandlerComment);
-            WebServiceClient.make_a_comment(getActivity(), payload, responseHandlerComment);
-        }
-
-    }
-
-    /*
-    *
-    * response of  a comment post
-    * */
-    ResponseHandlerListener responseHandlerComment = new ResponseHandlerListener() {
-        @Override
-        public void onComplete(ResponsePojo result, WebServiceClient.WebError error, ProgressDialog mProgressDialog) {
-
-            WebNotificationManager.unRegisterResponseListener(responseHandlerComment);
-
-            if (error == null) {
-
-                if (result.getSuccess().equalsIgnoreCase("true")) {
-
-                    Utility.showToastMessageLong(getActivity(), "comment posted");
-
-                } else {
-
-                }
-            } else {
-
-            }
-
-            if (mProgressDialog != null && mProgressDialog.isShowing()) {
-                mProgressDialog.dismiss();
-            }
-        }
-    };
-
-
-    /*
-    *
-    * payload to get comments of a post
-    *
-    * */
-    public String createPayload(String postId) {
-//        PARAMETER: token, userId, postId, page, limit
-        JSONObject payload = null;
-        try {
-            payload = new JSONObject();
-            payload.put(Constants.TOKEN, PreferenceHandler.readString(getActivity(), PreferenceHandler.PREF_KEY_USER_TOKEN, ""));
-            payload.put(Constants.USERID, PreferenceHandler.readString(getActivity(), PreferenceHandler.PREF_KEY_USER_ID, ""));
-            payload.put(Constants.POSTID, postId);
-            payload.put(Constants.PAGE, "1");
-            payload.put(Constants.LIMIT, "10");
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return payload.toString();
-    }
-
-
-    /*
-    *
-    * to get all comments of a post
-    *
-    * */
-    public void viewAllComments(String postId) {
-
-        try {
-            String payload = createPayload(postId);
-            if (payload != null) {
-
-                WebNotificationManager.registerResponseListener(responseHandle);
-                WebServiceClient.view_all_comments(getActivity(), payload, responseHandle);
-            }
-
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-
-    /*
-    *
-    * response all get comments
-    * */
-    ResponseHandlerListener responseHandle = new ResponseHandlerListener() {
-        @Override
-        public void onComplete(ResponsePojo result, WebServiceClient.WebError error, ProgressDialog mProgressDialog) {
-
-            try {
-                WebNotificationManager.unRegisterResponseListener(responseHandle);
-                if (error == null) {
-
-                    if (result.getSuccess().equalsIgnoreCase("true")) {
-                        mCommentList = new ArrayList<CommentPojo>();
-                        mCommentList.addAll(result.getCommentList());
-                        mCommentAdapter = null;
-                        mCommentAdapter = new PostCommentAdapter(getActivity(), mCommentList);
-                        mRvComment.setAdapter(mCommentAdapter);
-                    }
-                }
-
-                if (mProgressDialog != null && mProgressDialog.isShowing()) {
-                    mProgressDialog.dismiss();
-                }
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        }
-    };
-
 
     public void updateChatUi() {
 
@@ -864,31 +556,15 @@ public class ChatsFragment extends BaseFragment {
                         if (action == 1) {
                             //action like
                             int num_like = mWallPostList.get(POSTION).getLike();
-
                             int a =num_like;
-
-                            Log.d(LOG_TAG, " orinal count of like " + a);
-
                             if (result.getLike() == 1) {
-//
                                 mWallPostList.get(POSTION).setAction(Constants.LIKE);
                                 mWallPostList.get(POSTION).setLike(a + 1);
-//
                             } else if(result.getLike()==0) {
                                 mWallPostList.get(POSTION).setAction(null);
                                 if (a > 0) {
                                     mWallPostList.get(POSTION).setLike(a - 1 );
                                 }
-
-
-//                                mHolder.like.setCompoundDrawablesWithIntrinsicBounds(R.drawable.like_grey_icon_circle, 0, 0, 0);
-//                                mHolder.dislike.setCompoundDrawablesWithIntrinsicBounds(R.drawable.dislike_grey_icon_circle, 0, 0, 0);
-//                                mHolder.neutral.setCompoundDrawablesWithIntrinsicBounds(R.drawable.hand_grey_icon_circle, 0, 0, 0);
-//                                mWallPostList.get(POSTION).setAction(null);
-//                                mWallPostList.get(POSTION).setLike(a - 1 + "");
-//                                mHolder.like.setEnabled(true);
-//                                mHolder.dislike.setEnabled(true);
-//                                mHolder.neutral.setEnabled(true);
                             }
                             Log.d(LOG_TAG, " new count of like " + mHolder.like.getText());
 
@@ -904,27 +580,11 @@ public class ChatsFragment extends BaseFragment {
                                 mWallPostList.get(POSTION).setAction(Constants.DISLIKE);
                                 mWallPostList.get(POSTION).setDislike(b + 1);
 
-//                                mHolder.dislike.setText(b + 1 + "");
-//                                mHolder.dislike.setCompoundDrawablesWithIntrinsicBounds(R.drawable.dislike_blue_icon_circle, 0, 0, 0);
-//                                mWallPostList.get(POSTION).setAction(Constants.DISLIKE);
-//                                mWallPostList.get(POSTION).setDislike(b + 1 + "");
-//                                mHolder.like.setEnabled(false);
-//                                mHolder.dislike.setEnabled(true);
-//                                mHolder.neutral.setEnabled(false);
-//                                mHolder.like.setCompoundDrawablesWithIntrinsicBounds(R.drawable.like_grey_icon_circle, 0, 0, 0);
-//                                mHolder.neutral.setCompoundDrawablesWithIntrinsicBounds(R.drawable.hand_grey_icon_circle, 0, 0, 0);
                             } else if(result.getDislike()==0){
                                 mWallPostList.get(POSTION).setAction(null);
                                 if (b > 0) {
                                     mWallPostList.get(POSTION).setDislike(b - 1 );
                                 } mHolder.like.setCompoundDrawablesWithIntrinsicBounds(R.drawable.like_grey_icon_circle, 0, 0, 0);
-//                                mHolder.dislike.setCompoundDrawablesWithIntrinsicBounds(R.drawable.dislike_grey_icon_circle, 0, 0, 0);
-//                                mHolder.neutral.setCompoundDrawablesWithIntrinsicBounds(R.drawable.hand_grey_icon_circle, 0, 0, 0);
-//                                mWallPostList.get(POSTION).setAction(null);
-//                                mWallPostList.get(POSTION).setDislike(b - 1 + "");
-//                                mHolder.like.setEnabled(true);
-//                                mHolder.dislike.setEnabled(true);
-//                                mHolder.neutral.setEnabled(true);
 
                             }
 
@@ -938,52 +598,19 @@ public class ChatsFragment extends BaseFragment {
                             if (result.getNeutral() == 1) {
                                 mWallPostList.get(POSTION).setAction(Constants.NEUTRAL);
                                 mWallPostList.get(POSTION).setNeutral(c + 1);
-
-//                                mHolder.neutral.setText(c + 1 + "");
-//                                mHolder.neutral.setCompoundDrawablesWithIntrinsicBounds(R.drawable.hand_icon_blue_circle, 0, 0, 0);
-//                                mHolder.like.setCompoundDrawablesWithIntrinsicBounds(R.drawable.like_grey_icon_circle, 0, 0, 0);
-//                                mHolder.dislike.setCompoundDrawablesWithIntrinsicBounds(R.drawable.dislike_grey_icon_circle, 0, 0, 0);
-//                                mWallPostList.get(POSTION).setAction(Constants.NEUTRAL);
-//                                mWallPostList.get(POSTION).setNeutral(c + 1 + "");
-//                                mHolder.like.setEnabled(false);
-//                                mHolder.dislike.setEnabled(false);
-//                                mHolder.neutral.setEnabled(true);
                             } else if(result.getNeutral()==0) {
                                 mWallPostList.get(POSTION).setAction(null);
                                 if (c > 0) {
                                     mWallPostList.get(POSTION).setNeutral(c - 1 );
                                 }
-//                                mHolder.like.setCompoundDrawablesWithIntrinsicBounds(R.drawable.like_grey_icon_circle, 0, 0, 0);
-//                                mHolder.dislike.setCompoundDrawablesWithIntrinsicBounds(R.drawable.dislike_grey_icon_circle, 0, 0, 0);
-//                                mHolder.neutral.setCompoundDrawablesWithIntrinsicBounds(R.drawable.hand_grey_icon_circle, 0, 0, 0);
-//                                mWallPostList.get(POSTION).setAction(null);
-//                                mWallPostList.get(POSTION).setNeutral(c - 1 + "");
-//                                mHolder.like.setEnabled(true);
-//                                mHolder.dislike.setEnabled(true);
-//                                mHolder.neutral.setEnabled(true);
-//                            }
                             }
                         }
                         mWallPostAdapter.notifyDataSetChanged();
-//                        mAdapter = null;
-//                        mAdapter = new WallPostAdapter(getActivity(), mWallPostList, onCommentListItemClickListnerTest2);
-//                        mRvWallPosts.setAdapter(mAdapter);
                     }
 
 
                     // Refresh adapter
                     mWallPostAdapter.notifyDataSetChanged();
-//
-//                mWallPostAdapter = new WallPostAdapter(getActivity(), mWallPostList, onListItemClickListner);
-//                mWallPostAdapter.notifyDataSetChanged();
-//                mRvWallPosts.setAdapter(mWallPostAdapter);
-
-//                mRvWallPosts.setOnClickListener(new View.OnClickListener() {
-//                    @Override
-//                    public void onClick(View v) {
-//
-//                    }
-//                });
                 }
             } catch (Exception e) {
                 e.printStackTrace();
@@ -1149,12 +776,6 @@ public class ChatsFragment extends BaseFragment {
     };
 
 
-//    OnCommentListItemClickListner onCommentListItemClickListner= new OnCommentListItemClickListner() {
-//        @Override
-//        public void onCommentListItemClicked(PostCommentAdapter.RecyclerViewHolders view, int position, String commentId) {
-//
-//        }
-//    };
 
 
 }

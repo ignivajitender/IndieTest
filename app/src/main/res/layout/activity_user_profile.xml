@@ -2,6 +2,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/light_gray"
     android:orientation="vertical">
 
 
@@ -23,68 +24,48 @@
             android:layout_height="340dp">
 
             <ImageView
-                android:id="@+id/iv_cover_pic_activity_my_profile"
+                android:id="@+id/iv_cover_pic_activity_user_profile"
                 android:layout_width="match_parent"
-                android:layout_height="180dp"
+                android:layout_height="170dp"
                 android:scaleType="centerCrop"
                 android:src="@drawable/albino_icon" />
 
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="170dp"
-                android:layout_below="@+id/iv_cover_pic_activity_my_profile"
+                android:layout_height="1700dp"
+                android:layout_below="@+id/iv_cover_pic_activity_user_profile"
                 android:background="@color/light_gray"
                 android:orientation="vertical">
 
                 <TextView
-                    android:id="@+id/tv_desc_activity_my_profile"
+                    android:id="@+id/tv_desc_activity_user_profile"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_horizontal"
-                    android:layout_marginTop="30dp"
+                    android:layout_marginTop="40dp"
+                    android:layout_marginLeft="8dp"
+                    android:layout_marginRight="8dp"
                     android:maxHeight="70dp"
+                    android:textColor="@color/black"
+                    android:gravity="center"
                     android:textSize="10dp"
                     android:background="@color/white"
-                    android:padding="10dp" />
+                    android:padding="5dp" />
 
-                <LinearLayout
+
+                <TextView
+                    android:id="@+id/tv_posts_activity_user_profile"
                     android:layout_width="match_parent"
-                    android:layout_height="25dp"
-                    android:layout_marginLeft="50dp"
-                    android:layout_marginRight="50dp"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal"
                     android:layout_marginTop="10dp"
-                    android:orientation="horizontal"
-                    android:padding="2dp"
-                    android:visibility="visible">
+                    android:text="Posts"
+                    android:gravity="center"
+                    android:textColor="@color/black"
+                    android:textSize="20dp"
+                    android:background="@color/white"
+                    android:padding="5dp" />
 
-                    <TextView
-                        android:id="@+id/tv_posts_activity_my_profile"
-                        android:layout_width="0dp"
-                        android:layout_height="match_parent"
-                        android:layout_weight="1"
-                        android:background="@drawable/simple_border_line_style"
-                        android:gravity="center"
-                        android:paddingBottom="2dp"
-                        android:paddingTop="2dp"
-                        android:text="@string/my_post"
-                        android:textColor="@color/blue_clicked"
-                        android:textSize="10sp" />
-
-                    <TextView
-                        android:id="@+id/tv_badges_activity_my_profile"
-                        android:layout_width="0dp"
-                        android:layout_height="match_parent"
-                        android:layout_marginLeft="-2dp"
-                        android:layout_weight="1"
-                        android:background="@drawable/simple_border_line_style"
-                        android:gravity="center"
-                        android:paddingBottom="2dp"
-                        android:paddingTop="2dp"
-                        android:text="@string/my_badge"
-                        android:textColor="@color/blue_clicked"
-                        android:textSize="10sp" />
-
-                </LinearLayout>
 
 
             </LinearLayout>
@@ -96,11 +77,11 @@
                 android:orientation="horizontal">
 
                 <com.igniva.indiecore.utils.CircularImageView
-                    android:id="@+id/iv_user_img_activity_my_profile"
+                    android:id="@+id/iv_user_img_activity_user_profile"
                     android:layout_width="70dp"
                     android:layout_height="70dp"
                     android:layout_marginLeft="20dp"
-                    android:src="#000000" />
+                    android:src="@drawable/default_user" />
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -109,14 +90,14 @@
                     android:orientation="vertical">
 
                     <TextView
-                        android:id="@+id/tv_user_name_activity_my_profile"
+                        android:id="@+id/tv_user_name_activity_user_profile"
                         android:layout_width="wrap_content"
                         android:layout_height="0dp"
                         android:layout_weight="1"
                         android:gravity="start"
                         android:text="Business Name"
                         android:textColor="@color/white"
-                        android:textSize="13dp" />
+                        android:textSize="20sp" />
 
                     <LinearLayout
                         android:layout_width="match_parent"
@@ -126,7 +107,7 @@
                         android:orientation="horizontal">
 
                         <TextView
-                            android:id="@+id/tv_user_address_activity_my_profile"
+                            android:id="@+id/tv_user_address_activity_user_profile"
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_gravity="center"
@@ -134,10 +115,10 @@
                             android:ellipsize="end"
                             android:text="Business address"
                             android:textColor="@color/white"
-                            android:textSize="9dp" />
+                            android:textSize="12sp" />
 
                         <ImageView
-                            android:id="@+id/iv_dropdown_activity_my_profile"
+                            android:id="@+id/iv_dropdown_activity_user_profile"
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_gravity="center"
@@ -147,8 +128,6 @@
                             android:paddingLeft="10dp"
                             android:paddingRight="10dp"
                             android:src="@drawable/dropdown_icon" />
-
-
                     </LinearLayout>
                 </LinearLayout>
             </LinearLayout>
@@ -159,17 +138,29 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_marginLeft="10dp"
+            android:orientation="vertical"
             android:layout_marginRight="10dp"
             android:layout_marginTop="-30dp">
 
             <android.support.v7.widget.RecyclerView
-                android:id="@+id/rv_posts_activity_my_profile"
+                android:id="@+id/rv_posts_activity_user_profile"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="5dp"
                 android:layout_marginRight="5dp"
                 android:layout_marginTop="2dp"></android.support.v7.widget.RecyclerView>
 
+
+            <TextView
+                android:id="@+id/tv_no_post_available"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                 android:textSize="20dp"
+                android:visibility="gone"
+                android:layout_gravity="center"
+                android:gravity="center"
+                android:text="@string/no_post_available"
+                android:textColor="@color/black"/>
 
         </LinearLayout>
 

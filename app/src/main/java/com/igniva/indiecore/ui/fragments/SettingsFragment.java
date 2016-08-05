@@ -60,9 +60,6 @@ public class SettingsFragment extends BaseFragment {
             prepareListData();
 
             expListView.setIndicatorBounds(width - GetPixelFromDips(50), width - GetPixelFromDips(10));
-//
-
-
             listAdapter = new ExpandableListAdapter(getActivity(), listDataHeader, listDataChild);
 
             // setting list adapter

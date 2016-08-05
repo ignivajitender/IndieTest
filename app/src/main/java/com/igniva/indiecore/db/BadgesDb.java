@@ -7,7 +7,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
 import com.igniva.indiecore.model.BadgesPojo;
-import com.igniva.indiecore.model.ContactPojo;
+import com.igniva.indiecore.model.CountryCodePojo;
 import com.igniva.indiecore.model.ProfilePojo;
 import com.igniva.indiecore.model.UsersPojo;
 import com.igniva.indiecore.utils.Log;
@@ -63,7 +63,9 @@ public class BadgesDb extends SQLiteOpenHelper {
     public static final String CONTACT_IMG = "contact_img";
     public static final String TYPE = "type";
     public static final String BADGE_COUNT = "badge_count";
-    public static final String DESCERIPTION = "description";
+    public static final String DESCRIPTION = "description";
+    public static final String USER_ID="userId";
+    public static final String COUNTRY_CODE="countryCode";
 
 //    TABLE END USERS
 
@@ -74,8 +76,8 @@ public class BadgesDb extends SQLiteOpenHelper {
 //           type=1 indiecore user
         return "CREATE TABLE IF NOT EXISTS " + TABLE_USERS
                 + "(" + MOBILE_NO + " TEXT PRIMARY KEY," +
-                FIRST_NAME + " TEXT," + LAST_NAME + " TEXT," + DESCERIPTION + " TEXT," + CONTACT_IMG + " TEXT,"
-                + BADGE_COUNT + " INTEGER," + TYPE + " INTEGER" + ")";
+                FIRST_NAME + " TEXT," + LAST_NAME + " TEXT," + DESCRIPTION + " TEXT," + CONTACT_IMG + " TEXT,"
+                + BADGE_COUNT + " INTEGER," + TYPE + " INTEGER," + USER_ID + " TEXT," + COUNTRY_CODE + " TEXT" + ")";
     }
 
 
@@ -125,9 +127,11 @@ public class BadgesDb extends SQLiteOpenHelper {
             values.put(FIRST_NAME, users.getProfile().getFirstName());
             values.put(LAST_NAME, users.getProfile().getLastName());
             values.put(CONTACT_IMG, users.getProfile().getProfilePic());
-            values.put(DESCERIPTION, users.getProfile().getDesc());
+            values.put(DESCRIPTION, users.getProfile().getDesc());
             values.put(BADGE_COUNT, 12);
             values.put(TYPE, 1);
+            values.put(USER_ID,users.getUserId());
+            values.put(COUNTRY_CODE,users.getLocation().getCountryCode());
             db.insertWithOnConflict(TABLE_USERS, null, values, SQLiteDatabase.CONFLICT_REPLACE);
 
         } catch (Exception e) {
@@ -212,22 +216,47 @@ public class BadgesDb extends SQLiteOpenHelper {
         return myBadgesList;
     }
 
-    public ArrayList<ProfilePojo> retrieveSavedUsersList() {
+    public ArrayList<UsersPojo> retrieveSavedUsersList() {
         SQLiteDatabase db = getReadableDatabase();
         Cursor cursor = db.query(TABLE_USERS, null, null, null, null, null, null);
-        ArrayList<ProfilePojo> savedUsersList = new ArrayList<ProfilePojo>();
-        ProfilePojo usersPojoObj;
+        ArrayList<UsersPojo> savedUsersList = new ArrayList<UsersPojo>();
+        UsersPojo mUsersPojoObj;
+        ProfilePojo mUserProfileObj;
+        CountryCodePojo mCountryCodeObj;
+
+
+//        cursor.moveToNext();
+//        usersPojoObj = new UsersPojo();
+//        usersPojoObj.setFirstName(cursor.getString(1));
+//        usersPojoObj.setDesc(cursor.getString(3));
+//        usersPojoObj.setProfilePic(cursor.getString(4));
+//        savedUsersList.add(usersPojoObj);
 
         try {
             if (cursor.getCount() > 0) {
                 for (int i = 0; i < cursor.getCount(); i++) {
 
                     cursor.moveToNext();
-                    usersPojoObj = new ProfilePojo();
-                    usersPojoObj.setFirstName(cursor.getString(1));
-                    usersPojoObj.setDesc(cursor.getString(3));
-                    usersPojoObj.setProfilePic(cursor.getString(4));
-                    savedUsersList.add(usersPojoObj);
+                    mUserProfileObj= new ProfilePojo();
+                    mUsersPojoObj = new UsersPojo();
+                    mCountryCodeObj= new CountryCodePojo();
+
+                    mUserProfileObj.setFirstName(cursor.getString(1));
+                    mUsersPojoObj.setProfile(mUserProfileObj);
+
+                    mUserProfileObj.setDesc(cursor.getString(3));
+                    mUsersPojoObj.setProfile(mUserProfileObj);
+
+
+                    mUserProfileObj.setProfilePic(cursor.getString(4));
+                    mUsersPojoObj.setProfile(mUserProfileObj);
+
+                    mUsersPojoObj.setUserId(cursor.getString(7));
+
+                    mCountryCodeObj.setCountryCode(cursor.getString(8));
+                    mUsersPojoObj.setLocation(mCountryCodeObj);
+
+                    savedUsersList.add(mUsersPojoObj);
                 }
             }
 
