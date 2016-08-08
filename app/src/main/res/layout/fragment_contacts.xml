@@ -46,11 +46,13 @@
     </LinearLayout>
 
     <LinearLayout
+        android:id="@+id/ll_no_contact_txt"
         android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="6"
+        android:layout_height="match_parent"
         android:orientation="vertical"
         android:gravity="center"
+        android:visibility="gone"
+        android:layout_gravity="center_vertical"
         android:layout_marginLeft="5dp"
         android:layout_marginRight="5dp"
         android:layout_marginTop="10dp"
@@ -60,7 +62,6 @@
             android:id="@+id/tv_coming_soon"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:visibility="visible"
             android:text="Coming soon"
             android:layout_marginRight="10dp"
             android:layout_marginLeft="10dp"
@@ -73,7 +74,6 @@
             android:id="@+id/tv_coming_soon_two"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:visibility="gone"
             android:text="Coming soon"
             android:layout_marginRight="10dp"
             android:gravity="center"
@@ -81,6 +81,8 @@
             android:textColor="@color/light_black"
             android:textSize="20sp"
             android:layout_gravity="center"/>
+    </LinearLayout>
+
         <android.support.v7.widget.RecyclerView
             android:layout_marginTop="7dp"
             android:id="@+id/rv_users"
@@ -89,5 +91,5 @@
         </android.support.v7.widget.RecyclerView>
 
 
-    </LinearLayout>
+
 </LinearLayout>

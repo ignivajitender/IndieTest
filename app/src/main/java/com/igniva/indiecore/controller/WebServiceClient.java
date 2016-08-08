@@ -67,6 +67,10 @@ public class WebServiceClient {
     public static  final String HTTP_LIKE_UNLIKE_REPLY=HTTP_PROTOCOL+HTTP_HOST_IP+"post/comment/reply/action";
     public static  final String HTTP_REMOVE_REPLY =HTTP_PROTOCOL+HTTP_HOST_IP+"post/comment/reply/remove";
     public static  final  String HTTP_VIEW_USER_PROFILE=HTTP_PROTOCOL+HTTP_HOST_IP+"user/profile/";
+    public static  final  String HTTP_SET_FAVOURITE=HTTP_PROTOCOL+HTTP_HOST_IP+"favourite/control";
+    public static  final  String HTTP_FETCH_FAVOURITE=HTTP_PROTOCOL+HTTP_HOST_IP+"favourite/list";
+    public static  final  String HTTP_BLOCK_USER=HTTP_PROTOCOL+HTTP_HOST_IP+"block/control";
+    public static  final  String HTTP_BLOCKED_USERLIST=HTTP_PROTOCOL+HTTP_HOST_IP+"block/list";
 
 
 
@@ -283,8 +287,30 @@ public class WebServiceClient {
         checkNetworkState(url,payload,method,context);
     }
 
-
-
+    public static void set_favourite(final Context context,String payload,ResponseHandlerListener responseHandlerListener){
+        url= HTTP_SET_FAVOURITE;
+        method=HttpMethod.HTTP_POST;
+        mResponseHandlerListener=responseHandlerListener;
+        checkNetworkState(url,payload,method,context);
+    }
+    public static void get_favourite_list(final Context context,String payload,ResponseHandlerListener responseHandlerListener){
+        url= HTTP_FETCH_FAVOURITE;
+        method=HttpMethod.HTTP_POST;
+        mResponseHandlerListener=responseHandlerListener;
+        checkNetworkState(url,payload,method,context);
+    }
+    public static void block_a_user(final Context context,String payload,ResponseHandlerListener responseHandlerListener){
+        url= HTTP_BLOCK_USER;
+        method=HttpMethod.HTTP_POST;
+        mResponseHandlerListener=responseHandlerListener;
+        checkNetworkState(url,payload,method,context);
+    }
+    public static void get_blocked_userlist(final Context context,String payload,ResponseHandlerListener responseHandlerListener){
+        url= HTTP_BLOCKED_USERLIST;
+        method=HttpMethod.HTTP_POST;
+        mResponseHandlerListener=responseHandlerListener;
+        checkNetworkState(url,payload,method,context);
+    }
     /**
      * Check Available Network connection and make http call only if network is
      * available else show no network available

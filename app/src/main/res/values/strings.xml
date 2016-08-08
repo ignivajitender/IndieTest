@@ -134,6 +134,8 @@
     <string name="no_contacts_one">No contacts on indiecore</string>
     <string name="no_contacts_two">Try syncing contacts in setting tab</string>
 
+    <string name="no_favourite_one">No user set as favourite</string>
+    <string name="no_favourite_two">You can set user favourite while viewing his profile.</string>
 
     <!--Business_detail-->
     <string name="about">About</string>

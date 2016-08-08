@@ -42,35 +42,31 @@ import java.util.ArrayList;
 public class MyProfileActivity extends BaseActivity implements View.OnClickListener {
 
     Toolbar mToolbar;
+    //    (like/dislike/neutral), post_id
+    public static final String mActionTypeLike = "like";
+    public static final String mActionTypeDislike = "dislike";
+    public static final String mActionTypeNeutral = "neutral";
     private ImageView mCoverImage, mUserImage, mDropDown;
+    private TextView mUserName, mUserAddress, mTvDesc, mTvPosts, mTvBadges, mTitle;
+    private BadgesDb db_badges;
+    private BadgesDb dbBadges;
+    private ArrayList<PostPojo> mMyWallPostList = new ArrayList<PostPojo>();
+    private WallPostAdapter mWallPostAdapter;
+    private ImageView onOffImage;
     private RecyclerView mRvMyWallPosts;
     LinearLayoutManager mLlManager;
     GridLayoutManager mGlManager;
-    private BadgesDb db_badges;
-    private String ACTION = "";
-    private TextView mUserName, mUserAddress, mTvDesc, mTvPosts, mTvBadges, mTitle;
     ArrayList<BadgesPojo> mSelectedBadgesList = new ArrayList<BadgesPojo>();
     MyBadgesAdapter mMyBadgeAdapter;
-    private boolean deletePostVisible = false;
-    private RecyclerView mRvComment;
-    public static int POSTION = -1;
-    int mSelectedPostion = -1;
-    private ImageView mDeletePost;
-    private BadgesDb dbBadges;
-    private ImageView onOffImage;
+    public static int POSITION = -1;
+    int mSelectedPosition = -1;
     WallPostAdapter.RecyclerViewHolders mHolder;
     public String postID = "-1";
     private int action = 0;
     String LOG_TAG = "MyProfileActivity";
     public static int PAGE = 1, LIMIT = 20;
     String PROFILE = "profile";
-    private ArrayList<PostPojo> mMyWallPostList = new ArrayList<PostPojo>();
-    ;
-    private WallPostAdapter mWallPostAdapter;
-    //    (like/dislike/neutral), post_id
-    public static final String mActionTypeLike = "like";
-    public static final String mActionTypeDislike = "dislike";
-    public static final String mActionTypeNeutral = "neutral";
+
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -317,15 +313,6 @@ public class MyProfileActivity extends BaseActivity implements View.OnClickListe
         }
     };
 
-//
-//     OnCommentListItemClickListnerTest2 onCommentListItemClickListnerTest2= new OnCommentListItemClickListnerTest2() {
-//         @Override
-//         public void onCommentListItemClicked(WallPostAdapter.RecyclerViewHolders view, int position, String postId, String type) {
-//
-//         }
-//     };
-
-
     public void getMyBadges() {
         try {
             db_badges = new BadgesDb(this);
@@ -370,7 +357,7 @@ public class MyProfileActivity extends BaseActivity implements View.OnClickListe
                 try {
 
                     if (payload != null) {
-                        mSelectedPostion = position;
+                        mSelectedPosition = position;
                         mSelectedBadgesList.get(position).setActive(1);
                         WebNotificationManager.registerResponseListener(responseListner);
                         WebServiceClient.onOffMyBadges(MyProfileActivity.this, payload, responseListner);
@@ -384,7 +371,7 @@ public class MyProfileActivity extends BaseActivity implements View.OnClickListe
                 try {
 
                     if (payload != null) {
-                        mSelectedPostion = position;
+                        mSelectedPosition = position;
                         mSelectedBadgesList.get(position).setActive(0);
                         WebNotificationManager.registerResponseListener(responseListner);
                         WebServiceClient.onOffMyBadges(MyProfileActivity.this, payload, responseListner);
@@ -418,7 +405,7 @@ public class MyProfileActivity extends BaseActivity implements View.OnClickListe
 
 
                 } else {
-                    Utility.showToastMessageLong(MyProfileActivity.this, "Some error occurred.Please try later");
+                    Utility.showToastMessageLong(MyProfileActivity.this,getResources().getString(R.string.some_unknown_error));
                 }
             }
             // Always close the progressdialog
@@ -434,7 +421,7 @@ public class MyProfileActivity extends BaseActivity implements View.OnClickListe
             dbBadges = new BadgesDb(this);
             BadgesPojo selectedBadge;
 
-            selectedBadge = mSelectedBadgesList.get(mSelectedPostion);
+            selectedBadge = mSelectedBadgesList.get(mSelectedPosition);
             selectedBadge.getName();
             selectedBadge.getBadgeId();
 
@@ -455,7 +442,7 @@ public class MyProfileActivity extends BaseActivity implements View.OnClickListe
                     mHolder.like.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
-                            POSTION = position;
+                            POSITION = position;
                             action = 1;
                             likeUnlikePost(mActionTypeLike, mMyWallPostList.get(position).getPostId());
 
@@ -465,7 +452,7 @@ public class MyProfileActivity extends BaseActivity implements View.OnClickListe
                     mHolder.dislike.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
-                            POSTION = position;
+                            POSITION = position;
                             action = 2;
                             likeUnlikePost(mActionTypeDislike, postId);
 
@@ -476,7 +463,7 @@ public class MyProfileActivity extends BaseActivity implements View.OnClickListe
                     mHolder.neutral.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
-                            POSTION = position;
+                            POSITION = position;
                             action = 3;
                             likeUnlikePost(mActionTypeNeutral, postId);
 
@@ -487,7 +474,7 @@ public class MyProfileActivity extends BaseActivity implements View.OnClickListe
                     mHolder.comment.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
-                            POSTION = position;
+                            POSITION = position;
                             Bundle bundle = new Bundle();
                             bundle.putSerializable("POST", mMyWallPostList.get(position));
                             Intent intent = new Intent(MyProfileActivity.this, CommentActivity.class);
@@ -501,7 +488,7 @@ public class MyProfileActivity extends BaseActivity implements View.OnClickListe
                     mHolder.mMediaPost.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
-                            POSTION = position;
+                            POSITION = position;
                             Bundle bundle = new Bundle();
                             bundle.putSerializable("POST", mMyWallPostList.get(position));
                             Intent intent = new Intent(MyProfileActivity.this, CommentActivity.class);
@@ -518,7 +505,7 @@ public class MyProfileActivity extends BaseActivity implements View.OnClickListe
 //
 //                            mDeletePost = (ImageView) v.findViewById(R.id.iv_delete_post);
 //
-//                            POSTION = position;
+//                            POSITION = position;
 //                            try {
 ////                                Utility.showToastMessageShort(getActivity(), " position is " + position);
 //
@@ -543,7 +530,7 @@ public class MyProfileActivity extends BaseActivity implements View.OnClickListe
                         @Override
                         public void onClick(View v) {
                             try {
-                                POSTION = position;
+                                POSITION = position;
                                 Utility.showToastMessageShort(MyProfileActivity.this, " position is " + position);
                                 removePost(postId);
 
@@ -617,7 +604,7 @@ public class MyProfileActivity extends BaseActivity implements View.OnClickListe
                 if (error == null) {
                     if (result.getSuccess().equalsIgnoreCase("true")) {
                         mHolder.mDeletePost.setVisibility(View.GONE);
-                        mMyWallPostList.remove(POSTION);
+                        mMyWallPostList.remove(POSITION);
                         mWallPostAdapter.notifyDataSetChanged();
                         Utility.showToastMessageLong(MyProfileActivity.this, "post removed");
 
@@ -690,16 +677,16 @@ public class MyProfileActivity extends BaseActivity implements View.OnClickListe
 
                         if (action == 1) {
                             //action like
-                            int num_like = mMyWallPostList.get(POSTION).getLike();
+                            int num_like = mMyWallPostList.get(POSITION).getLike();
 
                             int a = num_like;
                             if (result.getLike() == 1) {
-                                mMyWallPostList.get(POSTION).setAction(Constants.LIKE);
-                                mMyWallPostList.get(POSTION).setLike(a + 1);
+                                mMyWallPostList.get(POSITION).setAction(Constants.LIKE);
+                                mMyWallPostList.get(POSITION).setLike(a + 1);
                             } else if (result.getLike() == 0) {
-                                mMyWallPostList.get(POSTION).setAction(null);
+                                mMyWallPostList.get(POSITION).setAction(null);
                                 if (a > 0) {
-                                    mMyWallPostList.get(POSTION).setLike(a - 1);
+                                    mMyWallPostList.get(POSITION).setLike(a - 1);
                                 }
                             }
                             Log.d(LOG_TAG, " new count of like " + mHolder.like.getText());
@@ -707,17 +694,17 @@ public class MyProfileActivity extends BaseActivity implements View.OnClickListe
 
                         } else if (action == 2) {
                             //action dislike
-                            int num_dislike = mMyWallPostList.get(POSTION).getDislike();
+                            int num_dislike = mMyWallPostList.get(POSITION).getDislike();
                             int b = num_dislike;
 
                             if (result.getDislike() == 1) {
-                                mMyWallPostList.get(POSTION).setAction(Constants.DISLIKE);
-                                mMyWallPostList.get(POSTION).setDislike(b + 1);
+                                mMyWallPostList.get(POSITION).setAction(Constants.DISLIKE);
+                                mMyWallPostList.get(POSITION).setDislike(b + 1);
 
                             } else if (result.getDislike() == 0) {
-                                mMyWallPostList.get(POSTION).setAction(null);
+                                mMyWallPostList.get(POSITION).setAction(null);
                                 if (b > 0) {
-                                    mMyWallPostList.get(POSTION).setDislike(b - 1);
+                                    mMyWallPostList.get(POSITION).setDislike(b - 1);
                                 }
                                 mHolder.like.setCompoundDrawablesWithIntrinsicBounds(R.drawable.like_grey_icon_circle, 0, 0, 0);
 
@@ -727,16 +714,16 @@ public class MyProfileActivity extends BaseActivity implements View.OnClickListe
                         } else if (action == 3) {
                             //    action neutral
 
-                            int num_neutral = mMyWallPostList.get(POSTION).getNeutral();
+                            int num_neutral = mMyWallPostList.get(POSITION).getNeutral();
                             int c = num_neutral;
 
                             if (result.getNeutral() == 1) {
-                                mMyWallPostList.get(POSTION).setAction(Constants.NEUTRAL);
-                                mMyWallPostList.get(POSTION).setNeutral(c + 1);
+                                mMyWallPostList.get(POSITION).setAction(Constants.NEUTRAL);
+                                mMyWallPostList.get(POSITION).setNeutral(c + 1);
                             } else if (result.getNeutral() == 0) {
-                                mMyWallPostList.get(POSTION).setAction(null);
+                                mMyWallPostList.get(POSITION).setAction(null);
                                 if (c > 0) {
-                                    mMyWallPostList.get(POSTION).setNeutral(c - 1);
+                                    mMyWallPostList.get(POSITION).setNeutral(c - 1);
                                 }
                             }
                         }

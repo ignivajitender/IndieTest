@@ -3,6 +3,8 @@ package com.igniva.indiecore.ui.adapters;
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.Intent;
+import android.os.Bundle;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -20,6 +22,7 @@ import com.igniva.indiecore.controller.WebNotificationManager;
 import com.igniva.indiecore.controller.WebServiceClient;
 import com.igniva.indiecore.model.PostPojo;
 import com.igniva.indiecore.model.ResponsePojo;
+import com.igniva.indiecore.ui.activities.UserProfileActivity;
 import com.igniva.indiecore.utils.Constants;
 import com.igniva.indiecore.utils.PreferenceHandler;
 import com.igniva.indiecore.utils.Utility;
@@ -36,8 +39,6 @@ public class WallPostAdapter extends RecyclerView.Adapter<WallPostAdapter.Recycl
     private ArrayList<PostPojo> wallItemsList;
     private Context mContext;
     public ImageView mDeletePostOld;
-    ImageView mDelete;
-    WallPostAdapter mAdapter;
     private boolean deletePostVisible = false;
     private String ACTION = "";
     private int POSTION = -1;
@@ -64,11 +65,6 @@ public class WallPostAdapter extends RecyclerView.Adapter<WallPostAdapter.Recycl
 
         View layoutView = LayoutInflater.from(parent.getContext()).inflate(R.layout.wall_post_items, parent, false);
         return new RecyclerViewHolders(layoutView);
-//        return rcv;
-
-//        View layoutView = LayoutInflater.from(parent.getContext()).inflate(R.layout.wall_post_items,null);
-//        RecyclerViewHolders rcv = new RecyclerViewHolders(layoutView);
-//        return rcv;
     }
 
 
@@ -168,22 +164,18 @@ public class WallPostAdapter extends RecyclerView.Adapter<WallPostAdapter.Recycl
             holder.like.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    //Utility.showToastMessageLong(((Activity) mContext)," position is "+position);
                     onCommentListItemClickListnerTest2l.onCommentListItemClicked(holder, position, postPojo.getPostId(), Constants.LIKE);
-//                    mOnListItemClickListner.onListItemClicked(holder, position, postPojo.getPostId());
                 }
             });
             holder.dislike.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-//                    Utility.showToastMessageLong(((Activity) mContext)," position is "+position);
                     onCommentListItemClickListnerTest2l.onCommentListItemClicked(holder, position, postPojo.getPostId(), Constants.DISLIKE);
                 }
             });
             holder.neutral.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-//                    Utility.showToastMessageLong(((Activity) mContext)," position is "+position);
                     onCommentListItemClickListnerTest2l.onCommentListItemClicked(holder, position, postPojo.getPostId(), Constants.NEUTRAL);
                 }
             });
@@ -208,22 +200,32 @@ public class WallPostAdapter extends RecyclerView.Adapter<WallPostAdapter.Recycl
             holder.mDeletePost.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    onCommentListItemClickListnerTest2l.onCommentListItemClicked(holder, position, postPojo.getPostId(), Constants.DELETE);
-//                    mDelete=holder.mDeletePost;
-//                    try {
-//
-//                        if (ACTION.equalsIgnoreCase("DELETE")) {
-//
-//                            removePost(postPojo.getPostId());
-//
-//                        } else if (ACTION.equalsIgnoreCase("REPORT")) {
-//
-//                            flagPost(postPojo.getPostId());
-//                        }
-//
-//                    } catch (Exception e) {
-//                        e.printStackTrace();
-//                    }
+                    onCommentListItemClickListnerTest2l.onCommentListItemClicked(holder, position, postPojo.getPostId(), ACTION);
+
+                }
+            });
+
+
+            if(ACTIVITYNAME.equals(Constants.USERPROFILEACTIVITY)){
+                holder.mUserIcon.setEnabled(false);
+            }
+
+            holder.mUserIcon.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+
+                    try {
+                            Bundle bundle = new Bundle();
+                            Intent intent = new Intent(mContext, UserProfileActivity.class);
+                            bundle.putString(Constants.USERID, postPojo.getUserId());
+                            bundle.putString(Constants.BUSINESS_ID, postPojo.getRoomId());
+                            bundle.putInt(Constants.INDEX, 11);
+                            intent.putExtras(bundle);
+                            mContext.startActivity(intent);
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+
 
                 }
             });
@@ -233,11 +235,7 @@ public class WallPostAdapter extends RecyclerView.Adapter<WallPostAdapter.Recycl
                 @Override
                 public void onClick(View v) {
                     postPojo = wallItemsList.get(position);
-                    //    onCommentListItemClickListnerTest2l.onCommentListItemClicked(holder, position, postPojo.getPostId());
                     try {
-
-//                        Utility.showToastMessageShort((Activity) mContext," position "+position+" rel:"+wallItemsList.get(position).getRelation());
-
                         if (deletePostVisible == false) {
                             // Remove previously opened view
                             try {
@@ -247,18 +245,20 @@ public class WallPostAdapter extends RecyclerView.Adapter<WallPostAdapter.Recycl
                             }
                             //
                             holder.mDeletePost.setVisibility(View.VISIBLE);
-                            if (ACTIVITYNAME == Constants.CHATFRAGMENT) {
-                                if (postPojo.getRelation().equalsIgnoreCase("self")) {
+
+                                String userID=PreferenceHandler.readString(mContext,PreferenceHandler.PREF_KEY_USER_ID,"");
+                                if (postPojo.getUserId().equalsIgnoreCase(userID)) {
                                     holder.mDeletePost.setImageResource(R.drawable.delete_icon);
                                     ACTION = "DELETE";
                                 } else {
                                     holder.mDeletePost.setImageResource(R.drawable.report_abuse);
                                     ACTION = "REPORT";
-                                }
-                            } else {
-                                holder.mDeletePost.setImageResource(R.drawable.delete_icon);
 
                             }
+//                            else {
+//                                holder.mDeletePost.setImageResource(R.drawable.delete_icon);
+//
+//                            }
                             deletePostVisible = true;
                             mDeletePostOld = holder.mDeletePost;
                         } else if (deletePostVisible == true) {
@@ -273,8 +273,6 @@ public class WallPostAdapter extends RecyclerView.Adapter<WallPostAdapter.Recycl
                 }
             });
 
-
-//
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -303,12 +301,6 @@ public class WallPostAdapter extends RecyclerView.Adapter<WallPostAdapter.Recycl
         public TextView comment;
         public ImageView dropDownOptions;
         public ImageView mDeletePost;
-//        public TextView  share;
-//        public LinearLayout mCommentSection;
-//        public EditText mEtComment;
-//        public  ImageView mIvPostComment;
-//        public RecyclerView mRvComments;
-
 
         public RecyclerViewHolders(final View itemView) {
             super(itemView);
@@ -329,169 +321,9 @@ public class WallPostAdapter extends RecyclerView.Adapter<WallPostAdapter.Recycl
 
             dropDownOptions = (ImageView) itemView.findViewById(R.id.iv_drop_down_options);
             mDeletePost = (ImageView) itemView.findViewById(R.id.iv_delete_post);
-//            share=(TextView) itemView.findViewById(R.id.tv_share);
-//            mCommentSection=(LinearLayout) itemView.findViewById(R.id.ll_comment_part);
-
-//            mEtComment=(EditText) itemView.findViewById(R.id.et_comment_text);
-//            mIvPostComment=(ImageView) itemView.findViewById(R.id.iv_post_comment);
-//            mRvComments=(RecyclerView) itemView.findViewById(R.id.rv_comments);
-
-        }
-
-
-    }
-
-
-      /*
-    * create payload to flag/remove a post
-    *
-    *
-    * */
-
-
-    public String genratePayload(String postId) {
-        JSONObject payload = null;
-        try {
-            payload = new JSONObject();
-            payload.put(Constants.TOKEN, PreferenceHandler.readString(mContext, PreferenceHandler.PREF_KEY_USER_TOKEN, ""));
-            payload.put(Constants.USERID, PreferenceHandler.readString(mContext, PreferenceHandler.PREF_KEY_USER_ID, ""));
-            payload.put(Constants.POST_ID, postId);
-
-
-        } catch (Exception e) {
-
-            e.printStackTrace();
-        }
-
-        return payload.toString();
-    }
-
-    /*
-    * remove post call
-    *
-    * */
-    public void removePost(String postId) {
-        try {
-
-
-            String payload = genratePayload(postId);
-            if (!payload.isEmpty()) {
-
-                WebNotificationManager.registerResponseListener(responseRemovePost);
-                WebServiceClient.remove_a_post((Activity) mContext, payload, responseRemovePost);
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-
-
-    /*
-    * response Remove post
-    *
-    *
-    * */
-    ResponseHandlerListener responseRemovePost = new ResponseHandlerListener() {
-        @Override
-        public void onComplete(ResponsePojo result, WebServiceClient.WebError error, ProgressDialog mProgressDialog) {
-            WebNotificationManager.unRegisterResponseListener(responseRemovePost);
-
-            try {
-                if (error == null) {
-                    if (result.getSuccess().equalsIgnoreCase("true")) {
-
-                        mDelete.setVisibility(View.GONE);
-                        wallItemsList.remove(POSTION);
-                        mAdapter.notifyDataSetChanged();
-//                        mWallPostAdapter = new WallPostAdapter(getActivity(), mWallPostList, onListItemClickListner);
-//                        mWallPostAdapter.notifyDataSetChanged();
-//                      mRvWallPosts.setAdapter(mWallPostAdapter);
-
-
-                        Utility.showToastMessageLong((Activity) mContext, "post removed");
-
-                    } else {
-
-                    }
-
-                } else {
-
-
-                }
-
-
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-//            finish the dialog
-            if (mProgressDialog != null && mProgressDialog.isShowing()) {
-                mProgressDialog.dismiss();
-            }
-
-
-        }
-    };
-
-
-    /*
-    *
-    * flag post call
-    *
-    *
-    * */
-    public void flagPost(String postId) {
-
-        String payload = genratePayload(postId);
-        if (payload != null) {
-
-            WebNotificationManager.registerResponseListener(responseFlagPost);
-            WebServiceClient.flag_a_post((Activity) mContext, payload, responseFlagPost);
 
         }
 
     }
-
-
-    /*
-    * response flag post
-    *
-    *
-    * */
-    ResponseHandlerListener responseFlagPost = new ResponseHandlerListener() {
-        @Override
-        public void onComplete(ResponsePojo result, WebServiceClient.WebError error, ProgressDialog mProgressDialog) {
-            WebNotificationManager.unRegisterResponseListener(responseFlagPost);
-            try {
-
-                if (error == null) {
-                    if (result.getSuccess().equalsIgnoreCase("true")) {
-
-                        mDelete.setVisibility(View.GONE);
-                        Utility.showToastMessageLong((Activity) mContext, "post reported");
-
-
-                    } else {
-
-
-                    }
-
-
-                } else {
-
-
-                }
-
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-
-
-            //            finish the dialog
-            if (mProgressDialog != null && mProgressDialog.isShowing()) {
-                mProgressDialog.dismiss();
-            }
-        }
-    };
-
 
 }

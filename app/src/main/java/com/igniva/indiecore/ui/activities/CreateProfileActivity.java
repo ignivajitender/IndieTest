@@ -69,7 +69,7 @@ public class CreateProfileActivity extends BaseActivity implements AsyncResult,V
     private int mYear, mMonth, mDay, mCurrentYear;
     public static final int REQUEST_CAMERA = 100;
     public static final int SELECT_FILE = 200;
-    private String userChoosenTask = "";
+    private String userChosenTask = "";
     private String mCountryCode;
     private int PIC_INDEX_CODE = 0;
     private int numberLenth;
@@ -206,11 +206,11 @@ public class CreateProfileActivity extends BaseActivity implements AsyncResult,V
                 public void onClick(DialogInterface dialog, int item) {
                     boolean result = true;
                     if (items[item].equals(getResources().getString(R.string.take_photo))) {
-                        userChoosenTask = getResources().getString(R.string.take_photo);
+                        userChosenTask = getResources().getString(R.string.take_photo);
                         if (result)
                             cameraIntent();
                     } else if (items[item].equals(getResources().getString(R.string.choose_from_gallary))) {
-                        userChoosenTask = getResources().getString(R.string.choose_from_gallary);
+                        userChosenTask = getResources().getString(R.string.choose_from_gallary);
                         if (result)
                             galleryIntent();
                     }
@@ -256,9 +256,9 @@ public class CreateProfileActivity extends BaseActivity implements AsyncResult,V
         switch (requestCode) {
             case Utility.MY_PERMISSIONS_REQUEST_READ_EXTERNAL_STORAGE:
                 if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    if (userChoosenTask.equals(getResources().getString(R.string.take_photo)))
+                    if (userChosenTask.equals(getResources().getString(R.string.take_photo)))
                         cameraIntent();
-                    else if (userChoosenTask.equals(getResources().getString(R.string.choose_from_gallary)))
+                    else if (userChosenTask.equals(getResources().getString(R.string.choose_from_gallary)))
                         galleryIntent();
                 } else {
                     //code for deny

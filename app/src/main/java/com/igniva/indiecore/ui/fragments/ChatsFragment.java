@@ -17,22 +17,15 @@ import android.widget.TextView;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.igniva.indiecore.R;
-import com.igniva.indiecore.controller.OnCommentListItemClickListner;
-import com.igniva.indiecore.controller.OnCommentListItemClickListnerTest;
 import com.igniva.indiecore.controller.OnCommentListItemClickListnerTest2;
-import com.igniva.indiecore.controller.OnListItemClickListner;
 import com.igniva.indiecore.controller.ResponseHandlerListener;
 import com.igniva.indiecore.controller.WebNotificationManager;
 import com.igniva.indiecore.controller.WebServiceClient;
-import com.igniva.indiecore.model.CommentPojo;
 import com.igniva.indiecore.model.ResponsePojo;
 import com.igniva.indiecore.model.PostPojo;
 import com.igniva.indiecore.ui.activities.CommentActivity;
 import com.igniva.indiecore.ui.activities.CreatePostActivity;
 import com.igniva.indiecore.ui.activities.DashBoardActivity;
-import com.igniva.indiecore.ui.activities.TestActivity;
-import com.igniva.indiecore.ui.adapters.PostCommentAdapter;
-import com.igniva.indiecore.ui.adapters.TestAdapter;
 import com.igniva.indiecore.ui.adapters.WallPostAdapter;
 import com.igniva.indiecore.utils.Constants;
 import com.igniva.indiecore.utils.Log;
@@ -49,31 +42,24 @@ import java.util.ArrayList;
 public class ChatsFragment extends BaseFragment {
     View rootView;
     private TextView mChat, mBoard, mPeople, mCreatePost, mUserName,mComingSoon;
-    private LinearLayout mLlBOard;
+    private LinearLayout mLlBoard;
     ImageView mUserImage;
     String LOG_TAG = "LOG_TAG";
-    public DashBoardActivity mDashBoard;
     private WallPostAdapter mAdapter;
     private ImageView mDeletePost;
     private String ACTION = "";
     private ArrayList<PostPojo> mWallPostList= new ArrayList<PostPojo>();;
-    private ArrayList<CommentPojo> mCommentList;
     private LinearLayoutManager mLlManager;
-    private LinearLayoutManager mLlmanager;
     private WallPostAdapter mWallPostAdapter;
-    private PostCommentAdapter mCommentAdapter;
     private RecyclerView mRvWallPosts;
-    private RecyclerView mRvComment;
-
     private boolean deletePostVisible = false;
     public final static String BUSINESS = "business";
-
     String PAGE = "1";
     String LIMIT = "10";
     String mBusinessId = "";
     int action = 0;
     //    (like/dislike/neutral), post_id
-    public static int POSTION = -1;
+    public static int POSITION = -1;
     public String postID = "-1";
     WallPostAdapter.RecyclerViewHolders mHolder;
     public static final String mActionTypeLike = "like";
@@ -118,7 +104,7 @@ public class ChatsFragment extends BaseFragment {
 
         mDeletePost = (ImageView) rootView.findViewById(R.id.iv_delete_post);
 
-        mLlBOard=(LinearLayout) rootView.findViewById(R.id.ll_board);
+        mLlBoard =(LinearLayout) rootView.findViewById(R.id.ll_board);
         mComingSoon=(TextView) rootView.findViewById(R.id.tv_cuming_soon);
 
 
@@ -222,10 +208,11 @@ public class ChatsFragment extends BaseFragment {
                 try {
                     mHolder = holder;
                     postID = postId;
+                    ACTION=type;
                     mHolder.like.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
-                            POSTION = position;
+                            POSITION = position;
                             action = 1;
                             likeUnlikePost(mActionTypeLike, mWallPostList.get(position).getPostId());
 
@@ -235,7 +222,7 @@ public class ChatsFragment extends BaseFragment {
                     mHolder.dislike.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
-                            POSTION = position;
+                            POSITION = position;
                             action = 2;
                             likeUnlikePost(mActionTypeDislike, postId);
 
@@ -246,7 +233,7 @@ public class ChatsFragment extends BaseFragment {
                     mHolder.neutral.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
-                            POSTION = position;
+                            POSITION = position;
                             action = 3;
                             likeUnlikePost(mActionTypeNeutral, postId);
                         }
@@ -255,7 +242,7 @@ public class ChatsFragment extends BaseFragment {
                     mHolder.comment.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
-                            POSTION = position;
+                            POSITION = position;
                             Bundle bundle = new Bundle();
                             bundle.putSerializable("POST", mWallPostList.get(position));
                             Intent intent = new Intent(getActivity(), CommentActivity.class);
@@ -269,7 +256,7 @@ public class ChatsFragment extends BaseFragment {
                     mHolder.mMediaPost.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
-                            POSTION = position;
+                            POSITION = position;
                             Bundle bundle = new Bundle();
                             bundle.putSerializable("POST", mWallPostList.get(position));
                             Intent intent = new Intent(getActivity(), CommentActivity.class);
@@ -288,12 +275,12 @@ public class ChatsFragment extends BaseFragment {
 
                             mDeletePost = (ImageView) v.findViewById(R.id.iv_delete_post);
 
-                            POSTION = position;
+                            POSITION = position;
                             try {
 
                                 if (deletePostVisible == false) {
 
-                                    if (mWallPostList.get(POSTION).getRelation().equalsIgnoreCase("self")) {
+                                    if (mWallPostList.get(POSITION).getRelation().equalsIgnoreCase("self")) {
                                         mDeletePost.setVisibility(View.VISIBLE);
                                         mDeletePost.setImageResource(R.drawable.delete_icon);
                                         ACTION = "DELETE";
@@ -320,7 +307,7 @@ public class ChatsFragment extends BaseFragment {
                         @Override
                         public void onClick(View v) {
                             try {
-                                POSTION = position;
+                                POSITION = position;
 //                                Utility.showToastMessageShort(getActivity(), " position is " + position);
 
                                 if (ACTION.equalsIgnoreCase("DELETE")) {
@@ -360,7 +347,7 @@ public class ChatsFragment extends BaseFragment {
             mPeople.setBackgroundResource(R.drawable.simple_border_line_style);
 
             mComingSoon.setVisibility(View.VISIBLE);
-            mLlBOard.setVisibility(View.GONE);
+            mLlBoard.setVisibility(View.GONE);
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -381,7 +368,7 @@ public class ChatsFragment extends BaseFragment {
             mPeople.setTextColor(Color.parseColor("#1C6DCE"));
             mPeople.setBackgroundResource(R.drawable.simple_border_line_style);
             mComingSoon.setVisibility(View.GONE);
-            mLlBOard.setVisibility(View.VISIBLE);
+            mLlBoard.setVisibility(View.VISIBLE);
 
             mAdapter = null;
                 mAdapter = new WallPostAdapter(getActivity(), mWallPostList, onCommentListItemClickListnerTest2,Constants.CHATFRAGMENT);
@@ -405,7 +392,7 @@ public class ChatsFragment extends BaseFragment {
             mPeople.setTextColor(Color.parseColor("#FFFFFF"));
             mPeople.setBackgroundColor(Color.parseColor("#1C6DCE"));
             mComingSoon.setVisibility(View.VISIBLE);
-            mLlBOard.setVisibility(View.GONE);
+            mLlBoard.setVisibility(View.GONE);
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -555,15 +542,15 @@ public class ChatsFragment extends BaseFragment {
 
                         if (action == 1) {
                             //action like
-                            int num_like = mWallPostList.get(POSTION).getLike();
+                            int num_like = mWallPostList.get(POSITION).getLike();
                             int a =num_like;
                             if (result.getLike() == 1) {
-                                mWallPostList.get(POSTION).setAction(Constants.LIKE);
-                                mWallPostList.get(POSTION).setLike(a + 1);
+                                mWallPostList.get(POSITION).setAction(Constants.LIKE);
+                                mWallPostList.get(POSITION).setLike(a + 1);
                             } else if(result.getLike()==0) {
-                                mWallPostList.get(POSTION).setAction(null);
+                                mWallPostList.get(POSITION).setAction(null);
                                 if (a > 0) {
-                                    mWallPostList.get(POSTION).setLike(a - 1 );
+                                    mWallPostList.get(POSITION).setLike(a - 1 );
                                 }
                             }
                             Log.d(LOG_TAG, " new count of like " + mHolder.like.getText());
@@ -571,19 +558,19 @@ public class ChatsFragment extends BaseFragment {
 
                         } else if (action == 2) {
                             //action dislike
-                            int num_dislike = mWallPostList.get(POSTION).getDislike();
+                            int num_dislike = mWallPostList.get(POSITION).getDislike();
                             int b = num_dislike;
 
                             if (result.getDislike() == 1) {
 
 
-                                mWallPostList.get(POSTION).setAction(Constants.DISLIKE);
-                                mWallPostList.get(POSTION).setDislike(b + 1);
+                                mWallPostList.get(POSITION).setAction(Constants.DISLIKE);
+                                mWallPostList.get(POSITION).setDislike(b + 1);
 
                             } else if(result.getDislike()==0){
-                                mWallPostList.get(POSTION).setAction(null);
+                                mWallPostList.get(POSITION).setAction(null);
                                 if (b > 0) {
-                                    mWallPostList.get(POSTION).setDislike(b - 1 );
+                                    mWallPostList.get(POSITION).setDislike(b - 1 );
                                 } mHolder.like.setCompoundDrawablesWithIntrinsicBounds(R.drawable.like_grey_icon_circle, 0, 0, 0);
 
                             }
@@ -592,16 +579,16 @@ public class ChatsFragment extends BaseFragment {
                         } else if (action == 3) {
                             //    action neutral
 
-                            int num_neutral = mWallPostList.get(POSTION).getNeutral();
+                            int num_neutral = mWallPostList.get(POSITION).getNeutral();
                             int c = num_neutral;
 
                             if (result.getNeutral() == 1) {
-                                mWallPostList.get(POSTION).setAction(Constants.NEUTRAL);
-                                mWallPostList.get(POSTION).setNeutral(c + 1);
+                                mWallPostList.get(POSITION).setAction(Constants.NEUTRAL);
+                                mWallPostList.get(POSITION).setNeutral(c + 1);
                             } else if(result.getNeutral()==0) {
-                                mWallPostList.get(POSTION).setAction(null);
+                                mWallPostList.get(POSITION).setAction(null);
                                 if (c > 0) {
-                                    mWallPostList.get(POSTION).setNeutral(c - 1 );
+                                    mWallPostList.get(POSITION).setNeutral(c - 1 );
                                 }
                             }
                         }
@@ -684,7 +671,7 @@ public class ChatsFragment extends BaseFragment {
                     if (result.getSuccess().equalsIgnoreCase("true")) {
 
                         mHolder.mDeletePost.setVisibility(View.GONE);
-                        mWallPostList.remove(POSTION);
+                        mWallPostList.remove(POSITION);
 //                        mWallPostAdapter = new WallPostAdapter(getActivity(), mWallPostList, onListItemClickListner);
                         mWallPostAdapter.notifyDataSetChanged();
 //                      mRvWallPosts.setAdapter(mWallPostAdapter);

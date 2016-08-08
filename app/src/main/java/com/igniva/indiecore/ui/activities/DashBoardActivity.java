@@ -27,7 +27,6 @@ import com.igniva.indiecore.ui.fragments.SettingsFragment;
 public class DashBoardActivity extends BaseActivity {
 
     public static AHBottomNavigation bottomNavigation;
-    Fragment mFragment;
     Toolbar mToolbar;
     TextView mTvTitle;
     public static String businessId="";
