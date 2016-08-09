@@ -229,18 +229,6 @@ public class BusinessListAadpter extends RecyclerView.Adapter<BusinessListAadpte
                     DashBoardActivity.bottomNavigation.setCurrentItem(2);
                     DashBoardActivity.businessId=mBusiness_Id;
 
-//
-//                    ChatsFragment fragment = new ChatsFragment();
-//                    Bundle args = new Bundle();
-//                    args.putString(Constants.BUSINESS_ID,mBusiness_Id);
-//                    fragment.setArguments(args);
-//                    //Inflate the fragment
-//
-//                    FragmentTransaction fragmentTransaction = ((AppCompatActivity) mContext).getSupportFragmentManager().beginTransaction();
-//
-//                    fragmentTransaction.add(R.id.fl_fragment_container, fragment);
-//                    fragmentTransaction.commit();
-
 
                 }else {
                     Utility.showAlertDialog("Error in check-in to this place.Please try later",mContext);

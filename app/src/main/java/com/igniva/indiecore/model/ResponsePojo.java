@@ -7,30 +7,40 @@ import java.util.ArrayList;
  */
 public class ResponsePojo {
 
-    private int status;
-    private String description;
-    private String success;
-    private ArrayList<BadgesPojo> badges;
     private boolean  is_favourite;
-    private  boolean  is_block;
-    private String  relation;
-    private ArrayList<PostPojo> postList;
-    private String postId;
-    private ArrayList<UsersPojo> users;
+    private boolean  is_block;
+    private int status;
     private int total_badges;
     private int active;
     private int friends_invited;
+    private int like;
+    private int dislike;
+    private int neutral;
+    private String  relation;
+    private String description;
+    private String success;
+    private String postId;
     private String error;
     private String userId;
     private String token;
     private String newUser;
     private ProfilePojo profile;
+    private CountryCodePojo location;
+    private ArrayList<BadgesPojo> badges;
+    private ArrayList<PostPojo> postList;
+    private ArrayList<UsersPojo> users;
     private ArrayList<BusinessPojo> business_list;
     private ArrayList<CommentPojo> commentList;
     private ArrayList<RepliesPojo> repliesList;
-    private int like;
-    private int dislike;
-    private int neutral;
+
+
+    public CountryCodePojo getLocation() {
+        return location;
+    }
+
+    public void setLocation(CountryCodePojo location) {
+        this.location = location;
+    }
 
     public boolean is_favourite() {
         return is_favourite;

@@ -33,7 +33,7 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 
-public class SyncContactsActivity extends BaseActivity implements View.OnClickListener, FABProgressListener {
+public class SyncContactsActivity extends BaseActivity implements View.OnClickListener {
 
     private static final String LOG_TAG = "SyncContactsActivity";
     Toolbar mToolbar;
@@ -44,8 +44,9 @@ public class SyncContactsActivity extends BaseActivity implements View.OnClickLi
     private String COUNTRY_PREFIX = "";
     FABProgressCircle fabProgressCircle;
     public ArrayList<UsersPojo> mUSers = new ArrayList<UsersPojo>();
+    private int INDEX = 0;
     FloatingActionButton fab;
-    ImageView img_btn,mIvSyncContacts;
+    ImageView img_btn, mIvSyncContacts;
     BadgesDb dbContacts;
     TextView mTvSkipStep;
 
@@ -93,24 +94,6 @@ public class SyncContactsActivity extends BaseActivity implements View.OnClickLi
     }
 
 
-    @Override
-    public void onFABProgressAnimationEnd() {
-        //img_btn.setVisibility(View.VISIBLE);
-        mStartSync.setText("successful");
-        //   Snackbar.make(fabProgressCircle, "Complete", Snackbar.LENGTH_LONG).show();
-//        Toast.makeText(getApplicationContext(),getResources().getString(R.string.contact_sync_successful),Toast.LENGTH_LONG).show();
-
-
-        new Handler().postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                startActivity(new Intent(SyncContactsActivity.this, BadgesActivity.class));
-
-            }
-        }, 3000);
-        //fabProgressCircle.setForeground(getResources().getDrawable(R.drawable.done));
-
-    }
 
     @Override
     protected void setUpLayout() {
@@ -118,16 +101,21 @@ public class SyncContactsActivity extends BaseActivity implements View.OnClickLi
 
             mNumbersList = new ArrayList<String>();
             Bundle bundle = getIntent().getExtras();
-            numberLength = bundle.getInt(Constants.NUMBER_LENGTH, 0);
-            mCountryCode = bundle.getString(Constants.COUNTRY_CODE);
-            mTvSkipStep=(TextView)findViewById(R.id.tv_skip_step);
-            mTvSkipStep.setOnClickListener(this);
-            mIvSyncContacts=(ImageView)findViewById(R.id.iv_syncbtn);
-            mIvSyncContacts.setOnClickListener(this);
+            INDEX = bundle.getInt(Constants.INDEX);
 
-               img_btn=(ImageView)findViewById(R.id.img_btn);
+
+            numberLength = PreferenceHandler.readInteger(SyncContactsActivity.this, PreferenceHandler.PREF_KEY_NUMBER_LENGTH, 0);
+            mCountryCode = PreferenceHandler.readString(SyncContactsActivity.this, PreferenceHandler.PREF_KEY_COUNTRY_CODE, "");
+            mTvSkipStep = (TextView) findViewById(R.id.tv_skip_step);
+            mTvSkipStep.setOnClickListener(this);
+            mIvSyncContacts = (ImageView) findViewById(R.id.iv_syncbtn);
+            mIvSyncContacts.setOnClickListener(this);
+            img_btn = (ImageView) findViewById(R.id.img_btn);
             img_btn.setOnClickListener(this);
             COUNTRY_PREFIX = mCountryCode.trim();
+            if(INDEX==20){
+                mTvSkipStep.setVisibility(View.GONE);
+            }
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -151,8 +139,8 @@ public class SyncContactsActivity extends BaseActivity implements View.OnClickLi
                 phnNumber = phnNumber.replace(":", "");
                 phnNumber = phnNumber.replace("-", "");
                 phnNumber = phnNumber.replace("+", "");
-                phnNumber=phnNumber.replace(")","");
-                phnNumber=phnNumber.replace("(","");
+                phnNumber = phnNumber.replace(")", "");
+                phnNumber = phnNumber.replace("(", "");
 
                 phnNumber = phnNumber.trim();
 
@@ -160,6 +148,7 @@ public class SyncContactsActivity extends BaseActivity implements View.OnClickLi
                     phnNumber = COUNTRY_PREFIX.trim() + phnNumber.trim();
                 }
                 mNumbersList.add(phnNumber);
+                Log.e("Number list after appending 91", "" + mNumbersList.toString());
             }
 
             phones.close();
@@ -196,25 +185,22 @@ public class SyncContactsActivity extends BaseActivity implements View.OnClickLi
             WebNotificationManager.unRegisterResponseListener(responseListner);
 
             try {
-
                 if (error == null) {
                     // start parsing
                     if (result.getSuccess().equalsIgnoreCase("true")) {
-
-                        mUSers=result.getUsers();
+                        mUSers = result.getUsers();
                         insertUsers();
-                        Toast.makeText(getApplicationContext(), getResources().getString(R.string.contact_sync_successful),Toast.LENGTH_LONG).show();
+                        Toast.makeText(getApplicationContext(), getResources().getString(R.string.contact_sync_successful), Toast.LENGTH_LONG).show();
+                        if (INDEX == 22) {
+                            startActivity(new Intent(SyncContactsActivity.this, BadgesActivity.class));
 
-                        startActivity(new Intent(SyncContactsActivity.this, BadgesActivity.class));
-
+                        } else {
+                            Toast.makeText(getApplicationContext(), getResources().getString(R.string.contact_sync_successful), Toast.LENGTH_LONG).show();
+                        }
                     }
                 } else {
-
                     Toast.makeText(getApplicationContext(), getResources().getString(R.string.contact_sync_failure), Toast.LENGTH_LONG).show();
-
                 }
-
-
                 // Always close the progressdialog
                 if (mProgressDialog != null && mProgressDialog.isShowing()) {
                     mProgressDialog.dismiss();
@@ -262,11 +248,11 @@ public class SyncContactsActivity extends BaseActivity implements View.OnClickLi
             payloadJson.put(Constants.TOKEN, PreferenceHandler.readString(SyncContactsActivity.this, PreferenceHandler.PREF_KEY_USER_TOKEN, ""));
             payloadJson.put(Constants.USERID, PreferenceHandler.readString(SyncContactsActivity.this, PreferenceHandler.PREF_KEY_USER_ID, ""));
             String mNumber = "";
-            int sizeOfList=mNumbersList.size();
-            for (int i=0;i<sizeOfList;i++){
-                mNumber=mNumber+","+mNumbersList.get(i).trim();
+            int sizeOfList = mNumbersList.size();
+            for (int i = 0; i < sizeOfList; i++) {
+                mNumber = mNumber + "," + mNumbersList.get(i).trim();
             }
-            mNumber =mNumber.substring(1);
+            mNumber = mNumber.substring(1);
             payloadJson.put(Constants.NUMBER, mNumber);
         } catch (Exception e) {
             e.printStackTrace();

@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
+    android:background="@color/light_gray"
     android:layout_height="match_parent"
     android:orientation="vertical">
 
@@ -56,13 +57,19 @@
             android:layout_marginTop="10dp"
             android:src="@drawable/purchase_button" />
 
-
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="@color/blue"
             android:layout_marginTop="15dp"
             android:orientation="vertical">
+            <ImageView
+                android:onClick="onBuyGasButtonClicked"
+                android:layout_width="match_parent"
+                android:scaleType="fitXY"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:src="@drawable/curve_bg" />
 
 
             <TextView
@@ -72,8 +79,6 @@
                 android:gravity="center"
                 android:text="PREMIUM BADGES"
                 android:textColor="@color/white" />
-
-
 
             <android.support.v7.widget.RecyclerView
                 android:layout_width="match_parent"

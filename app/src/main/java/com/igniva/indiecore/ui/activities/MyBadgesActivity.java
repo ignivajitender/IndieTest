@@ -38,7 +38,7 @@ import java.util.ArrayList;
 /**
  * Created by igniva-andriod-11 on 15/6/16.
  */
-public class MyBadgesActivity extends BaseActivity implements View.OnClickListener{
+public class MyBadgesActivity extends BaseActivity implements View.OnClickListener {
     Toolbar mToolbar;
     private TextView mTVMyBadegs, mTVBadgesMArket, mTvDone;
     private RecyclerView mRvMyBadges;
@@ -47,12 +47,12 @@ public class MyBadgesActivity extends BaseActivity implements View.OnClickListen
     private BadgesDb dbBadges;
     private ImageView onOffImage;
     private BadgesDb db_badges;
-    public  int active = 0;
-    public  String selectedBadgeId = null;
+    public int active = 0;
+    public String selectedBadgeId = null;
     public int mPageNumber = 1, mBadgeCount = 20, category = 0, mTotalBadgeCount = 0;
     boolean isLoading;
     int buttonIndex = 1;
-    int mSelectedPostion=-1;
+    int mSelectedPostion = -1;
     int pastVisiblesItems, visibleItemCount, totalItemCount;
     MyBadgesAdapter mMyBadgeAdapter;
     BadgesMarketAdapter mBadgeMarketAdpter;
@@ -213,8 +213,6 @@ public class MyBadgesActivity extends BaseActivity implements View.OnClickListen
     }
 
 
-
-
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
@@ -279,24 +277,23 @@ public class MyBadgesActivity extends BaseActivity implements View.OnClickListen
 
             if (error == null) {
 
-            if(result.getSuccess().equalsIgnoreCase("true")){
+                if (result.getSuccess().equalsIgnoreCase("true")) {
 
 
-                if(result.getActive()==1){
-                    onOffImage.setImageResource(R.drawable.badge_on);
-                    updateRecord();
+                    if (result.getActive() == 1) {
+                        onOffImage.setImageResource(R.drawable.badge_on);
+                        updateRecord();
 
 
-                }else {
-                    onOffImage.setImageResource(R.drawable.badge_off);
-                    updateRecord();
+                    } else {
+                        onOffImage.setImageResource(R.drawable.badge_off);
+                        updateRecord();
+                    }
+
+
+                } else {
+                    Utility.showToastMessageLong(MyBadgesActivity.this, "Some error occurred.Please try later");
                 }
-
-
-
-              }else {
-                Utility.showToastMessageLong(MyBadgesActivity.this,"Some error occurred.Please try later");
-            }
             }
             // Always close the progressdialog
             if (mProgressDialog != null && mProgressDialog.isShowing()) {
@@ -307,7 +304,7 @@ public class MyBadgesActivity extends BaseActivity implements View.OnClickListen
     };
 
 
-    public void updateRecord(){
+    public void updateRecord() {
         try {
             dbBadges = new BadgesDb(this);
             BadgesPojo selectedBadge;
@@ -322,7 +319,7 @@ public class MyBadgesActivity extends BaseActivity implements View.OnClickListen
         }
     }
 
-    private String createPayload(String badgeId,String badgestatus) {
+    private String createPayload(String badgeId, String badgestatus) {
 //        token, userId, badgeId, active (0/1)
         JSONObject payload = null;
         try {
@@ -358,12 +355,18 @@ public class MyBadgesActivity extends BaseActivity implements View.OnClickListen
             mTvNext.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                Intent intent= new Intent(MyBadgesActivity.this,PremiumBadgesActivity.class);
+                    Intent intent = new Intent(MyBadgesActivity.this, PremiumBadgesActivity.class);
                     startActivity(intent);
                 }
             });
-            ImageView mMyProfile = (ImageView) mToolbar.findViewById(R.id.toolbar_img_left);
-            mMyProfile.setVisibility(View.GONE);
+            ImageView mBack = (ImageView) mToolbar.findViewById(R.id.toolbar_img_left);
+            mBack.setImageResource(R.drawable.backarrow_icon);
+            mBack.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    finish();
+                }
+            });
             //
             setSupportActionBar(mToolbar);
             getSupportActionBar().setDisplayShowTitleEnabled(false);
@@ -448,17 +451,17 @@ public class MyBadgesActivity extends BaseActivity implements View.OnClickListen
         @Override
         public void onCardClicked(ImageView view, int position) {
 //            Utility.showToastMessageShort(MyBadgesActivity.this, "Position is " + position);
-            onOffImage=view;
+            onOffImage = view;
             if (mSelectedBadgesList.get(position).getActive() == 0) {
 //                view.setImageResource(R.drawable.badge_on);
                 mSelectedBadgesList.get(position).setActive(1);
 
-                String payload = createPayload(mSelectedBadgesList.get(position).getBadgeId(),String.valueOf(mSelectedBadgesList.get(position).getActive()));
+                String payload = createPayload(mSelectedBadgesList.get(position).getBadgeId(), String.valueOf(mSelectedBadgesList.get(position).getActive()));
                 try {
 
                     if (payload != null) {
 //                        Log.e("on payload","++"+payload.toString());
-                         mSelectedPostion=position;
+                        mSelectedPostion = position;
                         mSelectedBadgesList.get(position).setActive(1);
                         WebNotificationManager.registerResponseListener(responseListner);
                         WebServiceClient.onOffMyBadges(MyBadgesActivity.this, payload, responseListner);
@@ -469,12 +472,12 @@ public class MyBadgesActivity extends BaseActivity implements View.OnClickListen
             } else {
 //                view.setImageResource(R.drawable.badge_off);
                 mSelectedBadgesList.get(position).setActive(0);
-                String payload = createPayload(mSelectedBadgesList.get(position).getBadgeId(),String.valueOf(mSelectedBadgesList.get(position).getActive()));
+                String payload = createPayload(mSelectedBadgesList.get(position).getBadgeId(), String.valueOf(mSelectedBadgesList.get(position).getActive()));
                 try {
 
                     if (payload != null) {
-                        Log.e("off payload","++"+payload.toString());
-                        mSelectedPostion=position;
+                        Log.e("off payload", "++" + payload.toString());
+                        mSelectedPostion = position;
                         mSelectedBadgesList.get(position).setActive(0);
                         WebNotificationManager.registerResponseListener(responseListner);
                         WebServiceClient.onOffMyBadges(MyBadgesActivity.this, payload, responseListner);

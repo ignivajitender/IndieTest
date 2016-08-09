@@ -18,9 +18,6 @@ import java.io.Serializable;
     private int isPremium;
     private int sr_no;
     private int active;
-
-
-
     public int getActive() {
         return active;
     }

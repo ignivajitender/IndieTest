@@ -2,8 +2,10 @@ package com.igniva.indiecore.ui.activities;
 
 import android.app.ProgressDialog;
 import android.content.Intent;
+import android.content.res.Resources;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
@@ -14,12 +16,15 @@ import android.widget.TextView;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.igniva.indiecore.R;
+import com.igniva.indiecore.controller.OnCardClickListner;
 import com.igniva.indiecore.controller.OnCommentListItemClickListnerTest2;
 import com.igniva.indiecore.controller.ResponseHandlerListener;
 import com.igniva.indiecore.controller.WebNotificationManager;
 import com.igniva.indiecore.controller.WebServiceClient;
+import com.igniva.indiecore.model.BadgesPojo;
 import com.igniva.indiecore.model.PostPojo;
 import com.igniva.indiecore.model.ResponsePojo;
+import com.igniva.indiecore.ui.adapters.MyBadgesAdapter;
 import com.igniva.indiecore.ui.adapters.WallPostAdapter;
 import com.igniva.indiecore.utils.Constants;
 import com.igniva.indiecore.utils.Log;
@@ -34,17 +39,18 @@ import java.util.ArrayList;
  * Created by igniva-andriod-05 on 5/8/16.
  */
 public class UserProfileActivity extends BaseActivity implements View.OnClickListener {
-    private TextView mTvUserName, mTvUserLocation, mTvUserDescription, mTvNoPostAvailable;
+    private TextView mTvUserName, mTvUserLocation, mTvUserDescription, mTvNoPostAvailable,mTvLabel;
     private ImageView mIvUserIcon, mIvCoverPic, mIvStar, mIvDropDown, mIvBlockUser;
     private TextView mTvTitle;
     private RecyclerView mRvUserPost;
     private LinearLayoutManager mLlManger = new LinearLayoutManager(this);
+    private GridLayoutManager mGlMAnager= new GridLayoutManager(UserProfileActivity.this, 4);
     private ArrayList<PostPojo> mUserWallPostList = new ArrayList<PostPojo>();
-    ;
     private WallPostAdapter mWallPostAdapter;
+    private MyBadgesAdapter mMutualBadgeAdapter;
     String LOG_TAG = "UserProfileActivity";
     private String PROFILE = "profile";
-    private static int PAGE = 1, LIMIT = 20;
+    private  int PAGE = 1, LIMIT = 20;
     private Toolbar mToolbar;
     private String mUserId = "";
     private String mRoomId = "";
@@ -66,10 +72,7 @@ public class UserProfileActivity extends BaseActivity implements View.OnClickLis
         initToolbar();
         setUpLayout();
         setDataInViewObjects();
-
-
     }
-
 
     void initToolbar() {
         try {
@@ -114,6 +117,7 @@ public class UserProfileActivity extends BaseActivity implements View.OnClickLis
         mIvCoverPic = (ImageView) findViewById(R.id.iv_cover_pic_activity_user_profile);
         mRvUserPost = (RecyclerView) findViewById(R.id.rv_posts_activity_user_profile);
         mTvNoPostAvailable = (TextView) findViewById(R.id.tv_no_post_available);
+        mTvLabel=(TextView) findViewById(R.id.tv_label_activity_user_profile);
         mIvStar = (ImageView) findViewById(R.id.iv_star_activity_user_profile);
         mIvStar.setOnClickListener(this);
         mIvBlockUser = (ImageView) findViewById(R.id.iv_block_user_user_profile_activity);
@@ -142,7 +146,10 @@ public class UserProfileActivity extends BaseActivity implements View.OnClickLis
         }
         if (mUserId.equalsIgnoreCase(PreferenceHandler.readString(this, PreferenceHandler.PREF_KEY_USER_ID, ""))) {
             mIvStar.setVisibility(View.INVISIBLE);
+            mIvDropDown.setVisibility(View.INVISIBLE);
         }
+
+
         getUserProfile(mUserId);
 
 
@@ -150,7 +157,6 @@ public class UserProfileActivity extends BaseActivity implements View.OnClickLis
 
     @Override
     protected void setDataInViewObjects() {
-
 
     }
 
@@ -192,7 +198,6 @@ public class UserProfileActivity extends BaseActivity implements View.OnClickLis
         }
     }
 
-
     ResponseHandlerListener responseUserProfile = new ResponseHandlerListener() {
         @Override
         public void onComplete(ResponsePojo result, WebServiceClient.WebError error, ProgressDialog mProgressDialog) {
@@ -208,7 +213,6 @@ public class UserProfileActivity extends BaseActivity implements View.OnClickLis
                             mTvTitle.setText(name);
                             mTvUserName.setText(name);
                             mTvUserDescription.setText(userDetails.getProfile().getDesc());
-
                             try {
                                 if (!userDetails.getProfile().getProfilePic().isEmpty()) {
                                     Glide.with(UserProfileActivity.this).load(WebServiceClient.HTTP_STAGING + userDetails.getProfile().getProfilePic())
@@ -230,9 +234,28 @@ public class UserProfileActivity extends BaseActivity implements View.OnClickLis
                                             .diskCacheStrategy(DiskCacheStrategy.ALL)
                                             .into(mIvCoverPic);
                                 }
+
                             } catch (Exception e) {
                                 e.printStackTrace();
                             }
+                            try {
+                                String countryName="";
+                                int countryCode=Integer.parseInt(userDetails.getLocation().getCountryCode());
+                                String[] rl=UserProfileActivity.this.getResources().getStringArray(R.array.countryList);
+                                for(int i=0;i<rl.length;i++){
+                                    String[] g=rl[i].split(",");
+                                    if(g[1].trim().equals(countryCode)){
+                                        countryName=g[0];
+                                        break;  }
+                                }
+                                mTvUserLocation.setText(countryName);
+                            } catch (NumberFormatException e) {
+                                e.printStackTrace();
+                            } catch (Resources.NotFoundException e) {
+                                e.printStackTrace();
+                            }
+
+
                         } catch (Exception e) {
                             e.printStackTrace();
                         }
@@ -240,19 +263,50 @@ public class UserProfileActivity extends BaseActivity implements View.OnClickLis
 
                     } else {
 
-
                     }
-
-
                 }
 
                 if (mProgressDialog != null && mProgressDialog.isShowing()) {
                     mProgressDialog.dismiss();
                 }
-                viewAllPost();
+
+                if(userDetails.is_favourite()){
+
+                    mTvLabel.setText("Mutual Badges");
+                    setMutualBadges(result.getBadges());
+                }else {
+                    viewAllPost();
+                }
+
+
             } catch (Exception e) {
                 e.printStackTrace();
             }
+
+        }
+    };
+
+
+
+//    set mutual Badges in recycler view
+    public void setMutualBadges(ArrayList<BadgesPojo> mMutualBadges){
+        try {
+            mRvUserPost.setLayoutManager(mGlMAnager);
+            mMutualBadgeAdapter=null;
+            mMutualBadgeAdapter= new MyBadgesAdapter(this,mMutualBadges,onCardClickListner);
+            mRvUserPost.setAdapter(mMutualBadgeAdapter);
+
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+
+    }
+
+
+
+    OnCardClickListner onCardClickListner=new OnCardClickListner() {
+        @Override
+        public void onCardClicked(ImageView view, int position) {
 
         }
     };
@@ -309,6 +363,7 @@ public class UserProfileActivity extends BaseActivity implements View.OnClickLis
                 if (error == null) {
 
                     if (result.getSuccess().equalsIgnoreCase("true")) {
+                        mRvUserPost.setVisibility(View.VISIBLE);
 
                         if (mUserWallPostList != null)
                             mUserWallPostList.clear();

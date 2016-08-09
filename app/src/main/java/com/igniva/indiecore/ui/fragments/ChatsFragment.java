@@ -26,6 +26,7 @@ import com.igniva.indiecore.model.PostPojo;
 import com.igniva.indiecore.ui.activities.CommentActivity;
 import com.igniva.indiecore.ui.activities.CreatePostActivity;
 import com.igniva.indiecore.ui.activities.DashBoardActivity;
+import com.igniva.indiecore.ui.activities.UserProfileActivity;
 import com.igniva.indiecore.ui.adapters.WallPostAdapter;
 import com.igniva.indiecore.utils.Constants;
 import com.igniva.indiecore.utils.Log;
@@ -203,7 +204,7 @@ public class ChatsFragment extends BaseFragment {
 
     OnCommentListItemClickListnerTest2 onCommentListItemClickListnerTest2 = new OnCommentListItemClickListnerTest2() {
         @Override
-        public void onCommentListItemClicked(final WallPostAdapter.RecyclerViewHolders holder, final int position, final String postId,String type) {
+        public void onCommentListItemClicked(final WallPostAdapter.RecyclerViewHolders holder, final int position, final String postId, final String type) {
             {
                 try {
                     mHolder = holder;
@@ -301,6 +302,31 @@ public class ChatsFragment extends BaseFragment {
                             }
                         }
                     });
+
+
+
+//                    mHolder.mUserIcon.setOnClickListener(new View.OnClickListener() {
+//                        @Override
+//                        public void onClick(View v) {
+//                            postID = postId;
+//                            ACTION=type;
+//                            try {
+//                                Bundle bundle = new Bundle();
+//                                Intent intent = new Intent(getActivity(), UserProfileActivity.class);
+////                               post id id here user id
+//                                bundle.putString(Constants.USERID, postID);
+////                                type here is room id
+//                                bundle.putString(Constants.BUSINESS_ID,ACTION);
+//                                bundle.putInt(Constants.INDEX, 11);
+//                                intent.putExtras(bundle);
+//                                getActivity().startActivity(intent);
+//                            } catch (Exception e) {
+//                                e.printStackTrace();
+//                            }
+//
+//
+//                        }
+//                    });
 
 
                     mHolder.mDeletePost.setOnClickListener(new View.OnClickListener() {
@@ -402,10 +428,10 @@ public class ChatsFragment extends BaseFragment {
     /*
     *
     * create payload to get all post of a business
+    * @Params:token, userId, roomId, postType, page, limit
     * */
     public String createPayload() {
         JSONObject payload = null;
-//    token, userId, roomId, postType, page, limit
         try {
             payload = new JSONObject();
             payload.put(Constants.TOKEN, PreferenceHandler.readString(getActivity(), PreferenceHandler.PREF_KEY_USER_TOKEN, ""));
@@ -457,7 +483,6 @@ public class ChatsFragment extends BaseFragment {
 
                         if (mWallPostList.size() > 0) {
                             try {
-                                Log.d(LOG_TAG," original list is "+mWallPostList);
                                 mWallPostAdapter = null;
                                 mWallPostAdapter = new WallPostAdapter(getActivity(), mWallPostList, onCommentListItemClickListnerTest2,Constants.CHATFRAGMENT);
                                 mWallPostAdapter.notifyDataSetChanged();
@@ -490,13 +515,12 @@ public class ChatsFragment extends BaseFragment {
     //    /*
 //
 // create payload to like unlike a post
-//
+//token, userId, type(like/dislike/neutral), post_id
 //
 // */
     public String createPayload(String type, String postId) {
 
         JSONObject payload = null;
-//        token, userId, type(like/dislike/neutral), post_id
         try {
             payload = new JSONObject();
             payload.put(Constants.TOKEN, PreferenceHandler.readString(getActivity(), PreferenceHandler.PREF_KEY_USER_TOKEN, ""));

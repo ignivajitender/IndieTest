@@ -72,7 +72,7 @@ public class CreateProfileActivity extends BaseActivity implements AsyncResult,V
     private String userChosenTask = "";
     private String mCountryCode;
     private int PIC_INDEX_CODE = 0;
-    private int numberLenth;
+//    private int numberLenth;
     int index = -1;
     Calendar cal;
     String profileImageUrl = "";
@@ -170,8 +170,8 @@ public class CreateProfileActivity extends BaseActivity implements AsyncResult,V
         try {
             Bundle bundle = getIntent().getExtras();
             index = bundle.getInt(Constants.INDEX);
-            numberLenth = bundle.getInt(Constants.NUMBER_LENGTH);
-            mCountryCode = bundle.getString(Constants.COUNTRY_CODE);
+//            numberLenth = bundle.getInt(Constants.NUMBER_LENGTH);
+//            mCountryCode = bundle.getString(Constants.COUNTRY_CODE);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -436,8 +436,7 @@ public class CreateProfileActivity extends BaseActivity implements AsyncResult,V
 
                         Intent intent = new Intent(CreateProfileActivity.this, SyncContactsActivity.class);
                         Bundle bundle = new Bundle();
-                        bundle.putInt(Constants.NUMBER_LENGTH, numberLenth);
-                        bundle.putString(Constants.COUNTRY_CODE, mCountryCode);
+                        bundle.putInt(Constants.INDEX,22);
                         intent.putExtras(bundle);
                         startActivity(intent);
                     } else {

@@ -163,9 +163,11 @@ public class SettingsFragment extends BaseFragment {
 
                             break;
                         case 5:
-                            Intent intent= new Intent(getActivity(),SyncContactsActivity.class);
-                            getActivity().startActivity(intent);
-
+                            Intent intent = new Intent(getActivity(),SyncContactsActivity.class);
+                            Bundle bundle = new Bundle();
+                            bundle.putInt(Constants.INDEX,20);
+                            intent.putExtras(bundle);
+                            startActivity(intent);
                             break;
                         case 6:
                             Intent in = new Intent(getActivity(), RecommendBadgeActivity.class);

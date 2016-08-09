@@ -21,7 +21,10 @@ public class PreferenceHandler {
 	public static final String PREF_KEY_DESCRIPTION = "PREF_KEY_DESCRIPTION";
 	public static final String PREF_KEY_GENDER = "PREF_KEy_GENDER";
 
-	public static final String PREF_KEY_USER_MOBILE = "PREF_KEY_USER_MOBILE";
+	public static final String PREF_KEY_NUMBER_LENGTH = "PREF_KEY_NUMBER_LENGTH";
+	public static final String PREF_KEY_MOBILE_NUMBER = "PREF_KEY_MOBILE_NUMBER";
+	public static final String PREF_KEY_COUNTRY_CODE = "PREF_KEY_COUNTRY_CODE";
+
 	public static final String PREF_KEY_GCMID = "PREF_KEY_GCMID";
 	public static  final String PROFILE_PIC_URL="PROFILE_PIC_URL";
 	public static  final String COVER_PIC_URL="COVER_PIC_URL";

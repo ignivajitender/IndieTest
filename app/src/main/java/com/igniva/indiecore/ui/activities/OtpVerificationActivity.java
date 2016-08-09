@@ -64,11 +64,10 @@ public class OtpVerificationActivity extends BaseActivity implements View.OnClic
 
             mTvResend=(TextView)findViewById(R.id.tv_resend);
             mTvResend.setOnClickListener(this);
-            Bundle bundle = getIntent().getExtras();
-            mMobileNumber = bundle.getString(Constants.MOBILE_NO);
-            mCountryId = bundle.getString(Constants.COUNTRY_CODE);
-            numberLength = bundle.getInt(Constants.NUMBER_LENGTH);
-
+//            Bundle bundle = getIntent().getExtras();
+            mMobileNumber =PreferenceHandler.readString(OtpVerificationActivity.this,PreferenceHandler.PREF_KEY_MOBILE_NUMBER,"");
+            mCountryId =PreferenceHandler.readString(OtpVerificationActivity.this,PreferenceHandler.PREF_KEY_COUNTRY_CODE,"");
+            numberLength =PreferenceHandler.readInteger(OtpVerificationActivity.this,PreferenceHandler.PREF_KEY_NUMBER_LENGTH,0);
         } catch (Exception e) {
             e.printStackTrace();
         }

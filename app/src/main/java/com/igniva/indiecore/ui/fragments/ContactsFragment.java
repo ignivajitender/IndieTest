@@ -136,12 +136,12 @@ public class ContactsFragment extends BaseFragment {
             mTvFavourite.setBackgroundResource(R.drawable.simple_border_line_style);
 
             if (mSavedUsersList.size() > 0) {
+                mRvUsers.setVisibility(View.VISIBLE);
                 mPhoneBookAdapter = null;
                 mPhoneBookAdapter = new PhonebookAdapter(getActivity(), mSavedUsersList, onContactCardClickListner);
                 mRvUsers.setAdapter(mPhoneBookAdapter);
                 mLlNoContactText.setVisibility(View.GONE);
-
-            } else {
+                } else {
                 mRvUsers.setVisibility(View.GONE);
                 mLlNoContactText.setVisibility(View.VISIBLE);
                 mComingSoon.setText(R.string.no_contacts_one);

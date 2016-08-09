@@ -138,7 +138,7 @@ public class EnterMobileActivity extends BaseActivity {
         // mButtonNext.setOnClickListener(this);
 
         mEtMobileNumber = (EditText) findViewById(R.id.et_mobile_number);
-              mEtMobileNumber.setText("9816428478");
+              mEtMobileNumber.setText("9041040600");
         mEtMobileNumber.requestFocus();
 
         mEtCountryCode = (EditText) findViewById(R.id.et_country_code);
@@ -165,18 +165,12 @@ public class EnterMobileActivity extends BaseActivity {
                         CountryZipCode=g[0];
                         break;  }
                 }
-
                 mEtCountryCode.setText(CountryZipCode);
-
             }
         } catch (Exception e) {
             e.printStackTrace();
         }
-
-
     }
-
-
     public void onClick(View v) {
 
 
@@ -194,16 +188,22 @@ public class EnterMobileActivity extends BaseActivity {
                     // start parsing
                     if (result.getSuccess().equalsIgnoreCase("true")) {
 
+
+                        PreferenceHandler.writeString(EnterMobileActivity.this,PreferenceHandler.PREF_KEY_MOBILE_NUMBER,mobileNumber);
+                        PreferenceHandler.writeString(EnterMobileActivity.this,PreferenceHandler.PREF_KEY_COUNTRY_CODE,countryId);
+                        PreferenceHandler.writeInteger(EnterMobileActivity.this,PreferenceHandler.PREF_KEY_NUMBER_LENGTH,mobileNumber.length());
+
+
                         // TODO check if test user
 
                         if(result.getUserId()==null){
-                            Intent in = new Intent(EnterMobileActivity.this, OtpVerificationActivity.class);
-                            Bundle bundle = new Bundle();
-                            bundle.putString(Constants.MOBILE_NO, mobileNumber);
-                            bundle.putString(Constants.COUNTRY_CODE, countryId);
-                            bundle.putInt(Constants.NUMBER_LENGTH,mobileNumber.length());
 
-                            in.putExtras(bundle);
+                            Intent in = new Intent(EnterMobileActivity.this, OtpVerificationActivity.class);
+//                            Bundle bundle = new Bundle();
+//                            bundle.putString(Constants.MOBILE_NO, mobileNumber);
+//                            bundle.putString(Constants.COUNTRY_CODE, countryId);
+//                            bundle.putInt(Constants.NUMBER_LENGTH,mobileNumber.length());
+//                            in.putExtras(bundle);
                             startActivity(in);
 
                         } else if(result.getNewUser().equalsIgnoreCase("False")){

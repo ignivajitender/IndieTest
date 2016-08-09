@@ -45,7 +45,6 @@ public class WallPostAdapter extends RecyclerView.Adapter<WallPostAdapter.Recycl
     private String ACTIVITYNAME = "";
     String LOG_TAG = "WallPostAdapter";
     //    OnListItemClickListner mOnListItemClickListner;
-    PostPojo postPojo;
     OnCommentListItemClickListnerTest2 onCommentListItemClickListnerTest2l;
 
 
@@ -71,13 +70,13 @@ public class WallPostAdapter extends RecyclerView.Adapter<WallPostAdapter.Recycl
     @Override
     public void onBindViewHolder(final RecyclerViewHolders holder, final int position) {
         try {
-            postPojo = wallItemsList.get(position);
-            if (!postPojo.getFirstName().isEmpty()) {
-                String Name = (postPojo.getFirstName() + " " + (postPojo.getLastName()).charAt(0) + ".");
+//            wallItemsList.get(position) = wallItemsList.get(position);
+            if (!wallItemsList.get(position).getFirstName().isEmpty()) {
+                String Name = (wallItemsList.get(position).getFirstName() + " " + (wallItemsList.get(position).getLastName()).charAt(0) + ".");
                 holder.mUserName.setText(Name);
             }
-            if (postPojo.getProfile_pic() != null) {
-                Glide.with(mContext).load(WebServiceClient.HTTP_STAGING + postPojo.getProfile_pic())
+            if (wallItemsList.get(position).getProfile_pic() != null) {
+                Glide.with(mContext).load(WebServiceClient.HTTP_STAGING + wallItemsList.get(position).getProfile_pic())
                         .thumbnail(1f)
                         .crossFade()
                         .diskCacheStrategy(DiskCacheStrategy.ALL)
@@ -85,13 +84,13 @@ public class WallPostAdapter extends RecyclerView.Adapter<WallPostAdapter.Recycl
             } else {
                 holder.mUserIcon.setImageResource(R.drawable.default_user);
             }
-            String time = postPojo.getDate_created();
+            String time = wallItemsList.get(position).getDate_created();
             holder.mPostTime.setText(time.substring(0, 10));
 
             try {
-                if (postPojo.getMediaUrl() != null) {
+                if (wallItemsList.get(position).getMediaUrl() != null) {
                     holder.mMediaPost.setVisibility(View.VISIBLE);
-                    Glide.with(mContext).load(WebServiceClient.HTTP_STAGING + postPojo.getMediaUrl())
+                    Glide.with(mContext).load(WebServiceClient.HTTP_STAGING + wallItemsList.get(position).getMediaUrl())
                             .thumbnail(1f)
                             .crossFade()
                             .diskCacheStrategy(DiskCacheStrategy.ALL)
@@ -104,16 +103,16 @@ public class WallPostAdapter extends RecyclerView.Adapter<WallPostAdapter.Recycl
             }
 //
 //
-            holder.mTextPost.setText(postPojo.getText());
-            holder.like.setText(postPojo.getLike() + "");
-            holder.dislike.setText(postPojo.getDislike() + "");
-            holder.neutral.setText(postPojo.getNeutral() + "");
-            holder.comment.setText(postPojo.getComment() + "");
+            holder.mTextPost.setText(wallItemsList.get(position).getText());
+            holder.like.setText(wallItemsList.get(position).getLike() + "");
+            holder.dislike.setText(wallItemsList.get(position).getDislike() + "");
+            holder.neutral.setText(wallItemsList.get(position).getNeutral() + "");
+            holder.comment.setText(wallItemsList.get(position).getComment() + "");
 
             // Post has been liked/disliked or set neutral by user
-            if (postPojo.getAction() != null) {
+            if (wallItemsList.get(position).getAction() != null) {
 
-                if (postPojo.getAction().equalsIgnoreCase(Constants.LIKE)) {
+                if (wallItemsList.get(position).getAction().equalsIgnoreCase(Constants.LIKE)) {
                     holder.like.setCompoundDrawablesWithIntrinsicBounds(R.drawable.like_blue_icon_circle, 0, 0, 0);
                     holder.dislike.setCompoundDrawablesWithIntrinsicBounds(R.drawable.dislike_grey_icon_circle, 0, 0, 0);
                     holder.neutral.setCompoundDrawablesWithIntrinsicBounds(R.drawable.hand_grey_icon_circle, 0, 0, 0);
@@ -121,7 +120,7 @@ public class WallPostAdapter extends RecyclerView.Adapter<WallPostAdapter.Recycl
                     holder.dislike.setEnabled(false);
                     holder.neutral.setEnabled(false);
 
-                } else if (postPojo.getAction().equalsIgnoreCase(Constants.DISLIKE)) {
+                } else if (wallItemsList.get(position).getAction().equalsIgnoreCase(Constants.DISLIKE)) {
                     holder.dislike.setCompoundDrawablesWithIntrinsicBounds(R.drawable.dislike_blue_icon_circle, 0, 0, 0);
                     holder.like.setCompoundDrawablesWithIntrinsicBounds(R.drawable.like_grey_icon_circle, 0, 0, 0);
                     holder.neutral.setCompoundDrawablesWithIntrinsicBounds(R.drawable.hand_grey_icon_circle, 0, 0, 0);
@@ -129,7 +128,7 @@ public class WallPostAdapter extends RecyclerView.Adapter<WallPostAdapter.Recycl
                     holder.dislike.setEnabled(true);
                     holder.neutral.setEnabled(false);
 //
-                } else if (postPojo.getAction().equalsIgnoreCase(Constants.NEUTRAL)) {
+                } else if (wallItemsList.get(position).getAction().equalsIgnoreCase(Constants.NEUTRAL)) {
 
                     holder.neutral.setCompoundDrawablesWithIntrinsicBounds(R.drawable.hand_icon_blue_circle, 0, 0, 0);
                     holder.like.setCompoundDrawablesWithIntrinsicBounds(R.drawable.like_grey_icon_circle, 0, 0, 0);
@@ -164,26 +163,26 @@ public class WallPostAdapter extends RecyclerView.Adapter<WallPostAdapter.Recycl
             holder.like.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    onCommentListItemClickListnerTest2l.onCommentListItemClicked(holder, position, postPojo.getPostId(), Constants.LIKE);
+                    onCommentListItemClickListnerTest2l.onCommentListItemClicked(holder, position, wallItemsList.get(position).getPostId(), Constants.LIKE);
                 }
             });
             holder.dislike.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    onCommentListItemClickListnerTest2l.onCommentListItemClicked(holder, position, postPojo.getPostId(), Constants.DISLIKE);
+                    onCommentListItemClickListnerTest2l.onCommentListItemClicked(holder, position, wallItemsList.get(position).getPostId(), Constants.DISLIKE);
                 }
             });
             holder.neutral.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    onCommentListItemClickListnerTest2l.onCommentListItemClicked(holder, position, postPojo.getPostId(), Constants.NEUTRAL);
+                    onCommentListItemClickListnerTest2l.onCommentListItemClicked(holder, position, wallItemsList.get(position).getPostId(), Constants.NEUTRAL);
                 }
             });
 
             holder.comment.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    onCommentListItemClickListnerTest2l.onCommentListItemClicked(holder, position, postPojo.getPostId(), Constants.COMMENT);
+                    onCommentListItemClickListnerTest2l.onCommentListItemClicked(holder, position, wallItemsList.get(position).getPostId(), Constants.COMMENT);
 
                 }
             });
@@ -191,7 +190,7 @@ public class WallPostAdapter extends RecyclerView.Adapter<WallPostAdapter.Recycl
             holder.mMediaPost.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    onCommentListItemClickListnerTest2l.onCommentListItemClicked(holder, position, postPojo.getPostId(), Constants.MEDIA);
+                    onCommentListItemClickListnerTest2l.onCommentListItemClicked(holder, position, wallItemsList.get(position).getPostId(), Constants.MEDIA);
 
                 }
             });
@@ -200,7 +199,7 @@ public class WallPostAdapter extends RecyclerView.Adapter<WallPostAdapter.Recycl
             holder.mDeletePost.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    onCommentListItemClickListnerTest2l.onCommentListItemClicked(holder, position, postPojo.getPostId(), ACTION);
+                    onCommentListItemClickListnerTest2l.onCommentListItemClicked(holder, position, wallItemsList.get(position).getPostId(), ACTION);
 
                 }
             });
@@ -214,11 +213,13 @@ public class WallPostAdapter extends RecyclerView.Adapter<WallPostAdapter.Recycl
                 @Override
                 public void onClick(View v) {
 
+//                    onCommentListItemClickListnerTest2l.onCommentListItemClicked(holder, position, wallItemsList.get(position).getPostId(), wallItemsList.get(position).getRoomId());
+
                     try {
                             Bundle bundle = new Bundle();
                             Intent intent = new Intent(mContext, UserProfileActivity.class);
-                            bundle.putString(Constants.USERID, postPojo.getUserId());
-                            bundle.putString(Constants.BUSINESS_ID, postPojo.getRoomId());
+                            bundle.putString(Constants.USERID, wallItemsList.get(position).getUserId());
+                            bundle.putString(Constants.BUSINESS_ID, wallItemsList.get(position).getRoomId());
                             bundle.putInt(Constants.INDEX, 11);
                             intent.putExtras(bundle);
                             mContext.startActivity(intent);
@@ -234,7 +235,6 @@ public class WallPostAdapter extends RecyclerView.Adapter<WallPostAdapter.Recycl
             holder.dropDownOptions.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    postPojo = wallItemsList.get(position);
                     try {
                         if (deletePostVisible == false) {
                             // Remove previously opened view
@@ -247,7 +247,7 @@ public class WallPostAdapter extends RecyclerView.Adapter<WallPostAdapter.Recycl
                             holder.mDeletePost.setVisibility(View.VISIBLE);
 
                                 String userID=PreferenceHandler.readString(mContext,PreferenceHandler.PREF_KEY_USER_ID,"");
-                                if (postPojo.getUserId().equalsIgnoreCase(userID)) {
+                                if (wallItemsList.get(position).getUserId().equalsIgnoreCase(userID)) {
                                     holder.mDeletePost.setImageResource(R.drawable.delete_icon);
                                     ACTION = "DELETE";
                                 } else {
