@@ -233,4 +233,28 @@ public class Utility {
 		alert11.show();
 	}
 
+
+	public static void showAlertDialogBuy(String message, final Context context){
+		AlertDialog.Builder builder1 = new AlertDialog.Builder(context,R.style.AppCompatAlertDialogStyle);
+		builder1.setMessage( message);
+		builder1.setCancelable(true);
+		builder1.setPositiveButton("BUY", new OnClickListener() {
+			public void onClick(DialogInterface dialog, int id) {
+				dialog.dismiss();
+
+			}
+		});
+//		builder1.setNegativeButton("INVITE", new OnClickListener() {
+//			@Override
+//			public void onClick(DialogInterface dialog, int which) {
+//				Intent intent = new Intent(context, InviteContactActivity.class);
+//				intent.putExtra(Constants.INDEX,3);
+//				context.startActivity(intent);
+//			}
+//		});
+
+		AlertDialog alert11 = builder1.create();
+		alert11.show();
+	}
+
 }

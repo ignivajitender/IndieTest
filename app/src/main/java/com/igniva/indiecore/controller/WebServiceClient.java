@@ -70,14 +70,8 @@ public class WebServiceClient {
     public static  final  String HTTP_SET_FAVOURITE=HTTP_PROTOCOL+HTTP_HOST_IP+"favourite/control";
     public static  final  String HTTP_FETCH_FAVOURITE=HTTP_PROTOCOL+HTTP_HOST_IP+"favourite/list";
     public static  final  String HTTP_BLOCK_USER=HTTP_PROTOCOL+HTTP_HOST_IP+"block/control";
-    public static  final  String HTTP_BLOCKED_USERLIST=HTTP_PROTOCOL+HTTP_HOST_IP+"block/list";
-
-
-
-
-
-
-
+    public static  final  String HTTP_BLOCKED_USER_LIST =HTTP_PROTOCOL+HTTP_HOST_IP+"block/list";
+    public static  final String HTTP_BUY_A_SLOT=HTTP_PROTOCOL+HTTP_HOST_IP+"badge/buy";
     //
     private final static String CONTENT_TYPE = "application/json";
 
@@ -306,11 +300,18 @@ public class WebServiceClient {
         checkNetworkState(url,payload,method,context);
     }
     public static void get_blocked_userlist(final Context context,String payload,ResponseHandlerListener responseHandlerListener){
-        url= HTTP_BLOCKED_USERLIST;
+        url= HTTP_BLOCKED_USER_LIST;
         method=HttpMethod.HTTP_POST;
         mResponseHandlerListener=responseHandlerListener;
         checkNetworkState(url,payload,method,context);
     }
+    public static void buy_a_badge_slot(final Context context,String payload,ResponseHandlerListener responseHandlerListener){
+        url= HTTP_BUY_A_SLOT;
+        method=HttpMethod.HTTP_POST;
+        mResponseHandlerListener=responseHandlerListener;
+        checkNetworkState(url,payload,method,context);
+    }
+
     /**
      * Check Available Network connection and make http call only if network is
      * available else show no network available

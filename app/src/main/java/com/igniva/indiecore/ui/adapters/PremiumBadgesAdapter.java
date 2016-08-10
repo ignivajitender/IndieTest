@@ -2,6 +2,7 @@ package com.igniva.indiecore.ui.adapters;
 
 import android.content.Context;
 import android.graphics.Color;
+import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -14,10 +15,7 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.igniva.indiecore.R;
 import com.igniva.indiecore.controller.OnPremiumBadgeClick;
-import com.igniva.indiecore.controller.WebServiceClient;
 import com.igniva.indiecore.model.BadgesPojo;
-import com.igniva.indiecore.model.CommentPojo;
-import com.igniva.indiecore.model.PremiumBadgePojo;
 
 import java.util.ArrayList;
 
@@ -33,6 +31,8 @@ public class PremiumBadgesAdapter extends RecyclerView.Adapter<PremiumBadgesAdap
     BadgesPojo PremiumBadge;
     String LOG_TAG = "PremiumBadgeAdapter";
     OnPremiumBadgeClick onPremiumBadgeClick;
+    int oldPostion=-1;
+    RelativeLayout oldRelativeLayout;
 
 
     public PremiumBadgesAdapter(Context context, ArrayList<BadgesPojo> premiumBadgeList ,OnPremiumBadgeClick onPremiumBadgeClick) {
@@ -68,24 +68,37 @@ public class PremiumBadgesAdapter extends RecyclerView.Adapter<PremiumBadgesAdap
             holder.mBadgeName.setText(mPremiumBadgeList.get(position).getName());
             holder.mBadgePrice.setText("£"+mPremiumBadgeList.get(position).getPrice()+" /");
 
+
+//            if(mPremiumBadgeList.get(position).isSelected()){
+//                holder.mRlPremiumBadge.setBackgroundColor(Color.parseColor("#77000000"));
+//
+//            }else {
+//                holder.mRlPremiumBadge.setBackgroundColor(Color.parseColor("#1C6DCE"));
+//            }
+
               holder.mRlPremiumBadge.setOnClickListener(new View.OnClickListener() {
                   @Override
                   public void onClick(View v) {
-
-                      int OLDPOSTION=position;
+                      try{
+                          if(mPremiumBadgeList.get(oldPostion).isSelected()) {
+//                          mPremiumBadgeList.get(oldPostion).setSelected(false);
+                              oldRelativeLayout.setBackgroundColor(Color.parseColor("#1C6DCE"));
+                          }
+                      }catch (Exception e){
+                          e.printStackTrace();
+                      }
                       try {
                           if(mPremiumBadgeList.get(position).isSelected()==false){
-
-                              holder.mRlPremiumBadge.setBackgroundColor(Color.parseColor("#000000"));
+                              holder.mRlPremiumBadge.setBackgroundColor(Color.parseColor("#77000000"));
                               mPremiumBadgeList.get(position).setSelected(true);
                           } else {
-                              holder.mRlPremiumBadge.setBackgroundColor(Color.parseColor("#ffffff"));
+                              holder.mRlPremiumBadge.setBackgroundColor(Color.parseColor("#1C6DCE"));
                               mPremiumBadgeList.get(position).setSelected(false);
                           }
-
+                          oldPostion=position;
+                          oldRelativeLayout=holder.mRlPremiumBadge;
                           PremiumBadge=mPremiumBadgeList.get(position);
-
-                          onPremiumBadgeClick.onPremiumBadgeClicked(PremiumBadge);
+//                          onPremiumBadgeClick.onPremiumBadgeClicked(PremiumBadge);
                       } catch (Exception e) {
                           e.printStackTrace();
                       }
@@ -113,7 +126,7 @@ public class PremiumBadgesAdapter extends RecyclerView.Adapter<PremiumBadgesAdap
         public TextView mBadgeName;
         public ImageView mBadgeIcon;
         public TextView mBadgePrice;
-        private RelativeLayout mRlPremiumBadge;
+        public RelativeLayout mRlPremiumBadge;
 
 
 
@@ -124,7 +137,7 @@ public class PremiumBadgesAdapter extends RecyclerView.Adapter<PremiumBadgesAdap
             mBadgeIcon=(ImageView) itemView.findViewById(R.id.iv_premium_badge_icon);
             mBadgeName = (TextView) itemView.findViewById(R.id.tv_premium_badge_name);
             mBadgePrice = (TextView) itemView.findViewById(R.id.tv_premium_badge_price);
-            mRlPremiumBadge=(RelativeLayout) itemView.findViewById(R.id.rl_premiumbadge);
+            mRlPremiumBadge =(RelativeLayout) itemView.findViewById(R.id.rl_premiumbadge);
         }
 
         @Override

@@ -224,13 +224,17 @@ public class BadgesActivity extends BaseActivity {
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 
         mBadgesAdapter.onActivityResult(requestCode, resultCode, data);
-//        mBadgesAdapter.notifyDataSetChanged();
     }
 
 
+
+    /*
+    * payload to save my selected badges at server
+    * PARAMETER: token, userId, type, badgeIds (should be in CSV format. for eg. 1,4,5,8)
+    *
+    * */
     public String createPayload() {
         JSONObject payload = null;
-//        PARAMETER: token, userId, type, badgeIds (should be in CSV format. for eg. 1,4,5,8)
         try {
             payload = new JSONObject();
             payload.put(Constants.TOKEN, PreferenceHandler.readString(this, PreferenceHandler.PREF_KEY_USER_TOKEN, ""));
@@ -252,7 +256,11 @@ public class BadgesActivity extends BaseActivity {
         return payload.toString();
     }
 
-
+/*
+*
+* save my badges at server request
+*
+* */
     public void mySelectedBadges() {
         try {
             String payload = createPayload();

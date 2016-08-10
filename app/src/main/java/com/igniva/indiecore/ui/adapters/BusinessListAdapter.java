@@ -7,8 +7,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 
-import android.support.v4.app.FragmentTransaction;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -29,7 +27,6 @@ import com.igniva.indiecore.model.ResponsePojo;
 import com.igniva.indiecore.ui.activities.BusinessDetailActivity;
 
 import com.igniva.indiecore.ui.activities.DashBoardActivity;
-import com.igniva.indiecore.ui.fragments.ChatsFragment;
 import com.igniva.indiecore.utils.Constants;
 import com.igniva.indiecore.utils.PreferenceHandler;
 import com.igniva.indiecore.utils.Utility;
@@ -41,7 +38,7 @@ import java.util.ArrayList;
 /**
  * Created by igniva-andriod-11 on 10/6/16.
  */
-public class BusinessListAadpter extends RecyclerView.Adapter<BusinessListAadpter.RecyclerViewHolders> {
+public class BusinessListAdapter extends RecyclerView.Adapter<BusinessListAdapter.RecyclerViewHolders> {
 
     private Context mContext;
     String LOG_TAG = "BusinessListAdapter";
@@ -49,7 +46,7 @@ public class BusinessListAadpter extends RecyclerView.Adapter<BusinessListAadpte
     private final OnCardClickListner listener;
     private String mBusiness_Id="";
 
-    public BusinessListAadpter(Context context, ArrayList<BusinessPojo> mBusinessList, OnCardClickListner onCardClickListner) {
+    public BusinessListAdapter(Context context, ArrayList<BusinessPojo> mBusinessList, OnCardClickListner onCardClickListner) {
         this.mContext=context;
         this.mBusinessList = mBusinessList;
         this.listener = onCardClickListner;
@@ -66,7 +63,6 @@ public class BusinessListAadpter extends RecyclerView.Adapter<BusinessListAadpte
 
     @Override
     public void onBindViewHolder(final RecyclerViewHolders holder, final int position) {
-        // final ImageLoader imageLoader = new ImageLoader(mContext);
         String address = "";
         try {
             holder.mTVBusinessName.setText(mBusinessList.get(position).getName());

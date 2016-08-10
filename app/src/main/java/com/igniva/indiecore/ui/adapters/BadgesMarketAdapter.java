@@ -35,12 +35,14 @@ public class BadgesMarketAdapter extends RecyclerView.Adapter<BadgesMarketAdapte
     public static final int REQUEST_CODE = 500;
     String LOG_TAG = "BadgesAdapter";
     private ArrayList<BadgesPojo> mBadgeMarketList;
+    private ArrayList<BadgesPojo> mSelectedBadgeIds = new ArrayList<BadgesPojo>();
 
 
-    public BadgesMarketAdapter(Context mContext, ArrayList<BadgesPojo> mSelectedBadgeIds) {
+    public BadgesMarketAdapter(Context mContext,ArrayList<BadgesPojo> mBadgesList, ArrayList<BadgesPojo> mSelectedBadgeIds) {
 
         this.mContext = mContext;
-        this.mBadgeMarketList = mSelectedBadgeIds;
+        this.mBadgeMarketList = mBadgesList;
+        this.mSelectedBadgeIds=mSelectedBadgeIds;
 
     }
 
@@ -66,6 +68,13 @@ public class BadgesMarketAdapter extends RecyclerView.Adapter<BadgesMarketAdapte
             e.printStackTrace();
         }
 
+        if(mBadgeMarketList.get(position).isSelected()){
+            holder.mIvGetThisBadge.setImageResource(R.drawable.tick_badge);
+        }else {
+            holder.mIvGetThisBadge.setImageResource(R.drawable.get_badge);
+
+        }
+
 
                  holder.mIvGetThisBadge.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -73,15 +82,25 @@ public class BadgesMarketAdapter extends RecyclerView.Adapter<BadgesMarketAdapte
                 try {
                     if (mBadgeMarketList.get(position).isSelected()) {
                         holder.mIvGetThisBadge.setImageResource(R.drawable.get_badge);
-//                     MyBadgesActivity.selectedBadgeId= mBadgeMarketList.get(position).getBadgeId();
                         mBadgeMarketList.get(position).setSelected(false);
-                    } else {
+                        mBadgeMarketList.get(position).setActive(0);
+                        mBadgeMarketList.get(position).setIsPremium(0);
+                        removeBadgeIds(position);
+                    } else if (mSelectedBadgeIds.size() < 10) {
                         holder.mIvGetThisBadge.setImageResource(R.drawable.tick_badge);
-//                    mBadgeMarketList.get(position).setiSActive(0);
                         mBadgeMarketList.get(position).setSelected(true);
+                        mBadgeMarketList.get(position).setActive(1);
+                        mBadgeMarketList.get(position).setIsPremium(1);
+
+                        addSelectedBadgeIds(position);
+                    } else {
+                        Utility.showAlertDialogBuy(mContext.getResources().getString(R.string.not_more_then_ten_badge), mContext);
+                        return;
+
 
                     }
-                }catch (Exception e){
+
+                } catch (Exception e) {
                     e.printStackTrace();
                 }
 
@@ -95,27 +114,74 @@ public class BadgesMarketAdapter extends RecyclerView.Adapter<BadgesMarketAdapte
             public void onClick(View view) {
 
 
-                Toast.makeText(mContext,"Coming Soon",Toast.LENGTH_SHORT).show();
-//
-//                //BadgesPojo obj= new BadgesPojo(itemList.get(position).getName(),itemList.get(position).getIcon(),itemList.get(position).getDescription());
-//
-//                Bundle bundle=new Bundle();
-//                bundle.putInt(Constants.POSITION,position);
-//                bundle.putSerializable("badgePojo",mBadgeMarketList.get(position));
-//                // Creating an intent to open the activity StudentViewActivity
-//                Intent intent = new Intent(mContext, BadgeDetailActivity.class);
-//
-//                // Passing data as a parecelable object to StudentViewActivity
-//               // intent.putExtra("BadgeData",itemList.get(position));
-//                intent.putExtras(bundle);
-//                // Opening the activity
-//                ((Activity) mContext).startActivityForResult(intent,REQUEST_CODE);
+//                Toast.makeText(mContext,"Coming Soon",Toast.LENGTH_SHORT).show();
+
+                //BadgesPojo obj= new BadgesPojo(itemList.get(position).getName(),itemList.get(position).getIcon(),itemList.get(position).getDescription());
+
+                Bundle bundle=new Bundle();
+                bundle.putInt(Constants.POSITION,position);
+                bundle.putSerializable("badgePojo",mBadgeMarketList.get(position));
+                // Creating an intent to open the activity StudentViewActivity
+                Intent intent = new Intent(mContext, BadgeDetailActivity.class);
+
+                // Passing data as a parecelable object to StudentViewActivity
+               // intent.putExtra("BadgeData",itemList.get(position));
+                intent.putExtras(bundle);
+                // Opening the activity
+                ((Activity) mContext).startActivityForResult(intent,REQUEST_CODE);
             }
         });
 
 
     }
 
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        Log.d("MyAdapter", "onActivityResult");
+        // check if the request code is same as what is passed  here it is 2
+        try {
+
+            if (resultCode == 2) {
+                String badgeId = data.getStringExtra(Constants.BADGEIDS);
+                int pos = data.getIntExtra(Constants.POSITION, 0);
+
+                if (mBadgeMarketList.get(pos).isSelected()) {
+                    return;
+                }
+                if (mSelectedBadgeIds.size() < 10) {
+
+                    mBadgeMarketList.get(pos).setSelected(true);
+                    mBadgeMarketList.get(pos).setActive(1);
+                    mBadgeMarketList.get(pos).setIsPremium(0);
+                    addSelectedBadgeIds(pos);
+
+//            mSelectedBadgeIds.add(itemList.get(pos).getBadgeId());
+                    this.notifyDataSetChanged();
+                    //itemList.get()
+                } else {
+
+                    Utility.showAlertDialogInviteAndBuy("You can select maximum 10 badges free, to get more either invite friends or purchase", mContext);
+                    return;
+                }
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+
+
+
+    public void addSelectedBadgeIds(int postion) {
+        if (!mSelectedBadgeIds.contains(mBadgeMarketList.get(postion).getBadgeId())) {
+            mSelectedBadgeIds.add(mBadgeMarketList.get(postion));
+        }
+    }
+
+    public void removeBadgeIds(int postion) {
+
+        mSelectedBadgeIds.remove(mBadgeMarketList.get(postion));
+    }
 
     @Override
     public int getItemCount() {
@@ -148,19 +214,7 @@ public class BadgesMarketAdapter extends RecyclerView.Adapter<BadgesMarketAdapte
 
         }
     }
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        Log.d("MyAdapter", "onActivityResult");
-        // check if the request code is same as what is passed  here it is 2
 
-        try {
-
-
-
-
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
 
 
 }

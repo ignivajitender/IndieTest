@@ -239,16 +239,17 @@ public class UserProfileActivity extends BaseActivity implements View.OnClickLis
                                 e.printStackTrace();
                             }
                             try {
-                                String countryName="";
-                                int countryCode=Integer.parseInt(userDetails.getLocation().getCountryCode());
+
+                                String countryCode=userDetails.getLocation().getCountryCode();
                                 String[] rl=UserProfileActivity.this.getResources().getStringArray(R.array.countryList);
                                 for(int i=0;i<rl.length;i++){
                                     String[] g=rl[i].split(",");
-                                    if(g[1].trim().equals(countryCode)){
-                                        countryName=g[0];
+                                    if(g[1].trim().equals(countryCode.trim())){
+                                       String countryName=g[0];
+                                        mTvUserLocation.setText(countryName);
                                         break;  }
+
                                 }
-                                mTvUserLocation.setText(countryName);
                             } catch (NumberFormatException e) {
                                 e.printStackTrace();
                             } catch (Resources.NotFoundException e) {
@@ -270,7 +271,7 @@ public class UserProfileActivity extends BaseActivity implements View.OnClickLis
                     mProgressDialog.dismiss();
                 }
 
-                if(userDetails.is_favourite()){
+                if(userDetails.is_favourite() && INDEX!=11){
 
                     mTvLabel.setText("Mutual Badges");
                     setMutualBadges(result.getBadges());

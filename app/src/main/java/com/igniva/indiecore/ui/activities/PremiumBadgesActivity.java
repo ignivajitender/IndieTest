@@ -79,11 +79,6 @@ public class PremiumBadgesActivity extends BaseActivity implements IabBroadcastR
 
     // Current amount of gas in tank, in units
     int mTank;
-
-
-
-
-
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -292,7 +287,6 @@ public class PremiumBadgesActivity extends BaseActivity implements IabBroadcastR
             mRvPremiumBadges.setAdapter(premiumBadgesAdapter);
 
         } catch (Exception e) {
-
             e.printStackTrace();
         }
 

@@ -59,6 +59,7 @@ public class MyBadgesActivity extends BaseActivity implements View.OnClickListen
     Bundle bundle;
     ArrayList<BadgesPojo> mSelectedBadgesList = null;
     ArrayList<BadgesPojo> mBadgeMarketList = null;
+    public ArrayList<BadgesPojo> mSelectedBadgeIds = new ArrayList<BadgesPojo>();
     String LOG_TAG = "MyBadgeActivity";
 
 
@@ -106,7 +107,6 @@ public class MyBadgesActivity extends BaseActivity implements View.OnClickListen
                 @Override
                 public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
                     super.onScrolled(recyclerView, dx, dy);
-
                     if (buttonIndex == 2) {
                         if (dy > 0) //check for scroll down
                         {
@@ -163,6 +163,16 @@ public class MyBadgesActivity extends BaseActivity implements View.OnClickListen
         buttonIndex = 2;
         setDataInViewObjects();
     }
+
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+
+        mBadgeMarketAdpter.onActivityResult(requestCode, resultCode, data);
+//        mBadgesAdapter.notifyDataSetChanged();
+    }
+
+
 
     @Override
     protected void setDataInViewObjects() {
@@ -252,24 +262,6 @@ public class MyBadgesActivity extends BaseActivity implements View.OnClickListen
             e.printStackTrace();
         }
     }
-
-    /*
-    * token, userId, badgeId, active (0/1)
-    * to on/off the state of a badge
-    *
-    *
-    * */
-//    public void onOffBadges() {
-//        try {
-//
-//            if (payload != null) {
-//                WebNotificationManager.registerResponseListener(responseListner);
-//                WebServiceClient.onOffMyBadges(this, payload, responseListner);
-//            }
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//        }
-//    }
 
     ResponseHandlerListener responseListner = new ResponseHandlerListener() {
         @Override
@@ -381,7 +373,7 @@ public class MyBadgesActivity extends BaseActivity implements View.OnClickListen
         try {
             mBadgeMarketAdpter = null;
             Log.e(LOG_TAG, "setting bin adpter" + mBadgeMarketList.size());
-            mBadgeMarketAdpter = new BadgesMarketAdapter(MyBadgesActivity.this, mBadgeMarketList);
+            mBadgeMarketAdpter = new BadgesMarketAdapter(MyBadgesActivity.this, mBadgeMarketList,mSelectedBadgeIds);
             mRvMyBadges.setAdapter(mBadgeMarketAdpter);
         } catch (Exception e) {
             e.printStackTrace();

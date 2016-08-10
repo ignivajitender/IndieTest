@@ -6,7 +6,6 @@ import android.content.Context;
 import android.graphics.Color;
 import android.location.Criteria;
 import android.location.Location;
-import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -37,7 +36,7 @@ import com.igniva.indiecore.controller.WebNotificationManager;
 import com.igniva.indiecore.controller.WebServiceClient;
 import com.igniva.indiecore.model.BusinessPojo;
 import com.igniva.indiecore.model.ResponsePojo;
-import com.igniva.indiecore.ui.adapters.BusinessListAadpter;
+import com.igniva.indiecore.ui.adapters.BusinessListAdapter;
 import com.igniva.indiecore.ui.adapters.FindBusinessAdapter;
 import com.igniva.indiecore.utils.Constants;
 import com.igniva.indiecore.utils.Log;
@@ -55,26 +54,22 @@ import java.util.Comparator;
  */
 public class CheckInFragment extends BaseFragment {
 
-    LinearLayout mLlMapContainer, mLlSearchContainer;
+    private int sort = 1;
+    private int limit = 16;
+    private int page = 1;
     private TextView mTvTrending, mTvNearby, mTvFind, mTvSearch;
     private EditText mEtSearch;
     private GridLayoutManager mGlManager;
     private LinearLayoutManager mLlManager;
-    protected LocationManager locationManager;
-    protected LocationListener locationListener;
+    LinearLayout mLlMapContainer, mLlSearchContainer;
     ArrayList<BusinessPojo> mBusinessList;
     ArrayList<BusinessPojo> mFindBusinessResultList;
     ArrayList<BusinessPojo> mNearbyList;
     RecyclerView mRvBusinessGrid;
     View rootView;
-    BusinessListAadpter mBusinessAdapter;
+    BusinessListAdapter mBusinessAdapter;
     FindBusinessAdapter mFindBusinessAdapter;
-    private int sort = 1;
-    private int limit = 16;
-    private int page = 1;
-
     ImageView mIvBusiness;
-    Location mLocation;
 
     @Nullable
     @Override
@@ -83,13 +78,15 @@ public class CheckInFragment extends BaseFragment {
         setUpLayout();
         return rootView;
     }
-
     @Override
     protected void setUpLayout() {
 
         try {
-            mBusinessList = new ArrayList<BusinessPojo>();
-            mFindBusinessResultList = new ArrayList<BusinessPojo>();
+//            if (getIntent().hasExtra("CLICKED")) {
+//                buttonIndex = 2;
+//            }
+            mBusinessList = new ArrayList<>();
+            mFindBusinessResultList = new ArrayList<>();
             mGlManager = new GridLayoutManager(getActivity(), 3);
             mLlMapContainer = (LinearLayout) rootView.findViewById(R.id.ll_maps_container);
             mLlSearchContainer = (LinearLayout) rootView.findViewById(R.id.ll_Search);
@@ -97,13 +94,51 @@ public class CheckInFragment extends BaseFragment {
             mTvNearby = (TextView) rootView.findViewById(R.id.tv_nearby);
             mTvFind = (TextView) rootView.findViewById(R.id.tv_find);
             mEtSearch = (EditText) rootView.findViewById(R.id.et_search);
-            mRvBusinessGrid = (RecyclerView) rootView.findViewById(R.id.rv_business);
             mTvSearch = (TextView) rootView.findViewById(R.id.tv_search);
             mTvSearch.setOnClickListener(onClickListener);
-            mRvBusinessGrid.setLayoutManager(mGlManager);
             mTvTrending.setOnClickListener(onClickListener);
             mTvNearby.setOnClickListener(onClickListener);
             mTvFind.setOnClickListener(onClickListener);
+
+            mRvBusinessGrid = (RecyclerView) rootView.findViewById(R.id.rv_business);
+            mRvBusinessGrid.setLayoutManager(mGlManager);
+
+
+//            mRvBusinessGrid.addOnScrollListener(new RecyclerView.OnScrollListener() {
+//                @Override
+//                public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
+//                    super.onScrollStateChanged(recyclerView, newState);
+//                }
+//
+//                @Override
+//                public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+//                    super.onScrolled(recyclerView, dx, dy);
+//
+//                    if (buttonIndex == 2) {
+//                        if (dy > 0) //check for scroll down
+//                        {
+//                            visibleItemCount = mGlMAnager.getChildCount();
+//                            totalItemCount = mGlMAnager.getItemCount();
+//                            pastVisiblesItems = mGlMAnager.findFirstVisibleItemPosition();
+//
+//                            if (!isLoading) {
+//
+//                                Log.d(LOG_TAG, " visibleItemCount " + visibleItemCount + " pastVisiblesItems " + pastVisiblesItems + " totalItemCount " + totalItemCount);
+//                                if ((visibleItemCount + pastVisiblesItems) >= totalItemCount) {
+//                                    isLoading = true;
+//                                    //Do pagination.. i.e. fetch new data
+//                                    if (mBadgeMarketList.size() < 1) {
+//                                        findViewById(R.id.btn_load_more).performClick();
+//                                    }
+//                                    if (mBadgeMarketList.size() < mTotalBadgeCount) {
+//                                        findViewById(R.id.btn_load_more).performClick();
+//                                    }
+//                                }
+//                            }
+//                        }
+//                    }
+//                }
+//            });
 
             try {
 
@@ -134,6 +169,8 @@ public class CheckInFragment extends BaseFragment {
                                 googleMap.addMarker(new MarkerOptions().position(new LatLng(location.getLatitude(), location.getLongitude()
                                 )).title("My Location"));
 
+                                Log.e("myCurrentLAtLong---","Latitude"+location.getLatitude()+"Longitude"+location.getLongitude());
+
                                 CameraPosition cameraPosition = new CameraPosition.Builder()
                                         .target(new LatLng(location.getLatitude(), location.getLongitude()))      // Sets the center of the map to location user
                                         .zoom(10)                   // Sets the zoom
@@ -143,8 +180,6 @@ public class CheckInFragment extends BaseFragment {
                                 googleMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
 
                             }
-
-
                         }
                     }
                 });
@@ -160,24 +195,7 @@ public class CheckInFragment extends BaseFragment {
         updateTrendingUI();
 
 
-/*
-*
-* TODO add scroll listner
-* */
-//        mRvBusinessGrid.addOnScrollListener(new RecyclerView.OnScrollListener() {
-//            @Override
-//            public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
-//                super.onScrollStateChanged(recyclerView, newState);
-//            }
-//
-//            @Override
-//            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
-//                super.onScrolled(recyclerView, dx, dy);
-//
-//
-//                }
-//
-//        });
+
     }
 
 
@@ -217,7 +235,6 @@ public class CheckInFragment extends BaseFragment {
         } catch (Exception e) {
             e.printStackTrace();
         }
-
     }
 
     /*
@@ -240,7 +257,7 @@ public class CheckInFragment extends BaseFragment {
                             mBusinessAdapter = null;
                             Log.e("", "setting bin adpter" + mBusinessList.size());
                             if (mBusinessList.size() > 0) {
-                                mBusinessAdapter = new BusinessListAadpter(getActivity(), mBusinessList, onCardClickListner);
+                                mBusinessAdapter = new BusinessListAdapter(getActivity(), mBusinessList, onCardClickListner);
                                 mRvBusinessGrid.setAdapter(mBusinessAdapter);
                             }
                             if (mProgressDialog != null && mProgressDialog.isShowing()) {
@@ -325,11 +342,10 @@ public class CheckInFragment extends BaseFragment {
     /*
     * create payload to on off the status of badges for a business location
     *
-    *
+    * token, userId, businessId, badge_status
     * */
     public String createPayload(String businessId, String badgeStatus) {
         JSONObject payload = null;
-//        token, userId, businessId, badge_status
         try {
             payload = new JSONObject();
             payload.put(Constants.TOKEN, PreferenceHandler.readString(getActivity(), PreferenceHandler.PREF_KEY_USER_TOKEN, ""));
@@ -347,10 +363,10 @@ public class CheckInFragment extends BaseFragment {
     /*
     *
     * to get business around
+    *  token, userId, location, latlong, sort, limit, page
     * */
     public String createPayload() {
         JSONObject payload = null;
-//     token, userId, location, latlong, sort, limit, page
         try {
             payload = new JSONObject();
             payload.put(Constants.TOKEN, PreferenceHandler.readString(getActivity(), PreferenceHandler.PREF_KEY_USER_TOKEN, ""));
@@ -378,7 +394,6 @@ public class CheckInFragment extends BaseFragment {
             payload.put(Constants.TOKEN, PreferenceHandler.readString(getActivity(), PreferenceHandler.PREF_KEY_USER_TOKEN, ""));
             payload.put(Constants.USERID, PreferenceHandler.readString(getActivity(), PreferenceHandler.PREF_KEY_USER_ID, ""));
             payload.put(Constants.LOCATION, mEtSearch.getText().toString().trim());
-//                    payload.put(Constants.LATLONG, "37.77493,-122.419415");
             payload.put(Constants.SORT, String.valueOf(sort));
             payload.put(Constants.LIMIT, String.valueOf(limit));
             payload.put(Constants.PAGE, String.valueOf(page));
@@ -437,7 +452,7 @@ public class CheckInFragment extends BaseFragment {
                 mBusinessAdapter = null;
                 Log.e("", "setting bin adpter" + mBusinessList.size());
                 if (mBusinessList.size() > 0) {
-                    mBusinessAdapter = new BusinessListAadpter(getActivity(), mBusinessList, onCardClickListner);
+                    mBusinessAdapter = new BusinessListAdapter(getActivity(), mBusinessList, onCardClickListner);
                     mRvBusinessGrid.setAdapter(mBusinessAdapter);
                 }
             } catch (Exception e) {
@@ -485,7 +500,7 @@ public class CheckInFragment extends BaseFragment {
                 //  mRvBusinessGrid.setAdapter(mBusinessAdapter);
                 Log.e("", "setting bin adpter" + mBusinessList.size());
                 if (mNearbyList.size() > 0) {
-                    mBusinessAdapter = new BusinessListAadpter(getActivity(), mNearbyList, onCardClickListner);
+                    mBusinessAdapter = new BusinessListAdapter(getActivity(), mNearbyList, onCardClickListner);
                     mRvBusinessGrid.setAdapter(mBusinessAdapter);
                 }
             } catch (Exception e) {
@@ -613,12 +628,5 @@ public class CheckInFragment extends BaseFragment {
             }
         }
     };
-//
-//    @Override
-//    public void onMapReady(GoogleMap googleMap) {
-//        if (googleMap != null) {
-//            googleMap.addMarker(new MarkerOptions().position(new LatLng(30.7362900, 76.7884000
-//            )).title("My Location"));
-//        }
-//    }
+
 }
