@@ -57,10 +57,13 @@ public class CheckInFragment extends BaseFragment {
     private int sort = 1;
     private int limit = 16;
     private int page = 1;
+    private int businessCount=0;
+    private int totalBusinessCount=0;
     private TextView mTvTrending, mTvNearby, mTvFind, mTvSearch;
     private EditText mEtSearch;
     private GridLayoutManager mGlManager;
     private LinearLayoutManager mLlManager;
+    private boolean isLoading;
     LinearLayout mLlMapContainer, mLlSearchContainer;
     ArrayList<BusinessPojo> mBusinessList;
     ArrayList<BusinessPojo> mFindBusinessResultList;
@@ -82,9 +85,6 @@ public class CheckInFragment extends BaseFragment {
     protected void setUpLayout() {
 
         try {
-//            if (getIntent().hasExtra("CLICKED")) {
-//                buttonIndex = 2;
-//            }
             mBusinessList = new ArrayList<>();
             mFindBusinessResultList = new ArrayList<>();
             mGlManager = new GridLayoutManager(getActivity(), 3);
@@ -104,41 +104,41 @@ public class CheckInFragment extends BaseFragment {
             mRvBusinessGrid.setLayoutManager(mGlManager);
 
 
-//            mRvBusinessGrid.addOnScrollListener(new RecyclerView.OnScrollListener() {
-//                @Override
-//                public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
-//                    super.onScrollStateChanged(recyclerView, newState);
-//                }
-//
-//                @Override
-//                public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
-//                    super.onScrolled(recyclerView, dx, dy);
-//
-//                    if (buttonIndex == 2) {
-//                        if (dy > 0) //check for scroll down
-//                        {
-//                            visibleItemCount = mGlMAnager.getChildCount();
-//                            totalItemCount = mGlMAnager.getItemCount();
-//                            pastVisiblesItems = mGlMAnager.findFirstVisibleItemPosition();
-//
-//                            if (!isLoading) {
-//
+            mRvBusinessGrid.addOnScrollListener(new RecyclerView.OnScrollListener() {
+                @Override
+                public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
+                    super.onScrollStateChanged(recyclerView, newState);
+                }
+
+                @Override
+                public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+                    super.onScrolled(recyclerView, dx, dy);
+
+                        if (dy > 0) //check for scroll down
+                        {
+                          int  visibleItemCount = mGlManager.getChildCount();
+                          int  pastVisiblesItems = mGlManager.findFirstVisibleItemPosition();
+                            int lastItemCount=mGlManager.findLastVisibleItemPosition();
+
+                            if (!isLoading) {
 //                                Log.d(LOG_TAG, " visibleItemCount " + visibleItemCount + " pastVisiblesItems " + pastVisiblesItems + " totalItemCount " + totalItemCount);
-//                                if ((visibleItemCount + pastVisiblesItems) >= totalItemCount) {
-//                                    isLoading = true;
-//                                    //Do pagination.. i.e. fetch new data
-//                                    if (mBadgeMarketList.size() < 1) {
-//                                        findViewById(R.id.btn_load_more).performClick();
-//                                    }
-//                                    if (mBadgeMarketList.size() < mTotalBadgeCount) {
-//                                        findViewById(R.id.btn_load_more).performClick();
-//                                    }
-//                                }
-//                            }
-//                        }
+                                if (lastItemCount < totalBusinessCount) {
+                                    limit+=limit;
+                                    page+=page;
+                                    isLoading = true;
+                                    //Do pagination.. i.e. fetch new data
+                                    if (mBusinessList.size() < 1) {
+                                       getBusinesses(limit,page);
+                                    }
+                                    if (mBusinessList.size() < totalBusinessCount) {
+                                      getBusinesses(limit,page);
+                                    }
+                                }
+                            }
+                        }
 //                    }
-//                }
-//            });
+                }
+            });
 
             try {
 
@@ -190,29 +190,18 @@ public class CheckInFragment extends BaseFragment {
         } catch (Exception e) {
             e.printStackTrace();
         }
-        getBusinesses();
-
+        getBusinesses(limit,page);
         updateTrendingUI();
-
-
-
     }
 
 
     @Override
     protected void setDataInViewObjects() {
 
-
     }
 
-//    @Override
-//    protected void onClick(View v) {
-//
-//    }
-
-
-    public void getBusinesses() {
-        String payload = createPayload();
+    public void getBusinesses(int limit,int page) {
+        String payload = createPayload(limit,page);
         try {
             if (payload != null) {
                 WebNotificationManager.registerResponseListener(responseHandler);
@@ -251,6 +240,8 @@ public class CheckInFragment extends BaseFragment {
                 try {
                     if (result.getSuccess().equalsIgnoreCase("true")) {
 
+                        businessCount=result.getBusiness_count();
+                        totalBusinessCount=result.getTotal_count();
                         mBusinessList.addAll(result.getBusiness_list());
                         try {
                             mFindBusinessAdapter = null;
@@ -260,6 +251,8 @@ public class CheckInFragment extends BaseFragment {
                                 mBusinessAdapter = new BusinessListAdapter(getActivity(), mBusinessList, onCardClickListner);
                                 mRvBusinessGrid.setAdapter(mBusinessAdapter);
                             }
+
+                            isLoading = false;
                             if (mProgressDialog != null && mProgressDialog.isShowing()) {
                                 mProgressDialog.dismiss();
                             }
@@ -365,7 +358,7 @@ public class CheckInFragment extends BaseFragment {
     * to get business around
     *  token, userId, location, latlong, sort, limit, page
     * */
-    public String createPayload() {
+    public String createPayload(int limit,int page) {
         JSONObject payload = null;
         try {
             payload = new JSONObject();

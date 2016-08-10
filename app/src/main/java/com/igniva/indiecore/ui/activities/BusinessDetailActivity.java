@@ -1,7 +1,6 @@
 package com.igniva.indiecore.ui.activities;
 
 import android.content.Intent;
-import android.media.Image;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.Toolbar;
@@ -25,9 +24,9 @@ import com.igniva.indiecore.model.BusinessPojo;
  */
 public class BusinessDetailActivity extends BaseActivity implements OnMapReadyCallback {
 
-    private TextView mTvTitle,mTvBUsinessName,mTvBusinessAddress,mTvAbout,mTvTelephoneOne,mTvTelephoneTwo,mTvOpeningHours,mTvWebsite;
-    private ImageView mBUsinessImage,mIvBUsinessRating,mBusinessCoverPic;
-    double lattitude=0;
+    private TextView mTvTitle, mTvBusinessName,mTvBusinessAddress,mTvAbout,mTvTelephoneOne,mTvTelephoneTwo,mTvOpeningHours,mTvWebsite;
+    private ImageView mBusinessImage, mIvBusinessRating,mBusinessCoverPic;
+    double latitude =0;
     double longitude=0;
      Bundle bundle;
     Toolbar mToolbar;
@@ -45,17 +44,17 @@ public class BusinessDetailActivity extends BaseActivity implements OnMapReadyCa
 
     @Override
     protected void setUpLayout() {
-        mTvBUsinessName=(TextView) findViewById(R.id.tv_business_name);
+        mTvBusinessName =(TextView) findViewById(R.id.tv_business_name);
         mTvBusinessAddress=(TextView) findViewById(R.id.tv_business_address);
         mTvAbout=(TextView) findViewById(R.id.tv_about);
 
-        mBUsinessImage=(ImageView) findViewById(R.id.iv_business_image);
+        mBusinessImage =(ImageView) findViewById(R.id.iv_business_image);
         mTvTelephoneOne=(TextView) findViewById(R.id.tv_telephone_one);
         mTvTelephoneTwo=(TextView) findViewById(R.id.tv_telephone_two);
         mTvOpeningHours=(TextView) findViewById(R.id.tv_opening_hours);
         mTvWebsite=(TextView) findViewById(R.id.tv_website);
         mBusinessCoverPic=(ImageView) findViewById(R.id.iv_cover_pic);
-        mIvBUsinessRating=(ImageView) findViewById(R.id.iv_busiessrating);
+        mIvBusinessRating =(ImageView) findViewById(R.id.iv_busiessrating);
 
 
 
@@ -70,6 +69,8 @@ public class BusinessDetailActivity extends BaseActivity implements OnMapReadyCa
             getSupportActionBar().setDisplayShowTitleEnabled(false);
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
             getSupportActionBar().setDisplayShowHomeEnabled(true);
+            ImageView img=(ImageView) mToolbar.findViewById(R.id.toolbar_img_left);
+            img.setVisibility(View.GONE);
             mToolbar.setNavigationOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -100,7 +101,7 @@ public class BusinessDetailActivity extends BaseActivity implements OnMapReadyCa
         businessPojo=(BusinessPojo) bundle.getSerializable("businessPojo");
 
 
-        mTvBUsinessName.setText(businessPojo.getName());
+        mTvBusinessName.setText(businessPojo.getName());
       String businessAddress=businessPojo.getLocation().getAddress().toString();
         businessAddress=businessAddress.replace("[","");
         businessAddress=businessAddress.replace("]","");
@@ -111,7 +112,7 @@ public class BusinessDetailActivity extends BaseActivity implements OnMapReadyCa
                 .thumbnail(1f)
                 .crossFade()
                 .diskCacheStrategy(DiskCacheStrategy.ALL)
-                .into(mBUsinessImage);
+                .into(mBusinessImage);
         mTvTelephoneOne.setText(businessPojo.getPhone());
         mTvTelephoneTwo.setText(businessPojo.getDisplay_phone());
         mTvAbout.setText(businessPojo.getSnippet_text());
@@ -120,7 +121,7 @@ public class BusinessDetailActivity extends BaseActivity implements OnMapReadyCa
                 .thumbnail(1f)
                 .crossFade()
                 .diskCacheStrategy(DiskCacheStrategy.ALL)
-                .into(mIvBUsinessRating);
+                .into(mIvBusinessRating);
 
         Glide.with(this).load(businessPojo.getImage_url())
                 .thumbnail(1f)
@@ -128,7 +129,7 @@ public class BusinessDetailActivity extends BaseActivity implements OnMapReadyCa
                 .diskCacheStrategy(DiskCacheStrategy.ALL)
                 .into(mBusinessCoverPic);
 
-        lattitude=Double.parseDouble(businessPojo.getLocation().getCoordinate().getLatitude());
+        latitude =Double.parseDouble(businessPojo.getLocation().getCoordinate().getLatitude());
         longitude=Double.parseDouble(businessPojo.getLocation().getCoordinate().getLongitude());
 
         try {
@@ -139,7 +140,7 @@ public class BusinessDetailActivity extends BaseActivity implements OnMapReadyCa
                 @Override
                 public void onMapReady(GoogleMap googleMap) {
                     if (googleMap != null) {
-                        googleMap.addMarker(new MarkerOptions().position(new LatLng(lattitude,longitude
+                        googleMap.addMarker(new MarkerOptions().position(new LatLng(latitude,longitude
                         )).title("My Location"));
 
                         // We will provide our own zoom controls.
@@ -149,7 +150,7 @@ public class BusinessDetailActivity extends BaseActivity implements OnMapReadyCa
                         //
                         googleMap.setMyLocationEnabled(true);
                         // Show Sydney
-                        googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(lattitude, longitude), 10));
+                        googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(latitude, longitude), 10));
                     }
                 }
             });
@@ -166,7 +167,7 @@ public class BusinessDetailActivity extends BaseActivity implements OnMapReadyCa
     @Override
     public void onMapReady(GoogleMap googleMap) {
         if (googleMap != null) {
-            googleMap.addMarker(new MarkerOptions().position(new LatLng(lattitude,longitude
+            googleMap.addMarker(new MarkerOptions().position(new LatLng(latitude,longitude
             )).title("My Location"));
         }
     }

@@ -16,6 +16,8 @@ public class ResponsePojo {
     private int like;
     private int dislike;
     private int neutral;
+    private int business_count;
+    private int total_count;
     private String  relation;
     private String description;
     private String success;
@@ -33,6 +35,21 @@ public class ResponsePojo {
     private ArrayList<CommentPojo> commentList;
     private ArrayList<RepliesPojo> repliesList;
 
+    public int getBusiness_count() {
+        return business_count;
+    }
+
+    public void setBusiness_count(int business_count) {
+        this.business_count = business_count;
+    }
+
+    public int getTotal_count() {
+        return total_count;
+    }
+
+    public void setTotal_count(int total_count) {
+        this.total_count = total_count;
+    }
 
     public CountryCodePojo getLocation() {
         return location;

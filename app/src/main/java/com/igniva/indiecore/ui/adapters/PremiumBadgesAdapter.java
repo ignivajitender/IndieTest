@@ -69,19 +69,11 @@ public class PremiumBadgesAdapter extends RecyclerView.Adapter<PremiumBadgesAdap
             holder.mBadgePrice.setText("£"+mPremiumBadgeList.get(position).getPrice()+" /");
 
 
-//            if(mPremiumBadgeList.get(position).isSelected()){
-//                holder.mRlPremiumBadge.setBackgroundColor(Color.parseColor("#77000000"));
-//
-//            }else {
-//                holder.mRlPremiumBadge.setBackgroundColor(Color.parseColor("#1C6DCE"));
-//            }
-
               holder.mRlPremiumBadge.setOnClickListener(new View.OnClickListener() {
                   @Override
                   public void onClick(View v) {
                       try{
-                          if(mPremiumBadgeList.get(oldPostion).isSelected()) {
-//                          mPremiumBadgeList.get(oldPostion).setSelected(false);
+                          if(mPremiumBadgeList.get(oldPostion).isSelected()&&oldPostion!=position){
                               oldRelativeLayout.setBackgroundColor(Color.parseColor("#1C6DCE"));
                           }
                       }catch (Exception e){

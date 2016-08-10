@@ -68,8 +68,8 @@ public class MyBadgesActivity extends BaseActivity implements View.OnClickListen
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_mybadges);
 
-        mBadgeMarketList = new ArrayList<BadgesPojo>();
-        mSelectedBadgesList = new ArrayList<BadgesPojo>();
+        mBadgeMarketList = new ArrayList<>();
+        mSelectedBadgesList = new ArrayList<>();
 
         initToolbar();
         setUpLayout();
@@ -83,7 +83,6 @@ public class MyBadgesActivity extends BaseActivity implements View.OnClickListen
 
     @Override
     protected void setUpLayout() {
-
         try {
             mTVMyBadegs = (TextView) findViewById(R.id.tv_my_badge);
             mTVMyBadegs.setOnClickListener(this);
