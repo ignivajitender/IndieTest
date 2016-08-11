@@ -55,15 +55,18 @@ import java.util.Comparator;
 public class CheckInFragment extends BaseFragment {
 
     private int sort = 1;
-    private int limit = 16;
+    private static final int limit = 20;
     private int page = 1;
     private int businessCount=0;
     private int totalBusinessCount=0;
     private TextView mTvTrending, mTvNearby, mTvFind, mTvSearch;
+    int pastVisiblesItems, visibleItemCount, totalItemCount;
     private EditText mEtSearch;
     private GridLayoutManager mGlManager;
     private LinearLayoutManager mLlManager;
     private boolean isLoading;
+    private int buttonIndex=-1;
+    private String LOG_TAG="CHATFRAGMENT";
     LinearLayout mLlMapContainer, mLlSearchContainer;
     ArrayList<BusinessPojo> mBusinessList;
     ArrayList<BusinessPojo> mFindBusinessResultList;
@@ -114,29 +117,35 @@ public class CheckInFragment extends BaseFragment {
                 public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
                     super.onScrolled(recyclerView, dx, dy);
 
-                        if (dy > 0) //check for scroll down
-                        {
-                          int  visibleItemCount = mGlManager.getChildCount();
-                          int  pastVisiblesItems = mGlManager.findFirstVisibleItemPosition();
-                            int lastItemCount=mGlManager.findLastVisibleItemPosition();
+                    try {
+                        if(buttonIndex!=3) {
 
-                            if (!isLoading) {
-//                                Log.d(LOG_TAG, " visibleItemCount " + visibleItemCount + " pastVisiblesItems " + pastVisiblesItems + " totalItemCount " + totalItemCount);
-                                if (lastItemCount < totalBusinessCount) {
-                                    limit+=limit;
-                                    page+=page;
-                                    isLoading = true;
-                                    //Do pagination.. i.e. fetch new data
-                                    if (mBusinessList.size() < 1) {
-                                       getBusinesses(limit,page);
-                                    }
-                                    if (mBusinessList.size() < totalBusinessCount) {
-                                      getBusinesses(limit,page);
+                            if (dy > 0) //check for scroll down
+                            {
+                                int lastItemCount = mGlManager.findLastVisibleItemPosition();
+                                if (!isLoading) {
+                                    if (lastItemCount < totalBusinessCount) {
+                                        page += page;
+                                        isLoading = true;
+                                        //Do pagination.. i.e. fetch new data
+                                        if (mBusinessList.size() < 20) {
+                                            page=1;
+                                            getBusinesses(limit, page);
+                                        }
+                                        if (mBusinessList.size() < totalBusinessCount) {
+                                            getBusinesses(limit, page);
+                                        }
+
+                                        if(buttonIndex==2){
+                                            updateNearbygUI();
+                                        }
                                     }
                                 }
                             }
                         }
-//                    }
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
                 }
             });
 
@@ -277,26 +286,35 @@ public class CheckInFragment extends BaseFragment {
     ResponseHandlerListener responseHandlerFindBusiness = new ResponseHandlerListener() {
         @Override
         public void onComplete(ResponsePojo result, WebServiceClient.WebError error, ProgressDialog mProgressDialog) {
-            WebNotificationManager.unRegisterResponseListener(responseHandlerFindBusiness);
-
             try {
-                mFindBusinessResultList.addAll(result.getBusiness_list());
+                WebNotificationManager.unRegisterResponseListener(responseHandlerFindBusiness);
 
-                mFindBusinessAdapter = null;
+                try {
+                    mFindBusinessResultList.addAll(result.getBusiness_list());
 
-                if (mFindBusinessResultList.size() > 0) {
-                    mFindBusinessAdapter = new FindBusinessAdapter(getActivity(), mFindBusinessResultList, onCardClickListner);
-                    mRvBusinessGrid.setAdapter(mFindBusinessAdapter);
-                } else {
+                    mFindBusinessAdapter = null;
+
+                    if (mFindBusinessResultList.size() > 0) {
+                        mFindBusinessAdapter = new FindBusinessAdapter(getActivity(), mFindBusinessResultList, onCardClickListner);
+                        mRvBusinessGrid.setAdapter(mFindBusinessAdapter);
+                    } else {
+                        Utility.showToastMessageLong(getActivity(), getResources().getString(R.string.no_result_found));
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
                     Utility.showToastMessageLong(getActivity(), getResources().getString(R.string.no_result_found));
+                    Log.e("ccccccccccccccccccccccccc",""+2);
+                }
+
+
+                if (mProgressDialog != null && mProgressDialog.isShowing()) {
+                    mProgressDialog.dismiss();
                 }
             } catch (Exception e) {
                 e.printStackTrace();
-            }
+                Utility.showToastMessageLong(getActivity(), getResources().getString(R.string.no_result_found));
+                Log.e("dddddddddddddddddddddddddddddddd",""+3);
 
-
-            if (mProgressDialog != null && mProgressDialog.isShowing()) {
-                mProgressDialog.dismiss();
             }
         }
     };
@@ -366,9 +384,9 @@ public class CheckInFragment extends BaseFragment {
             payload.put(Constants.USERID, PreferenceHandler.readString(getActivity(), PreferenceHandler.PREF_KEY_USER_ID, ""));
             payload.put(Constants.LOCATION, "Piccadilly Circus");
             payload.put(Constants.LATLONG, "37.77493,-122.419415");
-            payload.put(Constants.SORT, String.valueOf(sort));
-            payload.put(Constants.LIMIT, String.valueOf(limit));
-            payload.put(Constants.PAGE, String.valueOf(page));
+            payload.put(Constants.SORT, sort+"");
+            payload.put(Constants.LIMIT, limit+"");
+            payload.put(Constants.PAGE, page+"");
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -380,7 +398,6 @@ public class CheckInFragment extends BaseFragment {
     public String createPayload(int sort, int limit, int page) {
         JSONObject payload = null;
         sort = 0;
-        limit +=4;
         page += page;
         try {
             payload = new JSONObject();
@@ -402,14 +419,15 @@ public class CheckInFragment extends BaseFragment {
         public void onClick(View v) {
             switch (v.getId()) {
                 case R.id.tv_trending:
-
+                    buttonIndex=1;
                     updateTrendingUI();
                     break;
                 case R.id.tv_nearby:
+                    buttonIndex=2;
                     updateNearbygUI();
                     break;
                 case R.id.tv_find:
-
+                    buttonIndex=3;
                     updateFindUI();
                     break;
 
@@ -512,10 +530,8 @@ public class CheckInFragment extends BaseFragment {
             mLlSearchContainer.setVisibility(View.VISIBLE);
             mTvTrending.setTextColor(Color.parseColor("#1C6DCE"));
             mTvTrending.setBackgroundResource(R.drawable.simple_border_line_style);
-
             mTvNearby.setTextColor(Color.parseColor("#1C6DCE"));
             mTvNearby.setBackgroundResource(R.drawable.simple_border_line_style);
-
             mTvFind.setTextColor(Color.parseColor("#FFFFFF"));
             mTvFind.setBackgroundColor(Color.parseColor("#1C6DCE"));
 

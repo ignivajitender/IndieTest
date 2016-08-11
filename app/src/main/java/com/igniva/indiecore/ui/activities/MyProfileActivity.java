@@ -48,8 +48,11 @@ public class MyProfileActivity extends BaseActivity implements View.OnClickListe
     public static final String mActionTypeNeutral = "neutral";
     private ImageView mCoverImage, mUserImage, mDropDown;
     private TextView mUserName, mUserAddress, mTvDesc, mTvPosts, mTvBadges, mTitle;
+    int pastVisiblesItems, visibleItemCount, totalItemCount;
     private BadgesDb db_badges;
     private BadgesDb dbBadges;
+    private boolean isLoading;
+    private int totalPostCount;
     private ArrayList<PostPojo> mMyWallPostList = new ArrayList<PostPojo>();
     private WallPostAdapter mWallPostAdapter;
     private ImageView onOffImage;
@@ -94,6 +97,44 @@ public class MyProfileActivity extends BaseActivity implements View.OnClickListe
             mRvMyWallPosts = (RecyclerView) findViewById(R.id.rv_posts_activity_my_profile);
             mRvMyWallPosts.setLayoutManager(mLlManager);
             updatePostTabUi();
+
+
+            mRvMyWallPosts.addOnScrollListener(new RecyclerView.OnScrollListener() {
+                @Override
+                public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
+                    super.onScrollStateChanged(recyclerView, newState);
+                }
+
+                @Override
+                public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+                    super.onScrolled(recyclerView, dx, dy);
+
+                    if (dy > 0) //check for scroll down
+                    {
+                        visibleItemCount = mLlManager.getChildCount();
+                        totalItemCount = mLlManager.getItemCount();
+                        pastVisiblesItems = mLlManager.findFirstVisibleItemPosition();
+
+                        if (!isLoading) {
+
+                            Log.d(LOG_TAG, " visibleItemCount " + visibleItemCount + " pastVisiblesItems " + pastVisiblesItems + " totalItemCount " + totalItemCount);
+                            if ((visibleItemCount + pastVisiblesItems) >= totalItemCount) {
+                                isLoading = true;
+                                //Do pagination.. i.e. fetch new data
+                                if (mMyWallPostList.size() < 20) {
+                                    PAGE=1;
+                                    viewMyPost();
+                                }
+                                if (mMyWallPostList.size() < totalPostCount) {
+                                    PAGE+=1;
+                                     viewMyPost();
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -279,7 +320,7 @@ public class MyProfileActivity extends BaseActivity implements View.OnClickListe
                 if (error == null) {
 
                     if (result.getSuccess().equalsIgnoreCase("true")) {
-
+                            totalPostCount=result.getTotal_count();
 //                        if (mMyWallPostList != null)
 //                            mMyWallPostList.clear();
                         mMyWallPostList.addAll(result.getPostList());
@@ -302,7 +343,7 @@ public class MyProfileActivity extends BaseActivity implements View.OnClickListe
                 } else {
 
                 }
-
+          isLoading=false;
                 if (mProgressDialog != null && mProgressDialog.isShowing()) {
                     mProgressDialog.dismiss();
                 }

@@ -15,7 +15,7 @@ public class RepliesPojo {
     private String lastName;
     private String profile_pic;
     private String relation;
-    private int badges;
+//    private int badges;
     private String action;
 
     public int getLike() {
@@ -26,13 +26,13 @@ public class RepliesPojo {
         this.like = like;
     }
 
-    public int getBadges() {
-        return badges;
-    }
-
-    public void setBadges(int badges) {
-        this.badges = badges;
-    }
+//    public int getBadges() {
+//        return badges;
+//    }
+//
+//    public void setBadges(int badges) {
+//        this.badges = badges;
+//    }
 
     public int getNeutral() {
         return neutral;

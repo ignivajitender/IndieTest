@@ -42,30 +42,33 @@ import java.util.ArrayList;
  */
 public class ChatsFragment extends BaseFragment {
     View rootView;
+    public static final String mActionTypeLike = "like";
+    public static final String mActionTypeDislike = "dislike";
+    public static final String mActionTypeNeutral = "neutral";
+    public final static String BUSINESS = "business";
+    private boolean deletePostVisible = false;
+    int pastVisiblesItems, visibleItemCount, totalItemCount;
+    private boolean isLoading;
+    private int totalPostCount=0;
+    private int PAGE = 1;
+    private int LIMIT = 20;
+    private int action = 0;
+    public static int POSITION = -1;
     private TextView mChat, mBoard, mPeople, mCreatePost, mUserName,mComingSoon;
     private LinearLayout mLlBoard;
-    ImageView mUserImage;
-    String LOG_TAG = "LOG_TAG";
+    private  ImageView mUserImage;
+    private  String LOG_TAG = "LOG_TAG";
     private WallPostAdapter mAdapter;
     private ImageView mDeletePost;
     private String ACTION = "";
     private ArrayList<PostPojo> mWallPostList= new ArrayList<PostPojo>();;
-    private LinearLayoutManager mLlManager;
+    private LinearLayoutManager mLlManager = new LinearLayoutManager(getActivity());;
     private WallPostAdapter mWallPostAdapter;
     private RecyclerView mRvWallPosts;
-    private boolean deletePostVisible = false;
-    public final static String BUSINESS = "business";
-    String PAGE = "1";
-    String LIMIT = "10";
-    String mBusinessId = "";
-    int action = 0;
-    //    (like/dislike/neutral), post_id
-    public static int POSITION = -1;
-    public String postID = "-1";
+    private  String mBusinessId = "";
+    private String postID = "-1";
     WallPostAdapter.RecyclerViewHolders mHolder;
-    public static final String mActionTypeLike = "like";
-    public static final String mActionTypeDislike = "dislike";
-    public static final String mActionTypeNeutral = "neutral";
+
 
 
     @Nullable
@@ -78,12 +81,8 @@ public class ChatsFragment extends BaseFragment {
 
     @Override
     protected void setUpLayout() {
-
-
         try {
-
             mBusinessId = DashBoardActivity.businessId;
-
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -109,29 +108,49 @@ public class ChatsFragment extends BaseFragment {
         mComingSoon=(TextView) rootView.findViewById(R.id.tv_cuming_soon);
 
 
+        mRvWallPosts.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
+                super.onScrollStateChanged(recyclerView, newState);
+            }
 
-/*
-*
-* TODO add scroll listner
-* */
+            @Override
+            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+                super.onScrolled(recyclerView, dx, dy);
 
-//        mRvWallPosts.addOnScrollListener(new RecyclerView.OnScrollListener() {
-//            @Override
-//            public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
-//                super.onScrollStateChanged(recyclerView, newState);
-//            }
-//
-//            @Override
-//            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
-//                super.onScrolled(recyclerView, dx, dy);
-//
-//
-//                }
-//
-//        });
+                try {
+                    //check for scroll down
+                    if (dy > 0)
+                    {
+                        visibleItemCount = mLlManager.getChildCount();
+                        totalItemCount = mLlManager.getItemCount();
+                        pastVisiblesItems = mLlManager.findFirstVisibleItemPosition();
 
 
-//        viewAllPost();
+
+                        if (!isLoading) {
+
+                            Log.d(LOG_TAG, "lis size is "+mWallPostList.size()+ " ======++++++ visibleItemCount " + visibleItemCount + " pastVisiblesItems " + pastVisiblesItems + " totalItemCount " + totalItemCount);
+                            if ((visibleItemCount + pastVisiblesItems) >= totalItemCount) {
+                                isLoading = true;
+                                //Do pagination.. i.e. fetch new data
+                                if (mWallPostList.size() < 1) {
+                                   PAGE=1;
+                                   viewAllPost();
+                                }
+                                if (mWallPostList.size() < totalPostCount) {
+                                    PAGE+=1;
+                                    viewAllPost();
+                                }
+                            }
+                        }
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+//                    }
+            }
+        });
         setDataInViewObjects();
 
     }
@@ -213,9 +232,13 @@ public class ChatsFragment extends BaseFragment {
                     mHolder.like.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
-                            POSITION = position;
-                            action = 1;
-                            likeUnlikePost(mActionTypeLike, mWallPostList.get(position).getPostId());
+                            try {
+                                POSITION = position;
+                                action = 1;
+                                likeUnlikePost(mActionTypeLike, mWallPostList.get(position).getPostId());
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                            }
 
                         }
                     });
@@ -223,9 +246,13 @@ public class ChatsFragment extends BaseFragment {
                     mHolder.dislike.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
-                            POSITION = position;
-                            action = 2;
-                            likeUnlikePost(mActionTypeDislike, postId);
+                            try {
+                                POSITION = position;
+                                action = 2;
+                                likeUnlikePost(mActionTypeDislike, postId);
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                            }
 
                         }
                     });
@@ -234,21 +261,29 @@ public class ChatsFragment extends BaseFragment {
                     mHolder.neutral.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
-                            POSITION = position;
-                            action = 3;
-                            likeUnlikePost(mActionTypeNeutral, postId);
+                            try {
+                                POSITION = position;
+                                action = 3;
+                                likeUnlikePost(mActionTypeNeutral, postId);
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                            }
                         }
                     });
 
                     mHolder.comment.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
-                            POSITION = position;
-                            Bundle bundle = new Bundle();
-                            bundle.putSerializable("POST", mWallPostList.get(position));
-                            Intent intent = new Intent(getActivity(), CommentActivity.class);
-                            intent.putExtras(bundle);
-                            startActivity(intent);
+                            try {
+                                POSITION = position;
+                                Bundle bundle = new Bundle();
+                                bundle.putSerializable("POST", mWallPostList.get(position));
+                                Intent intent = new Intent(getActivity(), CommentActivity.class);
+                                intent.putExtras(bundle);
+                                startActivity(intent);
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                            }
 
                         }
                     });
@@ -257,12 +292,16 @@ public class ChatsFragment extends BaseFragment {
                     mHolder.mMediaPost.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
-                            POSITION = position;
-                            Bundle bundle = new Bundle();
-                            bundle.putSerializable("POST", mWallPostList.get(position));
-                            Intent intent = new Intent(getActivity(), CommentActivity.class);
-                            intent.putExtras(bundle);
-                            startActivity(intent);
+                            try {
+                                POSITION = position;
+                                Bundle bundle = new Bundle();
+                                bundle.putSerializable("POST", mWallPostList.get(position));
+                                Intent intent = new Intent(getActivity(), CommentActivity.class);
+                                intent.putExtras(bundle);
+                                startActivity(intent);
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                            }
 
                         }
                     });
@@ -383,8 +422,6 @@ public class ChatsFragment extends BaseFragment {
     public void updateBoardUi() {
 
         try {
-            mLlManager = new LinearLayoutManager(getActivity());
-            mRvWallPosts.setLayoutManager(mLlManager);
             mChat.setTextColor(Color.parseColor("#1C6DCE"));
             mChat.setBackgroundResource(R.drawable.simple_border_line_style);
 
@@ -399,6 +436,13 @@ public class ChatsFragment extends BaseFragment {
             mAdapter = null;
                 mAdapter = new WallPostAdapter(getActivity(), mWallPostList, onCommentListItemClickListnerTest2,Constants.CHATFRAGMENT);
                 mRvWallPosts.setAdapter(mAdapter);
+
+
+
+
+
+
+
 
 
         } catch (Exception e) {
@@ -438,8 +482,8 @@ public class ChatsFragment extends BaseFragment {
             payload.put(Constants.USERID, PreferenceHandler.readString(getActivity(), PreferenceHandler.PREF_KEY_USER_ID, ""));
             payload.put(Constants.ROOM_ID, mBusinessId);
             payload.put(Constants.POST_TYPE, BUSINESS);
-            payload.put(Constants.PAGE, PAGE);
-            payload.put(Constants.LIMIT, LIMIT);
+            payload.put(Constants.PAGE, PAGE+"");
+            payload.put(Constants.LIMIT, LIMIT+"");
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -454,11 +498,15 @@ public class ChatsFragment extends BaseFragment {
     *
     * */
     public void viewAllPost() {
-        String payload = createPayload();
-        if (!payload.isEmpty()) {
+        try {
+            String payload = createPayload();
+            if (!payload.isEmpty()) {
 
-            WebNotificationManager.registerResponseListener(responseHandler);
-            WebServiceClient.view_all_posts(getActivity(), payload, responseHandler);
+                WebNotificationManager.registerResponseListener(responseHandler);
+                WebServiceClient.view_all_posts(getActivity(), payload, responseHandler);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 
@@ -476,7 +524,7 @@ public class ChatsFragment extends BaseFragment {
                 if (error == null) {
 
                     if (result.getSuccess().equalsIgnoreCase("true")) {
-
+                        totalPostCount=result.getTotalPosts();
                         if (mWallPostList != null)
                             mWallPostList.clear();
                             mWallPostList.addAll(result.getPostList());
@@ -492,13 +540,8 @@ public class ChatsFragment extends BaseFragment {
                                 e.printStackTrace();
                             }
                         }
-
-                    } else {
-
-
+                        isLoading = false;
                     }
-                } else {
-
                 }
 
                 if (mProgressDialog != null && mProgressDialog.isShowing()) {

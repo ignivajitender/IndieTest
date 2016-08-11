@@ -21,7 +21,7 @@ public class PostPojo implements Serializable{
     private String relation;
     private int userStatus;
     private String is_reported;
-    private int badges;
+//    private int badges;
     private String action;
 
     public int getLike() {
@@ -40,13 +40,13 @@ public class PostPojo implements Serializable{
         this.userStatus = userStatus;
     }
 
-    public int getBadges() {
-        return badges;
-    }
-
-    public void setBadges(int badges) {
-        this.badges = badges;
-    }
+//    public int getBadges() {
+//        return badges;
+//    }
+//
+//    public void setBadges(int badges) {
+//        this.badges = badges;
+//    }
 
     public int getNeutral() {
         return neutral;

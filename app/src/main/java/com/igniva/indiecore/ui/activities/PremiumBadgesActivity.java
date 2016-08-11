@@ -46,7 +46,7 @@ import java.util.ArrayList;
 public class PremiumBadgesActivity extends BaseActivity implements IabBroadcastReceiver.IabBroadcastListener,
         DialogInterface.OnClickListener {
 
-    private ArrayList<BadgesPojo> mPremiumBadgesList;
+    private ArrayList<BadgesPojo> mPremiumBadgesList = new ArrayList<>();
     private PremiumBadgesAdapter premiumBadgesAdapter;
     public static int pageNumber = 1, badgeCount = 20, category = 2, mTotalBadgeCount = 0;
     private Toolbar mToolbar;
@@ -189,15 +189,6 @@ public class PremiumBadgesActivity extends BaseActivity implements IabBroadcastR
         final LinearLayoutManager layoutManager = new LinearLayoutManager(this);
         layoutManager.setOrientation(LinearLayoutManager.VERTICAL);
         mRvPremiumBadges.setLayoutManager(layoutManager);
-
-        mPremiumBadgesList = new ArrayList<BadgesPojo>();
-//        for (int i = 0; i < 7; i++) {
-//            premiumBadgePojo = new PremiumBadgePojo();
-//            premiumBadgePojo.setBadgeIcon(getResources().getDrawable(R.drawable.adopted_icon, null));
-//            premiumBadgePojo.setBadgeName("Albino");
-//            premiumBadgePojo.setBadgePrice("$22.00");
-//            mPremiumBadgesList.add(premiumBadgePojo);
-//        }
         getPremiumBadges(pageNumber,badgeCount,category);
 
 
@@ -217,7 +208,7 @@ public class PremiumBadgesActivity extends BaseActivity implements IabBroadcastR
             e.printStackTrace();
             return null;
         }
-        Log.d(LOG_TAG, "paload is " + payloadJson.toString());
+        Log.d(LOG_TAG, "payload is " + payloadJson.toString());
         return payloadJson.toString();
     }
 

@@ -16,19 +16,13 @@ public class CommentPojo implements Serializable{
     private String lastName;
     private String profile_pic;
     private String relation;
-
-    public int getBadges() {
-        return badges;
-    }
-
-    public void setBadges(int badges) {
-        this.badges = badges;
-    }
-
-    private int badges;
     private String action ;
     private int like;
     private int neutral;
+
+
+//    private int badges;
+
 
     public int getDislike() {
         return dislike;

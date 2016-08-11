@@ -43,12 +43,15 @@ public class UserProfileActivity extends BaseActivity implements View.OnClickLis
     private ImageView mIvUserIcon, mIvCoverPic, mIvStar, mIvDropDown, mIvBlockUser;
     private TextView mTvTitle;
     private RecyclerView mRvUserPost;
+    private boolean isLoading;
+    private int totalPostCount=0;
+    int pastVisiblesItems, visibleItemCount, totalItemCount;
     private LinearLayoutManager mLlManger = new LinearLayoutManager(this);
-    private GridLayoutManager mGlMAnager= new GridLayoutManager(UserProfileActivity.this, 4);
+    private GridLayoutManager mGlManager = new GridLayoutManager(UserProfileActivity.this, 4);
     private ArrayList<PostPojo> mUserWallPostList = new ArrayList<PostPojo>();
     private WallPostAdapter mWallPostAdapter;
     private MyBadgesAdapter mMutualBadgeAdapter;
-    String LOG_TAG = "UserProfileActivity";
+    private String LOG_TAG = "UserProfileActivity";
     private String PROFILE = "profile";
     private  int PAGE = 1, LIMIT = 20;
     private Toolbar mToolbar;
@@ -125,10 +128,7 @@ public class UserProfileActivity extends BaseActivity implements View.OnClickLis
 
         mIvDropDown = (ImageView) findViewById(R.id.iv_dropdown_activity_user_profile);
         mIvDropDown.setOnClickListener(this);
-
         mRvUserPost.setLayoutManager(mLlManger);
-
-
         try {
 //            index=12 coming from Chats Fragment PhoneBook Tab
 //            index=11 coming from wall post user icon click
@@ -149,10 +149,43 @@ public class UserProfileActivity extends BaseActivity implements View.OnClickLis
             mIvDropDown.setVisibility(View.INVISIBLE);
         }
 
-
         getUserProfile(mUserId);
 
+        mRvUserPost.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
+                super.onScrollStateChanged(recyclerView, newState);
+            }
 
+            @Override
+            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+                super.onScrolled(recyclerView, dx, dy);
+
+                try {
+                    if (dy > 0) //check for scroll down
+                    {
+                        visibleItemCount = mLlManger.getChildCount();
+                        totalItemCount = mLlManger.getItemCount();
+                        pastVisiblesItems = mLlManger.findFirstVisibleItemPosition();
+                        if (!isLoading) {
+                            if ((visibleItemCount + pastVisiblesItems) >= totalItemCount) {
+                                isLoading = true;
+                                //Do pagination.. i.e. fetch new data
+                                if (mUserWallPostList.size() < 1) {
+                                    viewAllPost();
+                                }
+                                if (mUserWallPostList.size() < totalPostCount) {
+                                    PAGE+=1;
+                                    viewAllPost();
+                                }
+                            }
+                        }
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        });
     }
 
     @Override
@@ -292,7 +325,7 @@ public class UserProfileActivity extends BaseActivity implements View.OnClickLis
 //    set mutual Badges in recycler view
     public void setMutualBadges(ArrayList<BadgesPojo> mMutualBadges){
         try {
-            mRvUserPost.setLayoutManager(mGlMAnager);
+            mRvUserPost.setLayoutManager(mGlManager);
             mMutualBadgeAdapter=null;
             mMutualBadgeAdapter= new MyBadgesAdapter(this,mMutualBadges,onCardClickListner);
             mRvUserPost.setAdapter(mMutualBadgeAdapter);
@@ -364,6 +397,8 @@ public class UserProfileActivity extends BaseActivity implements View.OnClickLis
                 if (error == null) {
 
                     if (result.getSuccess().equalsIgnoreCase("true")) {
+
+                        totalPostCount=result.getTotalPosts();
                         mRvUserPost.setVisibility(View.VISIBLE);
 
                         if (mUserWallPostList != null)
@@ -385,15 +420,11 @@ public class UserProfileActivity extends BaseActivity implements View.OnClickLis
 
                             mTvNoPostAvailable.setVisibility(View.VISIBLE);
                         }
-
-                    } else {
+                        isLoading=false;
 
 
                     }
-                } else {
-
                 }
-
                 if (mProgressDialog != null && mProgressDialog.isShowing()) {
                     mProgressDialog.dismiss();
                 }

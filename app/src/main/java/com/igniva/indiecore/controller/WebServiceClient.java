@@ -114,7 +114,7 @@ public class WebServiceClient {
     public static void userselectedBadges(final Context context,String payload,ResponseHandlerListener responselistener){
         url=HTTP_SELECTED_BADGES;
         method=HttpMethod.HTTP_POST;
-        mResponseHandlerListener=mResponseHandlerListener;
+        mResponseHandlerListener=responselistener;
         checkNetworkState(url,payload,method,context);
     }
 

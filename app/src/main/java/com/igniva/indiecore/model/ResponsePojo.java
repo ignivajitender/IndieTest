@@ -18,6 +18,7 @@ public class ResponsePojo {
     private int neutral;
     private int business_count;
     private int total_count;
+    private int totalPosts;
     private String  relation;
     private String description;
     private String success;
@@ -34,6 +35,15 @@ public class ResponsePojo {
     private ArrayList<BusinessPojo> business_list;
     private ArrayList<CommentPojo> commentList;
     private ArrayList<RepliesPojo> repliesList;
+
+
+    public int getTotalPosts() {
+        return totalPosts;
+    }
+
+    public void setTotalPosts(int totalPosts) {
+        this.totalPosts = totalPosts;
+    }
 
     public int getBusiness_count() {
         return business_count;
