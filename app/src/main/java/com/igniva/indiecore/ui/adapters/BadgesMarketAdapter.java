@@ -86,18 +86,13 @@ public class BadgesMarketAdapter extends RecyclerView.Adapter<BadgesMarketAdapte
                         mBadgeMarketList.get(position).setActive(0);
                         mBadgeMarketList.get(position).setIsPremium(0);
                         removeBadgeIds(position);
-                    } else if (mSelectedBadgeIds.size() < 10) {
+                    } else  {
                         holder.mIvGetThisBadge.setImageResource(R.drawable.tick_badge);
                         mBadgeMarketList.get(position).setSelected(true);
                         mBadgeMarketList.get(position).setActive(1);
                         mBadgeMarketList.get(position).setIsPremium(1);
 
                         addSelectedBadgeIds(position);
-                    } else {
-                        Utility.showAlertDialogBuy(mContext.getResources().getString(R.string.not_more_then_ten_badge), mContext);
-                        return;
-
-
                     }
 
                 } catch (Exception e) {

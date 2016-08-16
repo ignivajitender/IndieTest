@@ -71,6 +71,7 @@ public class MyBadgesAdapter extends RecyclerView.Adapter<MyBadgesAdapter.Recycl
             }else {
                 holder.mIvOnOffBadge.setVisibility(View.INVISIBLE);
                 holder.mIvMyBadgeIcon.setImageResource(R.drawable.add_badge);
+                holder.mTvMyBadgeName.setText("Indiecore");
             }
 
             if(mSelectedBadgeIds.get(position).getActive()==1){

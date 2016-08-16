@@ -28,6 +28,7 @@ public class PreferenceHandler {
 	public static final String PREF_KEY_GCMID = "PREF_KEY_GCMID";
 	public static  final String PROFILE_PIC_URL="PROFILE_PIC_URL";
 	public static  final String COVER_PIC_URL="COVER_PIC_URL";
+	public static  final String TOTAL_BADGE_LIMIT="total_badge_limit";
 
 	public static void writeBoolean(Context context, String key, boolean value) {
 		getEditor(context).putBoolean(key, value).commit();

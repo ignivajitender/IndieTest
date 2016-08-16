@@ -18,6 +18,7 @@ import com.igniva.indiecore.controller.WebServiceClient;
 import com.igniva.indiecore.db.BadgesDb;
 import com.igniva.indiecore.model.BadgesPojo;
 import com.igniva.indiecore.model.ResponsePojo;
+import com.igniva.indiecore.ui.adapters.PremiumBadgesAdapter;
 import com.igniva.indiecore.utils.Constants;
 import com.igniva.indiecore.utils.Log;
 import com.igniva.indiecore.utils.PreferenceHandler;
@@ -219,9 +220,9 @@ public class EnterMobileActivity extends BaseActivity {
                             PreferenceHandler.writeString(EnterMobileActivity.this,PreferenceHandler.PREF_KEY_LAST_NAME,result.getProfile().getLastName());
                             PreferenceHandler.writeString(EnterMobileActivity.this,PreferenceHandler.PREF_KEY_DOB,result.getProfile().getDob());
                             PreferenceHandler.writeString(EnterMobileActivity.this,PreferenceHandler.PREF_KEY_DESCRIPTION,result.getProfile().getDesc());
-
+                            PreferenceHandler.writeInteger(EnterMobileActivity.this,PreferenceHandler.TOTAL_BADGE_LIMIT,result.getBadgeLimit());
                             //
-                            Intent in = new Intent(EnterMobileActivity.this, DashBoardActivity.class);
+                            Intent in = new Intent(EnterMobileActivity.this, CreateProfileActivity.class);
                             Bundle bundle = new Bundle();
 
                             bundle.putString(Constants.FIRSTNAME, result.getProfile().getFirstName());

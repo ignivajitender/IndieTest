@@ -19,6 +19,8 @@ public class ResponsePojo {
     private int business_count;
     private int total_count;
     private int totalPosts;
+    private int badgeLimit;
+    private int badgesGot;
     private String  relation;
     private String description;
     private String success;
@@ -28,6 +30,7 @@ public class ResponsePojo {
     private String token;
     private String newUser;
     private ProfilePojo profile;
+    private UserPojo user;
     private CountryCodePojo location;
     private ArrayList<BadgesPojo> badges;
     private ArrayList<PostPojo> postList;
@@ -36,6 +39,29 @@ public class ResponsePojo {
     private ArrayList<CommentPojo> commentList;
     private ArrayList<RepliesPojo> repliesList;
 
+    public UserPojo getUser() {
+        return user;
+    }
+
+    public void setUser(UserPojo user) {
+        this.user = user;
+    }
+
+    public int getBadgesGot() {
+        return badgesGot;
+    }
+
+    public void setBadgesGot(int badgesGot) {
+        this.badgesGot = badgesGot;
+    }
+
+    public int getBadgeLimit() {
+        return badgeLimit;
+    }
+
+    public void setBadgeLimit(int badgeLimit) {
+        this.badgeLimit = badgeLimit;
+    }
 
     public int getTotalPosts() {
         return totalPosts;

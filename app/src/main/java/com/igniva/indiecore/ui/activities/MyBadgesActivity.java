@@ -6,15 +6,12 @@ import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.GridLayoutManager;
-import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.MotionEvent;
 import android.view.View;
-import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.igniva.indiecore.R;
 import com.igniva.indiecore.controller.OnCardClickListner;
@@ -40,22 +37,24 @@ import java.util.ArrayList;
  */
 public class MyBadgesActivity extends BaseActivity implements View.OnClickListener {
     Toolbar mToolbar;
-    private TextView mTVMyBadegs, mTVBadgesMArket, mTvDone;
+    private TextView mTVMyBadegs, mTVBadgesMarket, mTvDone;
     private RecyclerView mRvMyBadges;
-    private GridLayoutManager mGlMAnager;
+    private GridLayoutManager mGlManager;
     private ImageView mTvNext;
     private BadgesDb dbBadges;
     private ImageView onOffImage;
     private BadgesDb db_badges;
     public int active = 0;
+    private boolean IsBadgesRetrieved=true;
     public String selectedBadgeId = null;
+    public static int TotalBadgeCount=10;
     public int mPageNumber = 1, mBadgeCount = 20, category = 0, mTotalBadgeCount = 0;
     boolean isLoading;
     int buttonIndex = 1;
-    int mSelectedPostion = -1;
-    int pastVisiblesItems, visibleItemCount, totalItemCount;
+    int mSelectedPosition = -1;
+    int pastVisibleItems, visibleItemCount, totalItemCount;
     MyBadgesAdapter mMyBadgeAdapter;
-    BadgesMarketAdapter mBadgeMarketAdpter;
+    BadgesMarketAdapter mBadgeMarketAdapter;
     Bundle bundle;
     ArrayList<BadgesPojo> mSelectedBadgesList = null;
     ArrayList<BadgesPojo> mBadgeMarketList = null;
@@ -86,15 +85,21 @@ public class MyBadgesActivity extends BaseActivity implements View.OnClickListen
         try {
             mTVMyBadegs = (TextView) findViewById(R.id.tv_my_badge);
             mTVMyBadegs.setOnClickListener(this);
-            mTVBadgesMArket = (TextView) findViewById(R.id.tv_badge_market);
-            mTVBadgesMArket.setOnClickListener(this);
+            mTVBadgesMarket = (TextView) findViewById(R.id.tv_badge_market);
+            mTVBadgesMarket.setOnClickListener(this);
 
             findViewById(R.id.btn_load_more).setOnClickListener(this);
 
-            mGlMAnager = new GridLayoutManager(MyBadgesActivity.this, 4);
+            mGlManager = new GridLayoutManager(MyBadgesActivity.this, 4);
             mRvMyBadges = (RecyclerView) findViewById(R.id.recycler_view_activity_mybadges);
             mRvMyBadges.setHasFixedSize(true);
-            mRvMyBadges.setLayoutManager(mGlMAnager);
+            mRvMyBadges.setLayoutManager(mGlManager);
+
+            try {
+                TotalBadgeCount=PreferenceHandler.readInteger(this,PreferenceHandler.TOTAL_BADGE_LIMIT,0);
+            }catch (Exception e){
+                e.printStackTrace();
+            }
 
 
             mRvMyBadges.addOnScrollListener(new RecyclerView.OnScrollListener() {
@@ -109,14 +114,14 @@ public class MyBadgesActivity extends BaseActivity implements View.OnClickListen
                     if (buttonIndex == 2) {
                         if (dy > 0) //check for scroll down
                         {
-                            visibleItemCount = mGlMAnager.getChildCount();
-                            totalItemCount = mGlMAnager.getItemCount();
-                            pastVisiblesItems = mGlMAnager.findFirstVisibleItemPosition();
+                            visibleItemCount = mGlManager.getChildCount();
+                            totalItemCount = mGlManager.getItemCount();
+                            pastVisibleItems = mGlManager.findFirstVisibleItemPosition();
 
                             if (!isLoading) {
 
-                                Log.d(LOG_TAG, " visibleItemCount " + visibleItemCount + " pastVisibleItems " + pastVisiblesItems + " totalItemCount " + totalItemCount);
-                                if ((visibleItemCount + pastVisiblesItems) >= totalItemCount) {
+                                Log.d(LOG_TAG, " visibleItemCount " + visibleItemCount + " pastVisibleItems " + pastVisibleItems + " totalItemCount " + totalItemCount);
+                                if ((visibleItemCount + pastVisibleItems) >= totalItemCount) {
                                     isLoading = true;
                                     //Do pagination.. i.e. fetch new data
                                     if (mBadgeMarketList.size() < 1) {
@@ -167,7 +172,7 @@ public class MyBadgesActivity extends BaseActivity implements View.OnClickListen
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 
-        mBadgeMarketAdpter.onActivityResult(requestCode, resultCode, data);
+        mBadgeMarketAdapter.onActivityResult(requestCode, resultCode, data);
 //        mBadgesAdapter.notifyDataSetChanged();
     }
 
@@ -183,9 +188,9 @@ public class MyBadgesActivity extends BaseActivity implements View.OnClickListen
                 mTVMyBadegs.setTextColor(Color.parseColor("#FFFFFF"));
                 mTVMyBadegs.setBackgroundColor(Color.parseColor("#4598E8"));
 
-                mTVBadgesMArket.setTextColor(Color.parseColor("#4598E8"));
-                mTVBadgesMArket.setBackgroundColor(Color.parseColor("#FFFFFF"));
-                if (mSelectedBadgesList.size() < 1) {
+                mTVBadgesMarket.setTextColor(Color.parseColor("#4598E8"));
+                mTVBadgesMarket.setBackgroundColor(Color.parseColor("#FFFFFF"));
+                if (IsBadgesRetrieved) {
                     getMyBadges();
                 }
 
@@ -204,8 +209,8 @@ public class MyBadgesActivity extends BaseActivity implements View.OnClickListen
                 mTVMyBadegs.setTextColor(Color.parseColor("#4598E8"));
                 mTVMyBadegs.setBackgroundColor(Color.parseColor("#FFFFFF"));
 
-                mTVBadgesMArket.setTextColor(Color.parseColor("#FFFFFF"));
-                mTVBadgesMArket.setBackgroundColor(Color.parseColor("#4598E8"));
+                mTVBadgesMarket.setTextColor(Color.parseColor("#FFFFFF"));
+                mTVBadgesMarket.setBackgroundColor(Color.parseColor("#4598E8"));
                 //findViewById(R.id.btn_load_more).setVisibility(View.VISIBLE);
                 if (mBadgeMarketList.size() < 1) {
                     // Service Call
@@ -230,6 +235,7 @@ public class MyBadgesActivity extends BaseActivity implements View.OnClickListen
                 setDataInViewObjects();
                 break;
             case R.id.tv_badge_market:
+                IsBadgesRetrieved=false;
                 buttonIndex = 2;
                 setDataInViewObjects();
                 break;
@@ -249,13 +255,23 @@ public class MyBadgesActivity extends BaseActivity implements View.OnClickListen
             mSelectedBadgesList = db_badges.retrieveSelectedBadges();
             Log.e("", "" + mSelectedBadgesList.toString());
             Log.e("", "" + mSelectedBadgesList.size());
-            if (mSelectedBadgesList.size() < 10) {
-                int count = 10 - mSelectedBadgesList.size();
-                for (int i = 0; i < count; i++) {
-                    BadgesPojo badgesPojo = new BadgesPojo();
+//            if (mSelectedBadgesList.size() < 10) {
+//                int count = 10 - mSelectedBadgesList.size();
+//                for (int i = 0; i < count; i++) {
+//                    BadgesPojo badgesPojo = new BadgesPojo();
+//
+//                    mSelectedBadgesList.add(badgesPojo);
+//                }
+//            }
 
+            if(mSelectedBadgesList.size()<TotalBadgeCount){
+
+                TotalBadgeCount=TotalBadgeCount-mSelectedBadgesList.size();
+                for(int i=0;i<TotalBadgeCount;i++){
+                    BadgesPojo badgesPojo = new BadgesPojo();
                     mSelectedBadgesList.add(badgesPojo);
                 }
+
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -300,7 +316,7 @@ public class MyBadgesActivity extends BaseActivity implements View.OnClickListen
             dbBadges = new BadgesDb(this);
             BadgesPojo selectedBadge;
 
-            selectedBadge = mSelectedBadgesList.get(mSelectedPostion);
+            selectedBadge = mSelectedBadgesList.get(mSelectedPosition);
             selectedBadge.getName();
             selectedBadge.getBadgeId();
 
@@ -335,7 +351,8 @@ public class MyBadgesActivity extends BaseActivity implements View.OnClickListen
             mTvDone.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    Utility.showToastMessageShort(MyBadgesActivity.this, getResources().getString(R.string.coming_soon));
+
+                   saveMySelectedBadges();
 
                 }
             });
@@ -370,10 +387,10 @@ public class MyBadgesActivity extends BaseActivity implements View.OnClickListen
 
     void updateBadgesMarket() {
         try {
-            mBadgeMarketAdpter = null;
+            mBadgeMarketAdapter = null;
             Log.e(LOG_TAG, "setting bin adpter" + mBadgeMarketList.size());
-            mBadgeMarketAdpter = new BadgesMarketAdapter(MyBadgesActivity.this, mBadgeMarketList,mSelectedBadgeIds);
-            mRvMyBadges.setAdapter(mBadgeMarketAdpter);
+            mBadgeMarketAdapter = new BadgesMarketAdapter(MyBadgesActivity.this, mBadgeMarketList,mSelectedBadgeIds);
+            mRvMyBadges.setAdapter(mBadgeMarketAdapter);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -452,7 +469,7 @@ public class MyBadgesActivity extends BaseActivity implements View.OnClickListen
 
                     if (payload != null) {
 //                        Log.e("on payload","++"+payload.toString());
-                        mSelectedPostion = position;
+                        mSelectedPosition = position;
                         mSelectedBadgesList.get(position).setActive(1);
                         WebNotificationManager.registerResponseListener(responseListner);
                         WebServiceClient.onOffMyBadges(MyBadgesActivity.this, payload, responseListner);
@@ -468,7 +485,7 @@ public class MyBadgesActivity extends BaseActivity implements View.OnClickListen
 
                     if (payload != null) {
                         Log.e("off payload", "++" + payload.toString());
-                        mSelectedPostion = position;
+                        mSelectedPosition = position;
                         mSelectedBadgesList.get(position).setActive(0);
                         WebNotificationManager.registerResponseListener(responseListner);
                         WebServiceClient.onOffMyBadges(MyBadgesActivity.this, payload, responseListner);
@@ -479,5 +496,113 @@ public class MyBadgesActivity extends BaseActivity implements View.OnClickListen
             }
         }
     };
+
+
+
+    /*
+* payload to save my selected badges at server
+* PARAMETER: token, userId, type, badgeIds (should be in CSV format. for eg. 1,4,5,8)
+*
+* */
+    public String createPayload() {
+        JSONObject payload = null;
+        try {
+            payload = new JSONObject();
+            payload.put(Constants.TOKEN, PreferenceHandler.readString(this, PreferenceHandler.PREF_KEY_USER_TOKEN, ""));
+            payload.put(Constants.USERID, PreferenceHandler.readString(this, PreferenceHandler.PREF_KEY_USER_ID, ""));
+            payload.put(Constants.TYPE, "general");
+            String ids = "";
+            for (int i = 0; i < mSelectedBadgeIds.size(); i++) {
+                ids = ids + "," + mSelectedBadgeIds.get(i).getBadgeId();
+            }
+            ids = ids.substring(1);
+            payload.put(Constants.BADGEIDS, ids);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+        Log.d(LOG_TAG, " payload is " + payload.toString());
+
+        return payload.toString();
+    }
+
+    /*
+    *
+    * save my badges at server request
+    *
+    * */
+    public void saveMySelectedBadges() {
+        try {
+            String payload = createPayload();
+
+            payload = payload.replace("[", "");
+            payload = payload.replace("]", "");
+            if (payload != null) {
+                // Web service Call
+                // Step 1 - Register responsehandler
+                Log.d(LOG_TAG, "--" + payload);
+                WebNotificationManager.registerResponseListener(responseHandler);
+                // Step 2 - Webservice Call
+                WebServiceClient.userselectedBadges(MyBadgesActivity.this, payload, responseHandler);
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+
+    }
+
+
+    ResponseHandlerListener responseHandler = new ResponseHandlerListener() {
+        @Override
+        public void onComplete(ResponsePojo result, WebServiceClient.WebError error, ProgressDialog mProgressDialog) {
+            WebNotificationManager.unRegisterResponseListener(responseHandler);
+
+            if (error == null) {
+                if (result.getSuccess().equals("true")) {
+                    IsBadgesRetrieved=true;
+                    insertRecords();
+                    PreferenceHandler.writeInteger(MyBadgesActivity.this,PreferenceHandler.TOTAL_BADGE_LIMIT,result.getUser().getBadgeLimit());
+                    Utility.showToastMessageShort(MyBadgesActivity.this, "Badge(s) added successfully");
+//                    Intent intnet = new Intent(MyBadgesActivity.this, DashBoardActivity.class);
+//                    startActivity(intnet);
+
+                } else {
+
+                    Utility.showAlertDialog(result.getError_text(), MyBadgesActivity.this);
+
+
+                }
+//                {"user":{"badgeLimit":10,"selectedBadgeCount":10,"badgesGot":1},"success":true,"error":null}
+//                {"user":{"badgeLimit":10,"selectedBadgeCount":5,"badgesGot":5},"success":true,"error":null}
+//                {"success":false,"error":10,"error_text":"Your selected badge count is greater."}
+
+
+            } else {
+                Utility.showAlertDialog("Some server error Occurred!", MyBadgesActivity.this);
+
+
+            }
+            if (mProgressDialog != null && mProgressDialog.isShowing()) {
+                mProgressDialog.dismiss();
+            }
+
+        }
+    };
+
+    public void insertRecords() {
+        try {
+            dbBadges = new BadgesDb(this);
+            ArrayList<BadgesPojo> selectedBadgesList = new ArrayList<BadgesPojo>();
+            selectedBadgesList = mSelectedBadgeIds;
+//        ArrayList<BadgesPojo> mTotalBadges=new ArrayList<BadgesPojo>();
+            dbBadges.insertAllBadges(selectedBadgesList);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+    }
 
 }

@@ -48,8 +48,10 @@ public class InviteContactActivity extends BaseActivity {
     InviteContactAdapter mInviteContactAdapter;
     ArrayList<ContactPojo> mContactList = null;
     ContactPojo obj;
-    int mMaxContacts=0;
-    int index=-1;
+
+    int mMaxContacts = 0;
+    String Medium = "2";
+    int index = -1;
     public static ArrayList<String> mSelectedContacts = new ArrayList<String>();
     public static ArrayList<String> mSelectedContactName = new ArrayList<String>();
     /**
@@ -113,9 +115,9 @@ public class InviteContactActivity extends BaseActivity {
             mSelectedContacts.clear();
 
             try {
-                Bundle bundle= getIntent().getExtras();
-                index=bundle.getInt(Constants.INDEX);
-            }catch (Exception e){
+                Bundle bundle = getIntent().getExtras();
+                index = bundle.getInt(Constants.INDEX);
+            } catch (Exception e) {
                 e.printStackTrace();
             }
 
@@ -135,7 +137,7 @@ public class InviteContactActivity extends BaseActivity {
 
                 @Override
                 public void onTextChanged(CharSequence s, int start, int before, int count) {
-                   // System.out.println("Text [" + s + "]");
+                    // System.out.println("Text [" + s + "]");
 
                     mInviteContactAdapter.getFilter().filter(s.toString());
                 }
@@ -165,13 +167,13 @@ public class InviteContactActivity extends BaseActivity {
              * index=3 --> coming from Invite Activity, the first time
              *  index!=3 --> coming from settings-->SMS
              * */
-            if(index==3) {
-                mMaxContacts=10;
+            if (index == 3) {
+                mMaxContacts = 10;
 
                 mInviteContactAdapter = new InviteContactAdapter(this, mContactList, mMaxContacts);
                 recyclerView.setAdapter(mInviteContactAdapter);
             } else {
-                mMaxContacts=0;
+                mMaxContacts = 0;
                 mInviteContactAdapter = new InviteContactAdapter(this, mContactList, mMaxContacts);
                 recyclerView.setAdapter(mInviteContactAdapter);
             }
@@ -196,9 +198,9 @@ public class InviteContactActivity extends BaseActivity {
 
         try {
             String phoneNumber = null;
-            InputStream bm=null;
-            String name=null;
-            String image_uri=null;
+            InputStream bm = null;
+            String name = null;
+            String image_uri = null;
             Cursor phones = null;
             String contactID;
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
@@ -208,20 +210,20 @@ public class InviteContactActivity extends BaseActivity {
 
             }
             while (phones.moveToNext()) {
-                image_uri=null;
+                image_uri = null;
                 mContactPojo = new ContactPojo();
-               name = phones.getString(phones.getColumnIndex(ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME));
+                name = phones.getString(phones.getColumnIndex(ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME));
                 phoneNumber = phones.getString(phones.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER));
                 String phnNumber = phoneNumber.replace(" ", "");
                 phnNumber = phnNumber.replace("-", "");
-                 mContactPojo.setHasImage(false);
+                mContactPojo.setHasImage(false);
 
                 contactID = phones.getString(phones.getColumnIndex(ContactsContract.Contacts._ID));
 
                 image_uri = phones.getString(phones.getColumnIndex(ContactsContract.CommonDataKinds.Phone.PHOTO_URI));
 
                 if (image_uri != null) {
-                   mContactPojo.setContactIcon(image_uri);
+                    mContactPojo.setContactIcon(image_uri);
                     mContactPojo.setHasImage(true);
                 }
 
@@ -244,7 +246,7 @@ public class InviteContactActivity extends BaseActivity {
         String mNumber = "";
         try {
 
-            if(mSelectedContacts.size() > mMaxContacts){
+            if (mSelectedContacts.size() > mMaxContacts) {
                 mNumber = mSelectedContacts.toString();
 
                 if (!Build.MANUFACTURER.contains("Samsung")) {
@@ -266,21 +268,20 @@ public class InviteContactActivity extends BaseActivity {
                 intent.putExtra("sms_body", message);
                 startActivity(intent);
 
-            }else
-            {
-            if(index==3) {
-                Utility.showAlertDialog(getResources().getString(R.string.invite_atleast_ten_friend), this);
-                return;
-            }else {
-                Utility.showAlertDialog(getResources().getString(R.string.at_least_one_contact), this);
-                return;
-            }
+            } else {
+                if (index == 3) {
+                    Utility.showAlertDialog(getResources().getString(R.string.invite_atleast_ten_friend), this);
+                    return;
+                } else {
+                    Utility.showAlertDialog(getResources().getString(R.string.at_least_one_contact), this);
+                    return;
+                }
             }
 
 
         } catch (Exception e) {
             e.printStackTrace();
-            Toast.makeText(getApplicationContext(),getResources().getString(R.string.some_unknown_error), Toast.LENGTH_SHORT).show();
+            Toast.makeText(getApplicationContext(), getResources().getString(R.string.some_unknown_error), Toast.LENGTH_SHORT).show();
 
         }
 
@@ -293,52 +294,55 @@ public class InviteContactActivity extends BaseActivity {
     *
     * */
 
-    public String createPayload(){
+    public String createPayload() {
 
-        JSONObject payload=null;
+        JSONObject payload = null;
         try {
             payload = new JSONObject();
             payload.put(Constants.TOKEN, PreferenceHandler.readString(this, PreferenceHandler.PREF_KEY_USER_TOKEN, ""));
             payload.put(Constants.USERID, PreferenceHandler.readString(this, PreferenceHandler.PREF_KEY_USER_ID, ""));
-            payload.put(Constants.MEDIUM, "");
-            payload.put(Constants.PROMO_CODE, "");
+            payload.put(Constants.MEDIUM, Medium);
 
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
 
-        return  payload.toString();
+        return payload.toString();
     }
 
 
-    public void buyBadgeSlot(){
+    public void buyBadgeSlot() {
 
-        String payload=createPayload();
+        String payload = createPayload();
         try {
             WebNotificationManager.registerResponseListener(responseHandlerBuyASlot);
-            WebServiceClient.buy_a_badge_slot(this,payload,responseHandlerBuyASlot);
+            WebServiceClient.buy_a_badge_slot(this, payload, responseHandlerBuyASlot);
 
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
 
-    ResponseHandlerListener responseHandlerBuyASlot=new ResponseHandlerListener() {
+    ResponseHandlerListener responseHandlerBuyASlot = new ResponseHandlerListener() {
         @Override
         public void onComplete(ResponsePojo result, WebServiceClient.WebError error, ProgressDialog mProgressDialog) {
-
-
             try {
                 WebNotificationManager.unRegisterResponseListener(responseHandlerBuyASlot);
-            if(error==null){
+                if (error == null) {
+                    if (result.getSuccess().equalsIgnoreCase("true")) {
+                    PreferenceHandler.writeInteger(InviteContactActivity.this,PreferenceHandler.TOTAL_BADGE_LIMIT,result.getBadgeLimit());
+                    }
+                }
 
-
-
+            } catch (Exception e) {
+                e.printStackTrace();
             }
 
-            }catch (Exception e){
-                e.printStackTrace();
+
+            // Always close the progressdialog
+            if (mProgressDialog != null && mProgressDialog.isShowing()) {
+                mProgressDialog.dismiss();
             }
 
 
