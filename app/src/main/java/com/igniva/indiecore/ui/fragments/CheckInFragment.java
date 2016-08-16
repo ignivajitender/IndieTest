@@ -60,7 +60,7 @@ public class CheckInFragment extends BaseFragment {
     private int businessCount=0;
     private int totalBusinessCount=0;
     private TextView mTvTrending, mTvNearby, mTvFind, mTvSearch;
-    int pastVisiblesItems, visibleItemCount, totalItemCount;
+    int pastVisibleItems, visibleItemCount, totalItemCount;
     private EditText mEtSearch;
     private GridLayoutManager mGlManager;
     private LinearLayoutManager mLlManager;
@@ -117,32 +117,34 @@ public class CheckInFragment extends BaseFragment {
                 public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
                     super.onScrolled(recyclerView, dx, dy);
 
-                    try {
-                        if(buttonIndex!=3) {
-
-                            if (dy > 0) //check for scroll down
-                            {
-                                int lastItemCount = mGlManager.findLastVisibleItemPosition();
-                                if (!isLoading) {
-                                    if (lastItemCount < totalBusinessCount) {
-                                        page += page;
-                                        isLoading = true;
-                                        //Do pagination.. i.e. fetch new data
-                                        if (mBusinessList.size() < 20) {
-                                            page=1;
-                                            getBusinesses(limit, page);
-                                        }
-                                        if (mBusinessList.size() < totalBusinessCount) {
-                                            getBusinesses(limit, page);
-                                        }
-
-                                        if(buttonIndex==2){
-                                            updateNearbygUI();
-                                        }
+                    try{
+                    if (buttonIndex != 3)
+                        //check for scroll down
+                        if (dy > 0) {
+                            visibleItemCount = mGlManager.getChildCount();
+                            totalItemCount = mGlManager.getItemCount();
+                            pastVisibleItems = mGlManager.findFirstVisibleItemPosition();
+                            if (!isLoading) {
+                                Log.d(LOG_TAG, "lis size is " + mBusinessList.size() + " ======++++++ visibleItemCount " + visibleItemCount + " pastVisibleItems " + pastVisibleItems + " totalItemCount " + totalItemCount);
+                                if ((visibleItemCount + pastVisibleItems) >= totalItemCount) {
+                                    isLoading = true;
+                                    //Do pagination.. i.e. fetch new data
+                                    if (mBusinessList.size() < 1) {
+                                        page = 1;
+                                        getBusinesses(limit, page);
+                                    }
+                                    if (mBusinessList.size() < totalBusinessCount) {
+                                        page += 1;
+                                        getBusinesses(limit, page);
+                                    }
+                                    if (buttonIndex == 2) {
+                                        updateNearbyUI();
                                     }
                                 }
                             }
                         }
+
+
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
@@ -424,16 +426,14 @@ public class CheckInFragment extends BaseFragment {
                     break;
                 case R.id.tv_nearby:
                     buttonIndex=2;
-                    updateNearbygUI();
+                    updateNearbyUI();
                     break;
                 case R.id.tv_find:
                     buttonIndex=3;
                     updateFindUI();
                     break;
-
                 case R.id.tv_search:
                     findBusinesses();
-
                     break;
 
                 default:
@@ -474,7 +474,7 @@ public class CheckInFragment extends BaseFragment {
         }
     }
 
-    void updateNearbygUI() {
+    void updateNearbyUI() {
         try {
             mGlManager = new GridLayoutManager(getActivity(), 3);
             mRvBusinessGrid.setLayoutManager(mGlManager);

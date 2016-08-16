@@ -110,7 +110,6 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:background="@color/white">
-
                 <LinearLayout
                     android:id="@+id/ll_post"
                     android:layout_width="match_parent"
@@ -159,7 +158,6 @@
                             android:layout_height="wrap_content"
                             android:layout_gravity="center"
                             android:layout_weight="1"
-
                             android:drawableLeft="@drawable/like_grey_icon_circle"
                             android:drawablePadding="5dp"
                             android:text="0" />

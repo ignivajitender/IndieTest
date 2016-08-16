@@ -130,7 +130,7 @@ public class ChatsFragment extends BaseFragment {
 
                         if (!isLoading) {
 
-                            Log.d(LOG_TAG, "lis size is "+mWallPostList.size()+ " ======++++++ visibleItemCount " + visibleItemCount + " pastVisiblesItems " + pastVisiblesItems + " totalItemCount " + totalItemCount);
+                            Log.d(LOG_TAG, "lis size is "+mWallPostList.size()+ " ======++++++ visibleItemCount " + visibleItemCount + " pastVisibleItems " + pastVisiblesItems + " totalItemCount " + totalItemCount);
                             if ((visibleItemCount + pastVisiblesItems) >= totalItemCount) {
                                 isLoading = true;
                                 //Do pagination.. i.e. fetch new data

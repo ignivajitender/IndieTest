@@ -1,14 +1,8 @@
 package com.igniva.indiecore.ui.activities;
 
-import android.content.ContentResolver;
-import android.content.ContentUris;
+import android.app.ProgressDialog;
 import android.content.Intent;
-import android.content.pm.PackageInfo;
-import android.content.pm.PackageManager;
-import android.content.res.AssetFileDescriptor;
 import android.database.Cursor;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -21,24 +15,25 @@ import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.View;
 import android.widget.EditText;
-import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.google.android.gms.appindexing.Action;
 import com.google.android.gms.appindexing.AppIndex;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.igniva.indiecore.R;
+import com.igniva.indiecore.controller.ResponseHandlerListener;
+import com.igniva.indiecore.controller.WebNotificationManager;
+import com.igniva.indiecore.controller.WebServiceClient;
 import com.igniva.indiecore.model.ContactPojo;
-import com.igniva.indiecore.model.ProfilePojo;
+import com.igniva.indiecore.model.ResponsePojo;
 import com.igniva.indiecore.ui.adapters.InviteContactAdapter;
-import com.igniva.indiecore.ui.fragments.ContactsFragment;
 import com.igniva.indiecore.utils.Constants;
 import com.igniva.indiecore.utils.Log;
+import com.igniva.indiecore.utils.PreferenceHandler;
 import com.igniva.indiecore.utils.Utility;
 
-import java.io.ByteArrayInputStream;
-import java.io.IOException;
+import org.json.JSONObject;
+
 import java.io.InputStream;
 import java.util.ArrayList;
 
@@ -49,7 +44,7 @@ public class InviteContactActivity extends BaseActivity {
     Toolbar mToolbar;
     RecyclerView recyclerView;
     private EditText mEtSearch;
-    ContactPojo mContatctPojo;
+    ContactPojo mContactPojo;
     InviteContactAdapter mInviteContactAdapter;
     ArrayList<ContactPojo> mContactList = null;
     ContactPojo obj;
@@ -94,6 +89,11 @@ public class InviteContactActivity extends BaseActivity {
                     Log.e("contact list size", "" + mSelectedContacts.size());
 
                     sendInviteSms();
+
+//                    TODO call this slot buy service
+                    buyBadgeSlot();
+
+
                 }
             });
             //
@@ -119,7 +119,7 @@ public class InviteContactActivity extends BaseActivity {
                 e.printStackTrace();
             }
 
-            mContactList = new ArrayList<ContactPojo>();
+            mContactList = new ArrayList<>();
             recyclerView = (RecyclerView) findViewById(R.id.recyclerView);
 
             final LinearLayoutManager layoutManager = new LinearLayoutManager(this);
@@ -177,8 +177,6 @@ public class InviteContactActivity extends BaseActivity {
             }
 
         } catch (Exception e) {
-
-
         }
 
     }
@@ -186,7 +184,6 @@ public class InviteContactActivity extends BaseActivity {
     @Override
     protected void onResume() {
         super.onResume();
-
     }
 
 
@@ -212,28 +209,28 @@ public class InviteContactActivity extends BaseActivity {
             }
             while (phones.moveToNext()) {
                 image_uri=null;
-                mContatctPojo = new ContactPojo();
+                mContactPojo = new ContactPojo();
                name = phones.getString(phones.getColumnIndex(ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME));
                 phoneNumber = phones.getString(phones.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER));
                 String phnNumber = phoneNumber.replace(" ", "");
                 phnNumber = phnNumber.replace("-", "");
-                 mContatctPojo.setHasImage(false);
+                 mContactPojo.setHasImage(false);
 
                 contactID = phones.getString(phones.getColumnIndex(ContactsContract.Contacts._ID));
 
                 image_uri = phones.getString(phones.getColumnIndex(ContactsContract.CommonDataKinds.Phone.PHOTO_URI));
 
                 if (image_uri != null) {
-                   mContatctPojo.setContactIcon(image_uri);
-                    mContatctPojo.setHasImage(true);
+                   mContactPojo.setContactIcon(image_uri);
+                    mContactPojo.setHasImage(true);
                 }
 
-                mContatctPojo.setContactName(name);
-                mContatctPojo.setContactNumber(phnNumber);
+                mContactPojo.setContactName(name);
+                mContactPojo.setContactNumber(phnNumber);
 
-                mContatctPojo.setSelected(false);
+                mContactPojo.setSelected(false);
 
-                mContactList.add(mContatctPojo);
+                mContactList.add(mContactPojo);
 
             }
             Log.e("List of contacts", "" + mContactList.size());
@@ -290,7 +287,63 @@ public class InviteContactActivity extends BaseActivity {
     }
 
 
+    /*
+    *   payload to buy a slot
+    *   PARAMETER: token, userId, medium, promo_code
+    *
+    * */
 
+    public String createPayload(){
+
+        JSONObject payload=null;
+        try {
+            payload = new JSONObject();
+            payload.put(Constants.TOKEN, PreferenceHandler.readString(this, PreferenceHandler.PREF_KEY_USER_TOKEN, ""));
+            payload.put(Constants.USERID, PreferenceHandler.readString(this, PreferenceHandler.PREF_KEY_USER_ID, ""));
+            payload.put(Constants.MEDIUM, "");
+            payload.put(Constants.PROMO_CODE, "");
+
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+
+        return  payload.toString();
+    }
+
+
+    public void buyBadgeSlot(){
+
+        String payload=createPayload();
+        try {
+            WebNotificationManager.registerResponseListener(responseHandlerBuyASlot);
+            WebServiceClient.buy_a_badge_slot(this,payload,responseHandlerBuyASlot);
+
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+    }
+
+
+    ResponseHandlerListener responseHandlerBuyASlot=new ResponseHandlerListener() {
+        @Override
+        public void onComplete(ResponsePojo result, WebServiceClient.WebError error, ProgressDialog mProgressDialog) {
+
+
+            try {
+                WebNotificationManager.unRegisterResponseListener(responseHandlerBuyASlot);
+            if(error==null){
+
+
+
+            }
+
+            }catch (Exception e){
+                e.printStackTrace();
+            }
+
+
+        }
+    };
 
 
 //    @Override

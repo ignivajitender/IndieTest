@@ -101,4 +101,11 @@ public static  final String SELF="self";
     public static  final String ENTER_DESCRIPTION="Please enter description";
     public static  final String AGE_SHOULD_BE_EIGHTEENPLUS="You must be aged 18 years or over to register with Indiecore.";
 
+
+
+    public static  final String MEDIUM="medium";
+    public static  final String PROMO_CODE="promo_code";
+
+
+
 }
