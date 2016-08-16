@@ -234,7 +234,7 @@
                                 android:layout_height="match_parent"
                                 android:layout_marginRight="3dp"
                                 android:layout_weight="4"
-                                android:background="@drawable/rounded_corners_distance_text_block"
+                                android:background="@drawable/rounded_corners_edit_text"
                                 android:gravity="start"
                                 android:hint="@string/add_comment"
                                 android:maxLines="3"

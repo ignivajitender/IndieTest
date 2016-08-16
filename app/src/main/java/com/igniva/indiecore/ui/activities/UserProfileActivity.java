@@ -45,7 +45,7 @@ public class UserProfileActivity extends BaseActivity implements View.OnClickLis
     private RecyclerView mRvUserPost;
     private boolean isLoading;
     private int totalPostCount=0;
-    int pastVisiblesItems, visibleItemCount, totalItemCount;
+    int pastVisibleItems, visibleItemCount, totalItemCount;
     private LinearLayoutManager mLlManger = new LinearLayoutManager(this);
     private GridLayoutManager mGlManager = new GridLayoutManager(UserProfileActivity.this, 4);
     private ArrayList<PostPojo> mUserWallPostList = new ArrayList<PostPojo>();
@@ -166,9 +166,9 @@ public class UserProfileActivity extends BaseActivity implements View.OnClickLis
                     {
                         visibleItemCount = mLlManger.getChildCount();
                         totalItemCount = mLlManger.getItemCount();
-                        pastVisiblesItems = mLlManger.findFirstVisibleItemPosition();
+                        pastVisibleItems = mLlManger.findFirstVisibleItemPosition();
                         if (!isLoading) {
-                            if ((visibleItemCount + pastVisiblesItems) >= totalItemCount) {
+                            if ((visibleItemCount + pastVisibleItems) >= totalItemCount) {
                                 isLoading = true;
                                 //Do pagination.. i.e. fetch new data
                                 if (mUserWallPostList.size() < 1) {

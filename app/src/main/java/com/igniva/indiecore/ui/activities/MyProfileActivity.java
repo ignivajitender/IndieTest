@@ -47,7 +47,7 @@ public class MyProfileActivity extends BaseActivity implements View.OnClickListe
     public static final String mActionTypeDislike = "dislike";
     public static final String mActionTypeNeutral = "neutral";
     private ImageView mCoverImage, mUserImage, mDropDown;
-    private TextView mUserName, mUserAddress, mTvDesc, mTvPosts, mTvBadges, mTitle;
+    private TextView mUserName, mUserLocation, mTvDesc, mTvPosts, mTvBadges, mTitle;
     int pastVisiblesItems, visibleItemCount, totalItemCount;
     private BadgesDb db_badges;
     private BadgesDb dbBadges;
@@ -87,7 +87,7 @@ public class MyProfileActivity extends BaseActivity implements View.OnClickListe
             mCoverImage = (ImageView) findViewById(R.id.iv_cover_pic_activity_my_profile);
             mUserImage = (ImageView) findViewById(R.id.iv_user_img_activity_my_profile);
             mUserName = (TextView) findViewById(R.id.tv_user_name_activity_my_profile);
-            mUserAddress = (TextView) findViewById(R.id.tv_user_address_activity_my_profile);
+            mUserLocation = (TextView) findViewById(R.id.tv_user_address_activity_my_profile);
             mDropDown = (ImageView) findViewById(R.id.iv_dropdown_activity_my_profile);
             mTvDesc = (TextView) findViewById(R.id.tv_desc_activity_my_profile);
             mTvPosts = (TextView) findViewById(R.id.tv_posts_activity_my_profile);
@@ -117,7 +117,7 @@ public class MyProfileActivity extends BaseActivity implements View.OnClickListe
 
                         if (!isLoading) {
 
-                            Log.d(LOG_TAG, " visibleItemCount " + visibleItemCount + " pastVisiblesItems " + pastVisiblesItems + " totalItemCount " + totalItemCount);
+                            Log.d(LOG_TAG, " visibleItemCount " + visibleItemCount + " pastVisibleItems " + pastVisiblesItems + " totalItemCount " + totalItemCount);
                             if ((visibleItemCount + pastVisiblesItems) >= totalItemCount) {
                                 isLoading = true;
                                 //Do pagination.. i.e. fetch new data
@@ -176,6 +176,23 @@ public class MyProfileActivity extends BaseActivity implements View.OnClickListe
                 mCoverImage.setImageResource(R.drawable.default_user);
             }
             mTvDesc.setText(PreferenceHandler.readString(this, PreferenceHandler.PREF_KEY_DESCRIPTION, ""));
+
+
+            try {
+                String countryCode=PreferenceHandler.readString(this,PreferenceHandler.PREF_KEY_COUNTRY_CODE,"");
+                String[] rl=MyProfileActivity.this.getResources().getStringArray(R.array.countryList);
+                for(int i=0;i<rl.length;i++){
+                    String[] g=rl[i].split(",");
+                    if(g[1].trim().equals(countryCode.trim())){
+                        String countryName=g[0];
+                        mUserLocation.setText(countryName);
+                        break;  }
+
+                }
+            } catch (NumberFormatException e) {
+                e.printStackTrace();
+            }
+
 
         } catch (Exception e) {
             e.printStackTrace();
