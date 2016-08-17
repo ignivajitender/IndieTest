@@ -222,7 +222,7 @@ public class EnterMobileActivity extends BaseActivity {
                             PreferenceHandler.writeString(EnterMobileActivity.this,PreferenceHandler.PREF_KEY_DESCRIPTION,result.getProfile().getDesc());
                             PreferenceHandler.writeInteger(EnterMobileActivity.this,PreferenceHandler.TOTAL_BADGE_LIMIT,result.getBadgeLimit());
                             //
-                            Intent in = new Intent(EnterMobileActivity.this, CreateProfileActivity.class);
+                            Intent in = new Intent(EnterMobileActivity.this, DashBoardActivity.class);
                             Bundle bundle = new Bundle();
 
                             bundle.putString(Constants.FIRSTNAME, result.getProfile().getFirstName());

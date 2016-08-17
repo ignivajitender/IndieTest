@@ -69,12 +69,19 @@ public class PremiumBadgesAdapter extends RecyclerView.Adapter<PremiumBadgesAdap
             holder.mBadgePrice.setText("£"+mPremiumBadgeList.get(position).getPrice()+" /");
 
 
+            if(mPremiumBadgeList.get(position).isSelected()==false){
+                holder.mRlPremiumBadge.setBackgroundColor(Color.parseColor("#1C6DCE"));
+            } else {
+                holder.mRlPremiumBadge.setBackgroundColor(Color.parseColor("#77000000"));
+            }
+
               holder.mRlPremiumBadge.setOnClickListener(new View.OnClickListener() {
                   @Override
                   public void onClick(View v) {
                       try{
-                          if(mPremiumBadgeList.get(oldPostion).isSelected()&&oldPostion!=position){
+                          if(mPremiumBadgeList.get(oldPostion).isSelected()){
                               oldRelativeLayout.setBackgroundColor(Color.parseColor("#1C6DCE"));
+                              mPremiumBadgeList.get(oldPostion).setSelected(false);
                           }
                       }catch (Exception e){
                           e.printStackTrace();
@@ -97,8 +104,7 @@ public class PremiumBadgesAdapter extends RecyclerView.Adapter<PremiumBadgesAdap
 
                   }
               });
-
-//
+            premiumBadgesAdapter.notifyDataSetChanged();
         } catch (Exception e) {
             e.printStackTrace();
         }
