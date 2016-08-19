@@ -162,20 +162,44 @@ public class UserProfileActivity extends BaseActivity implements View.OnClickLis
                 super.onScrolled(recyclerView, dx, dy);
 
                 try {
+//                    if (dy > 0) //check for scroll down
+//                    {
+//                        visibleItemCount = mLlManger.getChildCount();
+//                        totalItemCount = mLlManger.getItemCount();
+//                        pastVisibleItems = mLlManger.findFirstVisibleItemPosition();
+//                        Log.d(LOG_TAG, " visibleItemCount " + visibleItemCount + " pastVisibleItems " + pastVisibleItems + " totalItemCount " + totalItemCount);
+//                        if (!isLoading) {
+//                            if ((visibleItemCount + pastVisibleItems) >= totalItemCount) {
+//                                isLoading = true;
+//                                //Do pagination.. i.e. fetch new data
+//                                if (mUserWallPostList.size() < 1) {
+//                                    viewAllPost();
+//                                }
+//                                if (mUserWallPostList.size() < totalPostCount) {
+//                                    PAGE+=1;
+//                                    viewAllPost();
+//                                }
+//                            }
+//                        }
+//                    }
                     if (dy > 0) //check for scroll down
                     {
                         visibleItemCount = mLlManger.getChildCount();
                         totalItemCount = mLlManger.getItemCount();
                         pastVisibleItems = mLlManger.findFirstVisibleItemPosition();
-                        Log.d(LOG_TAG, " visibleItemCount " + visibleItemCount + " pastVisibleItems " + pastVisibleItems + " totalItemCount " + totalItemCount);
+
                         if (!isLoading) {
+
+                            Log.d(LOG_TAG, " visibleItemCount " + visibleItemCount + " pastVisibleItems " + pastVisibleItems + " totalItemCount " + totalItemCount);
                             if ((visibleItemCount + pastVisibleItems) >= totalItemCount) {
                                 isLoading = true;
                                 //Do pagination.. i.e. fetch new data
                                 if (mUserWallPostList.size() < 1) {
+                                    PAGE=1;
                                     viewAllPost();
                                 }
                                 if (mUserWallPostList.size() < totalPostCount) {
+                                    Log.e("list size",""+mUserWallPostList.size());
                                     PAGE+=1;
                                     viewAllPost();
                                 }
@@ -411,8 +435,13 @@ public class UserProfileActivity extends BaseActivity implements View.OnClickLis
                                 Log.d(LOG_TAG, " original list is " + mUserWallPostList);
                                 mWallPostAdapter = null;
                                 mWallPostAdapter = new WallPostAdapter(UserProfileActivity.this, mUserWallPostList, onCommentListItemClickListner, Constants.USERPROFILEACTIVITY);
-                                mWallPostAdapter.notifyDataSetChanged();
+//                                mWallPostAdapter.notifyDataSetChanged();
                                 mRvUserPost.setAdapter(mWallPostAdapter);
+
+
+                                mRvUserPost.getRecycledViewPool().clear();
+                                mWallPostAdapter.notifyDataSetChanged();
+
 
                             } catch (Exception e) {
                                 e.printStackTrace();
@@ -422,11 +451,10 @@ public class UserProfileActivity extends BaseActivity implements View.OnClickLis
                             mTvNoPostAvailable.setVisibility(View.VISIBLE);
                         }
 
-
-
                     }
-                    isLoading=false;
+
                 }
+                isLoading=false;
                 if (mProgressDialog != null && mProgressDialog.isShowing()) {
                     mProgressDialog.dismiss();
                 }

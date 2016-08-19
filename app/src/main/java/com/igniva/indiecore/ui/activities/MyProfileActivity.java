@@ -351,6 +351,10 @@ public class MyProfileActivity extends BaseActivity implements View.OnClickListe
                                 mWallPostAdapter = new WallPostAdapter(MyProfileActivity.this, mMyWallPostList, onCommentListItemClickListnerTest2, Constants.MYPROFILEACTIVITY);
                                 mRvMyWallPosts.setAdapter(mWallPostAdapter);
 
+
+                                mRvMyWallPosts.getRecycledViewPool().clear();
+                                mWallPostAdapter.notifyDataSetChanged();
+
                             } catch (Exception e) {
                                 e.printStackTrace();
                             }

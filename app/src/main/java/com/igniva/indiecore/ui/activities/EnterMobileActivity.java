@@ -73,9 +73,8 @@ public class EnterMobileActivity extends BaseActivity {
                 @Override
                 public void onClick(View v) {
 
-                    String abc=null;
-                    abc.toString();
-                    //validateMobileNumber();
+
+                    validateMobileNumber();
                 }
             });
 
