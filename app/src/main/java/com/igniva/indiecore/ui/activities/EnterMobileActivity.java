@@ -58,8 +58,6 @@ public class EnterMobileActivity extends BaseActivity {
         setUpLayout();
         setDataInViewObjects();
 
-
-
     }
 
     void initToolbar() {
