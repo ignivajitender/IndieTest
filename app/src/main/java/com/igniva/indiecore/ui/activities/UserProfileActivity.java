@@ -434,7 +434,7 @@ public class UserProfileActivity extends BaseActivity implements View.OnClickLis
                             try {
                                 Log.d(LOG_TAG, " original list is " + mUserWallPostList);
                                 mWallPostAdapter = null;
-                                mWallPostAdapter = new WallPostAdapter(UserProfileActivity.this, mUserWallPostList, onCommentListItemClickListner, Constants.USERPROFILEACTIVITY);
+                                mWallPostAdapter = new WallPostAdapter(UserProfileActivity.this, mUserWallPostList, Constants.USERPROFILEACTIVITY,null,null,null,null,null,null);
 //                                mWallPostAdapter.notifyDataSetChanged();
                                 mRvUserPost.setAdapter(mWallPostAdapter);
 

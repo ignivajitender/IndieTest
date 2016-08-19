@@ -17,7 +17,13 @@ import android.widget.TextView;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.igniva.indiecore.R;
+import com.igniva.indiecore.controller.OnCommentClickListner;
 import com.igniva.indiecore.controller.OnCommentListItemClickListnerTest2;
+import com.igniva.indiecore.controller.OnDeletePostClickListner;
+import com.igniva.indiecore.controller.OnDisLikeClickListner;
+import com.igniva.indiecore.controller.OnLikeClickListner;
+import com.igniva.indiecore.controller.OnMediaPostClickListner;
+import com.igniva.indiecore.controller.OnNeutralClickListner;
 import com.igniva.indiecore.controller.ResponseHandlerListener;
 import com.igniva.indiecore.controller.WebNotificationManager;
 import com.igniva.indiecore.controller.WebServiceClient;
@@ -199,7 +205,6 @@ public class ChatsFragment extends BaseFragment {
         public void onClick(View v) {
             switch (v.getId()) {
                 case R.id.tv_chat:
-
                     updateChatUi();
                     break;
                 case R.id.tv_board:
@@ -221,6 +226,101 @@ public class ChatsFragment extends BaseFragment {
     };
 
 
+    OnLikeClickListner onLikeClickListner =new OnLikeClickListner() {
+        @Override
+        public void onLikeClicked(TextView like, int position, String postId, String type) {
+            try {
+                Utility.showToastMessageShort(getActivity(),"Like Clicked");
+                POSITION = position;
+                action = 1;
+                likeUnlikePost(mActionTypeLike, mWallPostList.get(position).getPostId());
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+    };
+
+    OnDisLikeClickListner onDisLikeClickListner =new OnDisLikeClickListner() {
+        @Override
+        public void onDisLikeClicked(TextView dislike, int position, String postId, String type) {
+            try {
+                POSITION = position;
+                action = 2;
+                likeUnlikePost(mActionTypeDislike, postId);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+    };
+
+    OnNeutralClickListner onNeutralClickListner =new OnNeutralClickListner() {
+        @Override
+        public void onNeutralClicked(TextView neutral, int position, String postId, String type) {
+            try {
+                POSITION = position;
+                action = 3;
+                likeUnlikePost(mActionTypeNeutral, postId);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+    };
+
+
+    OnCommentClickListner onCommentClickListner= new OnCommentClickListner() {
+        @Override
+        public void onCommentClicked(TextView comment, int position, String postId, String type) {
+            try {
+                POSITION = position;
+                Bundle bundle = new Bundle();
+                bundle.putSerializable("POST", mWallPostList.get(position));
+                Intent intent = new Intent(getActivity(), CommentActivity.class);
+                intent.putExtras(bundle);
+                startActivity(intent);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+    };
+
+    OnDeletePostClickListner onDeleteClickListner =new OnDeletePostClickListner() {
+        @Override
+        public void ondeletePostClicked(ImageView delete, int position, String postId, String type) {
+            try {
+                POSITION = position;
+                if (ACTION.equalsIgnoreCase("DELETE")) {
+
+                    removePost(postId);
+
+                } else if (ACTION.equalsIgnoreCase("REPORT")) {
+
+                    flagPost(postId);
+                }
+
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+    };
+
+    OnMediaPostClickListner onMediaPostClickListner=new OnMediaPostClickListner() {
+        @Override
+        public void onMediaPostClicked(ImageView media, int position, String postId, String type) {
+            try {
+                POSITION = position;
+                Bundle bundle = new Bundle();
+                bundle.putSerializable("POST", mWallPostList.get(position));
+                Intent intent = new Intent(getActivity(), CommentActivity.class);
+                intent.putExtras(bundle);
+                startActivity(intent);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+
+        }
+    };
+
+
     OnCommentListItemClickListnerTest2 onCommentListItemClickListnerTest2 = new OnCommentListItemClickListnerTest2() {
         @Override
         public void onCommentListItemClicked(final WallPostAdapter.RecyclerViewHolders holder, final int position, final String postId, final String type) {
@@ -229,33 +329,33 @@ public class ChatsFragment extends BaseFragment {
                     mHolder = holder;
                     postID = postId;
                     ACTION=type;
-                    mHolder.like.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-                            try {
-                                POSITION = position;
-                                action = 1;
-                                likeUnlikePost(mActionTypeLike, mWallPostList.get(position).getPostId());
-                            } catch (Exception e) {
-                                e.printStackTrace();
-                            }
+//                    mHolder.like.setOnClickListener(new View.OnClickListener() {
+//                        @Override
+//                        public void onClick(View v) {
+//                            try {
+//                                POSITION = position;
+//                                action = 1;
+//                                likeUnlikePost(mActionTypeLike, mWallPostList.get(position).getPostId());
+//                            } catch (Exception e) {
+//                                e.printStackTrace();
+//                            }
+//
+//                        }
+//                    });
 
-                        }
-                    });
-
-                    mHolder.dislike.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-                            try {
-                                POSITION = position;
-                                action = 2;
-                                likeUnlikePost(mActionTypeDislike, postId);
-                            } catch (Exception e) {
-                                e.printStackTrace();
-                            }
-
-                        }
-                    });
+//                    mHolder.dislike.setOnClickListener(new View.OnClickListener() {
+//                        @Override
+//                        public void onClick(View v) {
+//                            try {
+//                                POSITION = position;
+//                                action = 2;
+//                                likeUnlikePost(mActionTypeDislike, postId);
+//                            } catch (Exception e) {
+//                                e.printStackTrace();
+//                            }
+//
+//                        }
+//                    });
 
 
                     mHolder.neutral.setOnClickListener(new View.OnClickListener() {
@@ -434,16 +534,8 @@ public class ChatsFragment extends BaseFragment {
             mLlBoard.setVisibility(View.VISIBLE);
 
             mAdapter = null;
-                mAdapter = new WallPostAdapter(getActivity(), mWallPostList, onCommentListItemClickListnerTest2,Constants.CHATFRAGMENT);
+                mAdapter = new WallPostAdapter(getActivity(), mWallPostList,Constants.CHATFRAGMENT,onLikeClickListner,onDisLikeClickListner,onNeutralClickListner,onCommentClickListner,onMediaPostClickListner,onDeleteClickListner);
                 mRvWallPosts.setAdapter(mAdapter);
-
-
-
-
-
-
-
-
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -532,7 +624,7 @@ public class ChatsFragment extends BaseFragment {
                         if (mWallPostList.size() > 0) {
                             try {
                                 mWallPostAdapter = null;
-                                mWallPostAdapter = new WallPostAdapter(getActivity(), mWallPostList, onCommentListItemClickListnerTest2,Constants.CHATFRAGMENT);
+                                mWallPostAdapter = new WallPostAdapter(getActivity(), mWallPostList,Constants.CHATFRAGMENT,onLikeClickListner,onDisLikeClickListner,onNeutralClickListner,onCommentClickListner,onMediaPostClickListner,onDeleteClickListner);
                                 mWallPostAdapter.notifyDataSetChanged();
                                 mRvWallPosts.setAdapter(mWallPostAdapter);
 
@@ -620,7 +712,7 @@ public class ChatsFragment extends BaseFragment {
                                     mWallPostList.get(POSITION).setLike(a - 1 );
                                 }
                             }
-                            Log.d(LOG_TAG, " new count of like " + mHolder.like.getText());
+//                            Log.d(LOG_TAG, " new count of like " + mHolder.like.getText());
 
 
                         } else if (action == 2) {
@@ -638,7 +730,7 @@ public class ChatsFragment extends BaseFragment {
                                 mWallPostList.get(POSITION).setAction(null);
                                 if (b > 0) {
                                     mWallPostList.get(POSITION).setDislike(b - 1 );
-                                } mHolder.like.setCompoundDrawablesWithIntrinsicBounds(R.drawable.like_grey_icon_circle, 0, 0, 0);
+                                }
 
                             }
 

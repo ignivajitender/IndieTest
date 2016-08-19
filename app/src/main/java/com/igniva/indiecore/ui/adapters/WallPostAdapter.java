@@ -13,7 +13,13 @@ import android.widget.TextView;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.igniva.indiecore.R;
+import com.igniva.indiecore.controller.OnCommentClickListner;
 import com.igniva.indiecore.controller.OnCommentListItemClickListnerTest2;
+import com.igniva.indiecore.controller.OnDeletePostClickListner;
+import com.igniva.indiecore.controller.OnDisLikeClickListner;
+import com.igniva.indiecore.controller.OnLikeClickListner;
+import com.igniva.indiecore.controller.OnMediaPostClickListner;
+import com.igniva.indiecore.controller.OnNeutralClickListner;
 import com.igniva.indiecore.controller.WebServiceClient;
 import com.igniva.indiecore.model.PostPojo;
 import com.igniva.indiecore.ui.activities.UserProfileActivity;
@@ -37,15 +43,25 @@ public class WallPostAdapter extends RecyclerView.Adapter<WallPostAdapter.Recycl
     String LOG_TAG = "WallPostAdapter";
     //    OnListItemClickListner mOnListItemClickListner;
     OnCommentListItemClickListnerTest2 onCommentListItemClickListnerTest2l;
+    OnLikeClickListner mOnLikeClickListner;
+    OnDisLikeClickListner mOnDisLikeClickListner;
+    OnNeutralClickListner mOnNeutralClickListner;
+    OnCommentClickListner mOnCommentClickListner;
+    OnMediaPostClickListner mOnMediaPostClickListner;
+    OnDeletePostClickListner mOnDeletePostClickListner;
 
 
-    public WallPostAdapter(Context context, ArrayList<PostPojo> wallItemsList, OnCommentListItemClickListnerTest2 onListItemClickListner, String contextName) {
+    public WallPostAdapter(Context context, ArrayList<PostPojo> wallItemsList, String contextName,OnLikeClickListner onLikeClickListner,OnDisLikeClickListner OnDisLikeAdapter,OnNeutralClickListner onNeutralClickListner,OnCommentClickListner onCommentClickListner,OnMediaPostClickListner onMediaPostClickListner,OnDeletePostClickListner onDeletePostClickListner) {
 
         this.wallItemsList = wallItemsList;
         this.mContext = context;
-        this.onCommentListItemClickListnerTest2l = onListItemClickListner;
         this.ACTIVITY_NAME = contextName;
-
+        this.mOnLikeClickListner=onLikeClickListner;
+        this.mOnDisLikeClickListner =OnDisLikeAdapter;
+        this.mOnNeutralClickListner=onNeutralClickListner;
+        this.mOnCommentClickListner=onCommentClickListner;
+        this.mOnMediaPostClickListner=onMediaPostClickListner;
+        this.mOnDeletePostClickListner=onDeletePostClickListner;
     }
 
 
@@ -154,43 +170,49 @@ public class WallPostAdapter extends RecyclerView.Adapter<WallPostAdapter.Recycl
             holder.like.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    onCommentListItemClickListnerTest2l.onCommentListItemClicked(holder, position, wallItemsList.get(position).getPostId(), Constants.LIKE);
+
+                    mOnLikeClickListner.onLikeClicked(holder.like,position, wallItemsList.get(position).getPostId(), Constants.LIKE);
                 }
             });
+
+
             holder.dislike.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    onCommentListItemClickListnerTest2l.onCommentListItemClicked(holder, position, wallItemsList.get(position).getPostId(), Constants.DISLIKE);
+
+                    mOnDisLikeClickListner.onDisLikeClicked(holder.dislike,position, wallItemsList.get(position).getPostId(), Constants.DISLIKE);
                 }
             });
+
+
             holder.neutral.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    onCommentListItemClickListnerTest2l.onCommentListItemClicked(holder, position, wallItemsList.get(position).getPostId(), Constants.NEUTRAL);
+
+                    mOnNeutralClickListner.onNeutralClicked(holder.dislike,position, wallItemsList.get(position).getPostId(), Constants.DISLIKE);
                 }
             });
 
             holder.comment.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    onCommentListItemClickListnerTest2l.onCommentListItemClicked(holder, position, wallItemsList.get(position).getPostId(), Constants.COMMENT);
-
+                    mOnCommentClickListner.onCommentClicked(holder.comment,position, wallItemsList.get(position).getPostId(), Constants.COMMENT);
                 }
             });
+
 
             holder.mMediaPost.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    onCommentListItemClickListnerTest2l.onCommentListItemClicked(holder, position, wallItemsList.get(position).getPostId(), Constants.MEDIA);
+                    mOnMediaPostClickListner.onMediaPostClicked(holder.mMediaPost,position, wallItemsList.get(position).getPostId(), Constants.MEDIA);
 
                 }
             });
 
-
             holder.mDeletePost.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    onCommentListItemClickListnerTest2l.onCommentListItemClicked(holder, position, wallItemsList.get(position).getPostId(), ACTION);
+                    mOnMediaPostClickListner.onMediaPostClicked(holder.mDeletePost,position, wallItemsList.get(position).getPostId(), Constants.DELETE);
 
                 }
             });

@@ -17,7 +17,13 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.igniva.indiecore.R;
 import com.igniva.indiecore.controller.OnCardClickListner;
+import com.igniva.indiecore.controller.OnCommentClickListner;
 import com.igniva.indiecore.controller.OnCommentListItemClickListnerTest2;
+import com.igniva.indiecore.controller.OnDeletePostClickListner;
+import com.igniva.indiecore.controller.OnDisLikeClickListner;
+import com.igniva.indiecore.controller.OnLikeClickListner;
+import com.igniva.indiecore.controller.OnMediaPostClickListner;
+import com.igniva.indiecore.controller.OnNeutralClickListner;
 import com.igniva.indiecore.controller.ResponseHandlerListener;
 import com.igniva.indiecore.controller.WebNotificationManager;
 import com.igniva.indiecore.controller.WebServiceClient;
@@ -243,7 +249,7 @@ public class MyProfileActivity extends BaseActivity implements View.OnClickListe
                 viewMyPost();
             } else {
                 mWallPostAdapter = null;
-                mWallPostAdapter = new WallPostAdapter(MyProfileActivity.this, mMyWallPostList, onCommentListItemClickListnerTest2, Constants.MYPROFILEACTIVITY);
+                mWallPostAdapter = new WallPostAdapter(MyProfileActivity.this, mMyWallPostList, Constants.MYPROFILEACTIVITY,onLikeClickListner,onDisLikeClickListner,onNeutralClickListner,onCommentClickListner,onMediaPostClickListner,onDeletePostClickListner);
                 mRvMyWallPosts.setAdapter(mWallPostAdapter);
 
 
@@ -348,7 +354,7 @@ public class MyProfileActivity extends BaseActivity implements View.OnClickListe
                         if (mMyWallPostList.size() > 0) {
                             try {
                                 mWallPostAdapter = null;
-                                mWallPostAdapter = new WallPostAdapter(MyProfileActivity.this, mMyWallPostList, onCommentListItemClickListnerTest2, Constants.MYPROFILEACTIVITY);
+                                mWallPostAdapter = new WallPostAdapter(MyProfileActivity.this, mMyWallPostList, Constants.MYPROFILEACTIVITY,onLikeClickListner,onDisLikeClickListner,onNeutralClickListner,onCommentClickListner,onMediaPostClickListner,onDeletePostClickListner);
                                 mRvMyWallPosts.setAdapter(mWallPostAdapter);
 
 
@@ -496,122 +502,200 @@ public class MyProfileActivity extends BaseActivity implements View.OnClickListe
         }
     }
 
-    OnCommentListItemClickListnerTest2 onCommentListItemClickListnerTest2 = new OnCommentListItemClickListnerTest2() {
+    OnLikeClickListner onLikeClickListner =new OnLikeClickListner() {
         @Override
-        public void onCommentListItemClicked(final WallPostAdapter.RecyclerViewHolders holder, final int position, final String postId, String type) {
-            {
-                try {
-                    mHolder = holder;
-                    postID = postId;
+        public void onLikeClicked(TextView like, int position, String postId, String type) {
+            try {
+                Utility.showToastMessageShort(MyProfileActivity.this,"Like Clicked");
+                POSITION = position;
+                action = 1;
+                likeUnlikePost(mActionTypeLike, mMyWallPostList.get(position).getPostId());
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+    };
 
-                    mHolder.like.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-                            POSITION = position;
-                            action = 1;
-                            likeUnlikePost(mActionTypeLike, mMyWallPostList.get(position).getPostId());
+    OnDisLikeClickListner onDisLikeClickListner =new OnDisLikeClickListner() {
+        @Override
+        public void onDisLikeClicked(TextView dislike, int position, String postId, String type) {
+            try {
+                POSITION = position;
+                action = 2;
+                likeUnlikePost(mActionTypeDislike, postId);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+    };
+    OnNeutralClickListner onNeutralClickListner =new OnNeutralClickListner() {
+        @Override
+        public void onNeutralClicked(TextView neutral, int position, String postId, String type) {
+            try {
+                POSITION = position;
+                action = 3;
+                likeUnlikePost(mActionTypeDislike, postId);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+    };
 
-                        }
-                    });
+    OnCommentClickListner onCommentClickListner= new OnCommentClickListner() {
+        @Override
+        public void onCommentClicked(TextView comment, int position, String postId, String type) {
+            POSITION = position;
+            Bundle bundle = new Bundle();
+            bundle.putSerializable("POST", mMyWallPostList.get(position));
+            Intent intent = new Intent(MyProfileActivity.this, CommentActivity.class);
+            intent.putExtras(bundle);
+            startActivity(intent);
 
-                    mHolder.dislike.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-                            POSITION = position;
-                            action = 2;
-                            likeUnlikePost(mActionTypeDislike, postId);
+        }
+    };
 
-                        }
-                    });
+    OnMediaPostClickListner onMediaPostClickListner= new OnMediaPostClickListner() {
+        @Override
+        public void onMediaPostClicked(ImageView media, int position, String postId, String type) {
+            POSITION = position;
+            Bundle bundle = new Bundle();
+            bundle.putSerializable("POST", mMyWallPostList.get(position));
+            Intent intent = new Intent(MyProfileActivity.this, CommentActivity.class);
+            intent.putExtras(bundle);
+            startActivity(intent);
+        }
+    };
 
+    OnDeletePostClickListner onDeletePostClickListner= new OnDeletePostClickListner() {
+        @Override
+        public void ondeletePostClicked(ImageView media, int position, String postId, String type) {
+            try {
+                POSITION = position;
+                Utility.showToastMessageShort(MyProfileActivity.this, " position is " + position);
+                removePost(postId);
 
-                    mHolder.neutral.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-                            POSITION = position;
-                            action = 3;
-                            likeUnlikePost(mActionTypeNeutral, postId);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+    };
 
-
-                        }
-                    });
-
-                    mHolder.comment.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-                            POSITION = position;
-                            Bundle bundle = new Bundle();
-                            bundle.putSerializable("POST", mMyWallPostList.get(position));
-                            Intent intent = new Intent(MyProfileActivity.this, CommentActivity.class);
-                            intent.putExtras(bundle);
-                            startActivity(intent);
-
-                        }
-                    });
-
-
-                    mHolder.mMediaPost.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-                            POSITION = position;
-                            Bundle bundle = new Bundle();
-                            bundle.putSerializable("POST", mMyWallPostList.get(position));
-                            Intent intent = new Intent(MyProfileActivity.this, CommentActivity.class);
-                            intent.putExtras(bundle);
-                            startActivity(intent);
-
-                        }
-                    });
-
-
-//                    mHolder.dropDownOptions.setOnClickListener(new View.OnClickListener() {
+//    OnCommentListItemClickListnerTest2 onCommentListItemClickListnerTest2 = new OnCommentListItemClickListnerTest2() {
+//        @Override
+//        public void onCommentListItemClicked(final WallPostAdapter.RecyclerViewHolders holder, final int position, final String postId, String type) {
+//            {
+//                try {
+//                    mHolder = holder;
+//                    postID = postId;
+//
+////                    mHolder.like.setOnClickListener(new View.OnClickListener() {
+////                        @Override
+////                        public void onClick(View v) {
+////                            POSITION = position;
+////                            action = 1;
+////                            likeUnlikePost(mActionTypeLike, mMyWallPostList.get(position).getPostId());
+////
+////                        }
+////                    });
+//
+////                    mHolder.dislike.setOnClickListener(new View.OnClickListener() {
+////                        @Override
+////                        public void onClick(View v) {
+////                            POSITION = position;
+////                            action = 2;
+////                            likeUnlikePost(mActionTypeDislike, postId);
+////
+////                        }
+////                    });
+////
+////
+////                    mHolder.neutral.setOnClickListener(new View.OnClickListener() {
+////                        @Override
+////                        public void onClick(View v) {
+////                            POSITION = position;
+////                            action = 3;
+////                            likeUnlikePost(mActionTypeNeutral, postId);
+////
+////
+////                        }
+////                    });
+////
+////                    mHolder.comment.setOnClickListener(new View.OnClickListener() {
+////                        @Override
+////                        public void onClick(View v) {
+////                            POSITION = position;
+////                            Bundle bundle = new Bundle();
+////                            bundle.putSerializable("POST", mMyWallPostList.get(position));
+////                            Intent intent = new Intent(MyProfileActivity.this, CommentActivity.class);
+////                            intent.putExtras(bundle);
+////                            startActivity(intent);
+////
+////                        }
+////                    });
+////
+////
+////                    mHolder.mMediaPost.setOnClickListener(new View.OnClickListener() {
+////                        @Override
+////                        public void onClick(View v) {
+////                            POSITION = position;
+////                            Bundle bundle = new Bundle();
+////                            bundle.putSerializable("POST", mMyWallPostList.get(position));
+////                            Intent intent = new Intent(MyProfileActivity.this, CommentActivity.class);
+////                            intent.putExtras(bundle);
+////                            startActivity(intent);
+////
+////                        }
+////                    });
+//
+//
+////                    mHolder.dropDownOptions.setOnClickListener(new View.OnClickListener() {
+////                        @Override
+////                        public void onClick(View v) {
+////
+////                            mDeletePost = (ImageView) v.findViewById(R.id.iv_delete_post);
+////
+////                            POSITION = position;
+////                            try {
+//////                                Utility.showToastMessageShort(getActivity(), " position is " + position);
+////
+////                                if (deletePostVisible == false) {
+////                                        mDeletePost.setVisibility(View.VISIBLE);
+////                                        mDeletePost.setImageResource(R.drawable.delete_icon);
+////                                    deletePostVisible = true;
+////                                } else if (deletePostVisible == true) {
+////                                    mDeletePost.setVisibility(View.GONE);
+////                                    deletePostVisible = false;
+////
+////                                }
+////
+////                            } catch (Exception e) {
+////                                e.printStackTrace();
+////                            }
+////                        }
+////                    });
+//
+//
+//                    mHolder.mDeletePost.setOnClickListener(new View.OnClickListener() {
 //                        @Override
 //                        public void onClick(View v) {
-//
-//                            mDeletePost = (ImageView) v.findViewById(R.id.iv_delete_post);
-//
-//                            POSITION = position;
 //                            try {
-////                                Utility.showToastMessageShort(getActivity(), " position is " + position);
-//
-//                                if (deletePostVisible == false) {
-//                                        mDeletePost.setVisibility(View.VISIBLE);
-//                                        mDeletePost.setImageResource(R.drawable.delete_icon);
-//                                    deletePostVisible = true;
-//                                } else if (deletePostVisible == true) {
-//                                    mDeletePost.setVisibility(View.GONE);
-//                                    deletePostVisible = false;
-//
-//                                }
+//                                POSITION = position;
+//                                Utility.showToastMessageShort(MyProfileActivity.this, " position is " + position);
+//                                removePost(postId);
 //
 //                            } catch (Exception e) {
 //                                e.printStackTrace();
 //                            }
 //                        }
 //                    });
-
-
-                    mHolder.mDeletePost.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-                            try {
-                                POSITION = position;
-                                Utility.showToastMessageShort(MyProfileActivity.this, " position is " + position);
-                                removePost(postId);
-
-                            } catch (Exception e) {
-                                e.printStackTrace();
-                            }
-                        }
-                    });
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-
-
-            }
-        }
-    };
+//                } catch (Exception e) {
+//                    e.printStackTrace();
+//                }
+//
+//
+//            }
+//        }
+//    };
 
     /*
     * create payload to flag/remove a post
