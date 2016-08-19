@@ -24,8 +24,10 @@ import com.igniva.indiecore.R;
 import com.igniva.indiecore.controller.ResponseHandlerListener;
 import com.igniva.indiecore.controller.WebNotificationManager;
 import com.igniva.indiecore.controller.WebServiceClient;
+import com.igniva.indiecore.db.BadgesDb;
 import com.igniva.indiecore.model.ContactPojo;
 import com.igniva.indiecore.model.ResponsePojo;
+import com.igniva.indiecore.model.UsersPojo;
 import com.igniva.indiecore.ui.adapters.InviteContactAdapter;
 import com.igniva.indiecore.utils.Constants;
 import com.igniva.indiecore.utils.Log;
@@ -42,14 +44,12 @@ import java.util.ArrayList;
  */
 public class InviteContactActivity extends BaseActivity {
     Toolbar mToolbar;
-    RecyclerView recyclerView;
+    private RecyclerView recyclerView;
     private EditText mEtSearch;
     ContactPojo mContactPojo;
     InviteContactAdapter mInviteContactAdapter;
     ArrayList<ContactPojo> mContactList = null;
-    ContactPojo obj;
-
-    int mMaxContacts = 0;
+    private int mMaxContacts = 0;
     String Medium = "2";
     int index = -1;
     public static ArrayList<String> mSelectedContacts = new ArrayList<String>();
@@ -59,7 +59,6 @@ public class InviteContactActivity extends BaseActivity {
      * See https://g.co/AppIndexing/AndroidStudio for more information.
      */
     private GoogleApiClient client;
-
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -78,24 +77,20 @@ public class InviteContactActivity extends BaseActivity {
             mToolbar = (Toolbar) findViewById(R.id.toolbar);
             TextView mTvTitle = (TextView) mToolbar.findViewById(R.id.toolbar_title);
             mTvTitle.setText(getResources().getString(R.string.invite_friends));
-            //
             TextView mTvSend = (TextView) mToolbar.findViewById(R.id.toolbar_next);
             mTvSend.setText("Send");
 
             mTvSend.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-//                    onClickWhatsApp(v);
-
                     Log.e("contact list to send", "" + mSelectedContacts);
                     Log.e("contact list size", "" + mSelectedContacts.size());
 
                     sendInviteSms();
-
 //                    TODO call this slot buy service
-                    buyBadgeSlot();
-
-
+                    if(index==3) {
+                        buyBadgeSlot();
+                    }
                 }
             });
             //
@@ -105,7 +100,6 @@ public class InviteContactActivity extends BaseActivity {
             e.printStackTrace();
             mToolbar = (Toolbar) findViewById(R.id.toolbar);
         }
-
     }
 
     @Override
@@ -113,7 +107,6 @@ public class InviteContactActivity extends BaseActivity {
         try {
             mSelectedContactName.clear();
             mSelectedContacts.clear();
-
             try {
                 Bundle bundle = getIntent().getExtras();
                 index = bundle.getInt(Constants.INDEX);
@@ -123,18 +116,22 @@ public class InviteContactActivity extends BaseActivity {
 
             mContactList = new ArrayList<>();
             recyclerView = (RecyclerView) findViewById(R.id.recyclerView);
-
             final LinearLayoutManager layoutManager = new LinearLayoutManager(this);
             layoutManager.setOrientation(LinearLayoutManager.VERTICAL);
             recyclerView.setLayoutManager(layoutManager);
 
-
-            obj = new ContactPojo();
+//            if (index != 3) {
+//                try {
+//                    usersDb = new BadgesDb(InviteContactActivity.this);
+//                    mSavedUsersList = usersDb.retrieveSavedUsersList();
+//                } catch (Exception e) {
+//                    e.printStackTrace();
+//                }
+//            }
 
 
             mEtSearch = (EditText) findViewById(R.id.et_search);
             mEtSearch.addTextChangedListener(new TextWatcher() {
-
                 @Override
                 public void onTextChanged(CharSequence s, int start, int before, int count) {
                     // System.out.println("Text [" + s + "]");
@@ -162,6 +159,7 @@ public class InviteContactActivity extends BaseActivity {
     protected void setDataInViewObjects() {
         getAllContacts();
         mInviteContactAdapter = null;
+
         try {
             /**
              * index=3 --> coming from Invite Activity, the first time
@@ -331,7 +329,7 @@ public class InviteContactActivity extends BaseActivity {
                 WebNotificationManager.unRegisterResponseListener(responseHandlerBuyASlot);
                 if (error == null) {
                     if (result.getSuccess().equalsIgnoreCase("true")) {
-                    PreferenceHandler.writeInteger(InviteContactActivity.this,PreferenceHandler.TOTAL_BADGE_LIMIT,result.getBadgeLimit());
+                        PreferenceHandler.writeInteger(InviteContactActivity.this, PreferenceHandler.TOTAL_BADGE_LIMIT, result.getBadgeLimit());
                     }
                 }
 

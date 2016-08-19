@@ -114,9 +114,7 @@ public class BadgesAdapter extends RecyclerView.Adapter<BadgesAdapter.RecyclerVi
         holder.mIvBadgeIcon.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
                 try {
-
                     Bundle bundle = new Bundle();
                     bundle.putInt(Constants.POSITION, position);
                     bundle.putSerializable("badgePojo", itemList.get(position));

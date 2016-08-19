@@ -48,11 +48,11 @@ public class MyProfileActivity extends BaseActivity implements View.OnClickListe
     public static final String mActionTypeNeutral = "neutral";
     private ImageView mCoverImage, mUserImage, mDropDown;
     private TextView mUserName, mUserLocation, mTvDesc, mTvPosts, mTvBadges, mTitle;
-    int pastVisiblesItems, visibleItemCount, totalItemCount;
+    int pastVisibleItems, visibleItemCount, totalItemCount;
     private BadgesDb db_badges;
     private BadgesDb dbBadges;
     private boolean isLoading;
-    private int totalPostCount;
+    private int totalPostCount=0;
     private ArrayList<PostPojo> mMyWallPostList = new ArrayList<PostPojo>();
     private WallPostAdapter mWallPostAdapter;
     private ImageView onOffImage;
@@ -97,6 +97,8 @@ public class MyProfileActivity extends BaseActivity implements View.OnClickListe
             mRvMyWallPosts = (RecyclerView) findViewById(R.id.rv_posts_activity_my_profile);
             mRvMyWallPosts.setLayoutManager(mLlManager);
             updatePostTabUi();
+            mDropDown=(ImageView) findViewById(R.id.iv_dropdown_activity_my_profile);
+            mDropDown.setVisibility(View.GONE);
 
 
             mRvMyWallPosts.addOnScrollListener(new RecyclerView.OnScrollListener() {
@@ -113,19 +115,20 @@ public class MyProfileActivity extends BaseActivity implements View.OnClickListe
                     {
                         visibleItemCount = mLlManager.getChildCount();
                         totalItemCount = mLlManager.getItemCount();
-                        pastVisiblesItems = mLlManager.findFirstVisibleItemPosition();
+                        pastVisibleItems = mLlManager.findFirstVisibleItemPosition();
 
                         if (!isLoading) {
 
-                            Log.d(LOG_TAG, " visibleItemCount " + visibleItemCount + " pastVisibleItems " + pastVisiblesItems + " totalItemCount " + totalItemCount);
-                            if ((visibleItemCount + pastVisiblesItems) >= totalItemCount) {
+                            Log.d(LOG_TAG, " visibleItemCount " + visibleItemCount + " pastVisibleItems " + pastVisibleItems + " totalItemCount " + totalItemCount);
+                            if ((visibleItemCount + pastVisibleItems) >= totalItemCount) {
                                 isLoading = true;
                                 //Do pagination.. i.e. fetch new data
-                                if (mMyWallPostList.size() < 20) {
+                                if (mMyWallPostList.size() < 1) {
                                     PAGE=1;
                                     viewMyPost();
                                 }
                                 if (mMyWallPostList.size() < totalPostCount) {
+                                    Log.e("list size",""+mMyWallPostList.size());
                                     PAGE+=1;
                                      viewMyPost();
                                 }
@@ -337,7 +340,7 @@ public class MyProfileActivity extends BaseActivity implements View.OnClickListe
                 if (error == null) {
 
                     if (result.getSuccess().equalsIgnoreCase("true")) {
-                            totalPostCount=result.getTotal_count();
+                            totalPostCount=result.getTotalPosts();
 //                        if (mMyWallPostList != null)
 //                            mMyWallPostList.clear();
                         mMyWallPostList.addAll(result.getPostList());

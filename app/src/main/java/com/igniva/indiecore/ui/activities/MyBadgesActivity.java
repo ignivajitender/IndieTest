@@ -556,15 +556,10 @@ public class MyBadgesActivity extends BaseActivity implements View.OnClickListen
 
                     for (int i = 0; i < mBadgeMarketList.size(); i++) {
 
-                        if (mBadgeMarketList.get(i).isSelected())
+                        if (mBadgeMarketList.get(i).isSelected()){
                             mBadgeMarketList.remove(i);
-                    }
-                    for (int i = 0; i < mBadgeMarketList.size(); i++) {
-
-                        if (mBadgeMarketList.get(i).isSelected())
-                            mBadgeMarketList.remove(i);
-
-
+                            i = i - 1;
+                        }
                     }
 
                     mBadgeMarketAdapter.notifyDataSetChanged();

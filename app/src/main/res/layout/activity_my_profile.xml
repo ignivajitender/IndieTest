@@ -3,20 +3,9 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical">
-
-
     <include
         android:id="@+id/toolbar"
         layout="@layout/toolbar_with_image_at_right" />
-
-    <!--<ScrollView-->
-    <!--android:layout_width="match_parent"-->
-    <!--android:layout_height="wrap_content">-->
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical">
 
         <RelativeLayout
             android:layout_width="match_parent"
@@ -43,6 +32,7 @@
                     android:layout_gravity="center_horizontal"
                     android:layout_marginTop="30dp"
                     android:maxHeight="70dp"
+                    android:gravity="center"
                     android:textSize="10dp"
                     android:background="@color/white"
                     android:padding="10dp" />
@@ -83,9 +73,7 @@
                         android:text="@string/my_badge"
                         android:textColor="@color/blue_clicked"
                         android:textSize="10sp" />
-
                 </LinearLayout>
-
 
             </LinearLayout>
 
@@ -94,13 +82,12 @@
                 android:layout_height="wrap_content"
                 android:layout_centerVertical="true"
                 android:orientation="horizontal">
-
                 <com.igniva.indiecore.utils.CircularImageView
                     android:id="@+id/iv_user_img_activity_my_profile"
                     android:layout_width="70dp"
                     android:layout_height="70dp"
                     android:layout_marginLeft="20dp"
-                    android:src="#000000" />
+                    android:src="@drawable/default_user" />
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -147,20 +134,17 @@
                             android:paddingLeft="10dp"
                             android:paddingRight="10dp"
                             android:src="@drawable/dropdown_icon" />
-
-
                     </LinearLayout>
                 </LinearLayout>
             </LinearLayout>
         </RelativeLayout>
 
-
-        <LinearLayout
+    <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_marginLeft="10dp"
             android:layout_marginRight="10dp"
-            android:layout_marginTop="-30dp">
+            android:layout_marginTop="10dp">
 
             <android.support.v7.widget.RecyclerView
                 android:id="@+id/rv_posts_activity_my_profile"
@@ -170,11 +154,6 @@
                 android:layout_marginRight="5dp"
                 android:layout_marginTop="2dp"></android.support.v7.widget.RecyclerView>
 
-
         </LinearLayout>
-
-    </LinearLayout>
-
     <!--</ScrollView>-->
-
 </LinearLayout>

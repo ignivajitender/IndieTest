@@ -43,7 +43,7 @@ public class ContactsFragment extends BaseFragment {
     private RecyclerView mRvUsers;
     private LinearLayoutManager mLlManager;
     private TextView mTvPhoneBook, mTvFavourite, mComingSoon;
-    PhonebookAdapter mPhoneBookAdapter;
+    private PhonebookAdapter mPhoneBookAdapter;
     BadgesDb usersDb;
     View rootView;
 

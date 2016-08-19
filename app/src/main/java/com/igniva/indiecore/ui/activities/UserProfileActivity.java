@@ -167,6 +167,7 @@ public class UserProfileActivity extends BaseActivity implements View.OnClickLis
                         visibleItemCount = mLlManger.getChildCount();
                         totalItemCount = mLlManger.getItemCount();
                         pastVisibleItems = mLlManger.findFirstVisibleItemPosition();
+                        Log.d(LOG_TAG, " visibleItemCount " + visibleItemCount + " pastVisibleItems " + pastVisibleItems + " totalItemCount " + totalItemCount);
                         if (!isLoading) {
                             if ((visibleItemCount + pastVisibleItems) >= totalItemCount) {
                                 isLoading = true;
@@ -420,10 +421,11 @@ public class UserProfileActivity extends BaseActivity implements View.OnClickLis
 
                             mTvNoPostAvailable.setVisibility(View.VISIBLE);
                         }
-                        isLoading=false;
+
 
 
                     }
+                    isLoading=false;
                 }
                 if (mProgressDialog != null && mProgressDialog.isShowing()) {
                     mProgressDialog.dismiss();
