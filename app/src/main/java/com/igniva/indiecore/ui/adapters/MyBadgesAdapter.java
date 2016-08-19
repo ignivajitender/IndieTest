@@ -38,7 +38,6 @@ public class MyBadgesAdapter extends RecyclerView.Adapter<MyBadgesAdapter.Recycl
     private final OnCardClickListner listener;
 
     public MyBadgesAdapter(Context context, ArrayList<BadgesPojo> mSelectedBadgeIds, OnCardClickListner onCardClickListner) {
-
         this.mContext = context;
         this.mSelectedBadgeIds = mSelectedBadgeIds;
         this.listener = onCardClickListner;

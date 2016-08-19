@@ -1,7 +1,5 @@
 package com.igniva.indiecore.ui.adapters;
 
-import android.app.Activity;
-import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -11,23 +9,16 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.igniva.indiecore.R;
 import com.igniva.indiecore.controller.OnCommentListItemClickListnerTest2;
-import com.igniva.indiecore.controller.ResponseHandlerListener;
-import com.igniva.indiecore.controller.WebNotificationManager;
 import com.igniva.indiecore.controller.WebServiceClient;
 import com.igniva.indiecore.model.PostPojo;
-import com.igniva.indiecore.model.ResponsePojo;
 import com.igniva.indiecore.ui.activities.UserProfileActivity;
 import com.igniva.indiecore.utils.Constants;
 import com.igniva.indiecore.utils.PreferenceHandler;
-import com.igniva.indiecore.utils.Utility;
-
-import org.json.JSONObject;
 
 import java.util.ArrayList;
 
@@ -41,8 +32,8 @@ public class WallPostAdapter extends RecyclerView.Adapter<WallPostAdapter.Recycl
     public ImageView mDeletePostOld;
     private boolean deletePostVisible = false;
     private String ACTION = "";
-    private int POSTION = -1;
-    private String ACTIVITYNAME = "";
+    private int POSITION = -1;
+    private String ACTIVITY_NAME = "";
     String LOG_TAG = "WallPostAdapter";
     //    OnListItemClickListner mOnListItemClickListner;
     OnCommentListItemClickListnerTest2 onCommentListItemClickListnerTest2l;
@@ -53,7 +44,7 @@ public class WallPostAdapter extends RecyclerView.Adapter<WallPostAdapter.Recycl
         this.wallItemsList = wallItemsList;
         this.mContext = context;
         this.onCommentListItemClickListnerTest2l = onListItemClickListner;
-        this.ACTIVITYNAME = contextName;
+        this.ACTIVITY_NAME = contextName;
 
     }
 
@@ -205,15 +196,13 @@ public class WallPostAdapter extends RecyclerView.Adapter<WallPostAdapter.Recycl
             });
 
 
-            if(ACTIVITYNAME.equals(Constants.USERPROFILEACTIVITY)){
+            if(ACTIVITY_NAME.equals(Constants.USERPROFILEACTIVITY)){
                 holder.mUserIcon.setEnabled(false);
             }
 
             holder.mUserIcon.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-
-//                    onCommentListItemClickListnerTest2l.onCommentListItemClicked(holder, position, wallItemsList.get(position).getPostId(), wallItemsList.get(position).getRoomId());
 
                     try {
                             Bundle bundle = new Bundle();
@@ -226,8 +215,6 @@ public class WallPostAdapter extends RecyclerView.Adapter<WallPostAdapter.Recycl
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
-
-
                 }
             });
 
