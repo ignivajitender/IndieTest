@@ -235,6 +235,10 @@
         <meta-data
             android:name="com.google.android.gms.version"
             android:value="@integer/google_play_services_version" />
+        <!-- Crashlytics -->
+        <meta-data
+            android:name="io.fabric.ApiKey"
+            android:value="7f13cc184549fdf0b47c81233930bfdccce27582" />
     </application>
 
 </manifest>

@@ -14,6 +14,7 @@ import android.support.v7.widget.Toolbar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.crashlytics.android.Crashlytics;
 import com.igniva.indiecore.controller.WebServiceClient;
 import com.igniva.indiecore.db.BadgesDb;
 import com.igniva.indiecore.model.BadgesPojo;
@@ -34,6 +35,8 @@ import com.igniva.indiecore.R;
 
 import java.util.ArrayList;
 
+import io.fabric.sdk.android.Fabric;
+
 /**
  * Created by igniva-andriod-05 on 2/6/16.
  */
@@ -50,10 +53,11 @@ public class EnterMobileActivity extends BaseActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_enter_mobile);
-
+        Fabric.with(this, new Crashlytics());
         initToolbar();
         setUpLayout();
         setDataInViewObjects();
+
     }
 
     void initToolbar() {
@@ -68,7 +72,10 @@ public class EnterMobileActivity extends BaseActivity {
             mTvNext.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    validateMobileNumber();
+
+                    String abc=null;
+                    abc.toString();
+                    //validateMobileNumber();
                 }
             });
 
