@@ -1162,5 +1162,7 @@
         <item>Zimbabwe,263</item>
     </string-array>
 
+    <!-- Transitions -->
+    <string name="transition_app_icon" translatable="false">App Icon Transition</string>
 
 </resources>
