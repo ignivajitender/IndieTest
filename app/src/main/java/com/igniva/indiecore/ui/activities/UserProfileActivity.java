@@ -17,7 +17,12 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.igniva.indiecore.R;
 import com.igniva.indiecore.controller.OnCardClickListner;
-import com.igniva.indiecore.controller.OnCommentListItemClickListnerTest2;
+import com.igniva.indiecore.controller.OnCommentClickListner;
+import com.igniva.indiecore.controller.OnDeletePostClickListner;
+import com.igniva.indiecore.controller.OnDisLikeClickListner;
+import com.igniva.indiecore.controller.OnLikeClickListner;
+import com.igniva.indiecore.controller.OnMediaPostClickListner;
+import com.igniva.indiecore.controller.OnNeutralClickListner;
 import com.igniva.indiecore.controller.ResponseHandlerListener;
 import com.igniva.indiecore.controller.WebNotificationManager;
 import com.igniva.indiecore.controller.WebServiceClient;
@@ -162,26 +167,6 @@ public class UserProfileActivity extends BaseActivity implements View.OnClickLis
                 super.onScrolled(recyclerView, dx, dy);
 
                 try {
-//                    if (dy > 0) //check for scroll down
-//                    {
-//                        visibleItemCount = mLlManger.getChildCount();
-//                        totalItemCount = mLlManger.getItemCount();
-//                        pastVisibleItems = mLlManger.findFirstVisibleItemPosition();
-//                        Log.d(LOG_TAG, " visibleItemCount " + visibleItemCount + " pastVisibleItems " + pastVisibleItems + " totalItemCount " + totalItemCount);
-//                        if (!isLoading) {
-//                            if ((visibleItemCount + pastVisibleItems) >= totalItemCount) {
-//                                isLoading = true;
-//                                //Do pagination.. i.e. fetch new data
-//                                if (mUserWallPostList.size() < 1) {
-//                                    viewAllPost();
-//                                }
-//                                if (mUserWallPostList.size() < totalPostCount) {
-//                                    PAGE+=1;
-//                                    viewAllPost();
-//                                }
-//                            }
-//                        }
-//                    }
                     if (dy > 0) //check for scroll down
                     {
                         visibleItemCount = mLlManger.getChildCount();
@@ -427,18 +412,14 @@ public class UserProfileActivity extends BaseActivity implements View.OnClickLis
                         mRvUserPost.setVisibility(View.VISIBLE);
 
                         if (mUserWallPostList != null)
-                            mUserWallPostList.clear();
+//                            mUserWallPostList.clear();
                         mUserWallPostList.addAll(result.getPostList());
 
                         if (mUserWallPostList.size() > 0) {
                             try {
-                                Log.d(LOG_TAG, " original list is " + mUserWallPostList);
                                 mWallPostAdapter = null;
-                                mWallPostAdapter = new WallPostAdapter(UserProfileActivity.this, mUserWallPostList, Constants.USERPROFILEACTIVITY,null,null,null,null,null,null);
-//                                mWallPostAdapter.notifyDataSetChanged();
+                                mWallPostAdapter = new WallPostAdapter(UserProfileActivity.this, mUserWallPostList, Constants.USERPROFILEACTIVITY,onLikeClickListner,onDisLikeClickListner,onNeutralClickListner,onCommentClickListner,onMediaPostClickListner,onDeletePostClickListner);
                                 mRvUserPost.setAdapter(mWallPostAdapter);
-
-
                                 mRvUserPost.getRecycledViewPool().clear();
                                 mWallPostAdapter.notifyDataSetChanged();
 
@@ -465,142 +446,87 @@ public class UserProfileActivity extends BaseActivity implements View.OnClickLis
         }
     };
 
-    OnCommentListItemClickListnerTest2 onCommentListItemClickListner = new OnCommentListItemClickListnerTest2() {
+    OnLikeClickListner onLikeClickListner =new OnLikeClickListner() {
         @Override
-        public void onCommentListItemClicked(final WallPostAdapter.RecyclerViewHolders holder, final int position, final String postId, String type) {
-            {
-                try {
-                    mHolder = holder;
-                    postID = postId;
-                    mHolder.like.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-                            POSITION = position;
-                            action = 1;
-                            likeUnlikePost(mActionTypeLike, mUserWallPostList.get(position).getPostId());
+        public void onLikeClicked(TextView like, int position, String postId, String type) {
+            try {
+                POSITION=position;
+                action = 1;
+                likeUnlikePost(mActionTypeLike, postId);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+    };
 
-                        }
-                    });
+    OnDisLikeClickListner onDisLikeClickListner =new OnDisLikeClickListner() {
+        @Override
+        public void onDisLikeClicked(TextView dislike, int position, String postId, String type) {
+            try {
+                POSITION=position;
+                action = 2;
+                likeUnlikePost(mActionTypeDislike, postId);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+    };
+    OnNeutralClickListner onNeutralClickListner =new OnNeutralClickListner() {
+        @Override
+        public void onNeutralClicked(TextView neutral, int position, String postId, String type) {
+            try {
+                POSITION=position;
+                action = 3;
+                likeUnlikePost(mActionTypeNeutral, postId);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+    };
 
-                    mHolder.dislike.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-                            POSITION = position;
-                            action = 2;
-                            likeUnlikePost(mActionTypeDislike, postId);
+    OnCommentClickListner onCommentClickListner= new OnCommentClickListner() {
+        @Override
+        public void onCommentClicked(TextView comment, int position, String postId, String type) {
+            Bundle bundle = new Bundle();
+            bundle.putSerializable("POST", mUserWallPostList.get(position));
+            Intent intent = new Intent(UserProfileActivity.this, CommentActivity.class);
+            intent.putExtras(bundle);
+            startActivity(intent);
 
-                        }
-                    });
+        }
+    };
 
+    OnMediaPostClickListner onMediaPostClickListner= new OnMediaPostClickListner() {
+        @Override
+        public void onMediaPostClicked(ImageView media, int position, String postId, String type) {
+            Bundle bundle = new Bundle();
+            bundle.putSerializable("POST", mUserWallPostList.get(position));
+            Intent intent = new Intent(UserProfileActivity.this, CommentActivity.class);
+            intent.putExtras(bundle);
+            startActivity(intent);
+        }
+    };
 
-                    mHolder.neutral.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-                            POSITION = position;
-                            action = 3;
-                            likeUnlikePost(mActionTypeNeutral, postId);
-                        }
-                    });
+    OnDeletePostClickListner onDeletePostClickListner= new OnDeletePostClickListner() {
+        @Override
+        public void ondeletePostClicked(ImageView delete, int position, String postId, String type) {
+            try {
+                POSITION = position;
+                removePost(postId);
 
-                    mHolder.comment.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-                            POSITION = position;
-                            Bundle bundle = new Bundle();
-                            bundle.putSerializable("POST", mUserWallPostList.get(position));
-                            Intent intent = new Intent(UserProfileActivity.this, CommentActivity.class);
-                            intent.putExtras(bundle);
-                            startActivity(intent);
-
-                        }
-                    });
-
-
-                    mHolder.mMediaPost.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-                            POSITION = position;
-                            Bundle bundle = new Bundle();
-                            bundle.putSerializable("POST", mUserWallPostList.get(position));
-                            Intent intent = new Intent(UserProfileActivity.this, CommentActivity.class);
-                            intent.putExtras(bundle);
-                            startActivity(intent);
-
-                        }
-                    });
-
-
-//                    mHolder.dropDownOptions.setOnClickListener(new View.OnClickListener() {
-//                        @Override
-//                        public void onClick(View v) {
-//
-//                            POSITION = position;
-//                            try {
-//
-//                                if (deletePostVisible == false) {
-//
-//                                    if (mUserWallPostList.get(POSITION).getRelation().equalsIgnoreCase("self")) {
-//                                        mDeletePost.setVisibility(View.VISIBLE);
-//                                        mDeletePost.setImageResource(R.drawable.delete_icon);
-//                                        ACTION = "DELETE";
-//                                    } else {
-//                                        mDeletePost.setVisibility(View.VISIBLE);
-//                                        mDeletePost.setImageResource(R.drawable.report_abuse);
-//                                        ACTION = "REPORT";
-//                                    }
-//                                    deletePostVisible = true;
-//                                } else if (deletePostVisible == true) {
-//                                    mDeletePost.setVisibility(View.GONE);
-//                                    deletePostVisible = false;
-//
-//                                }
-//
-//                            } catch (Exception e) {
-//                                e.printStackTrace();
-//                            }
-//                        }
-//                    });
-
-
-//                    mHolder.mDeletePost.setOnClickListener(new View.OnClickListener() {
-//                        @Override
-//                        public void onClick(View v) {
-//                            try {
-//                                POSITION = position;
-////                                Utility.showToastMessageShort(getActivity(), " position is " + position);
-//
-//                                if (ACTION.equalsIgnoreCase("DELETE")) {
-//
-//                                    removePost(postId);
-//
-//                                } else if (ACTION.equalsIgnoreCase("REPORT")) {
-//
-//                                    flagPost(postId);
-//                                }
-//
-//                            } catch (Exception e) {
-//                                e.printStackTrace();
-//                            }
-//                        }
-//                    });
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-
-
+            } catch (Exception e) {
+                e.printStackTrace();
             }
         }
     };
 
     //
 // create payload to like unlike a post
-//
-//
+//   token, userId, type(like/dislike/neutral), post_id
 // */
     public String createPayload(String type, String postId) {
 
         JSONObject payload = null;
-//        token, userId, type(like/dislike/neutral), post_id
         try {
             payload = new JSONObject();
             payload.put(Constants.TOKEN, PreferenceHandler.readString(this, PreferenceHandler.PREF_KEY_USER_TOKEN, ""));
@@ -657,17 +583,13 @@ public class UserProfileActivity extends BaseActivity implements View.OnClickLis
                                     mUserWallPostList.get(POSITION).setLike(a - 1);
                                 }
                             }
-                            Log.d(LOG_TAG, " new count of like " + mHolder.like.getText());
 
 
                         } else if (action == 2) {
                             //action dislike
                             int num_dislike = mUserWallPostList.get(POSITION).getDislike();
                             int b = num_dislike;
-
                             if (result.getDislike() == 1) {
-
-
                                 mUserWallPostList.get(POSITION).setAction(Constants.DISLIKE);
                                 mUserWallPostList.get(POSITION).setDislike(b + 1);
 
@@ -676,7 +598,6 @@ public class UserProfileActivity extends BaseActivity implements View.OnClickLis
                                 if (b > 0) {
                                     mUserWallPostList.get(POSITION).setDislike(b - 1);
                                 }
-                                mHolder.like.setCompoundDrawablesWithIntrinsicBounds(R.drawable.like_grey_icon_circle, 0, 0, 0);
 
                             }
 
@@ -781,7 +702,7 @@ public class UserProfileActivity extends BaseActivity implements View.OnClickLis
     * create payload to block an user
     * token, userId, personId
     * */
-    public String genratePayload(String userId) {
+    public String generatePayload(String userId) {
         JSONObject payload = null;
         try {
             payload = new JSONObject();
@@ -798,7 +719,7 @@ public class UserProfileActivity extends BaseActivity implements View.OnClickLis
 
     public void blockUser(String userId) {
         mIvBlockUser.setVisibility(View.GONE);
-        String payload = genratePayload(userId);
+        String payload = generatePayload(userId);
         if (payload != null) {
 
             WebNotificationManager.registerResponseListener(blockResponseHandler);
@@ -856,4 +777,93 @@ Utility.showToastMessageShort(UserProfileActivity.this,"User blocked");
                 break;
         }
     }
+
+      /*
+    * create payload to flag/remove a post
+    *
+    *
+    * */
+
+
+    public String genratePayload(String postId) {
+        JSONObject payload = null;
+        try {
+            payload = new JSONObject();
+            payload.put(Constants.TOKEN, PreferenceHandler.readString(this, PreferenceHandler.PREF_KEY_USER_TOKEN, ""));
+            payload.put(Constants.USERID, PreferenceHandler.readString(this, PreferenceHandler.PREF_KEY_USER_ID, ""));
+            payload.put(Constants.POST_ID, postId);
+
+
+        } catch (Exception e) {
+
+            e.printStackTrace();
+        }
+
+        return payload.toString();
+    }
+
+    /*
+    * remove post call
+    *
+    * */
+    public void removePost(String postId) {
+        try {
+
+
+            String payload = genratePayload(postId);
+            if (!payload.isEmpty()) {
+
+                WebNotificationManager.registerResponseListener(responseRemovePost);
+                WebServiceClient.remove_a_post(this, payload, responseRemovePost);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+
+    /*
+    * response Remove post
+    *
+    *
+    * */
+    ResponseHandlerListener responseRemovePost = new ResponseHandlerListener() {
+        @Override
+        public void onComplete(ResponsePojo result, WebServiceClient.WebError error, ProgressDialog mProgressDialog) {
+            WebNotificationManager.unRegisterResponseListener(responseRemovePost);
+
+            try {
+                if (error == null) {
+                    if (result.getSuccess().equalsIgnoreCase("true")) {
+
+//                        mHolder.mDeletePost.setVisibility(View.GONE);
+                        mUserWallPostList.remove(POSITION);
+//                        mWallPostAdapter = new WallPostAdapter(getActivity(), mWallPostList, onListItemClickListner);
+                        mWallPostAdapter.notifyDataSetChanged();
+//                      mRvWallPosts.setAdapter(mWallPostAdapter);
+
+
+                        Utility.showToastMessageLong(UserProfileActivity.this, "post removed");
+
+                    } else {
+
+                    }
+
+                } else {
+
+
+                }
+
+
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+//            finish the dialog
+            if (mProgressDialog != null && mProgressDialog.isShowing()) {
+                mProgressDialog.dismiss();
+            }
+
+
+        }
+    };
 }

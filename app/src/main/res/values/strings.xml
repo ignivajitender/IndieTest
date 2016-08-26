@@ -159,7 +159,10 @@
     <string name="name">Name</string>
     <string name="by_sms">By Sms</string>
     <string name="by_whats_app">By WhatsApp</string>
-
+    <string name="message_by_friends">Message From Friends</string>
+    <string name="message_from_others">Message From Others</string>
+<string name="chat_messages">Chats Messages</string>
+    <string name="new_badges">New Badges</string>
 
     <string name="privacy">Privacy</string>
 

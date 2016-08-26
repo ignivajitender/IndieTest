@@ -22,6 +22,7 @@ import com.igniva.indiecore.controller.OnPremiumBadgeClick;
 import com.igniva.indiecore.controller.ResponseHandlerListener;
 import com.igniva.indiecore.controller.WebNotificationManager;
 import com.igniva.indiecore.controller.WebServiceClient;
+import com.igniva.indiecore.db.BadgesDb;
 import com.igniva.indiecore.model.BadgesPojo;
 import com.igniva.indiecore.model.PremiumBadgePojo;
 import com.igniva.indiecore.model.ResponsePojo;
@@ -48,6 +49,8 @@ public class PremiumBadgesActivity extends BaseActivity implements IabBroadcastR
 
     private ArrayList<BadgesPojo> mPremiumBadgesList = new ArrayList<>();
     private PremiumBadgesAdapter premiumBadgesAdapter;
+    BadgesPojo SelectedPremiumBadge;
+    private String BadgeId="";
     public static int pageNumber = 1, badgeCount = 20, category = 2, mTotalBadgeCount = 0;
     private Toolbar mToolbar;
     private RecyclerView mRvPremiumBadges;
@@ -76,9 +79,11 @@ public class PremiumBadgesActivity extends BaseActivity implements IabBroadcastR
     String mSecondChoiceSku = "";
     // How many units (1/4 tank is our unit) fill in the tank.
     static final int TANK_MAX = 4;
+    BadgesDb dbBadges;
 
     // Current amount of gas in tank, in units
     int mTank;
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -189,7 +194,7 @@ public class PremiumBadgesActivity extends BaseActivity implements IabBroadcastR
         final LinearLayoutManager layoutManager = new LinearLayoutManager(this);
         layoutManager.setOrientation(LinearLayoutManager.VERTICAL);
         mRvPremiumBadges.setLayoutManager(layoutManager);
-        getPremiumBadges(pageNumber,badgeCount,category);
+        getPremiumBadges(pageNumber, badgeCount, category);
 
 
     }
@@ -213,7 +218,7 @@ public class PremiumBadgesActivity extends BaseActivity implements IabBroadcastR
     }
 
 
-    public  void getPremiumBadges(int page, int limit, int category){
+    public void getPremiumBadges(int pageNumber, int badgeCount, int category) {
 
         String payload = createPayload(pageNumber, badgeCount, category);
         if (payload != null) {
@@ -227,19 +232,19 @@ public class PremiumBadgesActivity extends BaseActivity implements IabBroadcastR
 
     }
 
-    ResponseHandlerListener responseHandlerListener= new ResponseHandlerListener() {
+    ResponseHandlerListener responseHandlerListener = new ResponseHandlerListener() {
         @Override
         public void onComplete(ResponsePojo result, WebServiceClient.WebError error, ProgressDialog mProgressDialog) {
             WebNotificationManager.unRegisterResponseListener(responseHandlerListener);
             try {
 
-                if(error==null){
+                if (error == null) {
 
-                    if(result.getSuccess().equalsIgnoreCase("true")){
+                    if (result.getSuccess().equalsIgnoreCase("true")) {
 
                         mPremiumBadgesList.clear();
 
-                        for (int i=0;i<mPremiumBadgesList.size();i++){
+                        for (int i = 0; i < mPremiumBadgesList.size(); i++) {
 
                             result.getBadges().get(i).setSelected(false);
                         }
@@ -249,13 +254,10 @@ public class PremiumBadgesActivity extends BaseActivity implements IabBroadcastR
                     }
 
 
-
                 }
 
 
-
-
-            }catch (Exception e){
+            } catch (Exception e) {
                 e.printStackTrace();
             }
             // Always close the progressdialog
@@ -274,7 +276,7 @@ public class PremiumBadgesActivity extends BaseActivity implements IabBroadcastR
 
             Log.e("premium", "" + mPremiumBadgesList.size());
             premiumBadgesAdapter = null;
-            premiumBadgesAdapter = new PremiumBadgesAdapter(this, mPremiumBadgesList,onPremiumBadgeClick);
+            premiumBadgesAdapter = new PremiumBadgesAdapter(this, mPremiumBadgesList, onPremiumBadgeClick);
             mRvPremiumBadges.setAdapter(premiumBadgesAdapter);
 
         } catch (Exception e) {
@@ -283,26 +285,29 @@ public class PremiumBadgesActivity extends BaseActivity implements IabBroadcastR
 
     }
 
-    OnPremiumBadgeClick onPremiumBadgeClick= new OnPremiumBadgeClick() {
+    OnPremiumBadgeClick onPremiumBadgeClick = new OnPremiumBadgeClick() {
         @Override
         public void onPremiumBadgeClicked(BadgesPojo mPremiumBadge) {
-
-
-
+            try {
+                SelectedPremiumBadge=mPremiumBadge;
+                BadgeId=mPremiumBadge.getBadgeId();
+                Log.e(LOG_TAG,"Badges Detail---"+mPremiumBadge.getBadgeId()  +mPremiumBadge.getName());
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         }
     };
 
 
     // User clicked the "Buy Gas" button
     public void onBuyGasButtonClicked(View arg0) {
-    Log.d(LOG_TAG, "Buy gas button clicked.");
-
+        Log.d(LOG_TAG, "Buy gas button clicked.");
 
 
         // launch the gas purchase UI flow.
         // We will be notified of completion via mPurchaseFinishedListener
         setWaitScreen(true);
-      Log.d(LOG_TAG, "Launching purchase flow for gas.");
+        Log.d(LOG_TAG, "Launching purchase flow for gas.");
 
         /* TODO: for security, generate your payload here for verification. See the comments on
          *        verifyDeveloperPayload() for more info. Since this is a SAMPLE, we just use
@@ -317,8 +322,6 @@ public class PremiumBadgesActivity extends BaseActivity implements IabBroadcastR
             setWaitScreen(false);
         }
     }
-
-
 
 
     protected void onClick(View v) {
@@ -345,7 +348,7 @@ public class PremiumBadgesActivity extends BaseActivity implements IabBroadcastR
     // Callback for when a purchase is finished
     IabHelper.OnIabPurchaseFinishedListener mPurchaseFinishedListener = new IabHelper.OnIabPurchaseFinishedListener() {
         public void onIabPurchaseFinished(IabResult result, Purchase purchase) {
-         Log.d(LOG_TAG, "Purchase finished: " + result + ", purchase: " + purchase);
+            Log.d(LOG_TAG, "Purchase finished: " + result + ", purchase: " + purchase);
 
             // if we were disposed of in the meantime, quit.
             if (mHelper == null) return;
@@ -361,6 +364,7 @@ public class PremiumBadgesActivity extends BaseActivity implements IabBroadcastR
                 return;
             }
 
+            savePremiumSelectedBadge();
             android.util.Log.d(LOG_TAG, "Purchase successful.");
 
             if (purchase.getSku().equals(SKU_GAS)) {
@@ -373,16 +377,14 @@ public class PremiumBadgesActivity extends BaseActivity implements IabBroadcastR
                     setWaitScreen(false);
                     return;
                 }
-            }
-            else if (purchase.getSku().equals(SKU_PREMIUM)) {
+            } else if (purchase.getSku().equals(SKU_PREMIUM)) {
                 // bought the premium upgrade!
                 android.util.Log.d(LOG_TAG, "Purchase is premium upgrade. Congratulating user.");
                 alert("Thank you for upgrading to premium!");
                 mIsPremium = true;
                 updateUi();
                 setWaitScreen(false);
-            }
-            else if (purchase.getSku().equals(SKU_INFINITE_GAS_MONTHLY)
+            } else if (purchase.getSku().equals(SKU_INFINITE_GAS_MONTHLY)
                     || purchase.getSku().equals(SKU_INFINITE_GAS_YEARLY)) {
                 // bought the infinite gas subscription
                 android.util.Log.d(LOG_TAG, "Infinite gas subscription purchased.");
@@ -480,11 +482,13 @@ public class PremiumBadgesActivity extends BaseActivity implements IabBroadcastR
 
     // Enables or disables the "please wait" screen.
     void setWaitScreen(boolean set) {
-       // findViewById(R.id.screen_main).setVisibility(set ? View.GONE : View.VISIBLE);
-      //  findViewById(R.id.screen_wait).setVisibility(set ? View.VISIBLE : View.GONE);
+        // findViewById(R.id.screen_main).setVisibility(set ? View.GONE : View.VISIBLE);
+        //  findViewById(R.id.screen_wait).setVisibility(set ? View.VISIBLE : View.GONE);
     }
 
-    /** Verifies the developer payload of a purchase. */
+    /**
+     * Verifies the developer payload of a purchase.
+     */
     boolean verifyDeveloperPayload(Purchase p) {
         String payload = p.getDeveloperPayload();
 
@@ -559,8 +563,7 @@ public class PremiumBadgesActivity extends BaseActivity implements IabBroadcastR
                 mTank = mTank == TANK_MAX ? TANK_MAX : mTank + 1;
                 //saveData();
                 alert("You filled 1/4 tank. Your tank is now " + String.valueOf(mTank) + "/4 full!");
-            }
-            else {
+            } else {
                 complain("Error while consuming: " + result);
             }
             updateUi();
@@ -569,4 +572,99 @@ public class PremiumBadgesActivity extends BaseActivity implements IabBroadcastR
         }
     };
 
+
+
+
+    /*
+* payload to save my selected badges at server
+* PARAMETER: token, userId, type, badgeIds (should be in CSV format. for eg. 1,4,5,8)
+*
+* */
+    public String createPayload() {
+        JSONObject payload = null;
+        try {
+            payload = new JSONObject();
+            payload.put(Constants.TOKEN, PreferenceHandler.readString(this, PreferenceHandler.PREF_KEY_USER_TOKEN, ""));
+            payload.put(Constants.USERID, PreferenceHandler.readString(this, PreferenceHandler.PREF_KEY_USER_ID, ""));
+            payload.put(Constants.TYPE, "premium");
+            payload.put(Constants.BADGEIDS, BadgeId);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+        Log.d(LOG_TAG, " payload is " + payload.toString());
+
+        return payload.toString();
+    }
+
+    /*
+    *
+    * save my badges at server request
+    * TODO
+    * */
+    public void savePremiumSelectedBadge() {
+        try {
+            String payload = createPayload();
+            if (payload != null) {
+                // Web service Call
+                // Step 1 - Register responsehandler
+                Log.d(LOG_TAG, "--" + payload);
+                WebNotificationManager.registerResponseListener(responseHandler);
+                // Step 2 - Webservice Call
+                WebServiceClient.userselectedBadges(PremiumBadgesActivity.this, payload, responseHandler);
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+
+    }
+
+
+    ResponseHandlerListener responseHandler = new ResponseHandlerListener() {
+        @Override
+        public void onComplete(ResponsePojo result, WebServiceClient.WebError error, ProgressDialog mProgressDialog) {
+            WebNotificationManager.unRegisterResponseListener(responseHandler);
+
+            if (error == null) {
+                if (result.getSuccess().equals("true")) {
+                    insertPremiumBadgeToDb();
+                    PreferenceHandler.writeInteger(PremiumBadgesActivity.this, PreferenceHandler.TOTAL_BADGE_LIMIT, result.getUser().getBadgeLimit());
+                    Utility.showToastMessageShort(PremiumBadgesActivity.this, "Badge added successfully");
+
+                    for (int i = 0; i < mPremiumBadgesList.size(); i++) {
+
+                        if (mPremiumBadgesList.get(i).isSelected()){
+                            mPremiumBadgesList.remove(i);
+                            i = i - 1;
+                        }
+                    }
+
+                    premiumBadgesAdapter.notifyDataSetChanged();
+
+                } else {
+
+                    Utility.showAlertDialog(result.getError_text(), PremiumBadgesActivity.this);
+
+                }
+
+            } else {
+                Utility.showAlertDialog("Some server error Occurred!", PremiumBadgesActivity.this);
+            }
+            if (mProgressDialog != null && mProgressDialog.isShowing()) {
+                mProgressDialog.dismiss();
+            }
+        }
+    };
+    public void insertPremiumBadgeToDb() {
+        try {
+            dbBadges = new BadgesDb(this);
+            dbBadges.inserPremiumBadges(SelectedPremiumBadge);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+    }
 }

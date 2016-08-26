@@ -17,7 +17,11 @@ import android.widget.TextView;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.igniva.indiecore.R;
+import com.igniva.indiecore.controller.OnReplyDeleteClickListner;
+import com.igniva.indiecore.controller.OnReplyDislikeClickListner;
+import com.igniva.indiecore.controller.OnReplyLikeClickListner;
 import com.igniva.indiecore.controller.OnReplyListItemClickListner;
+import com.igniva.indiecore.controller.OnReplyNeutralClickListner;
 import com.igniva.indiecore.controller.ResponseHandlerListener;
 import com.igniva.indiecore.controller.WebNotificationManager;
 import com.igniva.indiecore.controller.WebServiceClient;
@@ -281,7 +285,6 @@ public class CommentsReplyActivity extends BaseActivity implements View.OnClickL
     public String createPayload(String commentId, String text) {
         JSONObject payload = null;
 //        token, userId, commentId, text
-
         try {
             payload = new JSONObject();
             payload.put(Constants.TOKEN, PreferenceHandler.readString(this, PreferenceHandler.PREF_KEY_USER_TOKEN, ""));
@@ -358,10 +361,10 @@ public class CommentsReplyActivity extends BaseActivity implements View.OnClickL
 
     /*
 * payload to view all replies
+* token, userId, commentId, page, limit
 * */
     public String createPayload(String commentId, String page, String limit) {
         JSONObject payload = null;
-//       token, userId, commentId, page, limit
         try {
             payload = new JSONObject();
             payload.put(Constants.TOKEN, PreferenceHandler.readString(this, PreferenceHandler.PREF_KEY_USER_TOKEN, ""));
@@ -404,7 +407,7 @@ public class CommentsReplyActivity extends BaseActivity implements View.OnClickL
                 mRelpiesLIst.addAll(result.getRepliesList());
 
                 mAdapter = null;
-                mAdapter = new CommentReplyAdapter(CommentsReplyActivity.this, mRelpiesLIst, onReplyListItemClicked);
+                mAdapter = new CommentReplyAdapter(CommentsReplyActivity.this, mRelpiesLIst, onReplyLikeClickListner,onReplyDislikeClickListner,onReplyNeutralClickListner,onReplyDeleteClickListner);
                 mRvReplies.setAdapter(mAdapter);
 
 
@@ -826,48 +829,84 @@ public class CommentsReplyActivity extends BaseActivity implements View.OnClickL
     };
 
 
-    OnReplyListItemClickListner onReplyListItemClicked = new OnReplyListItemClickListner() {
+    OnReplyLikeClickListner onReplyLikeClickListner=new OnReplyLikeClickListner() {
         @Override
-        public void onReplyListItemClick(CommentReplyAdapter.RecyclerViewHolders holder, final int position, final String replyId) {
-            POSTION = position;
-
-            holder.mImageDelete.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    POSTION = position;
-                    removeReply(replyId);
-                }
-            });
-
-
-            holder.mReplyLike.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    INDEX=1;
-                    POSTION = position;
-                    actionOnReply(replyId, mActionTypeLike);
-                }
-            });
-            holder.mReplyDislike.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    INDEX=2;
-                    POSTION = position;
-                    actionOnReply(replyId, mActionTypeDislike);
-                }
-            });
-            holder.mReplyNeutral.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    INDEX=3;
-                    POSTION = position;
-                    actionOnReply(replyId, mActionTypeNeutral);
-                }
-            });
-
-
+        public void onReplyLikeClicked(TextView like, int position, String replyId, String type) {
+            POSTION=position;
+            INDEX=1;
+            actionOnReply(replyId, mActionTypeLike);
         }
     };
+
+    OnReplyDislikeClickListner onReplyDislikeClickListner=new OnReplyDislikeClickListner() {
+        @Override
+        public void onReplyDislikeClicked(TextView dislike, int position, String replyId, String type) {
+            POSTION=position;
+            INDEX=2;
+            actionOnReply(replyId, mActionTypeDislike);
+        }
+    };
+
+    OnReplyNeutralClickListner onReplyNeutralClickListner=new OnReplyNeutralClickListner() {
+        @Override
+        public void onReplyNeutralClicked(TextView neutral, int position, String replyId, String type) {
+            POSTION=position;
+            INDEX=3;
+            actionOnReply(replyId, mActionTypeNeutral);
+        }
+    };
+
+    OnReplyDeleteClickListner onReplyDeleteClickListner=new OnReplyDeleteClickListner() {
+        @Override
+        public void onReplyDeleteClicked(ImageView delete, int position, String replyId, String type) {
+            POSTION=position;
+            removeReply(replyId);
+        }
+    };
+
+
+//    OnReplyListItemClickListner onReplyListItemClicked = new OnReplyListItemClickListner() {
+//        @Override
+//        public void onReplyListItemClick(CommentReplyAdapter.RecyclerViewHolders holder, final int position, final String replyId) {
+//            POSTION = position;
+//
+//            holder.mImageDelete.setOnClickListener(new View.OnClickListener() {
+//                @Override
+//                public void onClick(View v) {
+//                    POSTION = position;
+//                    removeReply(replyId);
+//                }
+//            });
+//
+//
+//            holder.mReplyLike.setOnClickListener(new View.OnClickListener() {
+//                @Override
+//                public void onClick(View v) {
+//                    INDEX=1;
+//                    POSTION = position;
+//                    actionOnReply(replyId, mActionTypeLike);
+//                }
+//            });
+//            holder.mReplyDislike.setOnClickListener(new View.OnClickListener() {
+//                @Override
+//                public void onClick(View v) {
+//                    INDEX=2;
+//                    POSTION = position;
+//                    actionOnReply(replyId, mActionTypeDislike);
+//                }
+//            });
+//            holder.mReplyNeutral.setOnClickListener(new View.OnClickListener() {
+//                @Override
+//                public void onClick(View v) {
+//                    INDEX=3;
+//                    POSTION = position;
+//                    actionOnReply(replyId, mActionTypeNeutral);
+//                }
+//            });
+//
+//
+//        }
+//    };
 
 
 }

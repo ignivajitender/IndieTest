@@ -18,7 +18,6 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.igniva.indiecore.R;
 import com.igniva.indiecore.controller.OnCommentClickListner;
-import com.igniva.indiecore.controller.OnCommentListItemClickListnerTest2;
 import com.igniva.indiecore.controller.OnDeletePostClickListner;
 import com.igniva.indiecore.controller.OnDisLikeClickListner;
 import com.igniva.indiecore.controller.OnLikeClickListner;
@@ -32,7 +31,6 @@ import com.igniva.indiecore.model.PostPojo;
 import com.igniva.indiecore.ui.activities.CommentActivity;
 import com.igniva.indiecore.ui.activities.CreatePostActivity;
 import com.igniva.indiecore.ui.activities.DashBoardActivity;
-import com.igniva.indiecore.ui.activities.UserProfileActivity;
 import com.igniva.indiecore.ui.adapters.WallPostAdapter;
 import com.igniva.indiecore.utils.Constants;
 import com.igniva.indiecore.utils.Log;
@@ -53,7 +51,7 @@ public class ChatsFragment extends BaseFragment {
     public static final String mActionTypeNeutral = "neutral";
     public final static String BUSINESS = "business";
     private boolean deletePostVisible = false;
-    int pastVisiblesItems, visibleItemCount, totalItemCount;
+    int pastVisibleItems, visibleItemCount, totalItemCount;
     private boolean isLoading;
     private int totalPostCount=0;
     private int PAGE = 1;
@@ -65,15 +63,13 @@ public class ChatsFragment extends BaseFragment {
     private  ImageView mUserImage;
     private  String LOG_TAG = "LOG_TAG";
     private WallPostAdapter mAdapter;
-    private ImageView mDeletePost;
-    private String ACTION = "";
     private ArrayList<PostPojo> mWallPostList= new ArrayList<PostPojo>();;
     private LinearLayoutManager mLlManager = new LinearLayoutManager(getActivity());;
     private WallPostAdapter mWallPostAdapter;
     private RecyclerView mRvWallPosts;
     private  String mBusinessId = "";
     private String postID = "-1";
-    WallPostAdapter.RecyclerViewHolders mHolder;
+    private ImageView mIvDelete;
 
 
 
@@ -108,8 +104,6 @@ public class ChatsFragment extends BaseFragment {
         mUserName = (TextView) rootView.findViewById(R.id.tv_user_name_chat_fragment);
         mUserImage = (ImageView) rootView.findViewById(R.id.iv_user_img_chat_fragment);
 
-        mDeletePost = (ImageView) rootView.findViewById(R.id.iv_delete_post);
-
         mLlBoard =(LinearLayout) rootView.findViewById(R.id.ll_board);
         mComingSoon=(TextView) rootView.findViewById(R.id.tv_cuming_soon);
 
@@ -130,14 +124,14 @@ public class ChatsFragment extends BaseFragment {
                     {
                         visibleItemCount = mLlManager.getChildCount();
                         totalItemCount = mLlManager.getItemCount();
-                        pastVisiblesItems = mLlManager.findFirstVisibleItemPosition();
+                        pastVisibleItems = mLlManager.findFirstVisibleItemPosition();
 
 
 
                         if (!isLoading) {
 
-                            Log.d(LOG_TAG, "lis size is "+mWallPostList.size()+ " ======++++++ visibleItemCount " + visibleItemCount + " pastVisibleItems " + pastVisiblesItems + " totalItemCount " + totalItemCount);
-                            if ((visibleItemCount + pastVisiblesItems) >= totalItemCount) {
+                            Log.d(LOG_TAG, "lis size is "+mWallPostList.size()+ " ======++++++ visibleItemCount " + visibleItemCount + " pastVisibleItems " + pastVisibleItems + " totalItemCount " + totalItemCount);
+                            if ((visibleItemCount + pastVisibleItems) >= totalItemCount) {
                                 isLoading = true;
                                 //Do pagination.. i.e. fetch new data
                                 if (mWallPostList.size() < 1) {
@@ -285,9 +279,10 @@ public class ChatsFragment extends BaseFragment {
 
     OnDeletePostClickListner onDeleteClickListner =new OnDeletePostClickListner() {
         @Override
-        public void ondeletePostClicked(ImageView delete, int position, String postId, String type) {
+        public void ondeletePostClicked(ImageView delete, int position, String postId, String ACTION) {
             try {
                 POSITION = position;
+                mIvDelete=delete;
                 if (ACTION.equalsIgnoreCase("DELETE")) {
 
                     removePost(postId);
@@ -320,183 +315,6 @@ public class ChatsFragment extends BaseFragment {
         }
     };
 
-
-    OnCommentListItemClickListnerTest2 onCommentListItemClickListnerTest2 = new OnCommentListItemClickListnerTest2() {
-        @Override
-        public void onCommentListItemClicked(final WallPostAdapter.RecyclerViewHolders holder, final int position, final String postId, final String type) {
-            {
-                try {
-                    mHolder = holder;
-                    postID = postId;
-                    ACTION=type;
-//                    mHolder.like.setOnClickListener(new View.OnClickListener() {
-//                        @Override
-//                        public void onClick(View v) {
-//                            try {
-//                                POSITION = position;
-//                                action = 1;
-//                                likeUnlikePost(mActionTypeLike, mWallPostList.get(position).getPostId());
-//                            } catch (Exception e) {
-//                                e.printStackTrace();
-//                            }
-//
-//                        }
-//                    });
-
-//                    mHolder.dislike.setOnClickListener(new View.OnClickListener() {
-//                        @Override
-//                        public void onClick(View v) {
-//                            try {
-//                                POSITION = position;
-//                                action = 2;
-//                                likeUnlikePost(mActionTypeDislike, postId);
-//                            } catch (Exception e) {
-//                                e.printStackTrace();
-//                            }
-//
-//                        }
-//                    });
-
-
-                    mHolder.neutral.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-                            try {
-                                POSITION = position;
-                                action = 3;
-                                likeUnlikePost(mActionTypeNeutral, postId);
-                            } catch (Exception e) {
-                                e.printStackTrace();
-                            }
-                        }
-                    });
-
-                    mHolder.comment.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-                            try {
-                                POSITION = position;
-                                Bundle bundle = new Bundle();
-                                bundle.putSerializable("POST", mWallPostList.get(position));
-                                Intent intent = new Intent(getActivity(), CommentActivity.class);
-                                intent.putExtras(bundle);
-                                startActivity(intent);
-                            } catch (Exception e) {
-                                e.printStackTrace();
-                            }
-
-                        }
-                    });
-
-
-                    mHolder.mMediaPost.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-                            try {
-                                POSITION = position;
-                                Bundle bundle = new Bundle();
-                                bundle.putSerializable("POST", mWallPostList.get(position));
-                                Intent intent = new Intent(getActivity(), CommentActivity.class);
-                                intent.putExtras(bundle);
-                                startActivity(intent);
-                            } catch (Exception e) {
-                                e.printStackTrace();
-                            }
-
-                        }
-                    });
-
-
-
-
-                    mHolder.dropDownOptions.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-
-                            mDeletePost = (ImageView) v.findViewById(R.id.iv_delete_post);
-
-                            POSITION = position;
-                            try {
-
-                                if (deletePostVisible == false) {
-
-                                    if (mWallPostList.get(POSITION).getRelation().equalsIgnoreCase("self")) {
-                                        mDeletePost.setVisibility(View.VISIBLE);
-                                        mDeletePost.setImageResource(R.drawable.delete_icon);
-                                        ACTION = "DELETE";
-                                    } else {
-                                        mDeletePost.setVisibility(View.VISIBLE);
-                                        mDeletePost.setImageResource(R.drawable.report_abuse);
-                                        ACTION = "REPORT";
-                                    }
-                                    deletePostVisible = true;
-                                } else if (deletePostVisible == true) {
-                                    mDeletePost.setVisibility(View.GONE);
-                                    deletePostVisible = false;
-
-                                }
-
-                            } catch (Exception e) {
-                                e.printStackTrace();
-                            }
-                        }
-                    });
-
-
-
-//                    mHolder.mUserIcon.setOnClickListener(new View.OnClickListener() {
-//                        @Override
-//                        public void onClick(View v) {
-//                            postID = postId;
-//                            ACTION=type;
-//                            try {
-//                                Bundle bundle = new Bundle();
-//                                Intent intent = new Intent(getActivity(), UserProfileActivity.class);
-////                               post id id here user id
-//                                bundle.putString(Constants.USERID, postID);
-////                                type here is room id
-//                                bundle.putString(Constants.BUSINESS_ID,ACTION);
-//                                bundle.putInt(Constants.INDEX, 11);
-//                                intent.putExtras(bundle);
-//                                getActivity().startActivity(intent);
-//                            } catch (Exception e) {
-//                                e.printStackTrace();
-//                            }
-//
-//
-//                        }
-//                    });
-
-
-                    mHolder.mDeletePost.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-                            try {
-                                POSITION = position;
-//                                Utility.showToastMessageShort(getActivity(), " position is " + position);
-
-                                if (ACTION.equalsIgnoreCase("DELETE")) {
-
-                                    removePost(postId);
-
-                                } else if (ACTION.equalsIgnoreCase("REPORT")) {
-
-                                    flagPost(postId);
-                                }
-
-                            } catch (Exception e) {
-                                e.printStackTrace();
-                            }
-                        }
-                    });
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-
-
-            }
-        }
-    };
 
     public void updateChatUi() {
 
@@ -829,25 +647,16 @@ public class ChatsFragment extends BaseFragment {
                 if (error == null) {
                     if (result.getSuccess().equalsIgnoreCase("true")) {
 
-                        mHolder.mDeletePost.setVisibility(View.GONE);
+                        mIvDelete.setVisibility(View.GONE);
                         mWallPostList.remove(POSITION);
-//                        mWallPostAdapter = new WallPostAdapter(getActivity(), mWallPostList, onListItemClickListner);
                         mWallPostAdapter.notifyDataSetChanged();
-//                      mRvWallPosts.setAdapter(mWallPostAdapter);
-
-
                         Utility.showToastMessageLong(getActivity(), "post removed");
 
                     } else {
-
+                        Utility.showToastMessageLong(getActivity(),getResources().getString(R.string.some_unknown_error));
                     }
 
-                } else {
-
-
                 }
-
-
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -894,7 +703,7 @@ public class ChatsFragment extends BaseFragment {
                 if (error == null) {
                     if (result.getSuccess().equalsIgnoreCase("true")) {
 
-                        mHolder.mDeletePost.setVisibility(View.GONE);
+                        mIvDelete.setVisibility(View.GONE);
                         Utility.showToastMessageLong(getActivity(), "post reported");
 
 

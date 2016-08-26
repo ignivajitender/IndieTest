@@ -16,6 +16,7 @@ import com.igniva.indiecore.R;
 import com.igniva.indiecore.controller.OnContactCardClickListner;
 import com.igniva.indiecore.controller.WebServiceClient;
 import com.igniva.indiecore.model.UsersPojo;
+import com.igniva.indiecore.utils.Log;
 import com.igniva.indiecore.utils.Utility;
 
 import java.util.ArrayList;
@@ -63,6 +64,8 @@ public class PhonebookAdapter extends RecyclerView.Adapter<PhonebookAdapter.Recy
                 holder.mContactImage.setImageResource(R.drawable.default_user);
             }
             holder.mText.setText(indieCoreUsersLIst.get(position).getProfile().getDesc());
+
+            Log.e("Adapter","-----"+indieCoreUsersLIst.get(position).getMobileNo());
         } catch (Exception e) {
             e.printStackTrace();
         }

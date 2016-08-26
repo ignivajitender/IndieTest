@@ -2,59 +2,62 @@
 <android.support.v7.widget.Toolbar xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/toolbar_with_imgicon"
-    android:elevation="2dp"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:background="@color/white"
+    android:elevation="2dp"
     android:minHeight="?attr/actionBarSize"
-    app:navigationContentDescription="@string/abc_action_bar_up_description"
     android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
+    app:navigationContentDescription="@string/abc_action_bar_up_description"
     app:titleTextColor="@color/black">
 
 
     <ImageView
-        android:padding="10dp"
         android:id="@+id/toolbar_img_left"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:src="@drawable/news_feed"
-        android:layout_marginRight="7dp"
         android:layout_gravity="left"
-        />
+        android:layout_marginRight="7dp"
+        android:paddingBottom="5dp"
+        android:paddingRight="20dp"
+        android:paddingTop="5dp"
+        android:src="@drawable/news_feed" />
 
     <TextView
-        android:textSize="18sp"
-        android:fontFamily="sans-serif"
-        android:textStyle="normal"
-        android:textColor="@color/black"
         android:id="@+id/toolbar_title_img"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
-        android:text="Toolbar Title" />
+        android:fontFamily="sans-serif"
+        android:text="Toolbar Title"
+        android:textColor="@color/black"
+        android:textSize="18sp"
+        android:textStyle="normal" />
 
     <ImageView
-        android:padding="10dp"
         android:id="@+id/toolbar_img"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:src="@drawable/in_app"
-        android:layout_marginRight="7dp"
         android:layout_gravity="right"
-         />
+        android:layout_marginRight="7dp"
+        android:paddingBottom="5dp"
+        android:paddingLeft="20dp"
+        android:paddingTop="5dp"
+        android:src="@drawable/in_app" />
+
     <TextView
-        android:padding="10dp"
-        android:textSize="15sp"
-        android:fontFamily="sans-serif"
-        android:textStyle="normal"
-        android:visibility="gone"
-        android:textColor="@drawable/text_selector_next"
         android:id="@+id/toolbar_done"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginRight="15dp"
         android:layout_gravity="right"
-        android:text="Done" />
+        android:layout_marginRight="15dp"
+        android:fontFamily="sans-serif"
+        android:padding="10dp"
+        android:text="Done"
+        android:textColor="@drawable/text_selector_next"
+        android:textSize="15sp"
+        android:textStyle="normal"
+        android:visibility="gone" />
 
 
 </android.support.v7.widget.Toolbar>

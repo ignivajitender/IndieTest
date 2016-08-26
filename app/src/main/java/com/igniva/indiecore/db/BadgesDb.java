@@ -167,6 +167,22 @@ public class BadgesDb extends SQLiteOpenHelper {
         }
     }
 
+
+
+    public void inserPremiumBadges(BadgesPojo mPremiumBadge) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        try {
+                insertSingleBadge(db, mPremiumBadge);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            // Closing database connection
+            db.close();
+        }
+    }
+
+
     public void insertAllContacts(ArrayList<UsersPojo> mUsers) {
         SQLiteDatabase db = this.getWritableDatabase();
         try {
@@ -240,6 +256,9 @@ public class BadgesDb extends SQLiteOpenHelper {
                     mUserProfileObj= new ProfilePojo();
                     mUsersPojoObj = new UsersPojo();
                     mCountryCodeObj= new CountryCodePojo();
+
+                    mUsersPojoObj.setMobileNo(cursor.getString(0));
+
 
                     mUserProfileObj.setFirstName(cursor.getString(1));
                     mUsersPojoObj.setProfile(mUserProfileObj);

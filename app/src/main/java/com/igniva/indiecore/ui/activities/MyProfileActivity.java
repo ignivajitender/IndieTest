@@ -18,7 +18,6 @@ import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.igniva.indiecore.R;
 import com.igniva.indiecore.controller.OnCardClickListner;
 import com.igniva.indiecore.controller.OnCommentClickListner;
-import com.igniva.indiecore.controller.OnCommentListItemClickListnerTest2;
 import com.igniva.indiecore.controller.OnDeletePostClickListner;
 import com.igniva.indiecore.controller.OnDisLikeClickListner;
 import com.igniva.indiecore.controller.OnLikeClickListner;
@@ -55,8 +54,8 @@ public class MyProfileActivity extends BaseActivity implements View.OnClickListe
     private ImageView mCoverImage, mUserImage, mDropDown;
     private TextView mUserName, mUserLocation, mTvDesc, mTvPosts, mTvBadges, mTitle;
     int pastVisibleItems, visibleItemCount, totalItemCount;
+    private ImageView mPostDelete;
     private BadgesDb db_badges;
-    private BadgesDb dbBadges;
     private boolean isLoading;
     private int totalPostCount=0;
     private ArrayList<PostPojo> mMyWallPostList = new ArrayList<PostPojo>();
@@ -69,7 +68,6 @@ public class MyProfileActivity extends BaseActivity implements View.OnClickListe
     MyBadgesAdapter mMyBadgeAdapter;
     public static int POSITION = -1;
     int mSelectedPosition = -1;
-    WallPostAdapter.RecyclerViewHolders mHolder;
     public String postID = "-1";
     private int action = 0;
     String LOG_TAG = "MyProfileActivity";
@@ -124,8 +122,6 @@ public class MyProfileActivity extends BaseActivity implements View.OnClickListe
                         pastVisibleItems = mLlManager.findFirstVisibleItemPosition();
 
                         if (!isLoading) {
-
-                            Log.d(LOG_TAG, " visibleItemCount " + visibleItemCount + " pastVisibleItems " + pastVisibleItems + " totalItemCount " + totalItemCount);
                             if ((visibleItemCount + pastVisibleItems) >= totalItemCount) {
                                 isLoading = true;
                                 //Do pagination.. i.e. fetch new data
@@ -134,7 +130,6 @@ public class MyProfileActivity extends BaseActivity implements View.OnClickListe
                                     viewMyPost();
                                 }
                                 if (mMyWallPostList.size() < totalPostCount) {
-                                    Log.e("list size",""+mMyWallPostList.size());
                                     PAGE+=1;
                                      viewMyPost();
                                 }
@@ -489,14 +484,14 @@ public class MyProfileActivity extends BaseActivity implements View.OnClickListe
 
     public void updateRecord() {
         try {
-            dbBadges = new BadgesDb(this);
+            db_badges = new BadgesDb(this);
             BadgesPojo selectedBadge;
 
             selectedBadge = mSelectedBadgesList.get(mSelectedPosition);
             selectedBadge.getName();
             selectedBadge.getBadgeId();
 
-            dbBadges.updateSingleRow(selectedBadge);
+            db_badges.updateSingleRow(selectedBadge);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -534,7 +529,7 @@ public class MyProfileActivity extends BaseActivity implements View.OnClickListe
             try {
                 POSITION = position;
                 action = 3;
-                likeUnlikePost(mActionTypeDislike, postId);
+                likeUnlikePost(mActionTypeNeutral, postId);
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -568,8 +563,9 @@ public class MyProfileActivity extends BaseActivity implements View.OnClickListe
 
     OnDeletePostClickListner onDeletePostClickListner= new OnDeletePostClickListner() {
         @Override
-        public void ondeletePostClicked(ImageView media, int position, String postId, String type) {
+        public void ondeletePostClicked(ImageView delete, int position, String postId, String type) {
             try {
+                mPostDelete=delete;
                 POSITION = position;
                 Utility.showToastMessageShort(MyProfileActivity.this, " position is " + position);
                 removePost(postId);
@@ -580,122 +576,6 @@ public class MyProfileActivity extends BaseActivity implements View.OnClickListe
         }
     };
 
-//    OnCommentListItemClickListnerTest2 onCommentListItemClickListnerTest2 = new OnCommentListItemClickListnerTest2() {
-//        @Override
-//        public void onCommentListItemClicked(final WallPostAdapter.RecyclerViewHolders holder, final int position, final String postId, String type) {
-//            {
-//                try {
-//                    mHolder = holder;
-//                    postID = postId;
-//
-////                    mHolder.like.setOnClickListener(new View.OnClickListener() {
-////                        @Override
-////                        public void onClick(View v) {
-////                            POSITION = position;
-////                            action = 1;
-////                            likeUnlikePost(mActionTypeLike, mMyWallPostList.get(position).getPostId());
-////
-////                        }
-////                    });
-//
-////                    mHolder.dislike.setOnClickListener(new View.OnClickListener() {
-////                        @Override
-////                        public void onClick(View v) {
-////                            POSITION = position;
-////                            action = 2;
-////                            likeUnlikePost(mActionTypeDislike, postId);
-////
-////                        }
-////                    });
-////
-////
-////                    mHolder.neutral.setOnClickListener(new View.OnClickListener() {
-////                        @Override
-////                        public void onClick(View v) {
-////                            POSITION = position;
-////                            action = 3;
-////                            likeUnlikePost(mActionTypeNeutral, postId);
-////
-////
-////                        }
-////                    });
-////
-////                    mHolder.comment.setOnClickListener(new View.OnClickListener() {
-////                        @Override
-////                        public void onClick(View v) {
-////                            POSITION = position;
-////                            Bundle bundle = new Bundle();
-////                            bundle.putSerializable("POST", mMyWallPostList.get(position));
-////                            Intent intent = new Intent(MyProfileActivity.this, CommentActivity.class);
-////                            intent.putExtras(bundle);
-////                            startActivity(intent);
-////
-////                        }
-////                    });
-////
-////
-////                    mHolder.mMediaPost.setOnClickListener(new View.OnClickListener() {
-////                        @Override
-////                        public void onClick(View v) {
-////                            POSITION = position;
-////                            Bundle bundle = new Bundle();
-////                            bundle.putSerializable("POST", mMyWallPostList.get(position));
-////                            Intent intent = new Intent(MyProfileActivity.this, CommentActivity.class);
-////                            intent.putExtras(bundle);
-////                            startActivity(intent);
-////
-////                        }
-////                    });
-//
-//
-////                    mHolder.dropDownOptions.setOnClickListener(new View.OnClickListener() {
-////                        @Override
-////                        public void onClick(View v) {
-////
-////                            mDeletePost = (ImageView) v.findViewById(R.id.iv_delete_post);
-////
-////                            POSITION = position;
-////                            try {
-//////                                Utility.showToastMessageShort(getActivity(), " position is " + position);
-////
-////                                if (deletePostVisible == false) {
-////                                        mDeletePost.setVisibility(View.VISIBLE);
-////                                        mDeletePost.setImageResource(R.drawable.delete_icon);
-////                                    deletePostVisible = true;
-////                                } else if (deletePostVisible == true) {
-////                                    mDeletePost.setVisibility(View.GONE);
-////                                    deletePostVisible = false;
-////
-////                                }
-////
-////                            } catch (Exception e) {
-////                                e.printStackTrace();
-////                            }
-////                        }
-////                    });
-//
-//
-//                    mHolder.mDeletePost.setOnClickListener(new View.OnClickListener() {
-//                        @Override
-//                        public void onClick(View v) {
-//                            try {
-//                                POSITION = position;
-//                                Utility.showToastMessageShort(MyProfileActivity.this, " position is " + position);
-//                                removePost(postId);
-//
-//                            } catch (Exception e) {
-//                                e.printStackTrace();
-//                            }
-//                        }
-//                    });
-//                } catch (Exception e) {
-//                    e.printStackTrace();
-//                }
-//
-//
-//            }
-//        }
-//    };
 
     /*
     * create payload to flag/remove a post
@@ -752,7 +632,7 @@ public class MyProfileActivity extends BaseActivity implements View.OnClickListe
             try {
                 if (error == null) {
                     if (result.getSuccess().equalsIgnoreCase("true")) {
-                        mHolder.mDeletePost.setVisibility(View.GONE);
+                        mPostDelete.setVisibility(View.GONE);
                         mMyWallPostList.remove(POSITION);
                         mWallPostAdapter.notifyDataSetChanged();
                         Utility.showToastMessageLong(MyProfileActivity.this, "post removed");
@@ -838,7 +718,6 @@ public class MyProfileActivity extends BaseActivity implements View.OnClickListe
                                     mMyWallPostList.get(POSITION).setLike(a - 1);
                                 }
                             }
-                            Log.d(LOG_TAG, " new count of like " + mHolder.like.getText());
 
 
                         } else if (action == 2) {
@@ -855,7 +734,6 @@ public class MyProfileActivity extends BaseActivity implements View.OnClickListe
                                 if (b > 0) {
                                     mMyWallPostList.get(POSITION).setDislike(b - 1);
                                 }
-                                mHolder.like.setCompoundDrawablesWithIntrinsicBounds(R.drawable.like_grey_icon_circle, 0, 0, 0);
 
                             }
 

@@ -50,8 +50,10 @@ public class InviteContactActivity extends BaseActivity {
     InviteContactAdapter mInviteContactAdapter;
     ArrayList<ContactPojo> mContactList = null;
     private int mMaxContacts = 0;
+    BadgesDb Db;
     String Medium = "2";
     int index = -1;
+    private ArrayList<UsersPojo> mSavedUsersList = new ArrayList<UsersPojo>();
     public static ArrayList<String> mSelectedContacts = new ArrayList<String>();
     public static ArrayList<String> mSelectedContactName = new ArrayList<String>();
     /**
@@ -104,6 +106,13 @@ public class InviteContactActivity extends BaseActivity {
 
     @Override
     protected void setUpLayout() {
+
+//        try {
+//            Db = new BadgesDb(this);
+//            mSavedUsersList = Db.retrieveSavedUsersList();
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//        }
         try {
             mSelectedContactName.clear();
             mSelectedContacts.clear();
@@ -120,15 +129,14 @@ public class InviteContactActivity extends BaseActivity {
             layoutManager.setOrientation(LinearLayoutManager.VERTICAL);
             recyclerView.setLayoutManager(layoutManager);
 
-//            if (index != 3) {
-//                try {
-//                    usersDb = new BadgesDb(InviteContactActivity.this);
-//                    mSavedUsersList = usersDb.retrieveSavedUsersList();
-//                } catch (Exception e) {
-//                    e.printStackTrace();
-//                }
-//            }
-
+            if (index != 3) {
+                try {
+                    Db = new BadgesDb(InviteContactActivity.this);
+                    mSavedUsersList = Db.retrieveSavedUsersList();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
 
             mEtSearch = (EditText) findViewById(R.id.et_search);
             mEtSearch.addTextChangedListener(new TextWatcher() {
@@ -172,6 +180,17 @@ public class InviteContactActivity extends BaseActivity {
                 recyclerView.setAdapter(mInviteContactAdapter);
             } else {
                 mMaxContacts = 0;
+
+                for(int i=0;i<mSavedUsersList.size();i++){
+
+                    for(int j=0;j<mContactList.size();j++){
+
+                        if(mSavedUsersList.get(i).getMobileNo().equals(mContactList.get(j).getContactNumber())){
+                            mContactList.remove(j);
+                        }
+                    }
+                }
+
                 mInviteContactAdapter = new InviteContactAdapter(this, mContactList, mMaxContacts);
                 recyclerView.setAdapter(mInviteContactAdapter);
             }
@@ -208,16 +227,15 @@ public class InviteContactActivity extends BaseActivity {
 
             }
             while (phones.moveToNext()) {
-                image_uri = null;
                 mContactPojo = new ContactPojo();
                 name = phones.getString(phones.getColumnIndex(ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME));
                 phoneNumber = phones.getString(phones.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER));
                 String phnNumber = phoneNumber.replace(" ", "");
                 phnNumber = phnNumber.replace("-", "");
+                phnNumber =phnNumber.replace("(","");
+                phnNumber =phnNumber.replace(")","");
+                phnNumber="91"+phnNumber;
                 mContactPojo.setHasImage(false);
-
-                contactID = phones.getString(phones.getColumnIndex(ContactsContract.Contacts._ID));
-
                 image_uri = phones.getString(phones.getColumnIndex(ContactsContract.CommonDataKinds.Phone.PHOTO_URI));
 
                 if (image_uri != null) {
@@ -229,7 +247,6 @@ public class InviteContactActivity extends BaseActivity {
                 mContactPojo.setContactNumber(phnNumber);
 
                 mContactPojo.setSelected(false);
-
                 mContactList.add(mContactPojo);
 
             }
@@ -237,6 +254,7 @@ public class InviteContactActivity extends BaseActivity {
             phones.close();
         } catch (Exception e) {
             e.printStackTrace();
+
         }
     }
 
