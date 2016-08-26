@@ -20,6 +20,7 @@ public class ResponsePojo {
     private int total_count;
     private int totalPosts;
     private int badgeLimit;
+    private int totalComments;
     private int badgesGot;
     private String  relation;
     private String description;
@@ -38,6 +39,14 @@ public class ResponsePojo {
     private ArrayList<BusinessPojo> business_list;
     private ArrayList<CommentPojo> commentList;
     private ArrayList<RepliesPojo> repliesList;
+
+    public int getTotalComments() {
+        return totalComments;
+    }
+
+    public void setTotalComments(int totalComments) {
+        this.totalComments = totalComments;
+    }
 
     public UserPojo getUser() {
         return user;

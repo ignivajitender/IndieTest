@@ -4,17 +4,18 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.igniva.indiecore.R;
 import com.igniva.indiecore.controller.OnCommentClickListner;
-import com.igniva.indiecore.controller.OnCommentListItemClickListnerTest2;
 import com.igniva.indiecore.controller.OnDeletePostClickListner;
 import com.igniva.indiecore.controller.OnDisLikeClickListner;
 import com.igniva.indiecore.controller.OnLikeClickListner;
@@ -38,11 +39,8 @@ public class WallPostAdapter extends RecyclerView.Adapter<WallPostAdapter.Recycl
     public ImageView mDeletePostOld;
     private boolean deletePostVisible = false;
     private String ACTION = "";
-    private int POSITION = -1;
     private String ACTIVITY_NAME = "";
     String LOG_TAG = "WallPostAdapter";
-    //    OnListItemClickListner mOnListItemClickListner;
-    OnCommentListItemClickListnerTest2 onCommentListItemClickListnerTest2l;
     OnLikeClickListner mOnLikeClickListner;
     OnDisLikeClickListner mOnDisLikeClickListner;
     OnNeutralClickListner mOnNeutralClickListner;
@@ -108,8 +106,7 @@ public class WallPostAdapter extends RecyclerView.Adapter<WallPostAdapter.Recycl
             } catch (Exception e) {
                 e.printStackTrace();
             }
-//
-//
+
             holder.mTextPost.setText(wallItemsList.get(position).getText());
             holder.like.setText(wallItemsList.get(position).getLike() + "");
             holder.dislike.setText(wallItemsList.get(position).getDislike() + "");
@@ -134,7 +131,6 @@ public class WallPostAdapter extends RecyclerView.Adapter<WallPostAdapter.Recycl
                     holder.like.setEnabled(false);
                     holder.dislike.setEnabled(true);
                     holder.neutral.setEnabled(false);
-//
                 } else if (wallItemsList.get(position).getAction().equalsIgnoreCase(Constants.NEUTRAL)) {
 
                     holder.neutral.setCompoundDrawablesWithIntrinsicBounds(R.drawable.hand_icon_blue_circle, 0, 0, 0);
@@ -212,7 +208,7 @@ public class WallPostAdapter extends RecyclerView.Adapter<WallPostAdapter.Recycl
             holder.mDeletePost.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    mOnMediaPostClickListner.onMediaPostClicked(holder.mDeletePost,position, wallItemsList.get(position).getPostId(), Constants.DELETE);
+                    mOnDeletePostClickListner.ondeletePostClicked(holder.mDeletePost,position, wallItemsList.get(position).getPostId(),ACTION);
 
                 }
             });
@@ -220,6 +216,11 @@ public class WallPostAdapter extends RecyclerView.Adapter<WallPostAdapter.Recycl
 
             if(ACTIVITY_NAME.equals(Constants.USERPROFILEACTIVITY)){
                 holder.mUserIcon.setEnabled(false);
+            }
+            if(ACTIVITY_NAME.equalsIgnoreCase(Constants.MYPROFILEACTIVITY)){
+                holder.mRlMutualBadgeTxtBg.setVisibility(View.GONE);
+                holder.mUserIcon.setEnabled(false);
+
             }
 
             holder.mUserIcon.setOnClickListener(new View.OnClickListener() {
@@ -239,6 +240,19 @@ public class WallPostAdapter extends RecyclerView.Adapter<WallPostAdapter.Recycl
                     }
                 }
             });
+
+            try {
+                if(wallItemsList.get(position).getBadges().equalsIgnoreCase("OFF")){
+                    holder.mRlMutualBadgeTxtBg.setBackgroundResource(R.drawable.badge_off);
+                    holder.mMutualBadgeCount.setText("");
+                }else {
+                    String in=wallItemsList.get(position).getBadges();
+                    holder.mRlMutualBadgeTxtBg.setBackgroundResource(R.drawable.blank_badge);
+                    holder.mMutualBadgeCount.setText(Integer.parseInt(in)+"");
+                }
+            } catch (NumberFormatException e) {
+                e.printStackTrace();
+            }
 
 
             holder.dropDownOptions.setOnClickListener(new View.OnClickListener() {
@@ -264,10 +278,6 @@ public class WallPostAdapter extends RecyclerView.Adapter<WallPostAdapter.Recycl
                                     ACTION = "REPORT";
 
                             }
-//                            else {
-//                                holder.mDeletePost.setImageResource(R.drawable.delete_icon);
-//
-//                            }
                             deletePostVisible = true;
                             mDeletePostOld = holder.mDeletePost;
                         } else if (deletePostVisible == true) {
@@ -285,10 +295,7 @@ public class WallPostAdapter extends RecyclerView.Adapter<WallPostAdapter.Recycl
         } catch (Exception e) {
             e.printStackTrace();
         }
-
-
     }
-
 
     @Override
     public int getItemCount() {
@@ -310,6 +317,8 @@ public class WallPostAdapter extends RecyclerView.Adapter<WallPostAdapter.Recycl
         public TextView comment;
         public ImageView dropDownOptions;
         public ImageView mDeletePost;
+        public RelativeLayout mRlMutualBadgeTxtBg;
+        public TextView mMutualBadgeCount;
 
         public RecyclerViewHolders(final View itemView) {
             super(itemView);
@@ -326,6 +335,9 @@ public class WallPostAdapter extends RecyclerView.Adapter<WallPostAdapter.Recycl
             dislike = (TextView) itemView.findViewById(R.id.tv_dislike);
             neutral = (TextView) itemView.findViewById(R.id.tv_neutral);
             comment = (TextView) itemView.findViewById(R.id.tv_comment);
+
+            mRlMutualBadgeTxtBg=(RelativeLayout) itemView.findViewById(R.id.rl_mutual_badge_bg);
+            mMutualBadgeCount=(TextView) itemView.findViewById(R.id.tv_mutual_badge_count);
 
 
             dropDownOptions = (ImageView) itemView.findViewById(R.id.iv_drop_down_options);

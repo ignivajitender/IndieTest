@@ -11,10 +11,11 @@ import android.widget.TextView;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.igniva.indiecore.R;
-import com.igniva.indiecore.controller.OnCommentListItemClickListner;
-import com.igniva.indiecore.controller.OnReplyListItemClickListner;
+import com.igniva.indiecore.controller.OnReplyDeleteClickListner;
+import com.igniva.indiecore.controller.OnReplyDislikeClickListner;
+import com.igniva.indiecore.controller.OnReplyLikeClickListner;
+import com.igniva.indiecore.controller.OnReplyNeutralClickListner;
 import com.igniva.indiecore.controller.WebServiceClient;
-import com.igniva.indiecore.model.CommentPojo;
 import com.igniva.indiecore.model.RepliesPojo;
 import com.igniva.indiecore.utils.Constants;
 
@@ -28,13 +29,20 @@ public class CommentReplyAdapter extends RecyclerView.Adapter<CommentReplyAdapte
     private ArrayList<RepliesPojo> mRelpiesList;
     private Context context;
     String LOG_TAG = "PostRepliesAdapter";
-    OnReplyListItemClickListner mOnReplyListItemClick;
+    OnReplyLikeClickListner  mOnReplyLikeClick;
+    OnReplyDislikeClickListner mOnReplyDisLikeClick;
+    OnReplyNeutralClickListner mOnReplyNeutralClick;
+    OnReplyDeleteClickListner mOnReplyDeleteClick;
 
 
-    public CommentReplyAdapter(Context context, ArrayList<RepliesPojo> repliesList, OnReplyListItemClickListner onReplyitemClick) {
+    public CommentReplyAdapter(Context context, ArrayList<RepliesPojo> repliesList, OnReplyLikeClickListner onReplyLIkeClickListner, OnReplyDislikeClickListner onReplyDislikeClickListner, OnReplyNeutralClickListner onReplyNeutralClickListner, OnReplyDeleteClickListner onReplyDeleteClickListner) {
         this.mRelpiesList = repliesList;
         this.context = context;
-        this.mOnReplyListItemClick = onReplyitemClick;
+        this.mOnReplyLikeClick = onReplyLIkeClickListner;
+        this.mOnReplyDisLikeClick=onReplyDislikeClickListner;
+        this.mOnReplyNeutralClick=onReplyNeutralClickListner;
+        this.mOnReplyDeleteClick=onReplyDeleteClickListner;
+
     }
 
 
@@ -135,28 +143,29 @@ public class CommentReplyAdapter extends RecyclerView.Adapter<CommentReplyAdapte
                 @Override
                 public void onClick(View v) {
 
-                    mOnReplyListItemClick.onReplyListItemClick(holder, position, mRelpiesList.get(position).getReplyId());
+                   mOnReplyLikeClick.onReplyLikeClicked(holder.mReplyLike,position,mRelpiesList.get(position).getReplyId(),Constants.LIKE);
                 }
             });
 
             holder.mReplyDislike.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    mOnReplyListItemClick.onReplyListItemClick(holder, position, mRelpiesList.get(position).getReplyId());
+                    mOnReplyDisLikeClick.onReplyDislikeClicked(holder.mReplyDislike,position,mRelpiesList.get(position).getReplyId(),Constants.DISLIKE);
                 }
             });
 
             holder.mReplyNeutral.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    mOnReplyListItemClick.onReplyListItemClick(holder, position, mRelpiesList.get(position).getReplyId());
+
+                    mOnReplyNeutralClick.onReplyNeutralClicked(holder.mReplyNeutral,position,mRelpiesList.get(position).getReplyId(),Constants.REPLY);
                 }
             });
 
         holder.mImageDelete.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                mOnReplyListItemClick.onReplyListItemClick(holder, position, mRelpiesList.get(position).getReplyId());
+                mOnReplyDeleteClick.onReplyDeleteClicked(holder.mImageDelete,position,mRelpiesList.get(position).getReplyId(),Constants.DELETE);
             }
         });
     }

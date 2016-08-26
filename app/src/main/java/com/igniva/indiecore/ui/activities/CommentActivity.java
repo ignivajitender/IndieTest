@@ -12,13 +12,16 @@ import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.igniva.indiecore.R;
-import com.igniva.indiecore.controller.OnCommentListItemClickListner;
+import com.igniva.indiecore.controller.OnCommentDeleteClickListner;
+import com.igniva.indiecore.controller.OnCommentDislikeClickListner;
+import com.igniva.indiecore.controller.OnCommentLikeClickListner;
+import com.igniva.indiecore.controller.OnCommentNeutralClickListner;
+import com.igniva.indiecore.controller.OnCommentReplyClickListner;
 import com.igniva.indiecore.controller.ResponseHandlerListener;
 import com.igniva.indiecore.controller.WebNotificationManager;
 import com.igniva.indiecore.controller.WebServiceClient;
@@ -27,7 +30,6 @@ import com.igniva.indiecore.model.PostPojo;
 import com.igniva.indiecore.model.ResponsePojo;
 import com.igniva.indiecore.ui.adapters.PostCommentAdapter;
 import com.igniva.indiecore.utils.Constants;
-import com.igniva.indiecore.utils.MyLinearLayoutManager;
 import com.igniva.indiecore.utils.PreferenceHandler;
 import com.igniva.indiecore.utils.Utility;
 
@@ -613,11 +615,13 @@ public class CommentActivity extends BaseActivity implements View.OnClickListene
                 WebNotificationManager.unRegisterResponseListener(responseHandle);
                 if (error == null) {
                     if (result.getSuccess().equalsIgnoreCase("true")) {
-                        mCommentList = new ArrayList<CommentPojo>();
+
+                        mPostComments.setText(result.getTotalComments()+"");
+                        mCommentList = new ArrayList<>();
                         mCommentList.addAll(result.getCommentList());
 
                         mCommentAdapter = null;
-                        mCommentAdapter = new PostCommentAdapter(CommentActivity.this, mCommentList, onCommentListItemClickListner);
+                        mCommentAdapter = new PostCommentAdapter(CommentActivity.this, mCommentList, onCommentLikeClickListner,onCommentDislikeClickListner,onCommentNeutralClickListner,onCommentReplyClickListner,onCommentDeleteClickListner);
                         mRvComment.setAdapter(mCommentAdapter);
                     }
                 }
@@ -701,13 +705,6 @@ public class CommentActivity extends BaseActivity implements View.OnClickListene
 
                                 mCommentList.get(POSITION).setAction(Constants.LIKE);
                                 mCommentList.get(POSITION).setLike(a+1);
-//                                mHolder.mCommentLike.setText(a + 1 + "");
-//                                mHolder.mCommentLike.setCompoundDrawablesWithIntrinsicBounds(R.drawable.like_icon, 0, 0, 0);
-//                                mHolder.mCommentDislike.setCompoundDrawablesWithIntrinsicBounds(R.drawable.dislike_icon_grey, 0, 0, 0);
-//                                mHolder.mCommentNeutral.setCompoundDrawablesWithIntrinsicBounds(R.drawable.hand_icon_grey, 0, 0, 0);
-//                                mHolder.mCommentLike.setEnabled(true);
-//                                mHolder.mCommentDislike.setEnabled(false);
-//                                mHolder.mCommentNeutral.setEnabled(false);
 
                             } else if(result.getLike()==0){
                                 mCommentList.get(POSITION).setAction(null);
@@ -715,14 +712,6 @@ public class CommentActivity extends BaseActivity implements View.OnClickListene
                                     mCommentList.get(POSITION).setLike(a-1);
 //
                                 }
-//                                mHolder.mCommentLike.setCompoundDrawablesWithIntrinsicBounds(R.drawable.like_grey_icon, 0, 0, 0);
-//                                mHolder.mCommentDislike.setCompoundDrawablesWithIntrinsicBounds(R.drawable.dislike_icon_grey, 0, 0, 0);
-//                                mHolder.mCommentNeutral.setCompoundDrawablesWithIntrinsicBounds(R.drawable.hand_icon_grey, 0, 0, 0);
-//                                mHolder.mCommentLike.setEnabled(true);
-//                                mHolder.mCommentDislike.setEnabled(true);
-//                                mHolder.mCommentNeutral.setEnabled(true);
-
-
                             }
 
                         } else if (INDEX == 2) {
@@ -733,27 +722,12 @@ public class CommentActivity extends BaseActivity implements View.OnClickListene
                             if (result.getDislike() == 1) {
                                 mCommentList.get(POSITION).setAction(Constants.DISLIKE);
                                 mCommentList.get(POSITION).setDislike(b+1);
-//                                mHolder.mCommentDislike.setText(b + 1 + "");
-//                                mHolder.mCommentDislike.setCompoundDrawablesWithIntrinsicBounds(R.drawable.dislike_icon_without_circle, 0, 0, 0);
-//                                mHolder.mCommentLike.setCompoundDrawablesWithIntrinsicBounds(R.drawable.like_grey_icon, 0, 0, 0);
-//                                mHolder.mCommentNeutral.setCompoundDrawablesWithIntrinsicBounds(R.drawable.hand_icon_grey, 0, 0, 0);
-//                                mHolder.mCommentLike.setEnabled(false);
-//                                mHolder.mCommentDislike.setEnabled(true);
-//                                mHolder.mCommentNeutral.setEnabled(false);
-//
 
                             } else if(result.getDislike()==0) {
                                 mCommentList.get(POSITION).setAction(null);
                                 if (b > 0) {
                                     mCommentList.get(POSITION).setDislike(b-1);
                                 }
-//                                mHolder.mCommentLike.setCompoundDrawablesWithIntrinsicBounds(R.drawable.like_grey_icon, 0, 0, 0);
-//                                mHolder.mCommentDislike.setCompoundDrawablesWithIntrinsicBounds(R.drawable.dislike_icon_grey, 0, 0, 0);
-//                                mHolder.mCommentNeutral.setCompoundDrawablesWithIntrinsicBounds(R.drawable.hand_icon_grey, 0, 0, 0);
-//                                mHolder.mCommentLike.setEnabled(true);
-//                                mHolder.mCommentDislike.setEnabled(true);
-//                                mHolder.mCommentNeutral.setEnabled(true);
-
                             }
 
                         } else  if(INDEX==3) {
@@ -765,28 +739,12 @@ public class CommentActivity extends BaseActivity implements View.OnClickListene
 
                                 mCommentList.get(POSITION).setAction(Constants.NEUTRAL);
                                 mCommentList.get(POSITION).setNeutral(c+1);
-//                                mHolder.mCommentNeutral.setText(c + 1 + "");
-//                                mHolder.mCommentNeutral.setCompoundDrawablesWithIntrinsicBounds(R.drawable.hand_icon, 0, 0, 0);
-//                                mHolder.mCommentLike.setCompoundDrawablesWithIntrinsicBounds(R.drawable.like_grey_icon, 0, 0, 0);
-//                                mHolder.mCommentDislike.setCompoundDrawablesWithIntrinsicBounds(R.drawable.dislike_icon_grey, 0, 0, 0);
-//                                mHolder.mCommentLike.setEnabled(false);
-//                                mHolder.mCommentDislike.setEnabled(false);
-//                                mHolder.mCommentNeutral.setEnabled(true);
-
 
                             } else if(result.getNeutral()==0) {
                                 mCommentList.get(POSITION).setAction(null);
                                 if (c > 0) {
                                     mCommentList.get(POSITION).setNeutral(c-1);
                                 }
-//                                mHolder.mCommentLike.setCompoundDrawablesWithIntrinsicBounds(R.drawable.like_grey_icon, 0, 0, 0);
-//                                mHolder.mCommentDislike.setCompoundDrawablesWithIntrinsicBounds(R.drawable.dislike_icon_grey, 0, 0, 0);
-//                                mHolder.mCommentNeutral.setCompoundDrawablesWithIntrinsicBounds(R.drawable.hand_icon_grey, 0, 0, 0);
-//                                mHolder.mCommentLike.setEnabled(true);
-//                                mHolder.mCommentDislike.setEnabled(true);
-//                                mHolder.mCommentNeutral.setEnabled(true);
-
-
                             }
                         }
 
@@ -1043,74 +1001,135 @@ public class CommentActivity extends BaseActivity implements View.OnClickListene
     };
 
 
-    OnCommentListItemClickListner onCommentListItemClickListner = new OnCommentListItemClickListner() {
+
+
+    OnCommentLikeClickListner onCommentLikeClickListner =new OnCommentLikeClickListner() {
         @Override
-        public void onCommentListItemClicked(final PostCommentAdapter.RecyclerViewHolders view, final int position, final String commentId) {
-
-            mHolder = view;
-
-
-
-            mHolder.mDelete.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    POSITION = position;
-                    removeComment(commentId);
-                }
-            });
-
-            mHolder.mCommentLike.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    INDEX = 1;
-                    POSITION = position;
-                    Utility.showToastMessageLong(CommentActivity.this,""+position);
-                    commentAction(mActionTypeLike, commentId);
+        public void onCommentLikeClicked(TextView like, int position, String commentId, String type) {
+            try {
+                INDEX = 1;
+                POSITION = position;
+                Utility.showToastMessageLong(CommentActivity.this,""+position);
+                commentAction(mActionTypeLike, commentId);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+    };
 
 
-                }
-            });
-
-            mHolder.mCommentDislike.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    INDEX = 2;
-                    POSITION = position;
-                    Utility.showToastMessageLong(CommentActivity.this,""+position);
-                    commentAction(mActionTypeDislike, commentId);
-
-
-                }
-            });
-            mHolder.mCommentNeutral.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    INDEX = 3;
-                    POSITION = position;
-                    Utility.showToastMessageLong(CommentActivity.this,""+position);
-                    commentAction(mActionTypeNeutral, commentId);
-
-
-                }
-            });
-
-            mHolder.mReply.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    POSITION = position;
-                    Bundle bundle = new Bundle();
-                    bundle.putSerializable("COMMENT", mCommentList.get(POSITION));
-
-                    Intent intent = new Intent(CommentActivity.this, CommentsReplyActivity.class);
-                    intent.putExtras(bundle);
-                    startActivity(intent);
-
-                }
-            });
-
+    OnCommentDislikeClickListner onCommentDislikeClickListner=new OnCommentDislikeClickListner() {
+        @Override
+        public void onCommentDislikeClicked(TextView dislike, int position, String commentId, String type) {
+            INDEX = 2;
+            POSITION = position;
+            Utility.showToastMessageLong(CommentActivity.this,""+position);
+            commentAction(mActionTypeDislike, commentId);
 
         }
     };
+
+
+    OnCommentNeutralClickListner onCommentNeutralClickListner=new OnCommentNeutralClickListner() {
+        @Override
+        public void onCommentNeutralClicked(TextView neutral, int position, String commentId, String type) {
+            INDEX = 3;
+            POSITION = position;
+            commentAction(mActionTypeNeutral, commentId);
+
+        }
+    };
+
+    OnCommentDeleteClickListner onCommentDeleteClickListner=new OnCommentDeleteClickListner() {
+        @Override
+        public void onCommentDeleteClicked(ImageView delete, int position, String commentId, String type) {
+            POSITION = position;
+            removeComment(commentId);
+        }
+    };
+
+
+    OnCommentReplyClickListner onCommentReplyClickListner=new OnCommentReplyClickListner() {
+        @Override
+        public void onCommentreplyClicked(TextView reply, int position, String commentId, String type) {
+            Bundle bundle = new Bundle();
+            bundle.putSerializable("COMMENT", mCommentList.get(position));
+
+            Intent intent = new Intent(CommentActivity.this, CommentsReplyActivity.class);
+            intent.putExtras(bundle);
+            startActivity(intent);
+
+        }
+    };
+
+//    OnCommentListItemClickListner onCommentListItemClickListner = new OnCommentListItemClickListner() {
+//        @Override
+//        public void onCommentListItemClicked(final PostCommentAdapter.RecyclerViewHolders view, final int position, final String commentId) {
+//
+//            mHolder = view;
+//
+//
+//
+//            mHolder.mDelete.setOnClickListener(new View.OnClickListener() {
+//                @Override
+//                public void onClick(View v) {
+//                    POSITION = position;
+//                    removeComment(commentId);
+//                }
+//            });
+//
+//            mHolder.mCommentLike.setOnClickListener(new View.OnClickListener() {
+//                @Override
+//                public void onClick(View v) {
+//                    INDEX = 1;
+//                    POSITION = position;
+//                    Utility.showToastMessageLong(CommentActivity.this,""+position);
+//                    commentAction(mActionTypeLike, commentId);
+//
+//
+//                }
+//            });
+//
+//            mHolder.mCommentDislike.setOnClickListener(new View.OnClickListener() {
+//                @Override
+//                public void onClick(View v) {
+//                    INDEX = 2;
+//                    POSITION = position;
+//                    Utility.showToastMessageLong(CommentActivity.this,""+position);
+//                    commentAction(mActionTypeDislike, commentId);
+//
+//
+//                }
+//            });
+//            mHolder.mCommentNeutral.setOnClickListener(new View.OnClickListener() {
+//                @Override
+//                public void onClick(View v) {
+//                    INDEX = 3;
+//                    POSITION = position;
+//                    Utility.showToastMessageLong(CommentActivity.this,""+position);
+//                    commentAction(mActionTypeNeutral, commentId);
+//
+//
+//                }
+//            });
+//
+//            mHolder.mReply.setOnClickListener(new View.OnClickListener() {
+//                @Override
+//                public void onClick(View v) {
+//                    POSITION = position;
+//                    Bundle bundle = new Bundle();
+//                    bundle.putSerializable("COMMENT", mCommentList.get(POSITION));
+//
+//                    Intent intent = new Intent(CommentActivity.this, CommentsReplyActivity.class);
+//                    intent.putExtras(bundle);
+//                    startActivity(intent);
+//
+//                }
+//            });
+//
+//
+//        }
+//    };
 
 
 }

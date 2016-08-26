@@ -2,7 +2,6 @@ package com.igniva.indiecore.ui.adapters;
 
 import android.content.Context;
 import android.graphics.Color;
-import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -31,7 +30,7 @@ public class PremiumBadgesAdapter extends RecyclerView.Adapter<PremiumBadgesAdap
     BadgesPojo PremiumBadge;
     String LOG_TAG = "PremiumBadgeAdapter";
     OnPremiumBadgeClick onPremiumBadgeClick;
-    int oldPostion=-1;
+    int oldPosition =-1;
     RelativeLayout oldRelativeLayout;
 
 
@@ -79,9 +78,9 @@ public class PremiumBadgesAdapter extends RecyclerView.Adapter<PremiumBadgesAdap
                   @Override
                   public void onClick(View v) {
                       try{
-                          if(mPremiumBadgeList.get(oldPostion).isSelected()){
+                          if(mPremiumBadgeList.get(oldPosition).isSelected()){
                               oldRelativeLayout.setBackgroundColor(Color.parseColor("#1C6DCE"));
-                              mPremiumBadgeList.get(oldPostion).setSelected(false);
+                              mPremiumBadgeList.get(oldPosition).setSelected(false);
                           }
                       }catch (Exception e){
                           e.printStackTrace();
@@ -94,10 +93,10 @@ public class PremiumBadgesAdapter extends RecyclerView.Adapter<PremiumBadgesAdap
                               holder.mRlPremiumBadge.setBackgroundColor(Color.parseColor("#1C6DCE"));
                               mPremiumBadgeList.get(position).setSelected(false);
                           }
-                          oldPostion=position;
+                          oldPosition =position;
                           oldRelativeLayout=holder.mRlPremiumBadge;
                           PremiumBadge=mPremiumBadgeList.get(position);
-//                          onPremiumBadgeClick.onPremiumBadgeClicked(PremiumBadge);
+                          onPremiumBadgeClick.onPremiumBadgeClicked(PremiumBadge);
                       } catch (Exception e) {
                           e.printStackTrace();
                       }

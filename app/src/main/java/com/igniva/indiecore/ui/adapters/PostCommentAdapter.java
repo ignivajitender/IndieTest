@@ -11,7 +11,11 @@ import android.widget.TextView;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.igniva.indiecore.R;
-import com.igniva.indiecore.controller.OnCommentListItemClickListner;
+import com.igniva.indiecore.controller.OnCommentDeleteClickListner;
+import com.igniva.indiecore.controller.OnCommentDislikeClickListner;
+import com.igniva.indiecore.controller.OnCommentLikeClickListner;
+import com.igniva.indiecore.controller.OnCommentNeutralClickListner;
+import com.igniva.indiecore.controller.OnCommentReplyClickListner;
 import com.igniva.indiecore.controller.WebServiceClient;
 import com.igniva.indiecore.model.CommentPojo;
 import com.igniva.indiecore.utils.Constants;
@@ -26,7 +30,11 @@ public class PostCommentAdapter extends RecyclerView.Adapter<PostCommentAdapter.
     private ArrayList<CommentPojo> mCommentList;
     private Context context;
     String LOG_TAG = "PostCommentAdapter";
-    OnCommentListItemClickListner mOnCommentListItemClickLitner;
+    OnCommentLikeClickListner mOnCommentLikeClickLitner;
+    OnCommentDislikeClickListner mOnCommentDislikeClickListner;
+    OnCommentNeutralClickListner mOnCommentNeutarlClickListner;
+    OnCommentReplyClickListner mOnCommentReplyClickListner;
+    OnCommentDeleteClickListner mOnCommentDeleteClickLisnter;
 
 
     public PostCommentAdapter(Context context, ArrayList<CommentPojo> commentList) {
@@ -35,10 +43,15 @@ public class PostCommentAdapter extends RecyclerView.Adapter<PostCommentAdapter.
 //        this.mOnCommentListItemClickLitner= mOnCommentClick;
     }
 
-    public PostCommentAdapter(Context context, ArrayList<CommentPojo> commentList, OnCommentListItemClickListner mOnCommentListItemClickLitner) {
+    public PostCommentAdapter(Context context, ArrayList<CommentPojo> commentList, OnCommentLikeClickListner OnCommentLikeClickLitner,OnCommentDislikeClickListner onCommentDislikeClickListner,
+                              OnCommentNeutralClickListner onCommentNeutralClickListner,OnCommentReplyClickListner onCommentReplyClickListner,OnCommentDeleteClickListner onCommentDeleteClickListner) {
         this.mCommentList = commentList;
         this.context = context;
-        this.mOnCommentListItemClickLitner = mOnCommentListItemClickLitner;
+        this.mOnCommentLikeClickLitner = OnCommentLikeClickLitner;
+        this.mOnCommentDislikeClickListner=onCommentDislikeClickListner;
+        this.mOnCommentNeutarlClickListner= onCommentNeutralClickListner;
+        this.mOnCommentReplyClickListner=onCommentReplyClickListner;
+        this.mOnCommentDeleteClickLisnter=onCommentDeleteClickListner;
     }
 
     @Override
@@ -138,7 +151,7 @@ public class PostCommentAdapter extends RecyclerView.Adapter<PostCommentAdapter.
                 @Override
                 public void onClick(View v) {
 
-                    mOnCommentListItemClickLitner.onCommentListItemClicked(holder, position, mCommentList.get(position).getCommentId());
+                    mOnCommentLikeClickLitner.onCommentLikeClicked(holder.mCommentLike,position, mCommentList.get(position).getCommentId(), Constants.LIKE);
                 }
             });
 
@@ -146,7 +159,7 @@ public class PostCommentAdapter extends RecyclerView.Adapter<PostCommentAdapter.
                 @Override
                 public void onClick(View v) {
 
-                    mOnCommentListItemClickLitner.onCommentListItemClicked(holder, position, mCommentList.get(position).getCommentId());
+                    mOnCommentDislikeClickListner.onCommentDislikeClicked(holder.mCommentDislike,position, mCommentList.get(position).getCommentId(), Constants.DISLIKE);
                 }
             });
 
@@ -154,7 +167,7 @@ public class PostCommentAdapter extends RecyclerView.Adapter<PostCommentAdapter.
                 @Override
                 public void onClick(View v) {
 
-                    mOnCommentListItemClickLitner.onCommentListItemClicked(holder, position, mCommentList.get(position).getCommentId());
+                    mOnCommentNeutarlClickListner.onCommentNeutralClicked(holder.mCommentNeutral, position, mCommentList.get(position).getCommentId(),Constants.NEUTRAL);
                 }
             });
 
@@ -162,7 +175,7 @@ public class PostCommentAdapter extends RecyclerView.Adapter<PostCommentAdapter.
                 @Override
                 public void onClick(View v) {
 
-                    mOnCommentListItemClickLitner.onCommentListItemClicked(holder, position, mCommentList.get(position).getCommentId());
+                    mOnCommentReplyClickListner.onCommentreplyClicked(holder.mReply,position,mCommentList.get(position).getCommentId(),Constants.REPLY);
                 }
             });
 
@@ -170,7 +183,7 @@ public class PostCommentAdapter extends RecyclerView.Adapter<PostCommentAdapter.
                 @Override
                 public void onClick(View v) {
 
-                    mOnCommentListItemClickLitner.onCommentListItemClicked(holder, position, mCommentList.get(position).getCommentId());
+                    mOnCommentDeleteClickLisnter.onCommentDeleteClicked(holder.mDelete, position, mCommentList.get(position).getCommentId(),Constants.DELETE);
 
                 }
             });

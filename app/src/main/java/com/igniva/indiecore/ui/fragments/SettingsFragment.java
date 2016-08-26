@@ -36,6 +36,7 @@ public class SettingsFragment extends BaseFragment {
     List<String> listDataHeader;
     HashMap<String, List<String>> listDataChild;
     ImageView mIvcollapse;
+    private int ItemIndex=0;
 
     @Nullable
     @Override
@@ -111,6 +112,7 @@ public class SettingsFragment extends BaseFragment {
 
                             break;
                         case 4:
+
                             break;
                         case 5:
 
@@ -133,7 +135,11 @@ public class SettingsFragment extends BaseFragment {
                     try {
 
                         mIvcollapse = (ImageView) v.findViewById(R.id.iv_collapse);
-                        mIvcollapse.setImageResource(R.drawable.dropdown_icon);
+                        if(ItemIndex==4){
+                            Log.e("","-===========-=--=---="+ItemIndex);
+                            mIvcollapse.setImageResource(R.drawable.on_button);
+                        }
+//                            mIvcollapse.setImageResource(R.drawable.dropdown_icon);
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
@@ -159,8 +165,8 @@ public class SettingsFragment extends BaseFragment {
                         case 3:
                             break;
                         case 4:
-
-
+                            ItemIndex=4;
+                            mIvcollapse.setImageResource(R.drawable.on_button);
                             break;
                         case 5:
                             Intent intent = new Intent(getActivity(),SyncContactsActivity.class);
@@ -177,7 +183,7 @@ public class SettingsFragment extends BaseFragment {
                             break;
                     }
 
-                    mIvcollapse.setImageResource(R.drawable.next_arrow_icon);
+                    mIvcollapse.setImageResource(R.drawable.on_button);
 
                 }
             });
@@ -209,25 +215,6 @@ public class SettingsFragment extends BaseFragment {
     public void onClickWhatsApp() {
 
         PackageManager pm = getActivity().getPackageManager();
-//        try {
-//
-//            Intent waIntent = new Intent(Intent.ACTION_SEND);
-//            waIntent.setType("text/plain");
-//            String text =getResources().getString(R.string.invite_message);
-//
-//            PackageInfo info = pm.getPackageInfo("com.whatsapp", PackageManager.GET_META_DATA);
-//            //Check if package exists or not. If not then code
-//            //in catch block will be called
-//            waIntent.setPackage("com.whatsapp");
-//
-//            waIntent.putExtra(Intent.EXTRA_TEXT, text);
-//            startActivity(Intent.createChooser(waIntent, "Share with"));
-//
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//            Toast.makeText(this, "WhatsApp not Installed", Toast.LENGTH_SHORT)
-//                    .show();
-//        }
 
         try {
 
@@ -283,6 +270,13 @@ public class SettingsFragment extends BaseFragment {
 
 
         List<String> fifthGroup = new ArrayList<String>();
+        fifthGroup.add(getResources().getString(R.string.message_by_friends));
+        fifthGroup.add(getResources().getString(R.string.message_from_others));
+        fifthGroup.add(getResources().getString(R.string.chat_messages));
+        fifthGroup.add(getResources().getString(R.string.new_badges));
+
+
+
         List<String> sixthGroup = new ArrayList<String>();
         List<String> seventhGroup = new ArrayList<String>();
         List<String> eightthGroup = new ArrayList<String>();
