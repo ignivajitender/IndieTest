@@ -566,7 +566,7 @@ public class MyBadgesActivity extends BaseActivity implements View.OnClickListen
 
                 } else {
 
-                    Utility.showAlertDialog(result.getError_text(), MyBadgesActivity.this);
+                    Utility.showAlertDialogBuy(result.getError_text(), MyBadgesActivity.this);
 
                 }
 

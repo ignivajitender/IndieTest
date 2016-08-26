@@ -196,9 +196,7 @@ public class PremiumBadgesActivity extends BaseActivity implements IabBroadcastR
         mRvPremiumBadges.setLayoutManager(layoutManager);
         getPremiumBadges(pageNumber, badgeCount, category);
 
-
     }
-
 
     public String createPayload(int page, int limit, int category) {
         JSONObject payloadJson = null;
@@ -300,15 +298,12 @@ public class PremiumBadgesActivity extends BaseActivity implements IabBroadcastR
 
 
     // User clicked the "Buy Gas" button
-    public void onBuyGasButtonClicked(View arg0) {
+    public  void onBuyGasButtonClicked(View arg0) {
         Log.d(LOG_TAG, "Buy gas button clicked.");
-
-
         // launch the gas purchase UI flow.
         // We will be notified of completion via mPurchaseFinishedListener
         setWaitScreen(true);
         Log.d(LOG_TAG, "Launching purchase flow for gas.");
-
         /* TODO: for security, generate your payload here for verification. See the comments on
          *        verifyDeveloperPayload() for more info. Since this is a SAMPLE, we just use
          *        an empty string, but on a production app you should carefully generate this. */

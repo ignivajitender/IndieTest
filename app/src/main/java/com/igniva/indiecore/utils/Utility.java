@@ -218,7 +218,6 @@ public class Utility {
 		builder1.setPositiveButton("BUY", new OnClickListener() {
 			public void onClick(DialogInterface dialog, int id) {
 				dialog.dismiss();
-
 			}
 		}); builder1.setNegativeButton("INVITE", new OnClickListener() {
 			@Override
@@ -238,7 +237,7 @@ public class Utility {
 		AlertDialog.Builder builder1 = new AlertDialog.Builder(context,R.style.AppCompatAlertDialogStyle);
 		builder1.setMessage( message);
 		builder1.setCancelable(true);
-		builder1.setPositiveButton("BUY", new OnClickListener() {
+		builder1.setPositiveButton("Buy a badge slot", new OnClickListener() {
 			public void onClick(DialogInterface dialog, int id) {
 				dialog.dismiss();
 

@@ -164,8 +164,6 @@ public class BadgesAdapter extends RecyclerView.Adapter<BadgesAdapter.RecyclerVi
                     itemList.get(pos).setActive(1);
                     itemList.get(pos).setIsPremium(0);
                     addSelectedBadgeIds(pos);
-
-//            mSelectedBadgeIds.add(itemList.get(pos).getBadgeId());
                     this.notifyDataSetChanged();
                     //itemList.get()
                 } else {
