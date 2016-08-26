@@ -1,8 +1,10 @@
 package com.igniva.indiecore.ui.adapters;
 
 import android.app.Activity;
+import android.app.ActivityOptions;
 import android.content.Context;
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -124,9 +126,17 @@ public class BadgesAdapter extends RecyclerView.Adapter<BadgesAdapter.RecyclerVi
                     // Passing data as a parecelable object to StudentViewActivity
                     // intent.putExtra("BadgeData",itemList.get(position));
                     intent.putExtras(bundle);
-                    // Opening the activity
-                    ((Activity) mContext).startActivityForResult(intent, REQUEST_CODE);
-                    // Toast.makeText(mContext, "Recycle Click" + (position + ((BadgesActivity.pageNumber - 1) * BadgesActivity.badgeCount)), Toast.LENGTH_SHORT).show();
+
+                    // Icon transition animation
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                        String transitionName = mContext.getResources().getString(R.string.transition_app_icon);
+                        ActivityOptions transitionActivityOptions = ActivityOptions.makeSceneTransitionAnimation((Activity) mContext, holder.mIvBadgeIcon, transitionName);
+                        mContext.startActivity(intent, transitionActivityOptions.toBundle());
+                    } else {
+                        // Opening the activity without animation
+                        ((Activity) mContext).startActivityForResult(intent, REQUEST_CODE);
+                        // Toast.makeText(mContext, "Recycle Click" + (position + ((BadgesActivity.pageNumber - 1) * BadgesActivity.badgeCount)), Toast.LENGTH_SHORT).show();
+                    }
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
