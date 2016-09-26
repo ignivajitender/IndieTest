@@ -2,6 +2,7 @@ package com.igniva.indiecore.ui.adapters;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -16,6 +17,9 @@ import com.igniva.indiecore.R;
 import com.igniva.indiecore.controller.OnContactCardClickListner;
 import com.igniva.indiecore.controller.WebServiceClient;
 import com.igniva.indiecore.model.UsersPojo;
+import com.igniva.indiecore.ui.activities.ChatActivity;
+import com.igniva.indiecore.ui.activities.DashBoardActivity;
+import com.igniva.indiecore.utils.Constants;
 import com.igniva.indiecore.utils.Log;
 import com.igniva.indiecore.utils.Utility;
 
@@ -78,20 +82,22 @@ public class PhonebookAdapter extends RecyclerView.Adapter<PhonebookAdapter.Recy
             }
         });
 
-//        holder.mCardView.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//                try {
-//
-//                    Utility.showToastMessageShort((Activity) context, "Coming soon");
-//
-//
-//
-//                }catch (Exception e){
-//                    e.printStackTrace();
-//                }
-//            }
-//        });
+        holder.mCardView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                try {
+//                    context.startActivity(new Intent(context, ChatActivity.class));
+                    Intent intent=new Intent(context,ChatActivity.class);
+                    intent.putExtra(Constants.PERSON_ID,indieCoreUsersLIst.get(position).getUserId());
+                    context.startActivity(intent);
+                    DashBoardActivity.bottomNavigation.setCurrentItem(3);
+
+
+                }catch (Exception e){
+                    e.printStackTrace();
+                }
+            }
+        });
 
     }
 

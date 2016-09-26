@@ -147,6 +147,7 @@
     <!--Chats-->
     <string name="available">Available</string>
     <string name="add_post">Please write a post or upload an image</string>
+    <string name="write_a_msg">Write a message</string>
 
     <!--settings-->
 

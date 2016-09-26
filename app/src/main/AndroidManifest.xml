@@ -54,6 +54,22 @@
             </intent-filter>
         </activity>
 
+
+        <activity
+            android:theme="@style/AppTheme"
+            android:name=".ui.activities.ReceiveActivity"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateHidden"
+            android:label="@string/contact_number">
+
+            <intent-filter>
+                <action android:name="android.intent.action.SEND" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <data android:mimeType="text/plain" />
+            </intent-filter>
+
+        </activity>
+
         <activity
             android:theme="@style/AppTheme"
             android:name=".ui.activities.EnterMobileActivity"
@@ -179,6 +195,15 @@
             android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustPan"
             android:label="@string/my_profile"/>
+
+
+
+        <activity
+            android:theme="@style/AppTheme"
+            android:name=".ui.activities.ChatActivity"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="adjustPan"
+            android:label="@string/chat"/>
 
 
         <meta-data

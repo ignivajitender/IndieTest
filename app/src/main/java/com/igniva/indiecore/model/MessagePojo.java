@@ -1,0 +1,156 @@
+package com.igniva.indiecore.model;
+
+/**
+ * Created by igniva-andriod-05 on 22/9/16.
+ */
+public class MessagePojo {
+
+
+//    {
+//        "type": 0,
+//            "created_at": {
+//        "$date": 1472794827653
+//    },
+//        "date_updated": {
+//        "$date": 1474269422835
+//    },
+//        "last_message_Id": "57df90c50a00e6f0010041a8",
+//            "last_message_by": "A3bRAAHnePFJF8A9b",
+//            "last_message_type": "Text",
+//            "last_message": "hi",
+//            "unreadCount": 0,
+//            "roomId": "ArEYQFyGi5JXZWrRE",
+//            "userId": "A3bRAAHnePFJF8A9b",
+//            "name": "Manjot kaur",
+//            "icon": "/data/files/uploads/F9HyEsYd8n9LtNLZF/1473331037083-a3braahnepfjf8a9b_profileimage",
+//            "relation": "favourite",
+//            "badges": 10
+//    }
+
+
+
+
+     String type;
+     String last_message_Id;
+     String last_message_by;
+     String last_message_type;
+     String last_message;
+     int unreadCount;
+     String roomId;
+     String userId;
+     String name;
+     String badges;
+     String icon;
+     String relation;
+     String text;
+
+    public String getType() {
+        return type;
+    }
+
+    public void setType(String type) {
+        this.type = type;
+    }
+    public String getText() {
+        return text;
+    }
+
+    public void setText(String text) {
+        this.text = text;
+    }
+
+
+    public String getBadges() {
+        return badges;
+    }
+
+    public void setBadges(String badges) {
+        this.badges = badges;
+    }
+
+
+
+    public String getLast_message_type() {
+        return last_message_type;
+    }
+
+    public void setLast_message_type(String last_message_type) {
+        this.last_message_type = last_message_type;
+    }
+
+
+    public String getLast_message_Id() {
+        return last_message_Id;
+    }
+
+    public void setLast_message_Id(String last_message_Id) {
+        this.last_message_Id = last_message_Id;
+    }
+
+    public String getLast_message_by() {
+        return last_message_by;
+    }
+
+    public void setLast_message_by(String last_message_by) {
+        this.last_message_by = last_message_by;
+    }
+
+    public String getLast_message() {
+        return last_message;
+    }
+
+    public void setLast_message(String last_message) {
+        this.last_message = last_message;
+    }
+
+    public int getUnreadCount() {
+        return unreadCount;
+    }
+
+    public void setUnreadCount(int unreadCount) {
+        this.unreadCount = unreadCount;
+    }
+
+    public String getRoomId() {
+        return roomId;
+    }
+
+    public void setRoomId(String roomId) {
+        this.roomId = roomId;
+    }
+
+    public String getUserId() {
+        return userId;
+    }
+
+    public void setUserId(String userId) {
+        this.userId = userId;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getIcon() {
+        return icon;
+    }
+
+    public void setIcon(String icon) {
+        this.icon = icon;
+    }
+
+    public String getRelation() {
+        return relation;
+    }
+
+    public void setRelation(String relation) {
+        this.relation = relation;
+    }
+
+
+
+}

@@ -35,7 +35,7 @@ public class SettingsFragment extends BaseFragment {
     ExpandableListView expListView;
     List<String> listDataHeader;
     HashMap<String, List<String>> listDataChild;
-    ImageView mIvcollapse;
+    ImageView mIvCollapse;
     private int ItemIndex=0;
 
     @Nullable
@@ -49,14 +49,10 @@ public class SettingsFragment extends BaseFragment {
     @Override
     protected void setUpLayout() {
         try {
-
             DisplayMetrics metrics = new DisplayMetrics();
             getActivity().getWindowManager().getDefaultDisplay().getMetrics(metrics);
             int width = metrics.widthPixels;
-
             expListView = (ExpandableListView) rootView.findViewById(R.id.lvExp);
-
-
             // preparing list data
             prepareListData();
 
@@ -72,7 +68,6 @@ public class SettingsFragment extends BaseFragment {
                 public boolean onChildClick(ExpandableListView parent, View v,
                                             int groupPosition, int childPosition, long id) {
                     switch (groupPosition) {
-
                         case 0:
 //                            profile
                             try {
@@ -134,12 +129,12 @@ public class SettingsFragment extends BaseFragment {
                     Log.d("onGroupClick:", "worked");
                     try {
 
-                        mIvcollapse = (ImageView) v.findViewById(R.id.iv_collapse);
+                        mIvCollapse = (ImageView) v.findViewById(R.id.iv_collapse);
                         if(ItemIndex==4){
                             Log.e("","-===========-=--=---="+ItemIndex);
-                            mIvcollapse.setImageResource(R.drawable.on_button);
+                            mIvCollapse.setImageResource(R.drawable.on_button);
                         }
-//                            mIvcollapse.setImageResource(R.drawable.dropdown_icon);
+//                            mIvCollapse.setImageResource(R.drawable.dropdown_icon);
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
@@ -166,7 +161,7 @@ public class SettingsFragment extends BaseFragment {
                             break;
                         case 4:
                             ItemIndex=4;
-                            mIvcollapse.setImageResource(R.drawable.on_button);
+                            mIvCollapse.setImageResource(R.drawable.on_button);
                             break;
                         case 5:
                             Intent intent = new Intent(getActivity(),SyncContactsActivity.class);
@@ -183,7 +178,7 @@ public class SettingsFragment extends BaseFragment {
                             break;
                     }
 
-                    mIvcollapse.setImageResource(R.drawable.on_button);
+                    mIvCollapse.setImageResource(R.drawable.on_button);
 
                 }
             });

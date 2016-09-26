@@ -190,7 +190,6 @@ public class EnterMobileActivity extends BaseActivity {
             WebNotificationManager.unRegisterResponseListener(responseHandlerListener);
             // check for error
             try {
-
                 if (error == null) {
                     // start parsing
                     if (result.getSuccess().equalsIgnoreCase("true")) {

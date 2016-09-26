@@ -14,9 +14,11 @@ import android.content.DialogInterface;
 import android.content.DialogInterface.OnClickListener;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.location.LocationManager;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Build;
+import android.provider.Settings;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
@@ -30,6 +32,44 @@ import com.igniva.indiecore.R;
 import com.igniva.indiecore.ui.activities.InviteContactActivity;
 
 public class Utility {
+
+
+
+
+
+	public static void checkGPSStatus(final Context context) {
+		try {
+			LocationManager locationManager = null;
+			boolean gps_enabled = false;
+			boolean network_enabled = false;
+			if ( locationManager == null ) {
+                locationManager = (LocationManager) context.getSystemService(Context.LOCATION_SERVICE);
+            }
+			try {
+                gps_enabled = locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER);
+            } catch (Exception ex){}
+			try {
+                network_enabled = locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER);
+            } catch (Exception ex){}
+			if ( !gps_enabled && !network_enabled ){
+                AlertDialog.Builder dialog = new AlertDialog.Builder(context);
+                dialog.setMessage("GPS not enabled");
+                dialog.setPositiveButton("Ok", new OnClickListener() {
+
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        //this will navigate user to the device location settings screen
+                        Intent intent = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
+                        context.startActivity(intent);
+                    }
+                });
+                AlertDialog alert = dialog.create();
+                alert.show();
+            }
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
 
 	public static final int MY_PERMISSIONS_REQUEST_READ_EXTERNAL_STORAGE = 123;
 	@TargetApi(Build.VERSION_CODES.JELLY_BEAN)

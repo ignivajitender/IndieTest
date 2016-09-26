@@ -175,10 +175,6 @@ public class ContactsFragment extends BaseFragment {
                 fetchFavourite();
 
             }
-
-
-
-
 //
 //            mComingSoon.setVisibility(View.VISIBLE);
 //            rootView.findViewById(R.id.tv_coming_soon_two).setVisibility(View.GONE);
@@ -236,7 +232,6 @@ public class ContactsFragment extends BaseFragment {
 
         String payload = generatePayload();
         if (payload != null) {
-
             WebNotificationManager.registerResponseListener(FavouriteUsersResponseHandler);
             WebServiceClient.get_favourite_list(getActivity(), payload, FavouriteUsersResponseHandler);
 

@@ -87,6 +87,11 @@ public class CheckInFragment extends BaseFragment {
     @Override
     protected void setUpLayout() {
 
+/*
+* TODO GPS CHECK
+* */
+//        Utility.checkGPSStatus(getActivity());
+
         try {
             mBusinessList = new ArrayList<>();
             mFindBusinessResultList = new ArrayList<>();
@@ -105,8 +110,6 @@ public class CheckInFragment extends BaseFragment {
 
             mRvBusinessGrid = (RecyclerView) rootView.findViewById(R.id.rv_business);
             mRvBusinessGrid.setLayoutManager(mGlManager);
-
-
             mRvBusinessGrid.addOnScrollListener(new RecyclerView.OnScrollListener() {
                 @Override
                 public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
@@ -150,6 +153,8 @@ public class CheckInFragment extends BaseFragment {
                     }
                 }
             });
+
+
 
             try {
 
