@@ -24,6 +24,7 @@ import com.igniva.indiecore.controller.WebNotificationManager;
 import com.igniva.indiecore.controller.WebServiceClient;
 import com.igniva.indiecore.model.BusinessPojo;
 import com.igniva.indiecore.model.ResponsePojo;
+import com.igniva.indiecore.ui.activities.BoardActivity;
 import com.igniva.indiecore.ui.activities.BusinessDetailActivity;
 
 import com.igniva.indiecore.ui.activities.DashBoardActivity;
@@ -45,6 +46,7 @@ public class BusinessListAdapter extends RecyclerView.Adapter<BusinessListAdapte
     private ArrayList<BusinessPojo> mBusinessList;
     private final OnCardClickListner listener;
     private String mBusiness_Id="";
+    private String mBusiness_name="";
 
     public BusinessListAdapter(Context context, ArrayList<BusinessPojo> mBusinessList, OnCardClickListner onCardClickListner) {
         this.mContext=context;
@@ -113,7 +115,6 @@ public class BusinessListAdapter extends RecyclerView.Adapter<BusinessListAdapte
                     Bundle bundle = new Bundle();
                     bundle.putInt(Constants.POSITION, position);
                     bundle.putSerializable("businessPojo", mBusinessList.get(position));
-
                     Intent intent = new Intent(mContext, BusinessDetailActivity.class);
                     intent.putExtras(bundle);
                     mContext.startActivity(intent);
@@ -131,6 +132,7 @@ public class BusinessListAdapter extends RecyclerView.Adapter<BusinessListAdapte
                 try {
 
                     mBusiness_Id=mBusinessList.get(position).getBusiness_id();
+                    mBusiness_name=mBusinessList.get(position).getName();
 
                     String payload=createPayload(mBusiness_Id);
 
@@ -222,8 +224,13 @@ public class BusinessListAdapter extends RecyclerView.Adapter<BusinessListAdapte
 
                     Utility.showToastMessageLong((Activity) mContext,"Check-in successful");
 
-                    DashBoardActivity.bottomNavigation.setCurrentItem(2);
-                    DashBoardActivity.businessId=mBusiness_Id;
+//                    DashBoardActivity.bottomNavigation.setCurrentItem(2);
+//                    DashBoardActivity.businessId=mBusiness_Id;
+
+                    Intent intent= new Intent((Activity)mContext, BoardActivity.class);
+                    intent.putExtra(Constants.BUSINESS_ID,mBusiness_Id);
+                    intent.putExtra(Constants.BUSINESS_NAME,mBusiness_name);
+                    mContext.startActivity(intent);
 
 
                 }else {

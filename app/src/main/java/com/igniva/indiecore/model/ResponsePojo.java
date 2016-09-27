@@ -30,6 +30,8 @@ public class ResponsePojo {
     private String userId;
     private String token;
     private String newUser;
+    private String totalChats;
+    private String totalMessages;
     private ProfilePojo profile;
     private UserPojo user;
     private CountryCodePojo location;
@@ -39,6 +41,41 @@ public class ResponsePojo {
     private ArrayList<BusinessPojo> business_list;
     private ArrayList<CommentPojo> commentList;
     private ArrayList<RepliesPojo> repliesList;
+    private ArrayList<ChatListPojo> chatList;
+    private ArrayList<ChatPojo> messagesList;
+
+
+    public String getTotalMessages() {
+        return totalMessages;
+    }
+
+    public void setTotalMessages(String totalMessages) {
+        this.totalMessages = totalMessages;
+    }
+
+    public ArrayList<ChatPojo> getMessagesList() {
+        return messagesList;
+    }
+
+    public void setMessagesList(ArrayList<ChatPojo> messagesList) {
+        this.messagesList = messagesList;
+    }
+    public ArrayList<ChatListPojo> getChatList() {
+        return chatList;
+    }
+
+    public void setChatList(ArrayList<ChatListPojo> chatList) {
+        this.chatList = chatList;
+    }
+
+    public String getTotalChats() {
+        return totalChats;
+    }
+
+    public void setTotalChats(String totalChats) {
+        this.totalChats = totalChats;
+    }
+
 
     public int getTotalComments() {
         return totalComments;

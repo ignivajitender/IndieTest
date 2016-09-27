@@ -4,11 +4,25 @@
     android:layout_height="match_parent"
     android:orientation="vertical">
 
-
+<!--<LinearLayout-->
+    <!--android:id="@+id/ll_message"-->
+    <!--android:layout_width="match_parent"-->
+    <!--android:orientation="vertical"-->
+    <!--android:layout_height="match_parent">-->
     <include
         android:id="@+id/toolbar_chat_activity"
         layout="@layout/toolbar" />
+
+    <android.support.v7.widget.RecyclerView
+        android:layout_marginTop="10dp"
+        android:layout_below="@+id/toolbar_chat_activity"
+        android:layout_width="match_parent"
+        android:layout_height="450dp"
+        android:id="@+id/rv_chat_messages">
+    </android.support.v7.widget.RecyclerView>
+<!--</LinearLayout>-->
     <LinearLayout
+        android:id="@+id/ll_bottom_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"

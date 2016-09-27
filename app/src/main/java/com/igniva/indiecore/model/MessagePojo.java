@@ -4,32 +4,6 @@ package com.igniva.indiecore.model;
  * Created by igniva-andriod-05 on 22/9/16.
  */
 public class MessagePojo {
-
-
-//    {
-//        "type": 0,
-//            "created_at": {
-//        "$date": 1472794827653
-//    },
-//        "date_updated": {
-//        "$date": 1474269422835
-//    },
-//        "last_message_Id": "57df90c50a00e6f0010041a8",
-//            "last_message_by": "A3bRAAHnePFJF8A9b",
-//            "last_message_type": "Text",
-//            "last_message": "hi",
-//            "unreadCount": 0,
-//            "roomId": "ArEYQFyGi5JXZWrRE",
-//            "userId": "A3bRAAHnePFJF8A9b",
-//            "name": "Manjot kaur",
-//            "icon": "/data/files/uploads/F9HyEsYd8n9LtNLZF/1473331037083-a3braahnepfjf8a9b_profileimage",
-//            "relation": "favourite",
-//            "badges": 10
-//    }
-
-
-
-
      String type;
      String last_message_Id;
      String last_message_by;

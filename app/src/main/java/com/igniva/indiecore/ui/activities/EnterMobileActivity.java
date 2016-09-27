@@ -65,14 +65,10 @@ public class EnterMobileActivity extends BaseActivity {
             mToolbar = (Toolbar) findViewById(R.id.toolbar);
             TextView mTvTitle = (TextView) mToolbar.findViewById(R.id.toolbar_title);
             mTvTitle.setText(getResources().getString(R.string.contact_number));
-            //
-
-
             TextView mTvNext = (TextView) mToolbar.findViewById(R.id.toolbar_next);
             mTvNext.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-
 
                     validateMobileNumber();
                 }
@@ -120,7 +116,6 @@ public class EnterMobileActivity extends BaseActivity {
                         WebNotificationManager.registerResponseListener(responseHandlerListener);
                         // Step 2 - Webservice Call
                         WebServiceClient.getLogin(EnterMobileActivity.this, payload.toString(), responseHandlerListener);
-
                         Log.e("EnterMobileActivity payload","------"+payload);
                     } else {
                         // TODO show error dialog
@@ -136,7 +131,6 @@ public class EnterMobileActivity extends BaseActivity {
 
     @Override
     protected void setUpLayout() {
-
           try {
         mLlTopNextEvent = (LinearLayout) findViewById(R.id.ll_next);
         //mLlTopNextEvent.setOnClickListener(onClick());
@@ -152,7 +146,6 @@ public class EnterMobileActivity extends BaseActivity {
         //  mEtCountryCode.setText(countryId);
               mEtCountryCode.setText("91");
     } catch (Exception e){
-
         e.printStackTrace();
     }
     }
@@ -193,8 +186,6 @@ public class EnterMobileActivity extends BaseActivity {
                 if (error == null) {
                     // start parsing
                     if (result.getSuccess().equalsIgnoreCase("true")) {
-
-
                         PreferenceHandler.writeString(EnterMobileActivity.this,PreferenceHandler.PREF_KEY_MOBILE_NUMBER,mobileNumber);
                         PreferenceHandler.writeString(EnterMobileActivity.this,PreferenceHandler.PREF_KEY_COUNTRY_CODE,countryId);
                         PreferenceHandler.writeInteger(EnterMobileActivity.this,PreferenceHandler.PREF_KEY_NUMBER_LENGTH,mobileNumber.length());

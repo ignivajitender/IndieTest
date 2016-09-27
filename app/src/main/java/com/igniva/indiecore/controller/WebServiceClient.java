@@ -72,7 +72,9 @@ public class WebServiceClient {
     public static  final  String HTTP_BLOCK_USER=HTTP_PROTOCOL+HTTP_HOST_IP+"block/control";
     public static  final  String HTTP_BLOCKED_USER_LIST =HTTP_PROTOCOL+HTTP_HOST_IP+"block/list";
     public static  final String HTTP_BUY_A_SLOT=HTTP_PROTOCOL+HTTP_HOST_IP+"badge/buy";
-    //
+    public static  final String HTTP_RECENT_CHAT=HTTP_PROTOCOL+HTTP_HOST_IP+"chat/pull/rooms";
+    public static  final String HTTP_RECENT_MESSAGES=HTTP_PROTOCOL+HTTP_HOST_IP+"chat/pull/conversation";
+
     private final static String CONTENT_TYPE = "application/json";
 
     private enum HttpMethod {
@@ -311,7 +313,18 @@ public class WebServiceClient {
         mResponseHandlerListener=responseHandlerListener;
         checkNetworkState(url,payload,method,context);
     }
-
+    public static void get_recent_chats(final Context context,String payload,ResponseHandlerListener responseHandlerListener){
+        url= HTTP_RECENT_CHAT;
+        method=HttpMethod.HTTP_POST;
+        mResponseHandlerListener=responseHandlerListener;
+        checkNetworkState(url,payload,method,context);
+    }
+    public static void get_recent_messages(final Context context,String payload,ResponseHandlerListener responseHandlerListener){
+        url= HTTP_RECENT_MESSAGES;
+        method=HttpMethod.HTTP_POST;
+        mResponseHandlerListener=responseHandlerListener;
+        checkNetworkState(url,payload,method,context);
+    }
     /**
      * Check Available Network connection and make http call only if network is
      * available else show no network available

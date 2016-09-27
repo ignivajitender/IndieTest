@@ -84,6 +84,7 @@ public static  final String SELF="self";
     public static  final String SORT="sort";
     public static  final String LATLONG="latlong";
     public static  final String BUSINESS_ID="businessId";
+    public static  final String BUSINESS_NAME="BUSINESS_NAME";
     public static  final String PERSON_ID="personId";
      public static  final String BADGE_STATUS="badge_status";
 

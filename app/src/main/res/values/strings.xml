@@ -125,6 +125,7 @@
     <string name="chat">Chat</string>
     <string name="board">Board</string>
     <string name="people">People</string>
+    <string name="board_activity">Board Activity</string>
 
 
     <!--contacts-->
@@ -1165,5 +1166,7 @@
 
     <!-- Transitions -->
     <string name="transition_app_icon" translatable="false">App Icon Transition</string>
+    <string name="no_conversations_found">No conversations found</string>
+    <string name="no_post_found">No posts found</string>
 
 </resources>
