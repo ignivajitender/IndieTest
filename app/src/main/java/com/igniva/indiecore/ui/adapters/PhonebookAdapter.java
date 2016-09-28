@@ -89,8 +89,9 @@ public class PhonebookAdapter extends RecyclerView.Adapter<PhonebookAdapter.Recy
 //                    context.startActivity(new Intent(context, ChatActivity.class));
                     Intent intent=new Intent(context,ChatActivity.class);
                     intent.putExtra(Constants.PERSON_ID,indieCoreUsersLIst.get(position).getUserId());
+                    intent.putExtra(Constants.INDEX,44);
                     context.startActivity(intent);
-                    DashBoardActivity.bottomNavigation.setCurrentItem(3);
+//                    DashBoardActivity.bottomNavigation.setCurrentItem(3);
 
 
                 }catch (Exception e){

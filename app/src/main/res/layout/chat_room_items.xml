@@ -33,7 +33,7 @@
                 android:id="@+id/tv_user_name"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_gravity="center"
+                android:layout_gravity="left"
                 android:layout_marginTop="5dp"
                 android:layout_marginLeft="5dp"
                 android:hint="Message from other side"/>
@@ -42,7 +42,7 @@
             android:id="@+id/tv_lasttext"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="center"
+            android:layout_gravity="left"
             android:layout_marginLeft="5dp"
             android:hint="Message from other side"/>
 

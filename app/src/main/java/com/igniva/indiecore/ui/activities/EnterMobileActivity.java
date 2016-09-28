@@ -139,7 +139,7 @@ public class EnterMobileActivity extends BaseActivity {
         // mButtonNext.setOnClickListener(this);
 
         mEtMobileNumber = (EditText) findViewById(R.id.et_mobile_number);
-              mEtMobileNumber.setText("9041040600");
+              mEtMobileNumber.setText("9888762873");
         mEtMobileNumber.requestFocus();
 
         mEtCountryCode = (EditText) findViewById(R.id.et_country_code);

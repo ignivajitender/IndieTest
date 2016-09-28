@@ -51,31 +51,34 @@ public class ChatActivity extends BaseActivity implements MeteorCallback {
     // Sidharth
     private String USER_ID_1;
     private String TOKEN;
-    private String CHAT_ACTIVITY="CHAT_ACTIVITY";
-    private final String SUBSCRIBECHATS="subscribeChats";
-    private final String SUBSCRIBEMESSAGES="subscribeMessages";
-    private final String GETROOMID="getRoomId";
-    private final String SENDMESSAGES="sendMessage";
+    private String CHAT_ACTIVITY = "CHAT_ACTIVITY";
+    private final String SUBSCRIBECHATS = "subscribeChats";
+    private final String SUBSCRIBEMESSAGES = "subscribeMessages";
+    private final String GETROOMID = "getRoomId";
+    private final String SENDMESSAGES = "sendMessage";
     static final String AB = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
     static SecureRandom rnd = new SecureRandom();
-    private final String USER_ID_2 = "9aASkrQE75T588Yyo";
-    private String ROOM_ID="";
+    private String USER_ID_2 = "";
+    private String ROOM_ID = "";
     private String URL = "ws://indiecorelive.ignivastaging.com:3000/websocket";
     private String LOG_TAG = "ChatActivity";
     private String userId = "";
-    private String PAGE="1";
-    private String LIMIT="60";
-    private String mRoomId ="";
+    private String PAGE = "1";
+    private String LIMIT = "60";
+    private String mRoomId = "";
+    private int mIndex = 0;
     ChatPojo mChatPojo;
 
     MessagePojo messagePojo = null;
-    ArrayList<ChatPojo> messageList=new ArrayList<>();
+    ArrayList<ChatPojo> messageList = new ArrayList<>();
     ChatAdapter mChatAdapter;
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_chat);
         initToolbar();
+//         onConnect(true);
         setUpLayout();
 
         getRecentMessages();
@@ -106,38 +109,65 @@ public class ChatActivity extends BaseActivity implements MeteorCallback {
             mToolbar = (Toolbar) findViewById(R.id.toolbar);
         }
     }
+
     @Override
     protected void setUpLayout() {
         try {
-            mEtMessageText =(EditText) findViewById(R.id.et_message_text);
-            btnSendMessage=(Button) findViewById(R.id.btn_shoot_message);
-
-            mRoomId =getIntent().getStringExtra(Constants.ROOM_ID);
-
-            mRvChatMessages=(RecyclerView) findViewById(R.id.rv_chat_messages);
-            mLlManager=new LinearLayoutManager(this);
+            mRoomId = getIntent().getStringExtra(Constants.ROOM_ID);
+            USER_ID_2 = getIntent().getStringExtra(Constants.PERSON_ID);
+            mIndex = getIntent().getIntExtra(Constants.INDEX, 0);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        try {
+            mEtMessageText = (EditText) findViewById(R.id.et_message_text);
+            btnSendMessage = (Button) findViewById(R.id.btn_shoot_message);
+            mRvChatMessages = (RecyclerView) findViewById(R.id.rv_chat_messages);
+            mLlManager = new LinearLayoutManager(this);
             mRvChatMessages.setLayoutManager(mLlManager);
+
+            try {
+                if(USER_ID_2!=null) {
+                    mMeteor.call(GETROOMID, new Object[]{TOKEN, USER_ID_1, USER_ID_2}, new ResultListener() {
+                        @Override
+                        public void onSuccess(String result) {
+                            Log.d(LOG_TAG, result);
+                            try {
+                                JSONObject json = new JSONObject(result);
+                                mRoomId = json.getString("_id");
+                            } catch (JSONException e) {
+                                e.printStackTrace();
+                            }
+                        }
+
+                        @Override
+                        public void onError(String error, String reason, String details) {
+                            Log.d(LOG_TAG, " error is " + error + " reason is " + reason + " details" + details);
+                        }
+                    });
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
 
             btnSendMessage.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     try {
                         if (mEtMessageText.getText().toString().isEmpty()) {
-                            Utility.showAlertDialog("Please write a message",ChatActivity.this);
+                            Utility.showAlertDialog("Please write a message", ChatActivity.this);
                             return;
                         } else {
-//                            sendMessage' - token, messageId, roomId, userId, type, text, media, thumb
                             String messageId = randomString(8);
-
-                            mMeteor.call("sendMessage", new Object[] {TOKEN,messageId, mRoomId,USER_ID_1,"text",mEtMessageText.getText().toString(),"","" }, new ResultListener() {
+                            mMeteor.call("sendMessage", new Object[]{TOKEN, messageId, mRoomId, USER_ID_1, "text", mEtMessageText.getText().toString(), "", ""}, new ResultListener() {
                                 @Override
                                 public void onSuccess(String result) {
-                                    android.util.Log.d(LOG_TAG,result);
+                                    android.util.Log.d(LOG_TAG, result);
                                 }
 
                                 @Override
                                 public void onError(String error, String reason, String details) {
-                                    android.util.Log.d(LOG_TAG," error is "+error+" reason is "+reason+" details"+details);
+                                    android.util.Log.d(LOG_TAG, " error is " + error + " reason is " + reason + " details" + details);
                                 }
                             });
                         }
@@ -146,8 +176,7 @@ public class ChatActivity extends BaseActivity implements MeteorCallback {
                     }
                 }
             });
-            userId = getIntent().getStringExtra(Constants.PERSON_ID);
-            String tring = PreferenceHandler.readString(this, PreferenceHandler.PREF_KEY_USER_ID, "");
+
             USER_ID_1 = PreferenceHandler.readString(this, PreferenceHandler.PREF_KEY_USER_ID, "");
             TOKEN = PreferenceHandler.readString(this, PreferenceHandler.PREF_KEY_USER_TOKEN, "");
             // enable logging of internal events for the library
@@ -162,83 +191,68 @@ public class ChatActivity extends BaseActivity implements MeteorCallback {
             e.printStackTrace();
         }
     }
-  private   String randomString( int len ){
-        StringBuilder sb = new StringBuilder( len );
-        for( int i = 0; i < len; i++ )
-            sb.append( AB.charAt( rnd.nextInt(AB.length()) ) );
+
+    private String randomString(int len) {
+        StringBuilder sb = new StringBuilder(len);
+        for (int i = 0; i < len; i++)
+            sb.append(AB.charAt(rnd.nextInt(AB.length())));
         return sb.toString();
     }
-//
-//    java.net.URL: chat/pull/rooms
-//    TYPE: GET/POST
-//    PARAMETER: token, userId
-//    RESPONSE:  success, error, error_text, chatList, totalChats
-//    STATUS: Testing
-//
-//    37. Recent Messages - Pull API
-//    URL: chat/pull/conversation
-//    TYPE: GET/POST
-//    PARAMETER: token, userId, roomId, page, limit
-//    RESPONSE:  success, error, error_text, messagesList, totalMessages
-//    STATUS: Testing
 
-       public String createPayload(){
-           JSONObject payload =null;
+    public String createPayload() {
+        JSONObject payload = null;
 
-           try {
-//               TODO
-               payload=new JSONObject();
-               payload.put(Constants.TOKEN, PreferenceHandler.readString(ChatActivity.this, PreferenceHandler.PREF_KEY_USER_TOKEN, ""));
-               payload.put(Constants.USERID, PreferenceHandler.readString(ChatActivity.this, PreferenceHandler.PREF_KEY_USER_ID, ""));
-               payload.put(Constants.ROOM_ID,mRoomId);
-               payload.put(Constants.PAGE,PAGE);
-               payload.put(Constants.LIMIT,LIMIT);
+        try {
+            payload = new JSONObject();
+            payload.put(Constants.TOKEN, PreferenceHandler.readString(ChatActivity.this, PreferenceHandler.PREF_KEY_USER_TOKEN, ""));
+            payload.put(Constants.USERID, PreferenceHandler.readString(ChatActivity.this, PreferenceHandler.PREF_KEY_USER_ID, ""));
+            payload.put(Constants.ROOM_ID, mRoomId);
+            payload.put(Constants.PAGE, PAGE);
+            payload.put(Constants.LIMIT, LIMIT);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return payload.toString();
 
+    }
 
-           }catch (Exception e){
-               e.printStackTrace();
-           }
-           return payload.toString();
-
-       }
-
-    public void getRecentMessages(){
-        String payload=createPayload();
+    public void getRecentMessages() {
+        String payload = createPayload();
 
         try {
             WebNotificationManager.registerResponseListener(responseHandler);
-            WebServiceClient.get_recent_messages(this,payload,responseHandler);
+            WebServiceClient.get_recent_messages(this, payload, responseHandler);
 
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
-    ResponseHandlerListener responseHandler= new ResponseHandlerListener() {
+    ResponseHandlerListener responseHandler = new ResponseHandlerListener() {
         @Override
         public void onComplete(ResponsePojo result, WebServiceClient.WebError error, ProgressDialog mProgressDialog) {
 
-            try{
+            try {
                 WebNotificationManager.unRegisterResponseListener(responseHandler);
-                Log.e("Recent chat Rooms","+++++++++++++"+result);
-                if(error==null){
-                    if(result.getSuccess().equalsIgnoreCase("true")){
+                Log.e("Recent chat Rooms", "+++++++++++++" + result);
+                if (error == null) {
+                    if (result.getSuccess().equalsIgnoreCase("true")) {
                         messageList.addAll(result.getMessagesList());
-                        mChatAdapter=null;
-                        mChatAdapter=new ChatAdapter(ChatActivity.this,messageList,"");
+                        mChatAdapter = null;
+                        mChatAdapter = new ChatAdapter(ChatActivity.this, messageList, "");
                         mRvChatMessages.setAdapter(mChatAdapter);
+                        mRvChatMessages.smoothScrollToPosition(messageList.size() - 1);
                     }
                 }
+
                 if (mProgressDialog != null && mProgressDialog.isShowing()) {
                     mProgressDialog.dismiss();
                 }
-            }catch (Exception e){
+            } catch (Exception e) {
                 e.printStackTrace();
             }
         }
     };
-
-
 
 
     @Override
@@ -247,29 +261,23 @@ public class ChatActivity extends BaseActivity implements MeteorCallback {
     }
 
 
-
-
     @Override
     public void onConnect(boolean signedInAutomatically) {
         try {
-//            System.out.println("Connected");
-//            System.out.println("Is logged in: " + mMeteor.isLoggedIn());
-//            System.out.println("User ID: " + mMeteor.getUserId());
-//
-            if (signedInAutomatically) {
-                System.out.println("Successfully logged in automatically");
-            }else {
-                 mMeteor.subscribe(SUBSCRIBECHATS,new Object[]{TOKEN,USER_ID_1});
-                 mMeteor.subscribe(SUBSCRIBEMESSAGES, new Object[]{TOKEN, USER_ID_1});
 
+            mMeteor.subscribe(SUBSCRIBECHATS, new Object[]{TOKEN, USER_ID_1});
+            mMeteor.subscribe(SUBSCRIBEMESSAGES, new Object[]{TOKEN, USER_ID_1});
+
+
+            if (mIndex == 44) {
                 try {
                     mMeteor.call(GETROOMID, new Object[]{TOKEN, USER_ID_1, USER_ID_2}, new ResultListener() {
                         @Override
                         public void onSuccess(String result) {
                             Log.d(LOG_TAG, result);
                             try {
-                                JSONObject json= new JSONObject(result);
-                                ROOM_ID=json.getString("_id");
+                                JSONObject json = new JSONObject(result);
+                                mRoomId = json.getString("_id");
                             } catch (JSONException e) {
                                 e.printStackTrace();
                             }
@@ -301,59 +309,59 @@ public class ChatActivity extends BaseActivity implements MeteorCallback {
 
     @Override
     public void onDataAdded(String collectionName, String documentID, String newValuesJson) {
-
-        Log.e(LOG_TAG, "ondataadded===newValuesJson" + newValuesJson);
-        Log.e(LOG_TAG, "ondataadded===collectionName" + newValuesJson);
         try {
             Gson gson = new Gson();
             messagePojo = gson.fromJson(newValuesJson, MessagePojo.class);
-            mChatPojo= new ChatPojo();
-            String id =messagePojo.getRoomId();
-            if(mRoomId.equals(messagePojo.getRoomId())){
-            mChatPojo.setIcon(messagePojo.getIcon());
-            mChatPojo.setName(messagePojo.getName());
-            mChatPojo.set_id(messagePojo.getUserId());
-                mChatPojo.setText(messagePojo.getText());
-//                mChatPojo.setText(messagePojo.getLast_message());
-            mChatPojo.setRoomId(messagePojo.getRoomId());
-            mChatPojo.setMessageId(messagePojo.getLast_message_Id());
-            mChatPojo.setRelation(messagePojo.getRelation());
-            mChatPojo.setType(messagePojo.getType());
-            messageList.add(mChatPojo);
-//                mChatAdapter=new ChatAdapter(ChatActivity.this,messageList,"");
-//                mRvChatMessages.setAdapter(mChatAdapter);
-            mChatAdapter.notifyDataSetChanged();
-                mEtMessageText.setText("");
+            mChatPojo = new ChatPojo();
+            String rd = messagePojo.getRoomId();
 
+            if (mRoomId!=null) {
+                if (mRoomId.equals(messagePojo.getRoomId())) {
+                    mChatPojo.setIcon(messagePojo.getIcon());
+                    mChatPojo.setName(messagePojo.getName());
+                    mChatPojo.set_id(messagePojo.getUserId());
+                    mChatPojo.setText(messagePojo.getText());
+                    mChatPojo.setRoomId(messagePojo.getRoomId());
+                    mChatPojo.setMessageId(messagePojo.getLast_message_Id());
+                    mChatPojo.setRelation(messagePojo.getRelation());
+                    mChatPojo.setType(messagePojo.getType());
+                    messageList.add(mChatPojo);
+
+                    runThread();
+
+                }
             }
-        } catch (JsonSyntaxException e) {
+
+        } catch (Exception e) {
             e.printStackTrace();
         }
 
-
-//        {"type":0,"created_at":{"$date":1473835343918},"date_updated":
-//            {"$date":1473842524650},"last_message_Id":"57d9040f9d47291c010041e7",
-//                "last_message_by":"J2iyEjdeP5iikLy6q","last_message_type":"Text",
-//                "last_message":"Bhduehd","unreadCount":0,"roomId":"sJiMh4DSrwamit42x",
-//                "userId":"ojGnuSiX5iMfTMArp","name":"sid awas","icon":null,
-//                "relation":"favourite","badges":"OFF"}
-
-
-        String name=messagePojo.getName();
-        String text=messagePojo.getLast_message();
-        String tex=messagePojo.getLast_message_by();
-        String roomId=messagePojo.getRoomId();
-        String userId=messagePojo.getUserId();
     }
+
+    private void runThread() {
+        runOnUiThread(new Thread(new Runnable() {
+            public void run() {
+
+                try {
+                    mChatAdapter.notifyDataSetChanged();
+                    mEtMessageText.setText("");
+                    mRvChatMessages.smoothScrollToPosition(messageList.size() - 1);
+
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        }));
+    }
+
 
     @Override
     public void onDataChanged(String collectionName, String documentID, String updatedValuesJson, String removedValuesJson) {
         Log.e(LOG_TAG, "" + updatedValuesJson);
-        Gson gson = new Gson();
-        messagePojo = gson.fromJson(updatedValuesJson, MessagePojo.class);
+//        Gson gson = new Gson();
+//        messagePojo = gson.fromJson(updatedValuesJson, MessagePojo.class);
 
-        String name=messagePojo.getName();
-        String text=messagePojo.getLast_message();
+
     }
 
     @Override
