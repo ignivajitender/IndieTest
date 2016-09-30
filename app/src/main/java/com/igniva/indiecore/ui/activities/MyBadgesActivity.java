@@ -288,7 +288,7 @@ public class MyBadgesActivity extends BaseActivity implements View.OnClickListen
                             updateRecord();
                         }
                     } else {
-                        Utility.showAlertDialog(result.getError_text(), MyBadgesActivity.this);
+                        Utility.showAlertDialog(result.getError_text(), MyBadgesActivity.this,null);
                     }
                 }
                 // Always close the progress dialog
@@ -343,7 +343,7 @@ public class MyBadgesActivity extends BaseActivity implements View.OnClickListen
                 public void onClick(View v) {
                     IsBadgesRetrieved = true;
                     if (mSelectedBadgeIds.size() < 1) {
-                        Utility.showAlertDialog(getResources().getString(R.string.select_a_badge), MyBadgesActivity.this);
+                        Utility.showAlertDialog(getResources().getString(R.string.select_a_badge), MyBadgesActivity.this,null);
                         return;
                     } else {
                         saveMySelectedBadges();
@@ -419,7 +419,7 @@ public class MyBadgesActivity extends BaseActivity implements View.OnClickListen
                     isLoading = false;
 
                 }else {
-                    Utility.showAlertDialog(result.getError_text(), MyBadgesActivity.this);
+                    Utility.showAlertDialog(result.getError_text(), MyBadgesActivity.this,null);
                 }
             }
             // Always close the progress dialog
@@ -571,7 +571,7 @@ public class MyBadgesActivity extends BaseActivity implements View.OnClickListen
                 }
 
             } else {
-                Utility.showAlertDialog("Some server error Occurred!", MyBadgesActivity.this);
+                Utility.showAlertDialog("Some server error Occurred!", MyBadgesActivity.this,null);
             }
             if (mProgressDialog != null && mProgressDialog.isShowing()) {
                 mProgressDialog.dismiss();

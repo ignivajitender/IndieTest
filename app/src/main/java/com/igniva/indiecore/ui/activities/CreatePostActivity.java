@@ -200,7 +200,7 @@ public class CreatePostActivity extends BaseActivity implements AsyncResult,View
                 }
             }else {
 
-                Utility.showAlertDialog(getResources().getString(R.string.add_post),CreatePostActivity.this);
+                Utility.showAlertDialog(getResources().getString(R.string.add_post),CreatePostActivity.this,null);
             }
         }catch (Exception e){
             e.printStackTrace();

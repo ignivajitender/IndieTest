@@ -29,6 +29,8 @@ import android.widget.Toast;
 
 import com.igniva.indiecore.Manifest;
 import com.igniva.indiecore.R;
+import com.igniva.indiecore.ui.activities.BoardActivity;
+import com.igniva.indiecore.ui.activities.EnterMobileActivity;
 import com.igniva.indiecore.ui.activities.InviteContactActivity;
 
 public class Utility {
@@ -181,23 +183,21 @@ public class Utility {
 	}
 
 
-    public void showInvalidSessionDialog(final Activity mContext) {
+    public static void showInvalidSessionDialog(final Activity mContext) {
         try {
-
-            AlertDialog.Builder builder = new AlertDialog.Builder(mContext,
-                    R.style.AppTheme);
+			AlertDialog.Builder builder = new AlertDialog.Builder(mContext,
+					R.style.AppCompatAlertDialogStyle);;
             builder.setTitle(mContext.getResources().getString(R.string.invalid_session));
             builder.setMessage(mContext.getResources().getString(R.string.logout_device));
             builder.setPositiveButton(android.R.string.ok, new OnClickListener() {
 
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
-
                     dialog.dismiss();
                     // TODO redirect to login screen
-                    ((Activity) mContext).finish();
+					((Activity) mContext).startActivity(new Intent(mContext, EnterMobileActivity.class).setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP));
 
-                }
+				}
             });
 
             builder.show();
@@ -208,14 +208,36 @@ public class Utility {
     }
 
 
-	public static void showAlertDialog(String message, Context context){
+	public static void showAlertDialog(String message, Context context,String name){
 		AlertDialog.Builder builder1 = new AlertDialog.Builder(context);
 		builder1.setMessage( message);
 		builder1.setCancelable(true);
 		builder1.setPositiveButton(android.R.string.ok, new OnClickListener() {
 			public void onClick(DialogInterface dialog, int id) {
-				dialog.dismiss();
+//				new BoardActivity().removePost(postId);
+			}
+		});
+//		builder1.setNegativeButton(android.R.string.cancel, new OnClickListener() {
+//			public void onClick(DialogInterface dialog, int id) {
+//				dialog.dismiss();
+//			}
+//		});
+		AlertDialog alert11 = builder1.create();
+		alert11.show();
+	}
 
+	public static void showRemovePostAlertDialog(String message, Context context, final String postId){
+		AlertDialog.Builder builder1 = new AlertDialog.Builder(context);
+		builder1.setMessage( message);
+		builder1.setCancelable(true);
+		builder1.setPositiveButton(android.R.string.ok, new OnClickListener() {
+			public void onClick(DialogInterface dialog, int id) {
+				new BoardActivity().removePost(postId);
+			}
+		});
+		builder1.setNegativeButton(android.R.string.cancel, new OnClickListener() {
+			public void onClick(DialogInterface dialog, int id) {
+				dialog.dismiss();
 			}
 		});
 		AlertDialog alert11 = builder1.create();

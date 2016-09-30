@@ -98,14 +98,14 @@ public class EnterMobileActivity extends BaseActivity {
             String payload = createPayload();
 
             if (countryId.isEmpty()) {
-                Utility.showAlertDialog(Constants.COUNTRY_CODE_VALIDATION, this);
+                Utility.showAlertDialog(Constants.COUNTRY_CODE_VALIDATION, this,null);
                 return;
             } else if (mobileNumber.isEmpty()) {
 
-                Utility.showAlertDialog(Constants.MOBILE_NUMBER_VALIDATION, this);
+                Utility.showAlertDialog(Constants.MOBILE_NUMBER_VALIDATION, this,null);
                 return;
             } else if(mobileNumber.length()<10) {
-                Utility.showAlertDialog(Constants.TEN_DIGIT_MOBILENUMBER_VALIDATION,this);
+                Utility.showAlertDialog(Constants.TEN_DIGIT_MOBILENUMBER_VALIDATION,this,null);
                 return;
             }
             else
@@ -139,12 +139,12 @@ public class EnterMobileActivity extends BaseActivity {
         // mButtonNext.setOnClickListener(this);
 
         mEtMobileNumber = (EditText) findViewById(R.id.et_mobile_number);
-              mEtMobileNumber.setText("9888762873");
+              mEtMobileNumber.setText("9816428478");
         mEtMobileNumber.requestFocus();
 
         mEtCountryCode = (EditText) findViewById(R.id.et_country_code);
         //  mEtCountryCode.setText(countryId);
-              mEtCountryCode.setText("91");
+//              mEtCountryCode.setText("91");
     } catch (Exception e){
         e.printStackTrace();
     }
@@ -234,7 +234,6 @@ public class EnterMobileActivity extends BaseActivity {
                             in.putExtras(bundle);
                             startActivity(in);
                         }
-
                     } else {
 
                         Toast.makeText(getApplicationContext(),getResources().getString(R.string.concurrent_verification_message), Toast.LENGTH_LONG).show();

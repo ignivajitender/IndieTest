@@ -104,7 +104,7 @@ public class RecommendBadgeActivity extends BaseActivity implements View.OnClick
 
             if (badge_name.isEmpty()) {
 
-                Utility.showAlertDialog(getResources().getString(R.string.empty_badge_name), RecommendBadgeActivity.this);
+                Utility.showAlertDialog(getResources().getString(R.string.empty_badge_name), RecommendBadgeActivity.this,null);
                 return;
             } else {
 

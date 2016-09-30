@@ -238,15 +238,9 @@ public class CommentActivity extends BaseActivity implements View.OnClickListene
 
             case R.id.iv_post_comment:
                 try {
-
-//                    InputMethodManager imm = (InputMethodManager) getSystemService(
-//                            Activity.INPUT_METHOD_SERVICE);
-//                    imm.toggleSoftInput(InputMethodManager.HIDE_IMPLICIT_ONLY, 0);
-
                     String comment_text = mEtCommentText.getText().toString().trim();
-
                     if (comment_text.isEmpty()) {
-                        Utility.showAlertDialog(getResources().getString(R.string.comment_text_validation_message), this);
+                        Utility.showAlertDialog(getResources().getString(R.string.comment_text_validation_message), this,null);
                         return;
 
                     } else {
@@ -306,7 +300,6 @@ public class CommentActivity extends BaseActivity implements View.OnClickListene
             case R.id.iv_delete_report_post:
                 try {
                     if (ACTION.equalsIgnoreCase("DELETE")) {
-
                         removePost(postId);
                     } else {
 
@@ -1009,7 +1002,6 @@ public class CommentActivity extends BaseActivity implements View.OnClickListene
             try {
                 INDEX = 1;
                 POSITION = position;
-                Utility.showToastMessageLong(CommentActivity.this,""+position);
                 commentAction(mActionTypeLike, commentId);
             } catch (Exception e) {
                 e.printStackTrace();
@@ -1023,7 +1015,6 @@ public class CommentActivity extends BaseActivity implements View.OnClickListene
         public void onCommentDislikeClicked(TextView dislike, int position, String commentId, String type) {
             INDEX = 2;
             POSITION = position;
-            Utility.showToastMessageLong(CommentActivity.this,""+position);
             commentAction(mActionTypeDislike, commentId);
 
         }

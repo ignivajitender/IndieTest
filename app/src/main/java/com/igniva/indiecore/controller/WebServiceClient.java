@@ -11,10 +11,12 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 
 import com.igniva.indiecore.R;
+import com.igniva.indiecore.ui.activities.EnterMobileActivity;
 import com.igniva.indiecore.utils.Utility;
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.StrictMode;
 import com.google.gson.Gson;
@@ -455,12 +457,12 @@ public class WebServiceClient {
         protected void onPostExecute(Object[] result) {
             try {
                 // TODO handle Authtoken Expiration
-                if (((ResponsePojo) result[0]).getStatus() == 1000) {
+                if (((ResponsePojo) result[0]).getError().equalsIgnoreCase("1") &&((ResponsePojo) result[0]).getError_text().equalsIgnoreCase("Invalid token")) {
                     WebNotificationManager.unRegisterResponseListener(mResponseHandlerListener);
                     progressDialog.dismiss();
+                    Utility.showInvalidSessionDialog((Activity) mContext);
                     // Show Logout Dialog , on click of OK redirect to Login screen
                 } else {
-                    //
                     WebNotificationManager.onResponseCallReturned(
                             (ResponsePojo) result[0], (WebError) result[1],
                             progressDialog);

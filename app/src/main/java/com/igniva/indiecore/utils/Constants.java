@@ -30,6 +30,7 @@ public class Constants {
     public static final String LOCALE = "locale";
     public static final String POSITION="POSITION";
     public static  final String INDEX="";
+    public static  final String NAME="NAME";
 
 
 

@@ -9,13 +9,14 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="left"
-        android:layout_marginLeft="10dp"
+        android:layout_marginLeft="5dp"
         android:layout_marginTop="10dp"
         android:orientation="horizontal">
 
         <com.igniva.indiecore.utils.CircularImageView
             android:id="@+id/iv_otheruser_chat"
             android:layout_width="70dp"
+            android:layout_centerVertical="true"
             android:layout_height="70dp"
             android:src="@drawable/default_user" />
 
@@ -31,6 +32,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="left"
+                android:textColor="@color/orange"
                 android:layout_marginLeft="5dp"
                 android:layout_marginTop="5dp"
                 android:hint="some text"
@@ -40,10 +42,17 @@
             <TextView
                 android:id="@+id/tv_otheruser_lasttext"
                 android:layout_width="wrap_content"
-                android:layout_gravity="left"
                 android:layout_height="wrap_content"
+                android:layout_gravity="left"
                 android:layout_marginLeft="5dp"
-                android:hint="some text" />
+                android:background="@drawable/ic_chat_box_left"
+                android:gravity="start"
+                android:textColor="@color/black"
+                android:hint="some text"
+                android:paddingBottom="12dp"
+                android:paddingLeft="15dp"
+                android:paddingRight="15dp"
+                android:paddingTop="12dp"/>
 
         </LinearLayout>
     </RelativeLayout>
@@ -54,7 +63,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="right"
-        android:layout_marginLeft="10dp"
+        android:layout_marginRight="5dp"
         android:layout_marginTop="5dp"
         android:orientation="horizontal">
 
@@ -80,13 +89,21 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="right"
                 android:layout_marginRight="5dp"
-                android:hint="some text" />
+                android:background="@drawable/ic_chat_box_right"
+                android:gravity="end"
+                android:textColor="@color/black"
+                android:hint="some text"
+                android:paddingBottom="12dp"
+                android:paddingLeft="15dp"
+                android:paddingRight="20dp"
+                android:paddingTop="12dp" />
         </LinearLayout>
 
         <com.igniva.indiecore.utils.CircularImageView
             android:id="@+id/iv_this_user_chat"
-            android:layout_width="70dp"
-            android:layout_height="70dp"
+            android:layout_width="60dp"
+            android:layout_height="60dp"
+            android:layout_centerVertical="true"
             android:layout_alignParentRight="true"
             android:src="@drawable/default_user" />
     </RelativeLayout>

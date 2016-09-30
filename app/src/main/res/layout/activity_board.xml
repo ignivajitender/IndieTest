@@ -63,14 +63,12 @@
             android:textColor="@color/blue_clicked"
             android:textSize="15sp" />
     </LinearLayout>
+
     <LinearLayout
         android:id="@+id/ll_board"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="10dp"
-        android:layout_marginRight="10dp"
         android:orientation="vertical">
-
 
         <RelativeLayout
             android:layout_width="match_parent"
@@ -111,7 +109,7 @@
                     android:layout_marginLeft="90dp"
                     android:background="@color/white"
                     android:gravity="center_vertical"
-                    android:text="Create a new board message ?"
+                    android:text="Create a new board message"
                     android:textColor="@color/light_black"
                     android:textSize="15sp" />
             </LinearLayout>
@@ -126,25 +124,25 @@
 
 
         </RelativeLayout>
+
         <android.support.v7.widget.RecyclerView
-            android:layout_marginTop="2dp"
             android:id="@+id/rv_users_posts"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
-        </android.support.v7.widget.RecyclerView>
-
+            android:layout_height="wrap_content"
+            android:layout_marginTop="2dp"></android.support.v7.widget.RecyclerView>
 
 
     </LinearLayout>
+
     <TextView
         android:id="@+id/tv_cuming_soon_Boardactivity"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:visibility="gone"
-        android:text="Coming Soon"
         android:layout_marginTop="100dp"
+        android:gravity="center_horizontal"
+        android:text="Coming Soon"
         android:textColor="@color/black"
         android:textSize="20dp"
-        android:gravity="center_horizontal"/>
+        android:visibility="gone" />
 
 </LinearLayout>

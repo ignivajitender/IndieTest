@@ -107,7 +107,7 @@ public class OtpVerificationActivity extends BaseActivity implements View.OnClic
 
             if (otp.length() == 0) {
 
-                Utility.showAlertDialog(Constants.OTP_NOT_VALID, this);
+                Utility.showAlertDialog(Constants.OTP_NOT_VALID, this,null);
                 return;
             } else {
 
@@ -179,15 +179,16 @@ public class OtpVerificationActivity extends BaseActivity implements View.OnClic
 
                         Intent in = new Intent(OtpVerificationActivity.this, CreateProfileActivity.class);
                         Bundle bundle = new Bundle();
-                        bundle.putString(Constants.FIRSTNAME, "");
-                        bundle.putString(Constants.LASTNAME, "");
-                        bundle.putString(Constants.DOB, "");
-                        bundle.putString(Constants.DESCRIPTION, "");
-                        bundle.putString(Constants.GENDER, "");
-                        bundle.putString(Constants.PROFILEPIC, "");
-                        bundle.putString(Constants.COVERPIC, "");
-                        bundle.putInt(Constants.NUMBER_LENGTH, numberLength);
-                        bundle.putString(Constants.COUNTRY_CODE, mCountryId);
+                        bundle.putInt(Constants.INDEX, 4);
+//                        bundle.putString(Constants.FIRSTNAME, "");
+//                        bundle.putString(Constants.LASTNAME, "");
+//                        bundle.putString(Constants.DOB, "");
+//                        bundle.putString(Constants.DESCRIPTION, "");
+//                        bundle.putString(Constants.GENDER, "");
+//                        bundle.putString(Constants.PROFILEPIC, "");
+//                        bundle.putString(Constants.COVERPIC, "");
+//                        bundle.putInt(Constants.NUMBER_LENGTH, numberLength);
+//                        bundle.putString(Constants.COUNTRY_CODE, mCountryId);
                         in.putExtras(bundle);
                         startActivity(in);
                     } else if (result.getSuccess().equalsIgnoreCase("true") && callId == 2) {

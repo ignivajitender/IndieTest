@@ -256,9 +256,13 @@ public class CheckInFragment extends BaseFragment {
                 try {
                     if (result.getSuccess().equalsIgnoreCase("true")) {
 
-                        businessCount=result.getBusiness_count();
-                        totalBusinessCount=result.getTotal_count();
-                        mBusinessList.addAll(result.getBusiness_list());
+                        try {
+                            businessCount=result.getBusiness_count();
+                            totalBusinessCount=result.getTotal_count();
+                            mBusinessList.addAll(result.getBusiness_list());
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
                         try {
                             mFindBusinessAdapter = null;
                             mBusinessAdapter = null;
@@ -274,6 +278,7 @@ public class CheckInFragment extends BaseFragment {
                             }
                         } catch (Exception e) {
                             e.printStackTrace();
+                                mProgressDialog.dismiss();
                         }
 
                     }

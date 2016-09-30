@@ -8,8 +8,16 @@
         xmlns:card_view="http://schemas.android.com/apk/res-auto"
         android:id="@+id/card_view_chat_rooms"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="100dp"
+        android:layout_marginRight="7dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginLeft="7dp"
         card_view:cardCornerRadius="4dp">
+        <View
+            android:id="@+id/view_"
+            android:layout_width="3dp"
+            android:layout_height="match_parent"
+            android:background="@color/blue" />
     <LinearLayout
         android:id="@+id/ll_chat_room"
         android:layout_width="match_parent"
@@ -21,11 +29,14 @@
 
         <com.igniva.indiecore.utils.CircularImageView
             android:id="@+id/iv_user_chatroom"
-            android:layout_width="70dp"
+            android:layout_width="0dp"
+            android:layout_weight="2"
+            android:layout_gravity="left"
             android:layout_height="70dp"
             android:src="@drawable/default_user"/>
         <LinearLayout
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
+            android:layout_weight="6.5"
             android:orientation="vertical"
             android:layout_gravity="center"
             android:layout_height="wrap_content">
@@ -34,19 +45,34 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="left"
-                android:layout_marginTop="5dp"
+                android:textStyle="bold"
+                android:textSize="15sp"
                 android:layout_marginLeft="5dp"
-                android:hint="Message from other side"/>
+                android:hint="Name"/>
 
         <TextView
             android:id="@+id/tv_lasttext"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="left"
+            android:ellipsize="end"
+            android:maxLines="1"
+            android:layout_marginBottom="5dp"
+            android:layout_marginTop="5dp"
             android:layout_marginLeft="5dp"
-            android:hint="Message from other side"/>
+            android:hint="Some text"/>
 
         </LinearLayout>
+        <TextView
+            android:id="@+id/tv_last_updated"
+            android:layout_width="0dp"
+            android:layout_weight="1.5"
+            android:layout_height="wrap_content"
+            android:layout_gravity="right"
+            android:gravity="center"
+            android:layout_marginRight="5dp"
+            android:hint="06:00"/>
+
     </LinearLayout>
     </android.support.v7.widget.CardView>
 

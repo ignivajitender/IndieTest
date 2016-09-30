@@ -101,9 +101,12 @@ public class CreateProfileActivity extends BaseActivity implements AsyncResult,V
             TextView mTvTitle = (TextView) mToolbar.findViewById(R.id.toolbar_title);
             TextView mTvNext = (TextView) mToolbar.findViewById(R.id.toolbar_next);
 
-            if (index == 1) {
+            if (index == 4) {
                 mTvTitle.setText(getResources().getString(R.string.create_profile));
-            } else {
+                mTvNext.setText("Next");
+
+            }
+            if(index==2){
                 mTvTitle.setText(getResources().getString(R.string.update_profile));
                 mTvNext.setText("Update");
             }
@@ -127,7 +130,6 @@ public class CreateProfileActivity extends BaseActivity implements AsyncResult,V
     }
 
     public void getDateOfBirth() {
-
         try {
             mDay = cal.get(Calendar.DAY_OF_MONTH);
             mMonth = cal.get(Calendar.MONTH);
@@ -141,7 +143,6 @@ public class CreateProfileActivity extends BaseActivity implements AsyncResult,V
 
     @Override
     protected void setUpLayout() {
-
         cal = Calendar.getInstance();
         try {
             mEtFirstName = (EditText) findViewById(R.id.et_first_name);
@@ -191,10 +192,7 @@ public class CreateProfileActivity extends BaseActivity implements AsyncResult,V
 
         DatePickerDialog dpDialog = new DatePickerDialog(this, listener, mYear, mMonth, mDay);
         dpDialog.show();
-
     }
-
-
     private void selectImage() {
         try {
             final CharSequence[] items = {getResources().getString(R.string.take_photo), getResources().getString(R.string.choose_from_gallary)
@@ -361,22 +359,22 @@ public class CreateProfileActivity extends BaseActivity implements AsyncResult,V
                 ageCal = (a - b);
             }
             if (firstName.length() == 0) {
-                Utility.showAlertDialog(Constants.ENTER_FIRST_NAME, this);
+                Utility.showAlertDialog(Constants.ENTER_FIRST_NAME, this,null);
                 return;
             } else if (lastName.length() == 0) {
-                Utility.showAlertDialog(Constants.ENTER_LAST_NAME, this);
+                Utility.showAlertDialog(Constants.ENTER_LAST_NAME, this,null);
                 return;
             } else if (mTvDateOfBirth.getText().toString().trim().length() == 0) {
 
-                Utility.showAlertDialog(Constants.ENTER_DOB, this);
+                Utility.showAlertDialog(Constants.ENTER_DOB, this,null);
                 return;
             } else if (ageCal <= 18) {
 
-                Utility.showAlertDialog(Constants.AGE_SHOULD_BE_EIGHTEENPLUS, this);
+                Utility.showAlertDialog(Constants.AGE_SHOULD_BE_EIGHTEENPLUS, this,null);
                 return;
             } else if (description.length() == 0) {
 
-                Utility.showAlertDialog(Constants.ENTER_DESCRIPTION, this);
+                Utility.showAlertDialog(Constants.ENTER_DESCRIPTION, this,null);
                 return;
             } else {
 
@@ -424,9 +422,7 @@ public class CreateProfileActivity extends BaseActivity implements AsyncResult,V
             if (error == null) {
                 // start parsing
                 if (result.getSuccess().equalsIgnoreCase("true")) {
-                    if (index == 1) {
-
-
+                    if (index == 4) {
                         PreferenceHandler.writeString(CreateProfileActivity.this,PreferenceHandler.PREF_KEY_GENDER,gender);
                         PreferenceHandler.writeString(CreateProfileActivity.this,PreferenceHandler.PREF_KEY_FIRST_NAME,firstName);
                         PreferenceHandler.writeString(CreateProfileActivity.this,PreferenceHandler.PREF_KEY_LAST_NAME,lastName);
@@ -439,8 +435,8 @@ public class CreateProfileActivity extends BaseActivity implements AsyncResult,V
                         bundle.putInt(Constants.INDEX,22);
                         intent.putExtras(bundle);
                         startActivity(intent);
-                    } else {
-
+                    }
+                    if(index==2){
                         PreferenceHandler.writeString(CreateProfileActivity.this,PreferenceHandler.PREF_KEY_GENDER,gender);
                         PreferenceHandler.writeString(CreateProfileActivity.this,PreferenceHandler.PREF_KEY_FIRST_NAME,firstName);
                         PreferenceHandler.writeString(CreateProfileActivity.this,PreferenceHandler.PREF_KEY_LAST_NAME,lastName);

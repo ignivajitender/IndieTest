@@ -234,12 +234,12 @@ public class BusinessListAdapter extends RecyclerView.Adapter<BusinessListAdapte
 
 
                 }else {
-                    Utility.showAlertDialog("Error in check-in to this place.Please try later",mContext);
+                    Utility.showAlertDialog("Error in check-in to this place.Please try later",mContext,null);
 
                 }
 
             }else {
-                Utility.showAlertDialog(mContext.getResources().getString(R.string.some_unknown_error),mContext);
+                Utility.showAlertDialog(mContext.getResources().getString(R.string.some_unknown_error),mContext,null);
 
             }
             if (mProgressDialog != null && mProgressDialog.isShowing()) {

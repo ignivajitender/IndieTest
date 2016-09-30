@@ -641,12 +641,12 @@ public class PremiumBadgesActivity extends BaseActivity implements IabBroadcastR
 
                 } else {
 
-                    Utility.showAlertDialog(result.getError_text(), PremiumBadgesActivity.this);
+                    Utility.showAlertDialog(result.getError_text(), PremiumBadgesActivity.this,null);
 
                 }
 
             } else {
-                Utility.showAlertDialog("Some server error Occurred!", PremiumBadgesActivity.this);
+                Utility.showAlertDialog("Some server error Occurred!", PremiumBadgesActivity.this,null);
             }
             if (mProgressDialog != null && mProgressDialog.isShowing()) {
                 mProgressDialog.dismiss();

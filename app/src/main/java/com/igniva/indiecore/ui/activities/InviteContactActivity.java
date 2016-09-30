@@ -286,10 +286,10 @@ public class InviteContactActivity extends BaseActivity {
 
             } else {
                 if (index == 3) {
-                    Utility.showAlertDialog(getResources().getString(R.string.invite_atleast_ten_friend), this);
+                    Utility.showAlertDialog(getResources().getString(R.string.invite_atleast_ten_friend), this,null);
                     return;
                 } else {
-                    Utility.showAlertDialog(getResources().getString(R.string.at_least_one_contact), this);
+                    Utility.showAlertDialog(getResources().getString(R.string.at_least_one_contact), this,null);
                     return;
                 }
             }

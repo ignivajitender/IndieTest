@@ -32,8 +32,8 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.RecyclerViewHo
 
     public ChatAdapter(Context context, ArrayList<ChatPojo> chatList, String contextName) {
         this.context = context;
-        this.mChatList=chatList;
-        this.mContextName=contextName;
+        this.mChatList = chatList;
+        this.mContextName = contextName;
 
     }
 
@@ -47,10 +47,10 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.RecyclerViewHo
     @Override
     public void onBindViewHolder(final RecyclerViewHolders holder, final int position) {
         try {
-            if(mChatList.get(position).getRelation().equalsIgnoreCase("self")){
+            if (mChatList.get(position).getRelation().equalsIgnoreCase("self")) {
                 holder.mRlThis.setVisibility(View.VISIBLE);
                 holder.mRlOther.setVisibility(View.GONE);
-                holder.mTvThisUserName.setText(mChatList.get(position).getName());
+                holder.mTvThisUserName.setVisibility(View.GONE);
                 if (mChatList.get(position).getIcon() != null) {
                     Glide.with(context).load(WebServiceClient.HTTP_STAGING + mChatList.get(position).getIcon())
                             .thumbnail(1f)
@@ -62,7 +62,7 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.RecyclerViewHo
                     holder.mIvThisUserImage.setImageResource(R.drawable.default_user);
                 }
                 holder.mTv_lastMessage_thisuser.setText(mChatList.get(position).getText());
-            }else {
+            } else {
                 holder.mRlThis.setVisibility(View.GONE);
                 holder.mRlOther.setVisibility(View.VISIBLE);
                 holder.mTvOtherUserName.setText(mChatList.get(position).getName());
@@ -125,12 +125,8 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.RecyclerViewHo
             mTvThisUserName = (TextView) itemView.findViewById(R.id.tv_this_user_name);
             mIvThisUserImage = (ImageView) itemView.findViewById(R.id.iv_this_user_chat);
 
-            mRlThis =(RelativeLayout) itemView.findViewById(R.id.ll_chat_this_user);
-            mRlOther =(RelativeLayout) itemView.findViewById(R.id.ll_chat_other);
-
-
-
-
+            mRlThis = (RelativeLayout) itemView.findViewById(R.id.ll_chat_this_user);
+            mRlOther = (RelativeLayout) itemView.findViewById(R.id.ll_chat_other);
 
 
         }

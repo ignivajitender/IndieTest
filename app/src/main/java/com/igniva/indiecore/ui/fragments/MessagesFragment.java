@@ -1,6 +1,7 @@
 package com.igniva.indiecore.ui.fragments;
 
 import android.app.ProgressDialog;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
@@ -27,13 +28,13 @@ import java.util.ArrayList;
 /**
  * Created by igniva-andriod-11 on 4/7/16.
  */
-public class MessagesFragment extends BaseFragment {
+public class MessagesFragment extends BaseFragment implements View.OnClickListener {
 
     View rootView;
     private RecyclerView mRvChatRoom;
     private String MESSAGE_FRAGMENT="MESSAGE_FRAGMENT";
     private LinearLayoutManager mLlManagerChatRoom;
-    private TextView mNoConversations;
+    private TextView mNoConversations,mFriends,mOthers;
     private ArrayList<ChatListPojo> chatRoomList = new ArrayList<>();
     private ChatListAdapter mChatListAdapter;
 
@@ -54,13 +55,56 @@ public class MessagesFragment extends BaseFragment {
     protected void setUpLayout() {
         try {
             mNoConversations = (TextView) rootView.findViewById(R.id.tv_no_conversations);
+            mFriends=(TextView) rootView.findViewById(R.id.tv_friends);
+            mFriends.setOnClickListener(this);
+            mOthers=(TextView) rootView.findViewById(R.id.tv_others);
+            mOthers.setOnClickListener(this);
             mRvChatRoom = (RecyclerView) rootView.findViewById(R.id.rv_chat_rooms_messagestab);
             mLlManagerChatRoom = new LinearLayoutManager(getActivity());
             mRvChatRoom.setLayoutManager(mLlManagerChatRoom);
+            setFriendUi();
             setDataInViewObjects();
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+
+
+    public void setFriendUi(){
+        mRvChatRoom.setVisibility(View.VISIBLE);
+        mNoConversations.setVisibility(View.GONE);
+        mFriends.setTextColor(Color.parseColor("#FFFFFF"));
+        mFriends.setBackgroundColor(Color.parseColor("#1C6DCE"));
+        mOthers.setTextColor(Color.parseColor("#1C6DCE"));
+        mOthers.setBackgroundResource(R.drawable.simple_border_line_style);
+    }
+    public void setOthersUi(){
+        mRvChatRoom.setVisibility(View.GONE);
+        mNoConversations.setVisibility(View.VISIBLE);
+        mNoConversations.setText("Coming soon");
+        mFriends.setTextColor(Color.parseColor("#1C6DCE"));
+        mFriends.setBackgroundResource(R.drawable.simple_border_line_style);
+        mOthers.setTextColor(Color.parseColor("#FFFFFF"));
+        mOthers.setBackgroundColor(Color.parseColor("#1C6DCE"));
+    }
+
+    @Override
+    public void onClick(View v) {
+        switch (v.getId()){
+
+            case R.id.tv_friends:
+                setFriendUi();
+                break;
+            case R.id.tv_others:
+                setOthersUi();
+                break;
+            default:
+                break;
+
+
+        }
+
     }
 
     @Override
@@ -124,4 +168,6 @@ public class MessagesFragment extends BaseFragment {
             }
         }
     };
+
+
 }

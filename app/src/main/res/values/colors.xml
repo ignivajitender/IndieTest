@@ -17,6 +17,7 @@
     <color name="light_black">#77000000</color>
     <color name="transparent">#00000000</color>
     <color name="yellow">#EEE220</color>
+    <color name="orange">#FF7E06</color>
 
 
 </resources>

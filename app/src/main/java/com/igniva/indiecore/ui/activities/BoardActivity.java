@@ -186,6 +186,15 @@ public class BoardActivity extends BaseActivity implements View.OnClickListener 
 
     }
 
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+//            if(mWallPostList.size()==0){
+                viewAllPost();
+//            }
+    }
+
     @Override
     protected void setDataInViewObjects() {
 
@@ -261,7 +270,6 @@ public class BoardActivity extends BaseActivity implements View.OnClickListener 
             mComingSoon.setVisibility(View.GONE);
             mLlManager = new LinearLayoutManager(this);
             mRvWallPosts.setLayoutManager(mLlManager);
-            viewAllPost();
             mChat.setTextColor(Color.parseColor("#1C6DCE"));
             mChat.setBackgroundResource(R.drawable.simple_border_line_style);
 
@@ -270,6 +278,8 @@ public class BoardActivity extends BaseActivity implements View.OnClickListener 
 
             mPeople.setTextColor(Color.parseColor("#1C6DCE"));
             mPeople.setBackgroundResource(R.drawable.simple_border_line_style);
+
+
             mAdapter = null;
             mAdapter = new WallPostAdapter(this, mWallPostList,Constants.CHATFRAGMENT,onLikeClickListner,onDisLikeClickListner,onNeutralClickListner,onCommentClickListner,onMediaPostClickListner,onDeleteClickListner);
             mRvWallPosts.setAdapter(mAdapter);
@@ -358,6 +368,7 @@ public class BoardActivity extends BaseActivity implements View.OnClickListener 
 
                         if (mWallPostList.size() > 0) {
                             try {
+                                mComingSoon.setVisibility(View.GONE);
                                 mWallPostAdapter = null;
                                 mWallPostAdapter = new WallPostAdapter(BoardActivity.this, mWallPostList,Constants.CHATFRAGMENT,onLikeClickListner,onDisLikeClickListner,onNeutralClickListner,onCommentClickListner,onMediaPostClickListner,onDeleteClickListner);
                                 mWallPostAdapter.notifyDataSetChanged();
@@ -491,8 +502,6 @@ public class BoardActivity extends BaseActivity implements View.OnClickListener 
                         }
                         mWallPostAdapter.notifyDataSetChanged();
                     }
-
-
                     // Refresh adapter
                     mWallPostAdapter.notifyDataSetChanged();
                 }
@@ -514,8 +523,6 @@ public class BoardActivity extends BaseActivity implements View.OnClickListener 
     *
     *
     * */
-
-
     public String genratePayload(String postId) {
         JSONObject payload = null;
         try {
@@ -539,7 +546,6 @@ public class BoardActivity extends BaseActivity implements View.OnClickListener 
     * */
     public void removePost(String postId) {
         try {
-
 
             String payload = genratePayload(postId);
             if (!payload.isEmpty()) {
@@ -654,7 +660,7 @@ public class BoardActivity extends BaseActivity implements View.OnClickListener 
         @Override
         public void onLikeClicked(TextView like, int position, String postId, String type) {
             try {
-                Utility.showToastMessageShort(BoardActivity.this,"Like Clicked");
+//                Utility.showToastMessageShort(BoardActivity.this,"Like Clicked");
                 POSITION = position;
                 action = 1;
                 likeUnlikePost(mActionTypeLike, mWallPostList.get(position).getPostId());
@@ -715,7 +721,8 @@ public class BoardActivity extends BaseActivity implements View.OnClickListener 
                 mIvDelete=delete;
                 if (ACTION.equalsIgnoreCase("DELETE")) {
 
-                    removePost(postId);
+                    Utility.showAlertDialog(getResources().getString(R.string.delete_post),BoardActivity.this,postId);
+//                    removePost(postId);
 
                 } else if (ACTION.equalsIgnoreCase("REPORT")) {
 

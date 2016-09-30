@@ -1,5 +1,6 @@
 package com.igniva.indiecore.ui.activities;
 
+import android.app.Activity;
 import android.app.ProgressDialog;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -10,6 +11,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.google.gson.Gson;
@@ -45,7 +47,9 @@ public class ChatActivity extends BaseActivity implements MeteorCallback {
     Toolbar mToolbar;
     private Meteor mMeteor;
     private Button btnSendMessage;
+    private LinearLayout mLlsendMessage,mLlOpenMedia;
     private EditText mEtMessageText;
+    private TextView mTitle;
     private RecyclerView mRvChatMessages;
     private LinearLayoutManager mLlManager;
     // Sidharth
@@ -66,6 +70,7 @@ public class ChatActivity extends BaseActivity implements MeteorCallback {
     private String PAGE = "1";
     private String LIMIT = "60";
     private String mRoomId = "";
+    private String mUserName="";
     private int mIndex = 0;
     ChatPojo mChatPojo;
 
@@ -81,7 +86,7 @@ public class ChatActivity extends BaseActivity implements MeteorCallback {
 //         onConnect(true);
         setUpLayout();
 
-        getRecentMessages();
+
 
     }
 
@@ -102,8 +107,7 @@ public class ChatActivity extends BaseActivity implements MeteorCallback {
             });
             TextView next = (TextView) mToolbar.findViewById(R.id.toolbar_next);
             next.setVisibility(View.GONE);
-            TextView title = (TextView) mToolbar.findViewById(R.id.toolbar_title);
-            title.setText("chat");
+             mTitle = (TextView) mToolbar.findViewById(R.id.toolbar_title);
         } catch (Exception e) {
             e.printStackTrace();
             mToolbar = (Toolbar) findViewById(R.id.toolbar);
@@ -115,62 +119,56 @@ public class ChatActivity extends BaseActivity implements MeteorCallback {
         try {
             mRoomId = getIntent().getStringExtra(Constants.ROOM_ID);
             USER_ID_2 = getIntent().getStringExtra(Constants.PERSON_ID);
+            mUserName=getIntent().getStringExtra(Constants.NAME);
             mIndex = getIntent().getIntExtra(Constants.INDEX, 0);
         } catch (Exception e) {
             e.printStackTrace();
         }
+        if(mRoomId!=null) {
+            getRecentMessages(mRoomId);
+        }
         try {
             mEtMessageText = (EditText) findViewById(R.id.et_message_text);
-            btnSendMessage = (Button) findViewById(R.id.btn_shoot_message);
+            mLlsendMessage = (LinearLayout) findViewById(R.id.ll_shoot_message);
+            mLlOpenMedia=(LinearLayout) findViewById(R.id.ll_add_media);
             mRvChatMessages = (RecyclerView) findViewById(R.id.rv_chat_messages);
             mLlManager = new LinearLayoutManager(this);
             mRvChatMessages.setLayoutManager(mLlManager);
+            mTitle.setText(mUserName);
 
-            try {
-                if(USER_ID_2!=null) {
-                    mMeteor.call(GETROOMID, new Object[]{TOKEN, USER_ID_1, USER_ID_2}, new ResultListener() {
-                        @Override
-                        public void onSuccess(String result) {
-                            Log.d(LOG_TAG, result);
-                            try {
-                                JSONObject json = new JSONObject(result);
-                                mRoomId = json.getString("_id");
-                            } catch (JSONException e) {
-                                e.printStackTrace();
-                            }
-                        }
-
-                        @Override
-                        public void onError(String error, String reason, String details) {
-                            Log.d(LOG_TAG, " error is " + error + " reason is " + reason + " details" + details);
-                        }
-                    });
+            mLlOpenMedia.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Utility.showToastMessageShort(ChatActivity.this,getResources().getString(R.string.coming_soon));
                 }
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
+            });
 
-            btnSendMessage.setOnClickListener(new View.OnClickListener() {
+            mLlsendMessage.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     try {
                         if (mEtMessageText.getText().toString().isEmpty()) {
-                            Utility.showAlertDialog("Please write a message", ChatActivity.this);
+                            Utility.showAlertDialog(getResources().getString(R.string.add_message), ChatActivity.this,null);
                             return;
-                        } else {
-                            String messageId = randomString(8);
-                            mMeteor.call("sendMessage", new Object[]{TOKEN, messageId, mRoomId, USER_ID_1, "text", mEtMessageText.getText().toString(), "", ""}, new ResultListener() {
-                                @Override
-                                public void onSuccess(String result) {
-                                    android.util.Log.d(LOG_TAG, result);
-                                }
-
-                                @Override
-                                public void onError(String error, String reason, String details) {
-                                    android.util.Log.d(LOG_TAG, " error is " + error + " reason is " + reason + " details" + details);
-                                }
-                            });
+                        } else if(!Utility.isInternetConnection(ChatActivity.this)) {
+                            new Utility().showNoInternetDialog(ChatActivity.this);
+                            return;
                         }
+                        else {
+                                String messageId = randomString(8);
+                                mMeteor.call("sendMessage", new Object[]{TOKEN, messageId, mRoomId, USER_ID_1, "text", mEtMessageText.getText().toString(), "", ""}, new ResultListener() {
+                                    @Override
+                                    public void onSuccess(String result) {
+                                        android.util.Log.d(LOG_TAG, result);
+                                    }
+
+                                    @Override
+                                    public void onError(String error, String reason, String details) {
+                                        android.util.Log.d(LOG_TAG, " error is " + error + " reason is " + reason + " details" + details);
+                                    }
+                                });
+                            }
+
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
@@ -199,7 +197,7 @@ public class ChatActivity extends BaseActivity implements MeteorCallback {
         return sb.toString();
     }
 
-    public String createPayload() {
+    public String createPayload(String mRoomId) {
         JSONObject payload = null;
 
         try {
@@ -216,8 +214,8 @@ public class ChatActivity extends BaseActivity implements MeteorCallback {
 
     }
 
-    public void getRecentMessages() {
-        String payload = createPayload();
+    public void getRecentMessages(String mRoomId) {
+        String payload = createPayload(mRoomId);
 
         try {
             WebNotificationManager.registerResponseListener(responseHandler);
@@ -278,6 +276,8 @@ public class ChatActivity extends BaseActivity implements MeteorCallback {
                             try {
                                 JSONObject json = new JSONObject(result);
                                 mRoomId = json.getString("_id");
+                                if(messageList.size()==0){
+                                getRecentMessages(mRoomId);}
                             } catch (JSONException e) {
                                 e.printStackTrace();
                             }

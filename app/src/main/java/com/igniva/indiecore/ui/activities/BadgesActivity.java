@@ -360,7 +360,7 @@ public class BadgesActivity extends BaseActivity implements IabBroadcastReceiver
 
                 } else {
 
-                    Utility.showAlertDialog(result.getError_text(), BadgesActivity.this);
+                    Utility.showAlertDialog(result.getError_text(), BadgesActivity.this,null);
                 }
 //                {"user":{"badgeLimit":10,"selectedBadgeCount":10,"badgesGot":1},"success":true,"error":null}
 //                {"user":{"badgeLimit":10,"selectedBadgeCount":5,"badgesGot":5},"success":true,"error":null}
@@ -368,7 +368,7 @@ public class BadgesActivity extends BaseActivity implements IabBroadcastReceiver
 
 
             } else {
-                Utility.showAlertDialog("Some server error Occurred!", BadgesActivity.this);
+                Utility.showAlertDialog("Some server error Occurred!", BadgesActivity.this,null);
 
 
             }

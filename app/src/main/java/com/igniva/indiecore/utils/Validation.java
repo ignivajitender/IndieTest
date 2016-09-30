@@ -187,7 +187,7 @@ public class Validation {
 
         } else if (dateOfBirth.isEmpty()) {
 
-            Utility.showAlertDialog("Please choose your date of birth", activity);
+            Utility.showAlertDialog("Please choose your date of birth", activity,null);
         } else if (FieldValidators.isNullOrEmpty(desc)) {
 
             Utility.showToastMessageLong(activity, "Please enter description");

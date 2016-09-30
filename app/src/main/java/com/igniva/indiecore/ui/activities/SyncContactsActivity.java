@@ -163,7 +163,7 @@ public class SyncContactsActivity extends BaseActivity implements View.OnClickLi
         try {
             if (mNumbersList.size() == 0) {
 
-                Utility.showAlertDialog(getResources().getString(R.string.no_contact_to_sync), this);
+                Utility.showAlertDialog(getResources().getString(R.string.no_contact_to_sync), this,null);
                 return;
             } else {
                 syncPayload = createPayload();

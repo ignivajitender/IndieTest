@@ -2,9 +2,10 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@drawable/chat_bg"
     android:orientation="vertical">
 
-<!--<LinearLayout-->
+    <!--<LinearLayout-->
     <!--android:id="@+id/ll_message"-->
     <!--android:layout_width="match_parent"-->
     <!--android:orientation="vertical"-->
@@ -14,23 +15,39 @@
         layout="@layout/toolbar" />
 
     <android.support.v7.widget.RecyclerView
-        android:layout_below="@+id/toolbar_chat_activity"
-        android:layout_marginTop="10dp"
+        android:id="@+id/rv_chat_messages"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_below="@+id/toolbar_chat_activity"
         android:layout_marginBottom="50dp"
-        android:id="@+id/rv_chat_messages">
-    </android.support.v7.widget.RecyclerView>
-<!--</LinearLayout>-->
+        android:layout_marginTop="10dp"></android.support.v7.widget.RecyclerView>
+    <!--</LinearLayout>-->
     <LinearLayout
         android:id="@+id/ll_bottom_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="10dp"
         android:layout_alignParentBottom="true"
-        android:layout_marginRight="10dp"
-        android:layout_marginBottom="10dp"
-        android:orientation="horizontal">
+        android:background="@color/white"
+        android:orientation="horizontal"
+        android:paddingBottom="5dp"
+        android:layout_marginTop="10dp"
+        android:paddingTop="10dp">
+
+        <LinearLayout
+            android:id="@+id/ll_add_media"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_weight="1.5"
+            android:gravity="center">
+
+            <ImageView
+                android:id="@+id/btn_add_media"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:background="@drawable/attachment_icon" />
+        </LinearLayout>
 
         <EditText
             android:id="@+id/et_message_text"
@@ -38,20 +55,28 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:layout_weight="8.5"
-            android:maxLines="4"
-            android:maxHeight="30dp"
             android:background="@drawable/rounded_corners_edit_text"
             android:gravity="start"
-            android:padding="8dp"
-            android:hint="@string/write_a_msg" />
+            android:hint="@string/write_a_msg"
+            android:maxHeight="30dp"
+            android:maxLines="4"
+            android:padding="8dp" />
 
-        <Button
-            android:id="@+id/btn_shoot_message"
+        <LinearLayout
+            android:id="@+id/ll_shoot_message"
             android:layout_width="0dp"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:layout_gravity="center"
             android:layout_weight="1.5"
-            android:background="@drawable/tick_badge" />
+            android:gravity="center">
+
+            <ImageView
+                android:id="@+id/btn_shoot_message"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:background="@drawable/send_icon" />
+        </LinearLayout>
 
     </LinearLayout>
 

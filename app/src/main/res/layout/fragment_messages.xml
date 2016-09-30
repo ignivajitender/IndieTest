@@ -2,7 +2,50 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/light_gray"
     android:orientation="vertical">
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="30dp"
+        android:layout_marginLeft="20dp"
+        android:layout_marginRight="20dp"
+        android:layout_marginTop="20dp"
+        android:padding="2dp"
+        android:orientation="horizontal"
+        android:visibility="visible">
+
+        <TextView
+            android:id="@+id/tv_friends"
+            android:paddingTop="2dp"
+            android:paddingBottom="2dp"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:background="@drawable/simple_border_line_style"
+            android:gravity="center"
+            android:onClick="onClick"
+            android:text="@string/friends"
+            android:textColor="@color/blue_clicked"
+            android:textSize="15sp" />
+
+        <TextView
+            android:id="@+id/tv_others"
+            android:paddingTop="2dp"
+            android:paddingBottom="2dp"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:onClick="onClick"
+            android:background="@drawable/simple_border_line_style"
+            android:text="@string/others"
+            android:layout_marginLeft="-2dp"
+            android:textColor="@color/blue_clicked"
+            android:textSize="15sp" />
+
+    </LinearLayout>
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/rv_chat_rooms_messagestab"
@@ -12,9 +55,12 @@
 
     <TextView
         android:id="@+id/tv_no_conversations"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="@string/coming_soon"
+        android:layout_gravity="center_vertical"
+        android:gravity="center"
         android:textSize="21sp"
-        android:visibility="gone" />
+        android:visibility="gone"
+        />
 </LinearLayout>

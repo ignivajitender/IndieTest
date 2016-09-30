@@ -37,10 +37,10 @@ public class ChatListAdapter extends RecyclerView.Adapter<ChatListAdapter.Recycl
     private String mContextName;
 
 
-    public ChatListAdapter(Context context,ArrayList<ChatListPojo> chatRoomList,String contextName) {
+    public ChatListAdapter(Context context, ArrayList<ChatListPojo> chatRoomList, String contextName) {
         this.context = context;
-        this.mChatRoomList=chatRoomList;
-        this.mContextName=contextName;
+        this.mChatRoomList = chatRoomList;
+        this.mContextName = contextName;
 
     }
 
@@ -55,26 +55,29 @@ public class ChatListAdapter extends RecyclerView.Adapter<ChatListAdapter.Recycl
     public void onBindViewHolder(final RecyclerViewHolders holder, final int position) {
         try {
             holder.mTvUserName.setText(mChatRoomList.get(position).getName());
-            if (mChatRoomList.get(position).getIcon()!= null) {
+            if (mChatRoomList.get(position).getIcon() != null) {
                 Glide.with(context).load(WebServiceClient.HTTP_STAGING + mChatRoomList.get(position).getIcon())
                         .thumbnail(1f)
                         .crossFade()
                         .diskCacheStrategy(DiskCacheStrategy.ALL)
                         .into(holder.mIvUserImage);
             } else {
-
                 holder.mIvUserImage.setImageResource(R.drawable.default_user);
             }
             holder.mTv_lastMessage.setText(mChatRoomList.get(position).getLast_message());
 
+            String lastUpdatedTime = mChatRoomList.get(position).getDate_updated();
+            holder.mLastUpadted.setText(lastUpdatedTime.substring(lastUpdatedTime.indexOf("T") + 1, lastUpdatedTime.indexOf(".") - 3));
+
             holder.mChatRoom.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    if(mContextName.equalsIgnoreCase("MESSAGE_FRAGMENT")){
+                    if (mContextName.equalsIgnoreCase("MESSAGE_FRAGMENT")) {
                         Intent intent = new Intent(context, ChatActivity.class);
-                        intent.putExtra(Constants.ROOM_ID,mChatRoomList.get(position).getRoomId());
+                        intent.putExtra(Constants.ROOM_ID, mChatRoomList.get(position).getRoomId());
+                        intent.putExtra(Constants.NAME,mChatRoomList.get(position).getName());
                         context.startActivity(intent);
-                    }else {
+                    } else {
                         Intent intent = new Intent(context, BoardActivity.class);
                         context.startActivity(intent);
                     }
@@ -109,6 +112,7 @@ public class ChatListAdapter extends RecyclerView.Adapter<ChatListAdapter.Recycl
         private TextView mTvUserName;
         private ImageView mIvUserImage;
         private CardView mChatRoom;
+        private TextView mLastUpadted;
 
         public RecyclerViewHolders(final View itemView) {
             super(itemView);
@@ -116,9 +120,8 @@ public class ChatListAdapter extends RecyclerView.Adapter<ChatListAdapter.Recycl
             mTv_lastMessage = (TextView) itemView.findViewById(R.id.tv_lasttext);
             mTvUserName = (TextView) itemView.findViewById(R.id.tv_user_name);
             mIvUserImage = (ImageView) itemView.findViewById(R.id.iv_user_chatroom);
-            mChatRoom=(CardView) itemView.findViewById(R.id.card_view_chat_rooms);
-
-
+            mChatRoom = (CardView) itemView.findViewById(R.id.card_view_chat_rooms);
+            mLastUpadted = (TextView) itemView.findViewById(R.id.tv_last_updated);
         }
 
         @Override
