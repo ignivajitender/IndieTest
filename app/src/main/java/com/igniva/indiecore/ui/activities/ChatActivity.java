@@ -7,6 +7,7 @@ import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.text.format.DateFormat;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -49,7 +50,7 @@ public class ChatActivity extends BaseActivity implements MeteorCallback {
     private Button btnSendMessage;
     private LinearLayout mLlsendMessage,mLlOpenMedia;
     private EditText mEtMessageText;
-    private TextView mTitle;
+    private TextView mTitle,mLoadMore;
     private RecyclerView mRvChatMessages;
     private LinearLayoutManager mLlManager;
     // Sidharth
@@ -134,6 +135,15 @@ public class ChatActivity extends BaseActivity implements MeteorCallback {
             mRvChatMessages = (RecyclerView) findViewById(R.id.rv_chat_messages);
             mLlManager = new LinearLayoutManager(this);
             mRvChatMessages.setLayoutManager(mLlManager);
+            mLoadMore=(TextView)  findViewById(R.id.tv_load_more);
+
+            if(mLlManager.findFirstCompletelyVisibleItemPosition()==0){
+                mLoadMore.setVisibility(View.VISIBLE);
+//Its at top ..
+            }else {
+                mLoadMore.setVisibility(View.GONE);
+
+            }
             mTitle.setText(mUserName);
 
             mLlOpenMedia.setOnClickListener(new View.OnClickListener() {
@@ -235,11 +245,17 @@ public class ChatActivity extends BaseActivity implements MeteorCallback {
                 Log.e("Recent chat Rooms", "+++++++++++++" + result);
                 if (error == null) {
                     if (result.getSuccess().equalsIgnoreCase("true")) {
+                        // clear previous list
+                        if (messageList!=null){
+                            messageList.clear();
+                        }
                         messageList.addAll(result.getMessagesList());
                         mChatAdapter = null;
-                        mChatAdapter = new ChatAdapter(ChatActivity.this, messageList, "");
-                        mRvChatMessages.setAdapter(mChatAdapter);
-                        mRvChatMessages.smoothScrollToPosition(messageList.size() - 1);
+                        if (messageList.size() > 0) {
+                            mChatAdapter = new ChatAdapter(ChatActivity.this, messageList, "");
+                            mRvChatMessages.setAdapter(mChatAdapter);
+                            mRvChatMessages.smoothScrollToPosition(messageList.size() - 1);
+                        }
                     }
                 }
 
@@ -248,6 +264,9 @@ public class ChatActivity extends BaseActivity implements MeteorCallback {
                 }
             } catch (Exception e) {
                 e.printStackTrace();
+                if (mProgressDialog != null && mProgressDialog.isShowing()) {
+                    mProgressDialog.dismiss();
+                }
             }
         }
     };
@@ -265,7 +284,6 @@ public class ChatActivity extends BaseActivity implements MeteorCallback {
 
             mMeteor.subscribe(SUBSCRIBECHATS, new Object[]{TOKEN, USER_ID_1});
             mMeteor.subscribe(SUBSCRIBEMESSAGES, new Object[]{TOKEN, USER_ID_1});
-
 
             if (mIndex == 44) {
                 try {
@@ -314,6 +332,7 @@ public class ChatActivity extends BaseActivity implements MeteorCallback {
             messagePojo = gson.fromJson(newValuesJson, MessagePojo.class);
             mChatPojo = new ChatPojo();
             String rd = messagePojo.getRoomId();
+            String date=convertDate(messagePojo.getDate_updated().get$date(),"hh:mm");
 
             if (mRoomId!=null) {
                 if (mRoomId.equals(messagePojo.getRoomId())) {
@@ -324,13 +343,12 @@ public class ChatActivity extends BaseActivity implements MeteorCallback {
                     mChatPojo.setRoomId(messagePojo.getRoomId());
                     mChatPojo.setMessageId(messagePojo.getLast_message_Id());
                     mChatPojo.setRelation(messagePojo.getRelation());
+                    mChatPojo.setDate_updated(date);
                     mChatPojo.setType(messagePojo.getType());
                     messageList.add(mChatPojo);
-
-                    runThread();
-
                 }
             }
+            runThread();
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -341,19 +359,18 @@ public class ChatActivity extends BaseActivity implements MeteorCallback {
     private void runThread() {
         runOnUiThread(new Thread(new Runnable() {
             public void run() {
-
                 try {
-                    mChatAdapter.notifyDataSetChanged();
-                    mEtMessageText.setText("");
-                    mRvChatMessages.smoothScrollToPosition(messageList.size() - 1);
-
+                    if(messageList.size()>0) {
+                        mChatAdapter.notifyDataSetChanged();
+                        mEtMessageText.setText("");
+                        mRvChatMessages.smoothScrollToPosition(messageList.size() - 1);
+                    }
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
             }
         }));
     }
-
 
     @Override
     public void onDataChanged(String collectionName, String documentID, String updatedValuesJson, String removedValuesJson) {
@@ -368,5 +385,9 @@ public class ChatActivity extends BaseActivity implements MeteorCallback {
     public void onDataRemoved(String collectionName, String documentID) {
         Log.e(LOG_TAG, "" + collectionName);
 
+    }
+
+    public static String convertDate(String dateInMilliseconds,String dateFormat) {
+        return DateFormat.format(dateFormat, Long.parseLong(dateInMilliseconds)).toString();
     }
 }

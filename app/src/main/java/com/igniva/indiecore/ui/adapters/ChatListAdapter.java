@@ -65,10 +65,8 @@ public class ChatListAdapter extends RecyclerView.Adapter<ChatListAdapter.Recycl
                 holder.mIvUserImage.setImageResource(R.drawable.default_user);
             }
             holder.mTv_lastMessage.setText(mChatRoomList.get(position).getLast_message());
-
             String lastUpdatedTime = mChatRoomList.get(position).getDate_updated();
             holder.mLastUpadted.setText(lastUpdatedTime.substring(lastUpdatedTime.indexOf("T") + 1, lastUpdatedTime.indexOf(".") - 3));
-
             holder.mChatRoom.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -83,20 +81,9 @@ public class ChatListAdapter extends RecyclerView.Adapter<ChatListAdapter.Recycl
                     }
                 }
             });
-
         } catch (Exception e) {
             e.printStackTrace();
         }
-
-//
-//        holder.mContactImage.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                onContactCardClickListner.onContactCardClicked(holder.mContactImage, position, mChatRoomList.get(position).getUserId());
-//            }
-//        });
-
-
     }
 
 
@@ -107,15 +94,14 @@ public class ChatListAdapter extends RecyclerView.Adapter<ChatListAdapter.Recycl
 
 
     public class RecyclerViewHolders extends RecyclerView.ViewHolder implements View.OnClickListener {
-
         private TextView mTv_lastMessage;
         private TextView mTvUserName;
         private ImageView mIvUserImage;
         private CardView mChatRoom;
         private TextView mLastUpadted;
-
         public RecyclerViewHolders(final View itemView) {
             super(itemView);
+
             itemView.setOnClickListener(this);
             mTv_lastMessage = (TextView) itemView.findViewById(R.id.tv_lasttext);
             mTvUserName = (TextView) itemView.findViewById(R.id.tv_user_name);

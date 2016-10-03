@@ -17,6 +17,17 @@ public class MessagePojo {
      String icon;
      String relation;
      String text;
+    DateModel date_updated;
+
+
+    public DateModel getDate_updated() {
+        return date_updated;
+    }
+
+    public void setDate_updated(DateModel date_updated) {
+        this.date_updated = date_updated;
+    }
+
 
     public String getType() {
         return type;

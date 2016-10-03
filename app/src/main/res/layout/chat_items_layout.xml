@@ -5,19 +5,21 @@
     android:orientation="vertical">
 
     <RelativeLayout
+        android:visibility="gone"
         android:id="@+id/ll_chat_other"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="left"
         android:layout_marginLeft="5dp"
         android:layout_marginTop="10dp"
-        android:orientation="horizontal">
+        android:orientation="horizontal"
+        >
 
         <com.igniva.indiecore.utils.CircularImageView
             android:id="@+id/iv_otheruser_chat"
             android:layout_width="70dp"
-            android:layout_centerVertical="true"
             android:layout_height="70dp"
+            android:layout_centerVertical="true"
             android:src="@drawable/default_user" />
 
         <LinearLayout
@@ -32,40 +34,61 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="left"
-                android:textColor="@color/orange"
                 android:layout_marginLeft="5dp"
                 android:layout_marginTop="5dp"
-                android:hint="some text"
+                android:textColor="@color/orange"
 
                 />
 
-            <TextView
-                android:id="@+id/tv_otheruser_lasttext"
+            <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_gravity="left"
-                android:layout_marginLeft="5dp"
                 android:background="@drawable/ic_chat_box_left"
-                android:gravity="start"
-                android:textColor="@color/black"
-                android:hint="some text"
-                android:paddingBottom="12dp"
-                android:paddingLeft="15dp"
-                android:paddingRight="15dp"
-                android:paddingTop="12dp"/>
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/tv_otheruser_lasttext"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="left"
+                    android:layout_marginLeft="5dp"
+                    android:gravity="start"
+                    android:hint="some text"
+                    android:paddingBottom="4dp"
+                    android:paddingLeft="15dp"
+                    android:paddingRight="15dp"
+                    android:paddingTop="12dp"
+                    android:textColor="@color/black" />
+
+                <TextView
+                    android:id="@+id/tv_otheruser_texttime"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="left"
+                    android:layout_marginLeft="5dp"
+                    android:gravity="start"
+                    android:paddingBottom="10dp"
+                    android:textSize="12sp"
+                    android:paddingLeft="15dp"
+                    android:paddingRight="15dp"
+                    android:textColor="@color/light_black" />
+            </LinearLayout>
 
         </LinearLayout>
     </RelativeLayout>
 
 
     <RelativeLayout
+        android:visibility="gone"
         android:id="@+id/ll_chat_this_user"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="right"
+        android:layout_marginBottom="10dp"
         android:layout_marginRight="5dp"
         android:layout_marginTop="5dp"
-        android:orientation="horizontal">
+        android:orientation="horizontal"
+        >
 
         <LinearLayout
             android:layout_width="wrap_content"
@@ -80,31 +103,49 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="right"
                 android:layout_marginRight="5dp"
-                android:layout_marginTop="5dp"
-                android:hint="some text" />
+                android:layout_marginTop="5dp" />
 
-            <TextView
-                android:id="@+id/tv_lasttext_this"
+            <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_gravity="right"
-                android:layout_marginRight="5dp"
                 android:background="@drawable/ic_chat_box_right"
-                android:gravity="end"
-                android:textColor="@color/black"
-                android:hint="some text"
-                android:paddingBottom="12dp"
-                android:paddingLeft="15dp"
-                android:paddingRight="20dp"
-                android:paddingTop="12dp" />
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/tv_lasttext_this"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="right"
+                    android:layout_marginRight="5dp"
+                    android:gravity="end"
+                    android:hint="some text"
+                    android:paddingBottom="4dp"
+                    android:paddingLeft="20dp"
+                    android:paddingRight="20dp"
+                    android:paddingTop="12dp"
+                    android:textColor="@color/black" />
+
+                <TextView
+                    android:id="@+id/tv_lasttext_time"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="left"
+                    android:layout_marginRight="5dp"
+                    android:gravity="end"
+                    android:paddingBottom="10dp"
+                    android:textSize="12sp"
+                    android:paddingLeft="20dp"
+                    android:paddingRight="20dp"
+                    android:textColor="@color/light_black" />
+            </LinearLayout>
         </LinearLayout>
 
         <com.igniva.indiecore.utils.CircularImageView
             android:id="@+id/iv_this_user_chat"
             android:layout_width="60dp"
             android:layout_height="60dp"
-            android:layout_centerVertical="true"
             android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
             android:src="@drawable/default_user" />
     </RelativeLayout>
 

@@ -56,7 +56,7 @@ public class PhonebookAdapter extends RecyclerView.Adapter<PhonebookAdapter.Recy
     @Override
     public void onBindViewHolder(final RecyclerViewHolders holder, final int position) {
         try {
-            holder.mContactName.setText(indieCoreUsersLIst.get(position).getProfile().getFirstName());
+            holder.mContactName.setText(indieCoreUsersLIst.get(position).getProfile().getFirstName()+" "+indieCoreUsersLIst.get(position).getProfile().getLastName());
             if (indieCoreUsersLIst.get(position).getProfile().getProfilePic() != null) {
                 Glide.with(context).load(WebServiceClient.HTTP_STAGING + indieCoreUsersLIst.get(position).getProfile().getProfilePic())
                         .thumbnail(1f)
@@ -89,6 +89,7 @@ public class PhonebookAdapter extends RecyclerView.Adapter<PhonebookAdapter.Recy
 //                    context.startActivity(new Intent(context, ChatActivity.class));
                     Intent intent=new Intent(context,ChatActivity.class);
                     intent.putExtra(Constants.PERSON_ID,indieCoreUsersLIst.get(position).getUserId());
+                    intent.putExtra(Constants.NAME,indieCoreUsersLIst.get(position).getProfile().getFirstName()+" "+indieCoreUsersLIst.get(position).getProfile().getLastName());
                     intent.putExtra(Constants.INDEX,44);
                     context.startActivity(intent);
 //                    DashBoardActivity.bottomNavigation.setCurrentItem(3);

@@ -47,50 +47,80 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.RecyclerViewHo
     @Override
     public void onBindViewHolder(final RecyclerViewHolders holder, final int position) {
         try {
-            if (mChatList.get(position).getRelation().equalsIgnoreCase("self")) {
-                holder.mRlThis.setVisibility(View.VISIBLE);
-                holder.mRlOther.setVisibility(View.GONE);
-                holder.mTvThisUserName.setVisibility(View.GONE);
-                if (mChatList.get(position).getIcon() != null) {
-                    Glide.with(context).load(WebServiceClient.HTTP_STAGING + mChatList.get(position).getIcon())
-                            .thumbnail(1f)
-                            .crossFade()
-                            .diskCacheStrategy(DiskCacheStrategy.ALL)
-                            .into(holder.mIvThisUserImage);
-                } else {
+            String time;
+            switch (mChatList.get(position).getRelation()) {
+                case "self":
+                    holder.mRlThis.setVisibility(View.VISIBLE);
+                    holder.mRlOther.setVisibility(View.GONE);
+                    holder.mTvThisUserName.setVisibility(View.GONE);
+                    if (mChatList.get(position).getIcon() != null) {
+                        Glide.with(context).load(WebServiceClient.HTTP_STAGING + mChatList.get(position).getIcon())
+                                .thumbnail(1f)
+                                .crossFade()
+                                .diskCacheStrategy(DiskCacheStrategy.ALL)
+                                .into(holder.mIvThisUserImage);
+                    } else {
+                        holder.mIvThisUserImage.setImageResource(R.drawable.default_user);
+                    }
+                    holder.mTv_lastMessage_thisuser.setText(mChatList.get(position).getText());
+                    time = mChatList.get(position).getDate_updated();
+                    if (time!=null&&time.length()>0&&time.contains("T")) {
+                        holder.mThisUserLastTextTime.setText(time.substring(time.indexOf("T") + 1, time.indexOf(".") - 3));
+                    }else {
+                        holder.mThisUserLastTextTime.setText(time);
+                    }
+                    break;
+                case "friend":
+                    holder.mRlThis.setVisibility(View.GONE);
+                    holder.mRlOther.setVisibility(View.VISIBLE);
 
-                    holder.mIvThisUserImage.setImageResource(R.drawable.default_user);
-                }
-                holder.mTv_lastMessage_thisuser.setText(mChatList.get(position).getText());
-            } else {
-                holder.mRlThis.setVisibility(View.GONE);
-                holder.mRlOther.setVisibility(View.VISIBLE);
-                holder.mTvOtherUserName.setText(mChatList.get(position).getName());
-                if (mChatList.get(position).getIcon() != null) {
-                    Glide.with(context).load(WebServiceClient.HTTP_STAGING + mChatList.get(position).getIcon())
-                            .thumbnail(1f)
-                            .crossFade()
-                            .diskCacheStrategy(DiskCacheStrategy.ALL)
-                            .into(holder.mIvOtherUserImage);
-                } else {
-
-                    holder.mIvOtherUserImage.setImageResource(R.drawable.default_user);
-                }
-                holder.mTv_lastMessage_otheruser.setText(mChatList.get(position).getText());
+                    holder.mTvOtherUserName.setText(mChatList.get(position).getName());
+                    if (mChatList.get(position).getIcon() != null) {
+                        Glide.with(context).load(WebServiceClient.HTTP_STAGING + mChatList.get(position).getIcon())
+                                .thumbnail(1f)
+                                .crossFade()
+                                .diskCacheStrategy(DiskCacheStrategy.ALL)
+                                .into(holder.mIvOtherUserImage);
+                    } else {
+                        holder.mIvOtherUserImage.setImageResource(R.drawable.default_user);
+                    }
+                    holder.mTv_lastMessage_otheruser.setText(mChatList.get(position).getText());
+                    time = mChatList.get(position).getDate_updated();
+                    if (time!=null&&time.length()>0 &&time.contains("T")) {
+                        holder.mOtherUserLastTextTime.setText(time.substring(time.indexOf("T") + 1, time.indexOf(".") - 3));
+                    }else {
+                        holder.mOtherUserLastTextTime.setText(time);
+                    }
+                    break;
+                case "favourite":
+                    holder.mRlThis.setVisibility(View.GONE);
+                    holder.mRlOther.setVisibility(View.VISIBLE);
+                    holder.mTvOtherUserName.setText(mChatList.get(position).getName());
+                    if (mChatList.get(position).getIcon() != null) {
+                        Glide.with(context).load(WebServiceClient.HTTP_STAGING + mChatList.get(position).getIcon())
+                                .thumbnail(1f)
+                                .crossFade()
+                                .diskCacheStrategy(DiskCacheStrategy.ALL)
+                                .into(holder.mIvOtherUserImage);
+                    } else {
+                        holder.mIvOtherUserImage.setImageResource(R.drawable.default_user);
+                    }
+                    holder.mTv_lastMessage_otheruser.setText(mChatList.get(position).getText());
+                    time = mChatList.get(position).getDate_updated();
+                    if (time!=null&&time.length()>0&&time.contains("T")) {
+                        holder.mOtherUserLastTextTime.setText(time.substring(time.indexOf("T") + 1, time.indexOf(".") - 3));
+                    }else {
+                        holder.mOtherUserLastTextTime.setText(time);
+                    }
+                        break;
+                default:
+                    break;
             }
+
 
         } catch (Exception e) {
             e.printStackTrace();
         }
-
-//
-//        holder.mContactImage.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                onContactCardClickListner.onContactCardClicked(holder.mContactImage, position, mChatRoomList.get(position).getUserId());
-//            }
-//        });
-
 
     }
 
@@ -106,10 +136,12 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.RecyclerViewHo
         private TextView mTv_lastMessage_otheruser;
         private TextView mTvOtherUserName;
         private ImageView mIvOtherUserImage;
+        private TextView mOtherUserLastTextTime;
 
         private TextView mTv_lastMessage_thisuser;
         private TextView mTvThisUserName;
         private ImageView mIvThisUserImage;
+        private TextView mThisUserLastTextTime;
 
         private RelativeLayout mRlThis;
         private RelativeLayout mRlOther;
@@ -120,15 +152,15 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.RecyclerViewHo
             mTv_lastMessage_otheruser = (TextView) itemView.findViewById(R.id.tv_otheruser_lasttext);
             mTvOtherUserName = (TextView) itemView.findViewById(R.id.tv_user_name_other);
             mIvOtherUserImage = (ImageView) itemView.findViewById(R.id.iv_otheruser_chat);
+            mOtherUserLastTextTime = (TextView) itemView.findViewById(R.id.tv_otheruser_texttime);
 
             mTv_lastMessage_thisuser = (TextView) itemView.findViewById(R.id.tv_lasttext_this);
             mTvThisUserName = (TextView) itemView.findViewById(R.id.tv_this_user_name);
             mIvThisUserImage = (ImageView) itemView.findViewById(R.id.iv_this_user_chat);
+            mThisUserLastTextTime = (TextView) itemView.findViewById(R.id.tv_lasttext_time);
 
             mRlThis = (RelativeLayout) itemView.findViewById(R.id.ll_chat_this_user);
             mRlOther = (RelativeLayout) itemView.findViewById(R.id.ll_chat_other);
-
-
         }
 
         @Override
