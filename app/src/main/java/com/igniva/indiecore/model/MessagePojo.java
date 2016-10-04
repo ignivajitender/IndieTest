@@ -4,21 +4,57 @@ package com.igniva.indiecore.model;
  * Created by igniva-andriod-05 on 22/9/16.
  */
 public class MessagePojo {
-     String type;
-     String last_message_Id;
-     String last_message_by;
-     String last_message_type;
-     String last_message;
-     int unreadCount;
-     String roomId;
-     String userId;
-     String name;
-     String badges;
-     String icon;
-     String relation;
-     String text;
+    String type;
+    String last_message_Id;
+    String last_message_by;
+    String last_message_type;
+    String last_message;
+    int unreadCount;
+    String media;
+    String thumb;
+    String roomId;
+    String userId;
+    String name;
+    String badges;
+    String icon;
+    String relation;
+    String text;
+    int status;
+    String created_at;
     DateModel date_updated;
 
+    public String getCreated_at() {
+        return created_at;
+    }
+
+    public void setCreated_at(String created_at) {
+        this.created_at = created_at;
+    }
+
+    public int getStatus() {
+        return status;
+    }
+
+    public void setStatus(int status) {
+        this.status = status;
+    }
+
+
+    public String getMedia() {
+        return media;
+    }
+
+    public void setMedia(String media) {
+        this.media = media;
+    }
+
+    public String getThumb() {
+        return thumb;
+    }
+
+    public void setThumb(String thumb) {
+        this.thumb = thumb;
+    }
 
     public DateModel getDate_updated() {
         return date_updated;
@@ -36,6 +72,7 @@ public class MessagePojo {
     public void setType(String type) {
         this.type = type;
     }
+
     public String getText() {
         return text;
     }
@@ -52,7 +89,6 @@ public class MessagePojo {
     public void setBadges(String badges) {
         this.badges = badges;
     }
-
 
 
     public String getLast_message_type() {
@@ -135,7 +171,6 @@ public class MessagePojo {
     public void setRelation(String relation) {
         this.relation = relation;
     }
-
 
 
 }

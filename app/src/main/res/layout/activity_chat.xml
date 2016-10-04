@@ -5,45 +5,44 @@
     android:background="@drawable/chat_bg"
     android:orientation="vertical">
 
-    <!--<LinearLayout-->
-    <!--android:id="@+id/ll_message"-->
-    <!--android:layout_width="match_parent"-->
-    <!--android:orientation="vertical"-->
-    <!--android:layout_height="match_parent">-->
+
     <include
         android:id="@+id/toolbar_chat_activity"
         layout="@layout/toolbar" />
 
-
-    <TextView
-        android:id="@+id/tv_load_more"
-        android:layout_below="@+id/toolbar_chat_activity"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="10dp"
-        android:hint="Load more"
-        android:textColor="@color/blue"
-        android:padding="8dp"
-        android:layout_centerHorizontal="true"
-        android:background="@drawable/rounded_corners_edit_text"/>
-
-    <android.support.v7.widget.RecyclerView
-        android:id="@+id/rv_chat_messages"
+    <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/tv_load_more"
-        android:layout_marginBottom="70dp"
-        android:layout_marginTop="10dp"></android.support.v7.widget.RecyclerView>
-    <!--</LinearLayout>-->
+        android:layout_below="@+id/toolbar_chat_activity">
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/rv_chat_messages"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/tv_load_more"
+            android:layout_marginBottom="70dp"
+            android:layout_marginTop="10dp"></android.support.v7.widget.RecyclerView>
+        <TextView
+            android:id="@+id/tv_load_more"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="10dp"
+            android:background="@drawable/rounded_corners_edit_text"
+            android:hint="Load more"
+            android:padding="8dp"
+            android:textColor="@color/blue" />
+    </FrameLayout>
     <LinearLayout
         android:id="@+id/ll_bottom_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
+        android:layout_marginTop="10dp"
         android:background="@color/white"
         android:orientation="horizontal"
         android:paddingBottom="5dp"
-        android:layout_marginTop="10dp"
         android:paddingTop="10dp">
 
         <LinearLayout

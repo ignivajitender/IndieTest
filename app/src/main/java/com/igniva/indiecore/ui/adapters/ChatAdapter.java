@@ -48,75 +48,48 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.RecyclerViewHo
     public void onBindViewHolder(final RecyclerViewHolders holder, final int position) {
         try {
             String time;
-            switch (mChatList.get(position).getRelation()) {
-                case "self":
-                    holder.mRlThis.setVisibility(View.VISIBLE);
-                    holder.mRlOther.setVisibility(View.GONE);
-                    holder.mTvThisUserName.setVisibility(View.GONE);
-                    if (mChatList.get(position).getIcon() != null) {
-                        Glide.with(context).load(WebServiceClient.HTTP_STAGING + mChatList.get(position).getIcon())
-                                .thumbnail(1f)
-                                .crossFade()
-                                .diskCacheStrategy(DiskCacheStrategy.ALL)
-                                .into(holder.mIvThisUserImage);
-                    } else {
-                        holder.mIvThisUserImage.setImageResource(R.drawable.default_user);
-                    }
-                    holder.mTv_lastMessage_thisuser.setText(mChatList.get(position).getText());
-                    time = mChatList.get(position).getDate_updated();
-                    if (time!=null&&time.length()>0&&time.contains("T")) {
-                        holder.mThisUserLastTextTime.setText(time.substring(time.indexOf("T") + 1, time.indexOf(".") - 3));
-                    }else {
-                        holder.mThisUserLastTextTime.setText(time);
-                    }
-                    break;
-                case "friend":
-                    holder.mRlThis.setVisibility(View.GONE);
-                    holder.mRlOther.setVisibility(View.VISIBLE);
+              if(mChatList.get(position).getRelation().equalsIgnoreCase("self")) {
+                  holder.mRlThis.setVisibility(View.VISIBLE);
+                  holder.mRlOther.setVisibility(View.GONE);
+                  holder.mTvThisUserName.setVisibility(View.GONE);
+                  if (mChatList.get(position).getIcon() != null) {
+                      Glide.with(context).load(WebServiceClient.HTTP_STAGING + mChatList.get(position).getIcon())
+                              .thumbnail(1f)
+                              .crossFade()
+                              .diskCacheStrategy(DiskCacheStrategy.ALL)
+                              .into(holder.mIvThisUserImage);
+                  } else {
+                      holder.mIvThisUserImage.setImageResource(R.drawable.default_user);
+                  }
+                  holder.mTv_lastMessage_thisuser.setText(mChatList.get(position).getText());
+                  time = mChatList.get(position).getDate_updated();
+                  if (time != null && time.length() > 0 && time.contains("T")) {
+                      holder.mThisUserLastTextTime.setText(time.substring(time.indexOf("T") + 1, time.indexOf(".") - 3));
+                  } else {
+                      holder.mThisUserLastTextTime.setText(time);
+                  }
+              }else {
+                  holder.mRlThis.setVisibility(View.GONE);
+                  holder.mRlOther.setVisibility(View.VISIBLE);
 
-                    holder.mTvOtherUserName.setText(mChatList.get(position).getName());
-                    if (mChatList.get(position).getIcon() != null) {
-                        Glide.with(context).load(WebServiceClient.HTTP_STAGING + mChatList.get(position).getIcon())
-                                .thumbnail(1f)
-                                .crossFade()
-                                .diskCacheStrategy(DiskCacheStrategy.ALL)
-                                .into(holder.mIvOtherUserImage);
-                    } else {
-                        holder.mIvOtherUserImage.setImageResource(R.drawable.default_user);
-                    }
-                    holder.mTv_lastMessage_otheruser.setText(mChatList.get(position).getText());
-                    time = mChatList.get(position).getDate_updated();
-                    if (time!=null&&time.length()>0 &&time.contains("T")) {
-                        holder.mOtherUserLastTextTime.setText(time.substring(time.indexOf("T") + 1, time.indexOf(".") - 3));
-                    }else {
-                        holder.mOtherUserLastTextTime.setText(time);
-                    }
-                    break;
-                case "favourite":
-                    holder.mRlThis.setVisibility(View.GONE);
-                    holder.mRlOther.setVisibility(View.VISIBLE);
-                    holder.mTvOtherUserName.setText(mChatList.get(position).getName());
-                    if (mChatList.get(position).getIcon() != null) {
-                        Glide.with(context).load(WebServiceClient.HTTP_STAGING + mChatList.get(position).getIcon())
-                                .thumbnail(1f)
-                                .crossFade()
-                                .diskCacheStrategy(DiskCacheStrategy.ALL)
-                                .into(holder.mIvOtherUserImage);
-                    } else {
-                        holder.mIvOtherUserImage.setImageResource(R.drawable.default_user);
-                    }
-                    holder.mTv_lastMessage_otheruser.setText(mChatList.get(position).getText());
-                    time = mChatList.get(position).getDate_updated();
-                    if (time!=null&&time.length()>0&&time.contains("T")) {
-                        holder.mOtherUserLastTextTime.setText(time.substring(time.indexOf("T") + 1, time.indexOf(".") - 3));
-                    }else {
-                        holder.mOtherUserLastTextTime.setText(time);
-                    }
-                        break;
-                default:
-                    break;
-            }
-
+                  holder.mTvOtherUserName.setText(mChatList.get(position).getName());
+                  if (mChatList.get(position).getIcon() != null) {
+                      Glide.with(context).load(WebServiceClient.HTTP_STAGING + mChatList.get(position).getIcon())
+                              .thumbnail(1f)
+                              .crossFade()
+                              .diskCacheStrategy(DiskCacheStrategy.ALL)
+                              .into(holder.mIvOtherUserImage);
+                  } else {
+                      holder.mIvOtherUserImage.setImageResource(R.drawable.default_user);
+                  }
+                  holder.mTv_lastMessage_otheruser.setText(mChatList.get(position).getText());
+                  time = mChatList.get(position).getDate_updated();
+                  if (time != null && time.length() > 0 && time.contains("T")) {
+                      holder.mOtherUserLastTextTime.setText(time.substring(time.indexOf("T") + 1, time.indexOf(".") - 3));
+                  } else {
+                      holder.mOtherUserLastTextTime.setText(time);
+                  }
+              }
 
         } catch (Exception e) {
             e.printStackTrace();

@@ -8,6 +8,7 @@ import android.database.sqlite.SQLiteOpenHelper;
 
 import com.igniva.indiecore.model.BadgesPojo;
 import com.igniva.indiecore.model.CountryCodePojo;
+import com.igniva.indiecore.model.MessagePojo;
 import com.igniva.indiecore.model.ProfilePojo;
 import com.igniva.indiecore.model.UsersPojo;
 import com.igniva.indiecore.utils.Log;
@@ -81,6 +82,34 @@ public class BadgesDb extends SQLiteOpenHelper {
     }
 
 
+
+//    TABLE CHAT
+    public static  final String TABLE_CHAT="tbl_chat";
+//    CHAT TABLE COULMN
+    public  static  final String Id="_id";
+    public  static  final String ROOD_ID="userId";
+    public  static  final String USERID="userId";
+    public  static  final String MESSAGE_TYPE="type";
+    public  static  final String TEXT="text";
+    public  static  final String MEDIA="media";
+    public  static  final String THUMB="thumb";
+    public  static  final String STATUS="status";
+    public  static  final String CREATED_AT="created_at";
+    public  static  final String DATE_UPDATED="date_updated";
+    public  static  final String MESSAGE_ID="messageId";
+    public  static  final String NAME="name";
+    public  static  final String ICON="icon";
+    public  static  final String RELATION="relation";
+    public  static  final String BADGES="badges";
+//    TABLE CHAT END
+ public static String createTableUserChat(){
+     return  "CREATE TABLE IF NOT EXISTS " + TABLE_CHAT + "(" + Id + " TEXT," + ROOD_ID + "TEXT PRIMARY KEY," +
+             USERID + " TEXT," + MESSAGE_TYPE + " TEXT," + TEXT + " TEXT," + MEDIA + " TEXT," + THUMB + " TEXT," +
+             STATUS + " INTEGER," + CREATED_AT + " TEXT," + DATE_UPDATED + " TEXT," + MESSAGE_ID + " TEXT," +
+             NAME + " TEXT," + ICON + " TEXT," + RELATION + " TEXT," + BADGES + " TEXT" + ")";
+
+ }
+
     public BadgesDb(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
     }
@@ -89,15 +118,57 @@ public class BadgesDb extends SQLiteOpenHelper {
     public void onCreate(SQLiteDatabase db) {
         db.execSQL(createBadgeTable());
         db.execSQL(createUsersTable());
+        db.execSQL(createTableUserChat());
     }
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_BADGES);
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_USERS);
+        db.execSQL("DROP TABLE IF EXISTS " +TABLE_CHAT);
         onCreate(db);
     }
 
+    public void insertSingleMessage(SQLiteDatabase db, MessagePojo message){
+
+        try {
+            ContentValues value= new ContentValues();
+            value.put(Id,"");
+            value.put(ROOD_ID,message.getRoomId());
+            value.put(USERID,message.getUserId());
+            value.put(MESSAGE_TYPE,message.getType());
+            value.put(TEXT,message.getText());
+            value.put(MEDIA,message.getMedia());
+            value.put(THUMB,message.getThumb());
+            value.put(STATUS,message.getStatus());
+            value.put(CREATED_AT,message.getCreated_at());
+            value.put(DATE_UPDATED,message.getDate_updated().get$date());
+            value.put(MESSAGE_ID,message.getLast_message_Id());
+            value.put(NAME,message.getName());
+            value.put(ICON,message.getIcon());
+            value.put(RELATION,message.getIcon());
+            value.put(BADGES,message.getBadges());
+
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+    }
+
+
+    public  void insertAllMessages(ArrayList<MessagePojo> mMessageList){
+        SQLiteDatabase db=this.getWritableDatabase();
+        try {
+            for(int i=0;i<mMessageList.size();i++){
+                insertSingleMessage(db,mMessageList.get(i));
+            }
+
+        }catch (Exception e){
+            e.printStackTrace();
+        }finally {
+            db.close();
+        }
+
+    }
 
     public void insertSingleBadge(SQLiteDatabase db, BadgesPojo badges) {
         try {

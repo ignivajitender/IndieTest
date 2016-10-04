@@ -22,6 +22,7 @@ import com.igniva.indiecore.controller.ResponseHandlerListener;
 import com.igniva.indiecore.controller.WebNotificationManager;
 import com.igniva.indiecore.controller.WebServiceClient;
 import com.igniva.indiecore.model.ChatPojo;
+import com.igniva.indiecore.model.InstantChatPojo;
 import com.igniva.indiecore.model.MessagePojo;
 import com.igniva.indiecore.model.ResponsePojo;
 import com.igniva.indiecore.ui.adapters.ChatAdapter;
@@ -34,6 +35,7 @@ import org.json.JSONObject;
 
 import java.security.SecureRandom;
 import java.util.ArrayList;
+import java.util.Collections;
 
 import im.delight.android.ddp.Meteor;
 import im.delight.android.ddp.MeteorCallback;
@@ -46,28 +48,26 @@ import im.delight.android.ddp.db.memory.InMemoryDatabase;
 public class ChatActivity extends BaseActivity implements MeteorCallback {
 
     Toolbar mToolbar;
+
+    public static final String URL = "ws://indiecorelive.ignivastaging.com:3000/websocket";
+    public static final String AB = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
+    public static final String CHAT_ACTIVITY = "CHAT_ACTIVITY";
+    public static final String SUBSCRIBECHATS = "subscribeChats";
+    public static final String SUBSCRIBEMESSAGES = "subscribeMessages";
+    public static final String GETROOMID = "getRoomId";
+    public static final String SENDMESSAGES = "sendMessage";
+    public static final String LOG_TAG = "ChatActivity";
+    private boolean IsClicked=false;
     private Meteor mMeteor;
-    private Button btnSendMessage;
     private LinearLayout mLlsendMessage,mLlOpenMedia;
     private EditText mEtMessageText;
     private TextView mTitle,mLoadMore;
     private RecyclerView mRvChatMessages;
     private LinearLayoutManager mLlManager;
-    // Sidharth
     private String USER_ID_1;
     private String TOKEN;
-    private String CHAT_ACTIVITY = "CHAT_ACTIVITY";
-    private final String SUBSCRIBECHATS = "subscribeChats";
-    private final String SUBSCRIBEMESSAGES = "subscribeMessages";
-    private final String GETROOMID = "getRoomId";
-    private final String SENDMESSAGES = "sendMessage";
-    static final String AB = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
     static SecureRandom rnd = new SecureRandom();
     private String USER_ID_2 = "";
-    private String ROOM_ID = "";
-    private String URL = "ws://indiecorelive.ignivastaging.com:3000/websocket";
-    private String LOG_TAG = "ChatActivity";
-    private String userId = "";
     private String PAGE = "1";
     private String LIMIT = "60";
     private String mRoomId = "";
@@ -75,7 +75,7 @@ public class ChatActivity extends BaseActivity implements MeteorCallback {
     private int mIndex = 0;
     ChatPojo mChatPojo;
 
-    MessagePojo messagePojo = null;
+    InstantChatPojo messagePojo = null;
     ArrayList<ChatPojo> messageList = new ArrayList<>();
     ChatAdapter mChatAdapter;
 
@@ -84,14 +84,9 @@ public class ChatActivity extends BaseActivity implements MeteorCallback {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_chat);
         initToolbar();
-//         onConnect(true);
         setUpLayout();
 
-
-
     }
-
-
     void initToolbar() {
         try {
             mToolbar = (Toolbar) findViewById(R.id.toolbar_chat_activity);
@@ -136,14 +131,6 @@ public class ChatActivity extends BaseActivity implements MeteorCallback {
             mLlManager = new LinearLayoutManager(this);
             mRvChatMessages.setLayoutManager(mLlManager);
             mLoadMore=(TextView)  findViewById(R.id.tv_load_more);
-
-            if(mLlManager.findFirstCompletelyVisibleItemPosition()==0){
-                mLoadMore.setVisibility(View.VISIBLE);
-//Its at top ..
-            }else {
-                mLoadMore.setVisibility(View.GONE);
-
-            }
             mTitle.setText(mUserName);
 
             mLlOpenMedia.setOnClickListener(new View.OnClickListener() {
@@ -165,7 +152,9 @@ public class ChatActivity extends BaseActivity implements MeteorCallback {
                             return;
                         }
                         else {
+
                                 String messageId = randomString(8);
+                            IsClicked=true;
                                 mMeteor.call("sendMessage", new Object[]{TOKEN, messageId, mRoomId, USER_ID_1, "text", mEtMessageText.getText().toString(), "", ""}, new ResultListener() {
                                     @Override
                                     public void onSuccess(String result) {
@@ -252,6 +241,7 @@ public class ChatActivity extends BaseActivity implements MeteorCallback {
                         messageList.addAll(result.getMessagesList());
                         mChatAdapter = null;
                         if (messageList.size() > 0) {
+                            Collections.reverse(messageList);
                             mChatAdapter = new ChatAdapter(ChatActivity.this, messageList, "");
                             mRvChatMessages.setAdapter(mChatAdapter);
                             mRvChatMessages.smoothScrollToPosition(messageList.size() - 1);
@@ -328,42 +318,50 @@ public class ChatActivity extends BaseActivity implements MeteorCallback {
     @Override
     public void onDataAdded(String collectionName, String documentID, String newValuesJson) {
         try {
-            Gson gson = new Gson();
-            messagePojo = gson.fromJson(newValuesJson, MessagePojo.class);
-            mChatPojo = new ChatPojo();
-            String rd = messagePojo.getRoomId();
-            String date=convertDate(messagePojo.getDate_updated().get$date(),"hh:mm");
 
-            if (mRoomId!=null) {
-                if (mRoomId.equals(messagePojo.getRoomId())) {
-                    mChatPojo.setIcon(messagePojo.getIcon());
-                    mChatPojo.setName(messagePojo.getName());
-                    mChatPojo.set_id(messagePojo.getUserId());
-                    mChatPojo.setText(messagePojo.getText());
-                    mChatPojo.setRoomId(messagePojo.getRoomId());
-                    mChatPojo.setMessageId(messagePojo.getLast_message_Id());
-                    mChatPojo.setRelation(messagePojo.getRelation());
-                    mChatPojo.setDate_updated(date);
-                    mChatPojo.setType(messagePojo.getType());
-                    messageList.add(mChatPojo);
+            if(IsClicked) {
+                Gson gson = new Gson();
+                messagePojo = gson.fromJson(newValuesJson, InstantChatPojo.class);
+                mChatPojo = new ChatPojo();
+                String rd = messagePojo.getRoomId();
+                String date = convertDate(messagePojo.getDate_updated().get$date(), "hh:mm");
+
+                if (mRoomId != null) {
+                    if (mRoomId.equals(messagePojo.getRoomId())) {
+                        mChatPojo.setIcon(messagePojo.getIcon());
+                        mChatPojo.setName(messagePojo.getName());
+                        mChatPojo.set_id(messagePojo.getUserId());
+                        mChatPojo.setText(messagePojo.getText());
+                        mChatPojo.setRoomId(messagePojo.getRoomId());
+                        mChatPojo.setMessageId(messagePojo.getMessageId());
+                        mChatPojo.setRelation(messagePojo.getRelation());
+                        mChatPojo.setDate_updated(date);
+                        mChatPojo.setType(messagePojo.getType());
+                        messageList.add(mChatPojo);
+                    }
                 }
+
+                runThread();
             }
-            runThread();
 
         } catch (Exception e) {
             e.printStackTrace();
         }
 
     }
-
     private void runThread() {
         runOnUiThread(new Thread(new Runnable() {
             public void run() {
                 try {
                     if(messageList.size()>0) {
-                        mChatAdapter.notifyDataSetChanged();
+                        try {
+                            mChatAdapter.notifyDataSetChanged();
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
                         mEtMessageText.setText("");
                         mRvChatMessages.smoothScrollToPosition(messageList.size() - 1);
+
                     }
                 } catch (Exception e) {
                     e.printStackTrace();
