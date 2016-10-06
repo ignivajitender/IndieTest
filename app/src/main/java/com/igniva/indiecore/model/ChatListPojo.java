@@ -6,7 +6,7 @@ package com.igniva.indiecore.model;
 public class ChatListPojo {
 
     private String _id ;
-    private String type ;
+    private int type ;
     private String created_at ;
     private String date_updated ;
     private String last_message_Id;
@@ -22,6 +22,13 @@ public class ChatListPojo {
     private String badges;
 
 
+    public int getType() {
+        return type;
+    }
+
+    public void setType(int type) {
+        this.type = type;
+    }
     public String getLast_message_type() {
         return last_message_type;
     }
@@ -36,14 +43,6 @@ public class ChatListPojo {
 
     public void set_id(String _id) {
         this._id = _id;
-    }
-
-    public String getType() {
-        return type;
-    }
-
-    public void setType(String type) {
-        this.type = type;
     }
 
     public String getCreated_at() {

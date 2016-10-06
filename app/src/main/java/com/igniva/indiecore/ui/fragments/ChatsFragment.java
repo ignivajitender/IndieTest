@@ -417,11 +417,14 @@ public class ChatsFragment extends BaseFragment {
                 if(error==null){
                     if(result.getSuccess().equalsIgnoreCase("true") && !result.getTotalChats().equals(0)){
                        chatRoomList.clear();
-                        chatRoomList.addAll(result.getChatList());
+                        for(int i=0;i<result.getChatList().size();i++) {
+                            if(result.getChatList().get(i).getType()==1) {
+                                chatRoomList.add(result.getChatList().get(i));
+                            }
+                        }
                         mChatListAdapter=null;
                         mChatListAdapter=new ChatListAdapter(getActivity(),chatRoomList,CHAT_FRAGMENT);
                         mRvChatRoom.setAdapter(mChatListAdapter);
-
                     }else {
                         mComingSoon.setVisibility(View.VISIBLE);
                         mRvChatRoom.setVisibility(View.GONE);

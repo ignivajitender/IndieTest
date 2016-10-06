@@ -12,7 +12,7 @@ public class ChatPojo {
     private String text;
     private String media;
     private String thumb;
-    private String status;
+    private int status;
     private String created_at;
     private String date_updated;
     private String messageId;
@@ -20,8 +20,13 @@ public class ChatPojo {
     private String icon;
     private String relation;
     private String badges;
+    public int getStatus() {
+        return status;
+    }
 
-
+    public void setStatus(int status) {
+        this.status = status;
+    }
     public String getThumb() {
         return thumb;
     }
@@ -76,14 +81,6 @@ public class ChatPojo {
 
     public void setMedia(String media) {
         this.media = media;
-    }
-
-    public String getStatus() {
-        return status;
-    }
-
-    public void setStatus(String status) {
-        this.status = status;
     }
 
     public String getCreated_at() {

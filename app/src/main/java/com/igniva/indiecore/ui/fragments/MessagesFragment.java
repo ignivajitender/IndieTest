@@ -36,6 +36,7 @@ public class MessagesFragment extends BaseFragment implements View.OnClickListen
     private LinearLayoutManager mLlManagerChatRoom;
     private TextView mNoConversations,mFriends,mOthers;
     private ArrayList<ChatListPojo> chatRoomList = new ArrayList<>();
+    ArrayList<ChatListPojo> othersList= new ArrayList<>();
     private ChatListAdapter mChatListAdapter;
 
     @Nullable
@@ -72,21 +73,32 @@ public class MessagesFragment extends BaseFragment implements View.OnClickListen
 
 
     public void setFriendUi(){
-        mRvChatRoom.setVisibility(View.VISIBLE);
-        mNoConversations.setVisibility(View.GONE);
-        mFriends.setTextColor(Color.parseColor("#FFFFFF"));
-        mFriends.setBackgroundColor(Color.parseColor("#1C6DCE"));
-        mOthers.setTextColor(Color.parseColor("#1C6DCE"));
-        mOthers.setBackgroundResource(R.drawable.simple_border_line_style);
+        try {
+            mRvChatRoom.setVisibility(View.VISIBLE);
+            mNoConversations.setVisibility(View.GONE);
+            mFriends.setTextColor(Color.parseColor("#FFFFFF"));
+            mFriends.setBackgroundColor(Color.parseColor("#1C6DCE"));
+            mOthers.setTextColor(Color.parseColor("#1C6DCE"));
+            mOthers.setBackgroundResource(R.drawable.simple_border_line_style);
+            updateFriendsList();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
     public void setOthersUi(){
-        mRvChatRoom.setVisibility(View.GONE);
-        mNoConversations.setVisibility(View.VISIBLE);
-        mNoConversations.setText("Coming soon");
-        mFriends.setTextColor(Color.parseColor("#1C6DCE"));
-        mFriends.setBackgroundResource(R.drawable.simple_border_line_style);
-        mOthers.setTextColor(Color.parseColor("#FFFFFF"));
-        mOthers.setBackgroundColor(Color.parseColor("#1C6DCE"));
+        try {
+            mRvChatRoom.setVisibility(View.VISIBLE);
+            mNoConversations.setVisibility(View.GONE);
+            mNoConversations.setText("Coming soon");
+            mFriends.setTextColor(Color.parseColor("#1C6DCE"));
+            mFriends.setBackgroundResource(R.drawable.simple_border_line_style);
+            mOthers.setTextColor(Color.parseColor("#FFFFFF"));
+            mOthers.setBackgroundColor(Color.parseColor("#1C6DCE"));
+            updateOthersList();
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
@@ -148,7 +160,15 @@ public class MessagesFragment extends BaseFragment implements View.OnClickListen
                 if (error == null) {
                     if (result.getSuccess().equalsIgnoreCase("true") && !result.getTotalChats().equals(0)) {
                         chatRoomList.clear();
-                        chatRoomList.addAll(result.getChatList());
+                        for(int i=0;i<result.getChatList().size();i++) {
+                            if (result.getChatList().get(i).getType() == 0) {
+                                if (!result.getChatList().get(i).getRelation().equalsIgnoreCase("favourite")) {
+                                    chatRoomList.add(result.getChatList().get(i));
+                                } else {
+                                    othersList.add(result.getChatList().get(i));
+                                }
+                            }
+                        }
                         mChatListAdapter = null;
                         mChatListAdapter = new ChatListAdapter(getActivity(), chatRoomList,MESSAGE_FRAGMENT);
                         mRvChatRoom.setAdapter(mChatListAdapter);
@@ -169,5 +189,24 @@ public class MessagesFragment extends BaseFragment implements View.OnClickListen
         }
     };
 
+public void updateOthersList(){
+    if(othersList.size()>0) {
+        mChatListAdapter = null;
+        mChatListAdapter = new ChatListAdapter(getActivity(), othersList, MESSAGE_FRAGMENT);
+        mRvChatRoom.setAdapter(mChatListAdapter);
+    }else {
+        mRvChatRoom.setVisibility(View.GONE);
+        mNoConversations.setVisibility(View.VISIBLE);
+        mNoConversations.setText("No user is set a favourite");
+    }
+}
+
+    public void updateFriendsList(){
+        if(chatRoomList.size()>0) {
+            mChatListAdapter = null;
+            mChatListAdapter = new ChatListAdapter(getActivity(), chatRoomList, MESSAGE_FRAGMENT);
+            mRvChatRoom.setAdapter(mChatListAdapter);
+        }
+    }
 
 }
