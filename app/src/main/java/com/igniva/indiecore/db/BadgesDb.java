@@ -7,8 +7,8 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
 import com.igniva.indiecore.model.BadgesPojo;
+import com.igniva.indiecore.model.ChatPojo;
 import com.igniva.indiecore.model.CountryCodePojo;
-import com.igniva.indiecore.model.MessagePojo;
 import com.igniva.indiecore.model.ProfilePojo;
 import com.igniva.indiecore.model.UsersPojo;
 import com.igniva.indiecore.utils.Log;
@@ -72,7 +72,6 @@ public class BadgesDb extends SQLiteOpenHelper {
 
     public static String createUsersTable() {
 
-
 //        type=0 non-indiecore user
 //           type=1 indiecore user
         return "CREATE TABLE IF NOT EXISTS " + TABLE_USERS
@@ -87,7 +86,7 @@ public class BadgesDb extends SQLiteOpenHelper {
     public static  final String TABLE_CHAT="tbl_chat";
 //    CHAT TABLE COULMN
     public  static  final String Id="_id";
-    public  static  final String ROOD_ID="userId";
+    public  static  final String ROOM_ID="roomId";
     public  static  final String USERID="userId";
     public  static  final String MESSAGE_TYPE="type";
     public  static  final String TEXT="text";
@@ -103,9 +102,9 @@ public class BadgesDb extends SQLiteOpenHelper {
     public  static  final String BADGES="badges";
 //    TABLE CHAT END
  public static String createTableUserChat(){
-     return  "CREATE TABLE IF NOT EXISTS " + TABLE_CHAT + "(" + Id + " TEXT," + ROOD_ID + "TEXT PRIMARY KEY," +
+     return  "CREATE TABLE IF NOT EXISTS " + TABLE_CHAT + "(" + Id + " TEXT," + ROOM_ID + " TEXT," +
              USERID + " TEXT," + MESSAGE_TYPE + " TEXT," + TEXT + " TEXT," + MEDIA + " TEXT," + THUMB + " TEXT," +
-             STATUS + " INTEGER," + CREATED_AT + " TEXT," + DATE_UPDATED + " TEXT," + MESSAGE_ID + " TEXT," +
+             STATUS + " INTEGER," + CREATED_AT + " TEXT," + DATE_UPDATED + " TEXT," + MESSAGE_ID + " TEXT PRIMARY KEY," +
              NAME + " TEXT," + ICON + " TEXT," + RELATION + " TEXT," + BADGES + " TEXT" + ")";
 
  }
@@ -129,12 +128,15 @@ public class BadgesDb extends SQLiteOpenHelper {
         onCreate(db);
     }
 
-    public void insertSingleMessage(SQLiteDatabase db, MessagePojo message){
-
+    public void insertSingleMessage(SQLiteDatabase db, ChatPojo message){
+//        return  "CREATE TABLE IF NOT EXISTS " + TABLE_CHAT + "(" + Id + " TEXT," + ROOM_ID + "TEXT PRIMARY KEY," +
+//                USERID + " TEXT," + MESSAGE_TYPE + " TEXT," + TEXT + " TEXT," + MEDIA + " TEXT," + THUMB + " TEXT," +
+//                STATUS + " INTEGER," + CREATED_AT + " TEXT," + DATE_UPDATED + " TEXT," + MESSAGE_ID + " TEXT," +
+//                NAME + " TEXT," + ICON + " TEXT," + RELATION + " TEXT," + BADGES + " TEXT" + ")";
         try {
             ContentValues value= new ContentValues();
-            value.put(Id,"");
-            value.put(ROOD_ID,message.getRoomId());
+            value.put(Id,message.get_id());
+            value.put(ROOM_ID,message.getRoomId());
             value.put(USERID,message.getUserId());
             value.put(MESSAGE_TYPE,message.getType());
             value.put(TEXT,message.getText());
@@ -142,12 +144,14 @@ public class BadgesDb extends SQLiteOpenHelper {
             value.put(THUMB,message.getThumb());
             value.put(STATUS,message.getStatus());
             value.put(CREATED_AT,message.getCreated_at());
-            value.put(DATE_UPDATED,message.getDate_updated().get$date());
-            value.put(MESSAGE_ID,message.getLast_message_Id());
+            value.put(DATE_UPDATED,message.getDate_updated());
+            value.put(MESSAGE_ID,message.getMessageId());
             value.put(NAME,message.getName());
             value.put(ICON,message.getIcon());
-            value.put(RELATION,message.getIcon());
+            value.put(RELATION,message.getRelation());
             value.put(BADGES,message.getBadges());
+            // Inserting Single Row
+            db.insertWithOnConflict(TABLE_CHAT, null, value, SQLiteDatabase.CONFLICT_REPLACE);
 
         }catch (Exception e){
             e.printStackTrace();
@@ -155,12 +159,26 @@ public class BadgesDb extends SQLiteOpenHelper {
     }
 
 
-    public  void insertAllMessages(ArrayList<MessagePojo> mMessageList){
+    public  void insertAllMessages(ArrayList<ChatPojo> mMessageList){
         SQLiteDatabase db=this.getWritableDatabase();
         try {
             for(int i=0;i<mMessageList.size();i++){
                 insertSingleMessage(db,mMessageList.get(i));
             }
+
+        }catch (Exception e){
+            e.printStackTrace();
+        }finally {
+            db.close();
+        }
+
+    }
+
+
+    public  void insertMessage(ChatPojo message){
+        SQLiteDatabase db=this.getWritableDatabase();
+        try {
+                insertSingleMessage(db,message);
 
         }catch (Exception e){
             e.printStackTrace();
@@ -310,15 +328,6 @@ public class BadgesDb extends SQLiteOpenHelper {
         UsersPojo mUsersPojoObj;
         ProfilePojo mUserProfileObj;
         CountryCodePojo mCountryCodeObj;
-
-
-//        cursor.moveToNext();
-//        usersPojoObj = new UsersPojo();
-//        usersPojoObj.setFirstName(cursor.getString(1));
-//        usersPojoObj.setDesc(cursor.getString(3));
-//        usersPojoObj.setProfilePic(cursor.getString(4));
-//        savedUsersList.add(usersPojoObj);
-
         try {
             if (cursor.getCount() > 0) {
                 for (int i = 0; i < cursor.getCount(); i++) {
@@ -356,6 +365,45 @@ public class BadgesDb extends SQLiteOpenHelper {
         }
 
         return savedUsersList;
+
+    }
+
+
+    public ArrayList<ChatPojo> retrieveUserChat(String RoomId,Context context) {
+        SQLiteDatabase db = getReadableDatabase();
+//        Cursor cursor = db.query(TABLE_CHAT, null, null, null, null, null, null);
+        Cursor cursor = db.rawQuery("select * from tbl_chat where "+ ROOM_ID + " = '"+RoomId+"'",null);
+        ArrayList<ChatPojo> savedUserMessages = new ArrayList<ChatPojo>();
+        ChatPojo mUsersChatPojoObj;
+        try {
+            if (cursor.getCount() > 0) {
+                for (int i = 0; i < cursor.getCount(); i++) {
+                    cursor.moveToNext();
+                  mUsersChatPojoObj= new ChatPojo();
+                    mUsersChatPojoObj.set_id(cursor.getString(0));
+                    mUsersChatPojoObj.setRoomId(cursor.getString(1));
+                    mUsersChatPojoObj.setUserId(cursor.getString(2));
+                    mUsersChatPojoObj.setType(cursor.getString(3));
+                    mUsersChatPojoObj.setText(cursor.getString(4));
+                    mUsersChatPojoObj.setMedia(cursor.getString(5));
+                    mUsersChatPojoObj.setThumb(cursor.getString(6));
+                    mUsersChatPojoObj.setStatus(cursor.getInt(7));
+                    mUsersChatPojoObj.setCreated_at(cursor.getString(8));
+                    mUsersChatPojoObj.setDate_updated(cursor.getString(9));
+                    mUsersChatPojoObj.setMessageId(cursor.getString(10));
+                    mUsersChatPojoObj.setName(cursor.getString(11));
+                    mUsersChatPojoObj.setIcon(cursor.getString(12));
+                    mUsersChatPojoObj.setRelation(cursor.getString(13));
+                    mUsersChatPojoObj.setBadges(cursor.getString(14));
+                    savedUserMessages.add(mUsersChatPojoObj);
+                }
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return savedUserMessages;
 
     }
 

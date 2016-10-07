@@ -31,7 +31,7 @@ public class ResponsePojo {
     private String token;
     private String newUser;
     private String totalChats;
-    private String totalMessages;
+    private int totalMessages;
     private ProfilePojo profile;
     private UserPojo user;
     private CountryCodePojo location;
@@ -45,11 +45,11 @@ public class ResponsePojo {
     private ArrayList<ChatPojo> messagesList;
 
 
-    public String getTotalMessages() {
+    public int getTotalMessages() {
         return totalMessages;
     }
 
-    public void setTotalMessages(String totalMessages) {
+    public void setTotalMessages(int totalMessages) {
         this.totalMessages = totalMessages;
     }
 

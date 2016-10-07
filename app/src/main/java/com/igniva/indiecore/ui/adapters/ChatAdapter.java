@@ -34,7 +34,6 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.RecyclerViewHo
         this.mChatList = chatList;
         this.mContextName = contextName;
         this.mMessageId=messageID;
-
     }
 
     @Override

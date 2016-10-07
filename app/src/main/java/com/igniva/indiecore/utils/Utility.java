@@ -212,18 +212,18 @@ public class Utility {
 		AlertDialog.Builder builder1 = new AlertDialog.Builder(context);
 		builder1.setMessage( message);
 		builder1.setCancelable(true);
-		builder1.setPositiveButton(android.R.string.ok, new OnClickListener() {
-			public void onClick(DialogInterface dialog, int id) {
-//				new BoardActivity().removePost(postId);
-			}
-		});
-//		builder1.setNegativeButton(android.R.string.cancel, new OnClickListener() {
+//		builder1.setPositiveButton(android.R.string.ok, new OnClickListener() {
 //			public void onClick(DialogInterface dialog, int id) {
-//				dialog.dismiss();
+////				new BoardActivity().removePost(postId);
 //			}
 //		});
-		AlertDialog alert11 = builder1.create();
-		alert11.show();
+////		builder1.setNegativeButton(android.R.string.cancel, new OnClickListener() {
+////			public void onClick(DialogInterface dialog, int id) {
+////				dialog.dismiss();
+////			}
+////		});
+//		AlertDialog alert11 = builder1.create();
+//		alert11.show();
 	}
 
 	public static void showRemovePostAlertDialog(String message, Context context, final String postId){
@@ -294,17 +294,26 @@ public class Utility {
 		alert11.show();
 	}
 
-
-	public static void showAlertDialogBuy(String message, final Context context){
+	/**
+	 *  Open Payment Dialog, Initiate payment on Ok click
+	 *
+	 * @param message
+	 * @param context
+     */
+	public static AlertDialog.Builder showAlertDialogBuy(String message, final Context context){
 		AlertDialog.Builder builder1 = new AlertDialog.Builder(context,R.style.AppCompatAlertDialogStyle);
 		builder1.setMessage( message);
 		builder1.setCancelable(true);
-		builder1.setPositiveButton("Buy a badge slot", new OnClickListener() {
-			public void onClick(DialogInterface dialog, int id) {
-				dialog.dismiss();
-
-			}
-		});
+//		builder1.setPositiveButton("Buy a badge slot", new OnClickListener() {
+//			public void onClick(DialogInterface dialog, int id) {
+//
+//				// start payment
+//
+//				// close dialog
+//				dialog.dismiss();
+//
+//			}
+//		});
 //		builder1.setNegativeButton("INVITE", new OnClickListener() {
 //			@Override
 //			public void onClick(DialogInterface dialog, int which) {
@@ -314,8 +323,9 @@ public class Utility {
 //			}
 //		});
 
-		AlertDialog alert11 = builder1.create();
-		alert11.show();
+		//AlertDialog alert11 = builder1.create();
+		//alert11.show();
+		return builder1;
 	}
 
 }

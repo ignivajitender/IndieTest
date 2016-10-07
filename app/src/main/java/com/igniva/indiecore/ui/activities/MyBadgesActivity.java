@@ -1,10 +1,12 @@
 package com.igniva.indiecore.ui.activities;
 
 import android.app.ProgressDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
@@ -26,6 +28,10 @@ import com.igniva.indiecore.utils.Constants;
 import com.igniva.indiecore.utils.Log;
 import com.igniva.indiecore.utils.PreferenceHandler;
 import com.igniva.indiecore.utils.Utility;
+import com.igniva.indiecore.utils.iab.IabHelper;
+import com.igniva.indiecore.utils.iab.IabResult;
+import com.igniva.indiecore.utils.iab.Inventory;
+import com.igniva.indiecore.utils.iab.Purchase;
 
 import org.json.JSONObject;
 
@@ -34,7 +40,7 @@ import java.util.ArrayList;
 /**
  * Created by igniva-andriod-11 on 15/6/16.
  */
-public class MyBadgesActivity extends BaseActivity implements View.OnClickListener {
+public class MyBadgesActivity extends IABActivity implements View.OnClickListener {
     Toolbar mToolbar;
     private TextView mTVMyBadges, mTVBadgesMarket, mTvDone;
     private RecyclerView mRvMyBadges;
@@ -57,6 +63,7 @@ public class MyBadgesActivity extends BaseActivity implements View.OnClickListen
     ArrayList<BadgesPojo> mBadgeMarketList = null;
     public ArrayList<BadgesPojo> mSelectedBadgeIds = new ArrayList<BadgesPojo>();
     String LOG_TAG = "MyBadgeActivity";
+
 
 
     @Override
@@ -566,7 +573,19 @@ public class MyBadgesActivity extends BaseActivity implements View.OnClickListen
 
                 } else {
 
-                    Utility.showAlertDialogBuy(result.getError_text(), MyBadgesActivity.this);
+                    AlertDialog.Builder builder=Utility.showAlertDialogBuy(result.getError_text(), MyBadgesActivity.this);
+                    builder.setPositiveButton("Buy a badge slot", new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int id) {
+
+                            // start payment
+                            onBuyBadgeClicked();
+                            // close dialog
+                            dialog.dismiss();
+
+                        }
+                    });
+                   AlertDialog alert11 = builder.create();
+                   alert11.show();
 
                 }
 
@@ -591,5 +610,73 @@ public class MyBadgesActivity extends BaseActivity implements View.OnClickListen
         }
 
     }
+
+
+
+    @Override
+    public void receivedBroadcast() {
+        // Received a broadcast notification that the inventory of items has changed
+        Log.d(LOG_TAG, "Received broadcast notification. Querying inventory.");
+        try {
+            mHelper.queryInventoryAsync(mGotInventoryListener);
+        } catch (IabHelper.IabAsyncInProgressException e) {
+            complain("Error querying inventory. Another async operation in progress.");
+        }
+    }
+
+
+    @Override
+    public void onClick(DialogInterface dialog, int which) {
+
+    }
+
+    // User clicked the "Buy Gas" button
+    public void onBuyBadgeClicked() {
+        Log.d(LOG_TAG, "Buy gas button clicked.");
+        Log.d(LOG_TAG, "Launching purchase flow for gas.");
+
+        /* TODO: for security, generate your payload here for verification. See the comments on
+         *        verifyDeveloperPayload() for more info. Since this is a SAMPLE, we just use
+         *        an empty string, but on a production app you should carefully generate this. */
+        String payload = "";
+
+        try {
+            mHelper.launchPurchaseFlow(this, SKU_GAS, RC_REQUEST,
+                    mPurchaseFinishedListener, payload);
+        } catch (IabHelper.IabAsyncInProgressException e) {
+            complain("Error launching purchase flow. Another async operation in progress.");
+           // setWaitScreen(false);
+        }
+    }
+
+    /** Verifies the developer payload of a purchase. */
+    boolean verifyDeveloperPayload(Purchase p) {
+        String payload = p.getDeveloperPayload();
+        /*
+         * TODO: verify that the developer payload of the purchase is correct. It will be
+         * the same one that you sent when initiating the purchase.
+         *
+         * WARNING: Locally generating a random string when starting a purchase and
+         * verifying it here might seem like a good approach, but this will fail in the
+         * case where the user purchases an item on one device and then uses your app on
+         * a different device, because on the other device you will not have access to the
+         * random string you originally generated.
+         *
+         * So a good developer payload has these characteristics:
+         *
+         * 1. If two different users purchase an item, the payload is different between them,
+         *    so that one user's purchase can't be replayed to another user.
+         *
+         * 2. The payload must be such that you can verify it even when the app wasn't the
+         *    one who initiated the purchase flow (so that items purchased by the user on
+         *    one device work on other devices owned by the user).
+         *
+         * Using your own server to store and verify developer payloads across app
+         * installations is recommended.
+         */
+
+        return true;
+    }
+
 
 }

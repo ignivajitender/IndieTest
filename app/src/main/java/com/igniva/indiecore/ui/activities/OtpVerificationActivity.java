@@ -135,26 +135,15 @@ public class OtpVerificationActivity extends BaseActivity implements View.OnClic
 
         JSONObject payload = null;
         callId = 2;
-
-//        {"countryCode":"91","mobileNo":"9816428478"}
         try {
             payload = new JSONObject();
             payload.put(Constants.COUNTRY_CODE, mCountryId);
             payload.put(Constants.MOBILE_NO, mMobileNumber);
-
             WebNotificationManager.registerResponseListener(responseHandlerListener);
-
             WebServiceClient.resendOTP(this, payload.toString(), responseHandlerListener);
-
-            Log.e("ResendOtp payload", "------------" + payload.toString());
-
         } catch (Exception e) {
-
             e.printStackTrace();
         }
-
-//        {"countryCode":"91","mobileNo":"9816428478"}
-
 
     }
 
@@ -170,25 +159,11 @@ public class OtpVerificationActivity extends BaseActivity implements View.OnClic
 
                     // start parsing
                     if (result.getSuccess().equalsIgnoreCase("true") && callId == 1) {
-
-//                    {"token":"HtliAtfS4QTqoCedriJAZi_zOLE5dAfFhl36qwGoa3w","userId":"x6hzRHQYwTKESKLaj",
-//                            "newUser":false,"profile":{},"badges":[],"badgeLimit":10,"success":true,"error":null}
-
                         PreferenceHandler.writeString(OtpVerificationActivity.this, PreferenceHandler.PREF_KEY_USER_TOKEN, result.getToken());
                         PreferenceHandler.writeString(OtpVerificationActivity.this, PreferenceHandler.PREF_KEY_USER_ID, result.getUserId());
-
                         Intent in = new Intent(OtpVerificationActivity.this, CreateProfileActivity.class);
                         Bundle bundle = new Bundle();
                         bundle.putInt(Constants.INDEX, 4);
-//                        bundle.putString(Constants.FIRSTNAME, "");
-//                        bundle.putString(Constants.LASTNAME, "");
-//                        bundle.putString(Constants.DOB, "");
-//                        bundle.putString(Constants.DESCRIPTION, "");
-//                        bundle.putString(Constants.GENDER, "");
-//                        bundle.putString(Constants.PROFILEPIC, "");
-//                        bundle.putString(Constants.COVERPIC, "");
-//                        bundle.putInt(Constants.NUMBER_LENGTH, numberLength);
-//                        bundle.putString(Constants.COUNTRY_CODE, mCountryId);
                         in.putExtras(bundle);
                         startActivity(in);
                     } else if (result.getSuccess().equalsIgnoreCase("true") && callId == 2) {
@@ -229,16 +204,6 @@ public class OtpVerificationActivity extends BaseActivity implements View.OnClic
         } catch (Exception e) {
             e.printStackTrace();
         }
-
-//
-//        String otp= mOtpField.getText().toString();
-//        if(otp.isEmpty()){
-//
-//            Utility.showAlertDialog("Please enter OTP",this);
-//            return;
-//        } else {
-//
-//        }
 
     }
 

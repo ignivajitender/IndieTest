@@ -45,8 +45,7 @@ import java.util.List;
 /**
  * Created by igniva-andriod-11 on 8/6/16.
  */
-public class BadgesActivity extends BaseActivity implements IabBroadcastReceiver.IabBroadcastListener,
-        DialogInterface.OnClickListener  {
+public class BadgesActivity extends IABActivity {
     String LOG_TAG = "BadgesActivity";
     Toolbar mToolbar;
     private GridLayoutManager mGlayout;
@@ -236,7 +235,7 @@ public class BadgesActivity extends BaseActivity implements IabBroadcastReceiver
 
 
     public String createPayload(int page, int limit, int category) {
-        JSONObject payloadJson = null;
+        JSONObject payloadJson = null;https://www.google.co.in/search?client=ubuntu&channel=fs&q=play+store&ie=utf-8&oe=utf-8&gfe_rd=cr&ei=2hv2V5KYFvDs8Afm7Yi4Bg
         try {
             payloadJson = new JSONObject();
             payloadJson.put(Constants.TOKEN, PreferenceHandler.readString(BadgesActivity.this, PreferenceHandler.PREF_KEY_USER_TOKEN, ""));
@@ -360,7 +359,19 @@ public class BadgesActivity extends BaseActivity implements IabBroadcastReceiver
 
                 } else {
 
-                    Utility.showAlertDialog(result.getError_text(), BadgesActivity.this,null);
+                    AlertDialog.Builder builder=Utility.showAlertDialogBuy(result.getError_text(), BadgesActivity.this);
+                    builder.setPositiveButton("Buy a badge slot", new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int id) {
+
+                            // start payment
+                            onBuyBadgeClicked();
+                            // close dialog
+                            dialog.dismiss();
+
+                        }
+                    });
+                    AlertDialog alert11 = builder.create();
+                    alert11.show();
                 }
 //                {"user":{"badgeLimit":10,"selectedBadgeCount":10,"badgesGot":1},"success":true,"error":null}
 //                {"user":{"badgeLimit":10,"selectedBadgeCount":5,"badgesGot":5},"success":true,"error":null}
@@ -386,6 +397,25 @@ public class BadgesActivity extends BaseActivity implements IabBroadcastReceiver
         return selectedBadgesList;
     }
 
+
+    // User clicked the "Buy Gas" button
+    public void onBuyBadgeClicked() {
+        Log.d(LOG_TAG, "Buy gas button clicked.");
+        Log.d(LOG_TAG, "Launching purchase flow for gas.");
+
+        /* TODO: for security, generate your payload here for verification. See the comments on
+         *        verifyDeveloperPayload() for more info. Since this is a SAMPLE, we just use
+         *        an empty string, but on a production app you should carefully generate this. */
+        String payload = "";
+
+        try {
+            mHelper.launchPurchaseFlow(this, SKU_GAS, RC_REQUEST,
+                    mPurchaseFinishedListener, payload);
+        } catch (IabHelper.IabAsyncInProgressException e) {
+            complain("Error launching purchase flow. Another async operation in progress.");
+            // setWaitScreen(false);
+        }
+    }
 
     public void insertRecords() {
         try {

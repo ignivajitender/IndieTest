@@ -5,7 +5,6 @@
     android:orientation="vertical">
 
     <RelativeLayout
-        android:visibility="gone"
         android:id="@+id/ll_chat_other"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -23,9 +22,11 @@
             android:src="@drawable/default_user" />
 
         <LinearLayout
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerInParent="true"
+            android:paddingLeft="10dp"
+            android:background="@drawable/ic_chat_box_left"
             android:layout_toRightOf="@+id/iv_otheruser_chat"
             android:orientation="vertical">
 
@@ -34,6 +35,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="left"
+                android:text="Siddharth awasthi"
                 android:layout_marginLeft="5dp"
                 android:layout_marginTop="5dp"
                 android:textColor="@color/orange"
@@ -43,7 +45,6 @@
             <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:background="@drawable/ic_chat_box_left"
                 android:orientation="vertical">
 
                 <TextView
@@ -55,9 +56,8 @@
                     android:gravity="start"
                     android:hint="some text"
                     android:paddingBottom="4dp"
-                    android:paddingLeft="15dp"
                     android:paddingRight="15dp"
-                    android:paddingTop="12dp"
+                    android:paddingTop="4dp"
                     android:textColor="@color/black" />
 
                 <TextView
@@ -67,9 +67,8 @@
                     android:layout_gravity="left"
                     android:layout_marginLeft="5dp"
                     android:gravity="start"
-                    android:paddingBottom="10dp"
+                    android:paddingBottom="5dp"
                     android:textSize="12sp"
-                    android:paddingLeft="15dp"
                     android:paddingRight="15dp"
                     android:textColor="@color/light_black" />
             </LinearLayout>
