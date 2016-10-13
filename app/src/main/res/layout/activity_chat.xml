@@ -29,6 +29,7 @@
             android:layout_centerHorizontal="true"
             android:layout_gravity="center_horizontal"
             android:layout_marginTop="10dp"
+            android:visibility="gone"
             android:background="@drawable/rounded_corners_edit_text"
             android:hint="Load more"
             android:padding="8dp"

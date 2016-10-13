@@ -51,8 +51,10 @@ public class DashBoardActivity extends BaseActivity {
             mTvTitle = (TextView) mToolbar.findViewById(R.id.toolbar_title_img);
             mTvTitle.setText(getResources().getString(R.string.my_badges));
             //
-            ImageView mTvNext = (ImageView) mToolbar.findViewById(R.id.toolbar_img);
-            mTvNext.setOnClickListener(new View.OnClickListener() {
+            ImageView mIvBadges = (ImageView) mToolbar.findViewById(R.id.toolbar_img);
+            mIvBadges.setImageResource(R.drawable.ic_logo_icon);
+
+            mIvBadges.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     startActivity(new Intent(DashBoardActivity.this, MyBadgesActivity.class));
@@ -61,6 +63,7 @@ public class DashBoardActivity extends BaseActivity {
             //
 
             ImageView mMyProfile = (ImageView) mToolbar.findViewById(R.id.toolbar_img_left);
+            mMyProfile.setImageResource(R.drawable.ic_msg_icon);
             mMyProfile.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {

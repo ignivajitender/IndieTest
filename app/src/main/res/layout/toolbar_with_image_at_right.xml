@@ -21,7 +21,7 @@
         android:paddingBottom="5dp"
         android:paddingRight="20dp"
         android:paddingTop="5dp"
-        android:src="@drawable/news_feed" />
+        android:src="@drawable/ic_msg_icon" />
 
     <TextView
         android:id="@+id/toolbar_title_img"
@@ -43,7 +43,7 @@
         android:paddingBottom="5dp"
         android:paddingLeft="20dp"
         android:paddingTop="5dp"
-        android:src="@drawable/in_app" />
+        android:src="@drawable/ic_logo_icon" />
 
     <TextView
         android:id="@+id/toolbar_done"

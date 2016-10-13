@@ -29,8 +29,6 @@ import com.igniva.indiecore.utils.Log;
 import com.igniva.indiecore.utils.PreferenceHandler;
 import com.igniva.indiecore.utils.Utility;
 import com.igniva.indiecore.utils.iab.IabHelper;
-import com.igniva.indiecore.utils.iab.IabResult;
-import com.igniva.indiecore.utils.iab.Inventory;
 import com.igniva.indiecore.utils.iab.Purchase;
 
 import org.json.JSONObject;
@@ -45,7 +43,7 @@ public class MyBadgesActivity extends IABActivity implements View.OnClickListene
     private TextView mTVMyBadges, mTVBadgesMarket, mTvDone;
     private RecyclerView mRvMyBadges;
     private GridLayoutManager mGlManager;
-    private ImageView mTvNext;
+    private ImageView mIvPremiumBadges;
     private BadgesDb dbBadges;
     private ImageView onOffImage;
     private BadgesDb db_badges;
@@ -186,7 +184,7 @@ public class MyBadgesActivity extends IABActivity implements View.OnClickListene
         try {
             if (buttonIndex == 1) {
 
-                mTvNext.setVisibility(View.VISIBLE);
+                mIvPremiumBadges.setVisibility(View.VISIBLE);
                 mTvDone.setVisibility(View.GONE);
                 mTVMyBadges.setTextColor(Color.parseColor("#FFFFFF"));
                 mTVMyBadges.setBackgroundColor(Color.parseColor("#4598E8"));
@@ -207,7 +205,7 @@ public class MyBadgesActivity extends IABActivity implements View.OnClickListene
                 // Hide Load More Button
                 findViewById(R.id.btn_load_more).setVisibility(View.GONE);
             } else if (buttonIndex == 2) {
-                mTvNext.setVisibility(View.GONE);
+                mIvPremiumBadges.setVisibility(View.GONE);
                 mTvDone.setVisibility(View.VISIBLE);
                 mTVMyBadges.setTextColor(Color.parseColor("#4598E8"));
                 mTVMyBadges.setBackgroundColor(Color.parseColor("#FFFFFF"));
@@ -343,7 +341,6 @@ public class MyBadgesActivity extends IABActivity implements View.OnClickListene
     void initToolbar() {
         try {
             mToolbar = (Toolbar) findViewById(R.id.toolbar_with_icon);
-
             mTvDone = (TextView) findViewById(R.id.toolbar_done);
             mTvDone.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -360,8 +357,10 @@ public class MyBadgesActivity extends IABActivity implements View.OnClickListene
             TextView mTvTitle = (TextView) mToolbar.findViewById(R.id.toolbar_title_img);
             mTvTitle.setText(getResources().getString(R.string.my_badges));
             //
-            mTvNext = (ImageView) mToolbar.findViewById(R.id.toolbar_img);
-            mTvNext.setOnClickListener(new View.OnClickListener() {
+            mIvPremiumBadges = (ImageView) mToolbar.findViewById(R.id.toolbar_img);
+            mIvPremiumBadges.setImageResource(R.drawable.ic_logo_icon);
+
+            mIvPremiumBadges.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     Intent intent = new Intent(MyBadgesActivity.this, PremiumBadgesActivity.class);

@@ -26,6 +26,7 @@
             android:layout_height="wrap_content"
             android:layout_centerInParent="true"
             android:paddingLeft="10dp"
+            android:paddingRight="10dp"
             android:background="@drawable/ic_chat_box_left"
             android:layout_toRightOf="@+id/iv_otheruser_chat"
             android:orientation="vertical">
