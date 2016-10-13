@@ -232,7 +232,7 @@ public class Utility {
 		builder1.setCancelable(true);
 		builder1.setPositiveButton(android.R.string.ok, new OnClickListener() {
 			public void onClick(DialogInterface dialog, int id) {
-				new BoardActivity().removePost(postId);
+//				new BoardActivity().removePost(postId);
 			}
 		});
 		builder1.setNegativeButton(android.R.string.cancel, new OnClickListener() {

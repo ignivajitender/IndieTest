@@ -93,7 +93,7 @@ public class ChatActivity extends BaseActivity implements MeteorCallback {
     private ArrayList<ChatListPojo> chatRoomList = new ArrayList<>();
     ArrayList<ChatPojo> messageList = new ArrayList<>();
     private ChatListAdapter mChatListAdapter;
-    ChatAdapter mChatAdapter;
+    ChatAdapter mChatAdapter=null;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -469,7 +469,14 @@ public class ChatActivity extends BaseActivity implements MeteorCallback {
                 try {
                     if (messageList.size() > 0) {
                         try {
-                            mChatAdapter.notifyDataSetChanged();
+
+                            if(mChatAdapter!=null) {
+                                mChatAdapter.notifyDataSetChanged();
+                            }else {
+                                mChatAdapter = new ChatAdapter(ChatActivity.this, messageList, CHAT_ACTIVITY,"");
+                                mRvChatMessages.setAdapter(mChatAdapter);
+                            }
+
                         } catch (Exception e) {
                             e.printStackTrace();
                         }

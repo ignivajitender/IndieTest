@@ -660,7 +660,6 @@ public class BoardActivity extends BaseActivity implements View.OnClickListener 
         @Override
         public void onLikeClicked(TextView like, int position, String postId, String type) {
             try {
-//                Utility.showToastMessageShort(BoardActivity.this,"Like Clicked");
                 POSITION = position;
                 action = 1;
                 likeUnlikePost(mActionTypeLike, mWallPostList.get(position).getPostId());
@@ -721,8 +720,8 @@ public class BoardActivity extends BaseActivity implements View.OnClickListener 
                 mIvDelete=delete;
                 if (ACTION.equalsIgnoreCase("DELETE")) {
 
-                    Utility.showAlertDialog(getResources().getString(R.string.delete_post),BoardActivity.this,postId);
-//                    removePost(postId);
+//                    Utility.showRemovePostAlertDialog(getResources().getString(R.string.delete_post),BoardActivity.this,postId);
+                    removePost(postId);
 
                 } else if (ACTION.equalsIgnoreCase("REPORT")) {
 

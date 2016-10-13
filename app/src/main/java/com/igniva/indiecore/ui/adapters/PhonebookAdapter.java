@@ -56,7 +56,7 @@ public class PhonebookAdapter extends RecyclerView.Adapter<PhonebookAdapter.Recy
     @Override
     public void onBindViewHolder(final RecyclerViewHolders holder, final int position) {
         try {
-            holder.mContactName.setText(indieCoreUsersLIst.get(position).getProfile().getFirstName()+" "+indieCoreUsersLIst.get(position).getProfile().getLastName());
+            holder.mContactName.setText(indieCoreUsersLIst.get(position).getProfile().getFirstName());
             if (indieCoreUsersLIst.get(position).getProfile().getProfilePic() != null) {
                 Glide.with(context).load(WebServiceClient.HTTP_STAGING + indieCoreUsersLIst.get(position).getProfile().getProfilePic())
                         .thumbnail(1f)
