@@ -15,7 +15,6 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.google.gson.Gson;
-import com.google.gson.JsonSyntaxException;
 import com.igniva.indiecore.R;
 import com.igniva.indiecore.controller.ResponseHandlerListener;
 import com.igniva.indiecore.controller.WebNotificationManager;
@@ -23,10 +22,9 @@ import com.igniva.indiecore.controller.WebServiceClient;
 import com.igniva.indiecore.db.BadgesDb;
 import com.igniva.indiecore.model.ChatListPojo;
 import com.igniva.indiecore.model.ChatPojo;
-import com.igniva.indiecore.model.CollectionChatPojo;
-import com.igniva.indiecore.model.CollectionPojo;
 import com.igniva.indiecore.model.InstantChatPojo;
 import com.igniva.indiecore.model.MessageIdPojo;
+import com.igniva.indiecore.model.MessagePojo;
 import com.igniva.indiecore.model.ResponsePojo;
 import com.igniva.indiecore.ui.adapters.ChatAdapter;
 import com.igniva.indiecore.ui.adapters.ChatListAdapter;
@@ -85,10 +83,8 @@ public class ChatActivity extends BaseActivity implements MeteorCallback {
     private int mTotalMessages=0;
     private int mIndex = 0;
     ChatPojo mChatPojo;
-
-    InstantChatPojo messagePojo = null;
-
-    ChatListPojo chatListPojo=null;
+    InstantChatPojo instantChatPojo = null;
+    MessagePojo messagePojo=null;
     MessageIdPojo messageIDPojo = null;
     private ArrayList<ChatListPojo> chatRoomList = new ArrayList<>();
     ArrayList<ChatPojo> messageList = new ArrayList<>();
@@ -144,9 +140,11 @@ public class ChatActivity extends BaseActivity implements MeteorCallback {
             mLlsendMessage = (LinearLayout) findViewById(R.id.ll_shoot_message);
             mLlOpenMedia = (LinearLayout) findViewById(R.id.ll_add_media);
             mRvChatMessages = (RecyclerView) findViewById(R.id.rv_chat_messages);
-
             mLlManager = new LinearLayoutManager(this);
             mRvChatMessages.setLayoutManager(mLlManager);
+
+
+            loadMessages(mRoomId);
             try {
                 // set a custom ScrollListner to your RecyclerView
                 mRvChatMessages.addOnScrollListener(new RecyclerView.OnScrollListener() {
@@ -155,7 +153,7 @@ public class ChatActivity extends BaseActivity implements MeteorCallback {
                         // Get the first visible item
                         int firstVisibleItem = mLlManager.findFirstVisibleItemPosition();
                         //Now you can use this index to manipulate your TextView
-                        if (firstVisibleItem == 0 &&mTotalMessages>messageList.size()) {
+                        if (firstVisibleItem == 0 && mTotalMessages>messageList.size()) {
                             mTvLoadMore.setVisibility(View.VISIBLE);
                         } else {
                             mTvLoadMore.setVisibility(View.GONE);
@@ -167,22 +165,6 @@ public class ChatActivity extends BaseActivity implements MeteorCallback {
                 e.printStackTrace();
             }
 
-
-            try {
-                if(!mRoomId.isEmpty()) {
-                    dbBadges = new BadgesDb(this);
-                    messageList = dbBadges.retrieveUserChat(mRoomId, this);
-                    if (messageList.size() > 0) {
-                        mChatAdapter = new ChatAdapter(ChatActivity.this, messageList, CHAT_ACTIVITY, mMessageId);
-                        mRvChatMessages.setAdapter(mChatAdapter);
-                        mRvChatMessages.smoothScrollToPosition(messageList.size() - 1);
-                    } else {
-                        getRecentMessages(mRoomId,PAGE,LIMIT);
-                    }
-                }
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
 
 
             mTvLoadMore = (TextView) findViewById(R.id.tv_load_more);
@@ -256,6 +238,26 @@ public class ChatActivity extends BaseActivity implements MeteorCallback {
             mMeteor.connect();
 
 
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+
+    private void  loadMessages(String mRoomId ){
+
+        try {
+            if(!mRoomId.isEmpty()) {
+                dbBadges = new BadgesDb(this);
+                messageList = dbBadges.retrieveUserChat(mRoomId, this);
+                if (messageList.size() > 0) {
+                    mChatAdapter = new ChatAdapter(ChatActivity.this, messageList, CHAT_ACTIVITY, mMessageId);
+                    mRvChatMessages.setAdapter(mChatAdapter);
+                    mRvChatMessages.smoothScrollToPosition(messageList.size() - 1);
+                } else {
+                    getRecentMessages(mRoomId,PAGE,LIMIT);
+                }
+            }
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -384,7 +386,7 @@ public class ChatActivity extends BaseActivity implements MeteorCallback {
                                 JSONObject json = new JSONObject(result);
                                 mRoomId = json.getString("_id");
                                 if (messageList.size() == 0) {
-                                    getRecentMessages(mRoomId,PAGE,LIMIT);
+                                    loadMessages(mRoomId);
                                 }
                             } catch (JSONException e) {
                                 e.printStackTrace();
@@ -418,47 +420,67 @@ public class ChatActivity extends BaseActivity implements MeteorCallback {
 
     @Override
     public void onDataAdded(String collectionName, String documentID, String newValuesJson) {
+        Gson gson = new Gson();
+        Log.e(LOG_TAG, "ondataadded+++" + newValuesJson);
         try {
-
-            Gson gson = new Gson();
-                messagePojo = gson.fromJson(newValuesJson, InstantChatPojo.class);
+                instantChatPojo = gson.fromJson(newValuesJson, InstantChatPojo.class);
                 mChatPojo = new ChatPojo();
-                String date = convertDate(messagePojo.getDate_updated().get$date(), "hh:mm");
-                if (mRoomId != null) {
-                    if (mRoomId.equals(messagePojo.getRoomId()) && !messagePojo.getText().isEmpty()) {
-                        mChatPojo.setIcon(messagePojo.getIcon());
-                        mChatPojo.setName(messagePojo.getName());
-                        mChatPojo.set_id(messagePojo.getUserId());
-                        mChatPojo.setText(messagePojo.getText());
-                        mChatPojo.setRoomId(messagePojo.getRoomId());
-                        mChatPojo.setMessageId(messagePojo.getMessageId());
-                        mChatPojo.setRelation(messagePojo.getRelation());
+
+//            TODO use UTC time converter
+                String date = convertDate(instantChatPojo.getDate_updated().get$date(), "hh:mm");
+                if (mRoomId != null && collectionName.equalsIgnoreCase("message")) {
+                    if (mRoomId.equals(instantChatPojo.getRoomId()) && !instantChatPojo.getText().isEmpty()) {
+//                        if (!instantChatPojo.getText().isEmpty()) {
+
+                            mChatPojo.setIcon(instantChatPojo.getIcon());
+                        mChatPojo.setName(instantChatPojo.getName());
+                        mChatPojo.set_id(instantChatPojo.getUserId());
+                        mChatPojo.setText(instantChatPojo.getText());
+                        mChatPojo.setRoomId(instantChatPojo.getRoomId());
+                        mChatPojo.setMessageId(instantChatPojo.getMessageId());
+                        mChatPojo.setRelation(instantChatPojo.getRelation());
                         mChatPojo.setDate_updated(date);
-                        mChatPojo.setType(messagePojo.getType());
+                        mChatPojo.setType(instantChatPojo.getType());
                         messageList.add(mChatPojo);
+                        insertSingleMessage(mChatPojo);
+                    }else {
+                        mChatPojo.setIcon(instantChatPojo.getIcon());
+                        mChatPojo.setName(instantChatPojo.getName());
+                        mChatPojo.set_id(instantChatPojo.getUserId());
+                        mChatPojo.setText(instantChatPojo.getText());
+                        mChatPojo.setRoomId(instantChatPojo.getRoomId());
+                        mChatPojo.setMessageId(instantChatPojo.getMessageId());
+                        mChatPojo.setRelation(instantChatPojo.getRelation());
+                        mChatPojo.setDate_updated(date);
+                        mChatPojo.setType(instantChatPojo.getType());
                         insertSingleMessage(mChatPojo);
                     }
                 }
                 runThread();
 
-
-
-
-//            try {
-//                if(collectionName.equalsIgnoreCase("chat")){
-//                    chatListPojo = gson.fromJson(newValuesJson, ChatListPojo.class);
-//                    chatRoomList.add(chatListPojo);
-//                    mChatListAdapter.notifyDataSetChanged();
-//
-//                    }
-//            } catch (JsonSyntaxException e) {
-//                e.printStackTrace();
-//            }
-
-
         } catch (Exception e) {
             e.printStackTrace();
         }
+
+//        try{
+//                messagePojo = gson.fromJson(newValuesJson, MessagePojo.class);
+//                mChatPojo = new ChatPojo();
+//                String date = convertDate(messagePojo.getDate_updated().get$date(), "hh:mm");
+//                if (messagePojo.getRoomId() != null) {
+//                    mChatPojo.setIcon(messagePojo.getIcon());
+//                    mChatPojo.setName(messagePojo.getName());
+//                    mChatPojo.set_id(messagePojo.getUserId());
+//                    mChatPojo.setText(messagePojo.getLast_message());
+//                    mChatPojo.setRoomId(messagePojo.getRoomId());
+//                    mChatPojo.setMessageId(messagePojo.getLast_message_Id());
+//                    mChatPojo.setRelation(messagePojo.getRelation());
+//                    mChatPojo.setDate_updated(date);
+//                    mChatPojo.setType(messagePojo.getType());
+//                    insertSingleMessage(mChatPojo);
+//                }
+//        }catch (Exception e){
+//            e.printStackTrace();
+//        }
 
 
     }
@@ -492,7 +514,8 @@ public class ChatActivity extends BaseActivity implements MeteorCallback {
 
     @Override
     public void onDataChanged(String collectionName, String documentID, String updatedValuesJson, String removedValuesJson) {
-        Log.e(LOG_TAG, "" + updatedValuesJson);
+        Log.e(LOG_TAG, "ondatachnaged+++" + updatedValuesJson);
+        Log.e(LOG_TAG, "ondatachnaged----" + removedValuesJson);
         Gson gson = new Gson();
         messageIDPojo = gson.fromJson(updatedValuesJson, MessageIdPojo.class);
 
@@ -502,11 +525,11 @@ public class ChatActivity extends BaseActivity implements MeteorCallback {
 
         mMessageId = messageIDPojo.getLast_message_Id();
 
-        try {
-            runThread();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+//        try {
+//            runThread();
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//        }
 
     }
 

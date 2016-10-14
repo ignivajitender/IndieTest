@@ -2,8 +2,12 @@ package com.igniva.indiecore.utils;
 
 import java.net.InetAddress;
 import java.net.NetworkInterface;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Collections;
+import java.util.Date;
 import java.util.List;
+import java.util.TimeZone;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -24,6 +28,7 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
+import android.text.format.DateFormat;
 import android.widget.EditText;
 import android.widget.Toast;
 
@@ -326,6 +331,28 @@ public class Utility {
 		//AlertDialog alert11 = builder1.create();
 		//alert11.show();
 		return builder1;
+	}
+
+
+	public  static String getDateFromUTCTimestamp(long mTimestamp, String mDateFormate) {
+		String date = null;
+		try {
+			Calendar cal = Calendar.getInstance(TimeZone.getTimeZone("UTC"));
+			cal.setTimeInMillis(mTimestamp * 1000L);
+			date = DateFormat.format(mDateFormate, cal.getTimeInMillis()).toString();
+
+			SimpleDateFormat formatter = new SimpleDateFormat(mDateFormate);
+			formatter.setTimeZone(TimeZone.getTimeZone("UTC"));
+			Date value = formatter.parse(date);
+
+			SimpleDateFormat dateFormatter = new SimpleDateFormat(mDateFormate);
+			dateFormatter.setTimeZone(TimeZone.getDefault());
+			date = dateFormatter.format(value);
+			return date;
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return date;
 	}
 
 }

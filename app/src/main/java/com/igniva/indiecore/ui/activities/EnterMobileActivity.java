@@ -202,6 +202,7 @@ public class EnterMobileActivity extends BaseActivity {
 //                            bundle.putInt(Constants.NUMBER_LENGTH,mobileNumber.length());
 //                            in.putExtras(bundle);
                             startActivity(in);
+                            finish();
 
                         } else if(result.getNewUser().equalsIgnoreCase("False")){
 
@@ -233,6 +234,7 @@ public class EnterMobileActivity extends BaseActivity {
                             bundle.putString(Constants.COUNTRY_CODE,countryId);
                             in.putExtras(bundle);
                             startActivity(in);
+                            finish();
                         }
                     } else {
 

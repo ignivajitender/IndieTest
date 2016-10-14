@@ -4,6 +4,7 @@ package com.igniva.indiecore.model;
  * Created by igniva-andriod-05 on 22/9/16.
  */
 public class MessagePojo {
+
     String type;
     String last_message_Id;
     String last_message_by;

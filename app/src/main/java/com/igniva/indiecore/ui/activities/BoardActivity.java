@@ -311,8 +311,56 @@ public class BoardActivity extends BaseActivity implements View.OnClickListener 
         }
     }
 
+    /**
+     * payload to get all peoples in a business
+     * @return
+     */
 
-    /*
+    public String genratePayload(){
+
+        JSONObject payload=null;
+        try {
+            payload = new JSONObject();
+            payload.put(Constants.TOKEN, PreferenceHandler.readString(this, PreferenceHandler.PREF_KEY_USER_TOKEN, ""));
+            payload.put(Constants.USERID, PreferenceHandler.readString(this, PreferenceHandler.PREF_KEY_USER_ID, ""));
+            payload.put(Constants.BUSINESS_ID, mBusinessId);
+
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+        return payload.toString();
+    }
+
+
+    /**
+     * method to get all peoples of a business
+     *
+     * @return
+     */
+public void get_all_peoples(){
+    try {
+        String payload=genratePayload();
+        WebNotificationManager.registerResponseListener(response_peoples);
+        WebServiceClient.get_business_peoples(this,payload,response_peoples);
+
+    }catch (Exception e){
+        e.printStackTrace();
+    }
+
+}
+
+
+    ResponseHandlerListener response_peoples= new ResponseHandlerListener() {
+        @Override
+        public void onComplete(ResponsePojo result, WebServiceClient.WebError error, ProgressDialog mProgressDialog) {
+            try {
+                WebNotificationManager.unRegisterResponseListener(response_peoples);
+            }catch (Exception e){
+                e.printStackTrace();
+            }
+        }
+    };
+    /**
    *
    * create payload to get all post of a business
    * @Params:token, userId, roomId, postType, page, limit
@@ -332,7 +380,7 @@ public class BoardActivity extends BaseActivity implements View.OnClickListener 
         }
         return payload.toString();
     }
-    /*
+    /**
     *
     * to get all the post of this business wall
     *
@@ -348,7 +396,7 @@ public class BoardActivity extends BaseActivity implements View.OnClickListener 
             e.printStackTrace();
         }
     }
-    /*
+    /**
     *
     * posts response and list inflation
     *
@@ -396,12 +444,12 @@ public class BoardActivity extends BaseActivity implements View.OnClickListener 
     };
 
 
-    //    /*
-//
-// create payload to like unlike a post
-//token, userId, type(like/dislike/neutral), post_id
-//
-// */
+        /**
+
+ create payload to like unlike a post
+token, userId, type(like/dislike/neutral), post_id
+
+ */
     public String createPayload(String type, String postId) {
 
         JSONObject payload = null;
@@ -419,7 +467,7 @@ public class BoardActivity extends BaseActivity implements View.OnClickListener 
     }
 
 
-    /*
+    /**
     * like/unlike/neutral action to a post
     * @parms post_id
     *
@@ -632,18 +680,9 @@ public class BoardActivity extends BaseActivity implements View.OnClickListener 
                         mIvDelete.setVisibility(View.GONE);
                         Utility.showToastMessageLong(BoardActivity.this, "post reported");
 
-
-                    } else {
-
-
                     }
 
-
-                } else {
-
-
                 }
-
             } catch (Exception e) {
                 e.printStackTrace();
             }

@@ -76,6 +76,8 @@ public class WebServiceClient {
     public static  final String HTTP_BUY_A_SLOT=HTTP_PROTOCOL+HTTP_HOST_IP+"badge/buy";
     public static  final String HTTP_RECENT_CHAT=HTTP_PROTOCOL+HTTP_HOST_IP+"chat/pull/rooms";
     public static  final String HTTP_RECENT_MESSAGES=HTTP_PROTOCOL+HTTP_HOST_IP+"chat/pull/conversation";
+    public static  final String HTTP_GET_PEOPLE_IN_BUSINESS=HTTP_PROTOCOL+HTTP_HOST_IP+"business/peoples";
+
 
     private final static String CONTENT_TYPE = "application/json";
 
@@ -327,6 +329,15 @@ public class WebServiceClient {
         mResponseHandlerListener=responseHandlerListener;
         checkNetworkState(url,payload,method,context);
     }
+
+   public static void get_business_peoples(final Context context,String payload,ResponseHandlerListener responseHandlerListener){
+       url= HTTP_GET_PEOPLE_IN_BUSINESS;
+       method=HttpMethod.HTTP_POST;
+       mResponseHandlerListener=responseHandlerListener;
+       checkNetworkState(url,payload,method,context);
+   }
+
+
     /**
      * Check Available Network connection and make http call only if network is
      * available else show no network available

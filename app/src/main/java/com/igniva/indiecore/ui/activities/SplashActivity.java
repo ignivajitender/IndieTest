@@ -20,6 +20,7 @@ import android.widget.LinearLayout;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
 import com.igniva.indiecore.R;
+import com.igniva.indiecore.utils.PreferenceHandler;
 import com.igniva.indiecore.utils.gcm.RegistrationIntentService;
 
 /**
@@ -163,9 +164,17 @@ public class SplashActivity extends BaseActivity
 
    void navigateNextScreen(){
        try {
-           Intent intent = new Intent(SplashActivity.this, EnterMobileActivity.class);
-           startActivity(intent);
-           finish();
+
+           if(!PreferenceHandler.readString(SplashActivity.this,PreferenceHandler.PREF_KEY_USER_TOKEN,"").isEmpty() && !PreferenceHandler.readString(SplashActivity.this,PreferenceHandler.PREF_KEY_USER_ID,"").isEmpty() ){
+               Intent intent = new Intent(SplashActivity.this, DashBoardActivity.class);
+               startActivity(intent);
+               finish();
+           }else {
+               Intent intent = new Intent(SplashActivity.this, EnterMobileActivity.class);
+               startActivity(intent);
+               finish();
+           }
+
        }catch (Exception e){
            e.printStackTrace();
        }
