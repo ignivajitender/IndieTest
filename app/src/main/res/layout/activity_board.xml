@@ -134,6 +134,13 @@
 
     </LinearLayout>
 
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/rv_peoples"
+        android:layout_width="match_parent"
+        android:visibility="gone"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="2dp"></android.support.v7.widget.RecyclerView>
+
     <TextView
         android:id="@+id/tv_cuming_soon_Boardactivity"
         android:layout_width="match_parent"

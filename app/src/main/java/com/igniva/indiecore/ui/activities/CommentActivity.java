@@ -242,7 +242,6 @@ public class CommentActivity extends BaseActivity implements View.OnClickListene
                     if (comment_text.isEmpty()) {
                         Utility.showAlertDialog(getResources().getString(R.string.comment_text_validation_message), this,null);
                         return;
-
                     } else {
                         postComment(selected_post_data.getPostId(), comment_text);
 
@@ -338,7 +337,7 @@ public class CommentActivity extends BaseActivity implements View.OnClickListene
     }
 
 
-    /*
+    /**
   * like/unlike/neutral action to a post
   * @parms post_id
   *
@@ -356,7 +355,7 @@ public class CommentActivity extends BaseActivity implements View.OnClickListene
     }
 
 
-    /*
+    /**
  * like unlike response to  a post
  * */
     ResponseHandlerListener responseHandl = new ResponseHandlerListener() {
@@ -476,7 +475,7 @@ public class CommentActivity extends BaseActivity implements View.OnClickListene
     };
 
 
-    /*
+    /**
  * payload to write  a comment to a post
  *
  *
@@ -497,7 +496,7 @@ public class CommentActivity extends BaseActivity implements View.OnClickListene
         return payload.toString();
     }
 
-    /*
+    /**
     * to post a comment for a businesspost
     *
     * */
@@ -512,7 +511,7 @@ public class CommentActivity extends BaseActivity implements View.OnClickListene
 
     }
 
-    /*
+    /**
     *
     * response of  a comment post
     * */
@@ -552,7 +551,7 @@ public class CommentActivity extends BaseActivity implements View.OnClickListene
     };
 
 
-    /*
+    /**
     *
     * payload to get comments of a post
     *
@@ -576,7 +575,7 @@ public class CommentActivity extends BaseActivity implements View.OnClickListene
     }
 
 
-    /*
+    /**
     *
     * to get all comments of a post
     *
@@ -596,7 +595,7 @@ public class CommentActivity extends BaseActivity implements View.OnClickListene
         }
     }
 
-    /*
+    /**
     *
     * response all get comments
     * */
@@ -630,7 +629,7 @@ public class CommentActivity extends BaseActivity implements View.OnClickListene
     };
 
 
-   /*
+   /**
    * token, userId, type(like/dislike/neutral), commentId
    * generate payload to like unlike a comment
    *
@@ -653,7 +652,7 @@ public class CommentActivity extends BaseActivity implements View.OnClickListene
         return payload.toString();
     }
 
-    /*
+    /**
     *
     * call request to like unlike a comment
     *
@@ -672,7 +671,7 @@ public class CommentActivity extends BaseActivity implements View.OnClickListene
 
     }
 
-    /*
+    /**
     * response LIke unlike a comment
     *
     *
@@ -761,7 +760,7 @@ public class CommentActivity extends BaseActivity implements View.OnClickListene
     };
 
 
-    /*
+    /**
     *
     * Create payload to remove a comment
     *   token, userId, commentId
@@ -783,7 +782,7 @@ public class CommentActivity extends BaseActivity implements View.OnClickListene
     }
 
 
-    /*
+    /**
     *
     * call to remove a comment
     * */
@@ -801,7 +800,7 @@ public class CommentActivity extends BaseActivity implements View.OnClickListene
     }
 
 
-    /*
+    /**
    * response remove a comment
    *
    *
@@ -847,7 +846,7 @@ public class CommentActivity extends BaseActivity implements View.OnClickListene
     
 
     
-    /*
+    /**
     * create payload to flag/remove a post
     *
     *
@@ -871,7 +870,7 @@ public class CommentActivity extends BaseActivity implements View.OnClickListene
         return payload.toString();
     }
 
-    /*
+    /**
     * remove post call
     *
     * */
@@ -891,7 +890,7 @@ public class CommentActivity extends BaseActivity implements View.OnClickListene
     }
 
 
-    /*
+    /**
     * response Remove post
     *
     *
@@ -934,7 +933,7 @@ public class CommentActivity extends BaseActivity implements View.OnClickListene
     };
 
 
-    /*
+    /**
     *
     * flag post call
     *
@@ -953,7 +952,7 @@ public class CommentActivity extends BaseActivity implements View.OnClickListene
     }
 
 
-    /*
+    /**
     * response flag post
     *
     *

@@ -110,7 +110,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
             android:layout_weight="1"
-            android:drawableLeft="@drawable/share_icon_grey"
+            android:drawableLeft="@drawable/share_icon"
             android:drawablePadding="6dp"
             android:gravity="center_vertical"
             android:text="0" />

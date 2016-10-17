@@ -55,13 +55,20 @@ public class ChatListAdapter extends RecyclerView.Adapter<ChatListAdapter.Recycl
     public void onBindViewHolder(final RecyclerViewHolders holder, final int position) {
         try {
                 holder.mTvUserName.setText(mChatRoomList.get(position).getName());
-                if (mChatRoomList.get(position).getIcon() != null) {
+                if (mChatRoomList.get(position).getIcon() != null && mChatRoomList.get(position).getIcon().contains("https")) {
+                    Glide.with(context).load(mChatRoomList.get(position).getIcon())
+                            .thumbnail(1f)
+                            .crossFade()
+                            .diskCacheStrategy(DiskCacheStrategy.ALL)
+                            .into(holder.mIvUserImage);
+                } else if(mChatRoomList.get(position).getIcon()!=null) {
                     Glide.with(context).load(WebServiceClient.HTTP_STAGING + mChatRoomList.get(position).getIcon())
                             .thumbnail(1f)
                             .crossFade()
                             .diskCacheStrategy(DiskCacheStrategy.ALL)
                             .into(holder.mIvUserImage);
-                } else {
+                }
+                else {
                     holder.mIvUserImage.setImageResource(R.drawable.default_user);
                 }
                 holder.mTv_lastMessage.setText(mChatRoomList.get(position).getLast_message());
@@ -77,6 +84,8 @@ public class ChatListAdapter extends RecyclerView.Adapter<ChatListAdapter.Recycl
                             context.startActivity(intent);
                         } else {
                             Intent intent = new Intent(context, BoardActivity.class);
+                            intent.putExtra(Constants.BUSINESS_ID, mChatRoomList.get(position).getBusinessId());
+                            intent.putExtra(Constants.BUSINESS_NAME, mChatRoomList.get(position).getName());
                             context.startActivity(intent);
                         }
                     }

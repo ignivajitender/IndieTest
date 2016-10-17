@@ -231,13 +231,13 @@ public class Utility {
 //		alert11.show();
 	}
 
-	public static void showRemovePostAlertDialog(String message, Context context, final String postId){
+	public static void showRemovePostAlertDialog(String message, final Context context, final String postId){
 		AlertDialog.Builder builder1 = new AlertDialog.Builder(context);
 		builder1.setMessage( message);
 		builder1.setCancelable(true);
 		builder1.setPositiveButton(android.R.string.ok, new OnClickListener() {
 			public void onClick(DialogInterface dialog, int id) {
-//				new BoardActivity().removePost(postId);
+				new BoardActivity().removePost(context,postId);
 			}
 		});
 		builder1.setNegativeButton(android.R.string.cancel, new OnClickListener() {

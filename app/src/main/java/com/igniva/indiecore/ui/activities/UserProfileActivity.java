@@ -61,7 +61,7 @@ public class UserProfileActivity extends BaseActivity implements View.OnClickLis
     private  int PAGE = 1, LIMIT = 20;
     private Toolbar mToolbar;
     private String mUserId = "";
-    private String mRoomId = "";
+    private String mBusinessId = "";
     private int INDEX = 0;
     int action = 0;
     public static int POSITION = -1;
@@ -140,7 +140,7 @@ public class UserProfileActivity extends BaseActivity implements View.OnClickLis
             Bundle bundle = getIntent().getExtras();
             mUserId = bundle.getString(Constants.USERID);
             INDEX = bundle.getInt(Constants.INDEX);
-            mRoomId = bundle.getString(Constants.BUSINESS_ID);
+            mBusinessId = bundle.getString(Constants.BUSINESS_ID);
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -636,7 +636,7 @@ public class UserProfileActivity extends BaseActivity implements View.OnClickLis
         }
     };
 
-    /*
+    /**
     * payload to set a user favourite
     *@Params:-token, userId, personId, businessId
     *
@@ -647,7 +647,7 @@ public class UserProfileActivity extends BaseActivity implements View.OnClickLis
             payload = new JSONObject();
             payload.put(Constants.TOKEN, PreferenceHandler.readString(this, PreferenceHandler.PREF_KEY_USER_TOKEN, ""));
             payload.put(Constants.USERID, PreferenceHandler.readString(this, PreferenceHandler.PREF_KEY_USER_ID, ""));
-            payload.put(Constants.BUSINESS_ID, mRoomId);
+            payload.put(Constants.BUSINESS_ID, mBusinessId);
             payload.put(Constants.PERSON_ID, mUserId);
 
         } catch (Exception e) {
@@ -657,7 +657,10 @@ public class UserProfileActivity extends BaseActivity implements View.OnClickLis
         return payload.toString();
     }
 
-
+    /**
+     * set A user Favourite
+     *
+     */
     public void set_favourite() {
 
         try {

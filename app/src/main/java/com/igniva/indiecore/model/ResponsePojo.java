@@ -6,7 +6,6 @@ import java.util.ArrayList;
  * Wrapper class -  to wrap ant response from webservice
  */
 public class ResponsePojo {
-
     private boolean  is_favourite;
     private boolean  is_block;
     private int status;
@@ -22,6 +21,9 @@ public class ResponsePojo {
     private int badgeLimit;
     private int totalComments;
     private int badgesGot;
+    private int totalMessages;
+    private int totalPeoples;
+    private int favourite;
     private String  relation;
     private String description;
     private String success;
@@ -31,7 +33,7 @@ public class ResponsePojo {
     private String token;
     private String newUser;
     private String totalChats;
-    private int totalMessages;
+    private String personId;
     private ProfilePojo profile;
     private UserPojo user;
     private CountryCodePojo location;
@@ -43,8 +45,37 @@ public class ResponsePojo {
     private ArrayList<RepliesPojo> repliesList;
     private ArrayList<ChatListPojo> chatList;
     private ArrayList<ChatPojo> messagesList;
+    private ArrayList<PeoplesPojo> peoples;
 
+    public String getPersonId() {
+        return personId;
+    }
 
+    public void setPersonId(String personId) {
+        this.personId = personId;
+    }
+    public int getFavourite() {
+        return favourite;
+    }
+
+    public void setFavourite(int favourite) {
+        this.favourite = favourite;
+    }
+
+    public ArrayList<PeoplesPojo> getPeoples() {
+        return peoples;
+    }
+
+    public void setPeoples(ArrayList<PeoplesPojo> peoples) {
+        this.peoples = peoples;
+    }
+    public int getTotalPeoples() {
+        return totalPeoples;
+    }
+
+    public void setTotalPeoples(int totalPeoples) {
+        this.totalPeoples = totalPeoples;
+    }
     public int getTotalMessages() {
         return totalMessages;
     }

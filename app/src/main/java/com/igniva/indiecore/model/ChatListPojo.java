@@ -6,6 +6,7 @@ package com.igniva.indiecore.model;
 public class ChatListPojo {
 
     private String _id ;
+    private String businessId;
     private int type ;
     private String created_at ;
     private String date_updated ;
@@ -22,6 +23,13 @@ public class ChatListPojo {
     private String badges;
 
 
+    public String getBusinessId() {
+        return businessId;
+    }
+
+    public void setBusinessId(String businessId) {
+        this.businessId = businessId;
+    }
     public int getType() {
         return type;
     }
