@@ -2,10 +2,12 @@ package com.igniva.indiecore.ui.activities;
 
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
@@ -77,6 +79,8 @@ public class BoardActivity extends BaseActivity implements View.OnClickListener 
     private String mBusinessId = "";
     private String mBusinessName = "";
     private String postID = "-1";
+    private String BLOCK="block";
+    private String REMOVE="remove";
     private ImageView mIvDelete;
 
     @Override
@@ -319,7 +323,7 @@ public class BoardActivity extends BaseActivity implements View.OnClickListener 
 
             if (mPeoplesList.size() > 0) {
                 mPeoplesTabAdapter = null;
-                mPeoplesTabAdapter = new PeoplesTabAdapter(this, mPeoplesList, null);
+                mPeoplesTabAdapter = new PeoplesTabAdapter(this, mPeoplesList, onStarClick,onBlockClick);
                 mRvPeoples.setAdapter(mPeoplesTabAdapter);
             } else {
                 get_all_peoples();
@@ -385,7 +389,7 @@ public class BoardActivity extends BaseActivity implements View.OnClickListener 
                         mPeoplesList.addAll(result.getPeoples());
                         if (mPeoplesList.size() > 0) {
                             mPeoplesTabAdapter = null;
-                            mPeoplesTabAdapter = new PeoplesTabAdapter(BoardActivity.this, mPeoplesList, onStarClick);
+                            mPeoplesTabAdapter = new PeoplesTabAdapter(BoardActivity.this, mPeoplesList, onStarClick,onBlockClick);
                             mRvPeoples.setAdapter(mPeoplesTabAdapter);
                         } else {
                             mComingSoon.setVisibility(View.VISIBLE);
@@ -545,7 +549,6 @@ public class BoardActivity extends BaseActivity implements View.OnClickListener 
                                     mWallPostList.get(POSITION).setLike(a - 1);
                                 }
                             }
-//                            Log.d(LOG_TAG, " new count of like " + mHolder.like.getText());
 
 
                         } else if (action == 2) {
@@ -602,12 +605,12 @@ public class BoardActivity extends BaseActivity implements View.OnClickListener 
     /**
      * create payload to flag/remove a post
      */
-    public String genratePayload(Context context, String postId) {
+    public String genratePayload(String postId) {
         JSONObject payload = null;
         try {
             payload = new JSONObject();
-            payload.put(Constants.TOKEN, PreferenceHandler.readString(context, PreferenceHandler.PREF_KEY_USER_TOKEN, ""));
-            payload.put(Constants.USERID, PreferenceHandler.readString(context, PreferenceHandler.PREF_KEY_USER_ID, ""));
+            payload.put(Constants.TOKEN, PreferenceHandler.readString(this, PreferenceHandler.PREF_KEY_USER_TOKEN, ""));
+            payload.put(Constants.USERID, PreferenceHandler.readString(this, PreferenceHandler.PREF_KEY_USER_ID, ""));
             payload.put(Constants.POST_ID, postId);
 
         } catch (Exception e) {
@@ -621,14 +624,14 @@ public class BoardActivity extends BaseActivity implements View.OnClickListener 
     /**
      * remove post call
      */
-    public void removePost(Context context, String postId) {
+    public void removePost(String postId) {
         try {
 
-            String payload = genratePayload(context, postId);
+            String payload = genratePayload(postId);
             if (!payload.isEmpty()) {
 
                 WebNotificationManager.registerResponseListener(responseRemovePost);
-                WebServiceClient.remove_a_post(context, payload, responseRemovePost);
+                WebServiceClient.remove_a_post(this, payload, responseRemovePost);
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -676,7 +679,7 @@ public class BoardActivity extends BaseActivity implements View.OnClickListener 
      */
     public void flagPost(String postId) {
 
-        String payload = genratePayload(getBaseContext(), postId);
+        String payload = genratePayload(postId);
         if (payload != null) {
 
             WebNotificationManager.registerResponseListener(responseFlagPost);
@@ -781,8 +784,8 @@ public class BoardActivity extends BaseActivity implements View.OnClickListener 
                 mIvDelete = delete;
                 if (ACTION.equalsIgnoreCase("DELETE")) {
 //TODO
-//                    Utility.showRemovePostAlertDialog(getResources().getString(R.string.delete_post), BoardActivity.this, postId);
-                    removePost(BoardActivity.this, postId);
+                    showRemovePostAlertDialog(getResources().getString(R.string.delete_post), BoardActivity.this, postId,REMOVE);
+//                    removePost(BoardActivity.this, postId);
 
                 } else if (ACTION.equalsIgnoreCase("REPORT")) {
 
@@ -902,5 +905,91 @@ public class BoardActivity extends BaseActivity implements View.OnClickListener 
             }
         }
     };
+
+
+    OnContactCardClickListner onBlockClick = new OnContactCardClickListner() {
+        @Override
+        public void onContactCardClicked(ImageView view, int position, String userId) {
+            try {
+//                starImage = view;
+                POSITION=position;
+                showRemovePostAlertDialog(getResources().getString(R.string.block_user),BoardActivity.this,userId,BLOCK);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+    };
+
+
+    public  void showRemovePostAlertDialog(String message, final Context context, final String Id, final String method){
+        AlertDialog.Builder builder1 = new AlertDialog.Builder(context);
+        builder1.setMessage( message);
+        builder1.setCancelable(true);
+        builder1.setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int id) {
+                if(method.equalsIgnoreCase(REMOVE)) {
+                    removePost(Id);
+                }else {
+                    blockUser(Id);
+                }
+            }
+        });
+        builder1.setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int id) {
+                dialog.dismiss();
+            }
+        });
+        AlertDialog alert11 = builder1.create();
+        alert11.show();
+    }
+    /**
+     * create payload to block an user
+     * token, userId, personId
+     */
+    public String createPayload(String userId) {
+        JSONObject payload = null;
+        try {
+            payload = new JSONObject();
+            payload.put(Constants.TOKEN, PreferenceHandler.readString(this, PreferenceHandler.PREF_KEY_USER_TOKEN, ""));
+            payload.put(Constants.USERID, PreferenceHandler.readString(this, PreferenceHandler.PREF_KEY_USER_ID, ""));
+            payload.put(Constants.PERSON_ID, userId);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return payload.toString();
+    }
+
+
+    public void blockUser(String userId) {
+//        mIvBlockUser.setVisibility(View.GONE);
+        String payload = createPayload(userId);
+        if (payload != null) {
+            WebNotificationManager.registerResponseListener(blockResponseHandler);
+            WebServiceClient.block_a_user(BoardActivity.this, payload, blockResponseHandler);
+        }
+
+    }
+
+    ResponseHandlerListener blockResponseHandler = new ResponseHandlerListener() {
+        @Override
+        public void onComplete(ResponsePojo result, WebServiceClient.WebError error, ProgressDialog mProgressDialog) {
+            WebNotificationManager.unRegisterResponseListener(blockResponseHandler);
+
+            if (error == null) {
+
+                if (result.getSuccess().equalsIgnoreCase("true")) {
+                       mPeoplesTabAdapter.notifyDataSetChanged();
+                    Utility.showToastMessageShort(BoardActivity.this, "User blocked");
+
+                }
+            }
+            //            finish the dialog
+            if (mProgressDialog != null && mProgressDialog.isShowing()) {
+                mProgressDialog.dismiss();
+            }
+        }
+    };
+
 
 }

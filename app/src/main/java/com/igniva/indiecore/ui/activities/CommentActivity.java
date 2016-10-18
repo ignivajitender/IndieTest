@@ -2,9 +2,12 @@ package com.igniva.indiecore.ui.activities;
 
 import android.app.Activity;
 import android.app.ProgressDialog;
+import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
@@ -299,7 +302,7 @@ public class CommentActivity extends BaseActivity implements View.OnClickListene
             case R.id.iv_delete_report_post:
                 try {
                     if (ACTION.equalsIgnoreCase("DELETE")) {
-                        removePost(postId);
+                        showRemovePostAlertDialog(getResources().getString(R.string.delete_post), CommentActivity.this, postId);
                     } else {
 
                         flagPost(postId);
@@ -954,8 +957,6 @@ public class CommentActivity extends BaseActivity implements View.OnClickListene
 
     /**
     * response flag post
-    *
-    *
     * */
     ResponseHandlerListener responseFlagPost = new ResponseHandlerListener() {
         @Override
@@ -966,18 +967,12 @@ public class CommentActivity extends BaseActivity implements View.OnClickListene
                 if (error == null) {
                     if (result.getSuccess().equalsIgnoreCase("true")) {
                         mReportPost.setVisibility(View.GONE);
-                        Utility.showToastMessageLong(CommentActivity.this, "post reported");
+                        Utility.showToastMessageLong(CommentActivity.this,getResources().getString(R.string.post_reported));
 
 
-                    } else {
-
-
+                    }else {
+                        Utility.showToastMessageShort(CommentActivity.this,getResources().getString(R.string.some_unknown_error));
                     }
-
-
-                } else {
-
-
                 }
 
             } catch (Exception e) {
@@ -1052,74 +1047,23 @@ public class CommentActivity extends BaseActivity implements View.OnClickListene
         }
     };
 
-//    OnCommentListItemClickListner onCommentListItemClickListner = new OnCommentListItemClickListner() {
-//        @Override
-//        public void onCommentListItemClicked(final PostCommentAdapter.RecyclerViewHolders view, final int position, final String commentId) {
-//
-//            mHolder = view;
-//
-//
-//
-//            mHolder.mDelete.setOnClickListener(new View.OnClickListener() {
-//                @Override
-//                public void onClick(View v) {
-//                    POSITION = position;
-//                    removeComment(commentId);
-//                }
-//            });
-//
-//            mHolder.mCommentLike.setOnClickListener(new View.OnClickListener() {
-//                @Override
-//                public void onClick(View v) {
-//                    INDEX = 1;
-//                    POSITION = position;
-//                    Utility.showToastMessageLong(CommentActivity.this,""+position);
-//                    commentAction(mActionTypeLike, commentId);
-//
-//
-//                }
-//            });
-//
-//            mHolder.mCommentDislike.setOnClickListener(new View.OnClickListener() {
-//                @Override
-//                public void onClick(View v) {
-//                    INDEX = 2;
-//                    POSITION = position;
-//                    Utility.showToastMessageLong(CommentActivity.this,""+position);
-//                    commentAction(mActionTypeDislike, commentId);
-//
-//
-//                }
-//            });
-//            mHolder.mCommentNeutral.setOnClickListener(new View.OnClickListener() {
-//                @Override
-//                public void onClick(View v) {
-//                    INDEX = 3;
-//                    POSITION = position;
-//                    Utility.showToastMessageLong(CommentActivity.this,""+position);
-//                    commentAction(mActionTypeNeutral, commentId);
-//
-//
-//                }
-//            });
-//
-//            mHolder.mReply.setOnClickListener(new View.OnClickListener() {
-//                @Override
-//                public void onClick(View v) {
-//                    POSITION = position;
-//                    Bundle bundle = new Bundle();
-//                    bundle.putSerializable("COMMENT", mCommentList.get(POSITION));
-//
-//                    Intent intent = new Intent(CommentActivity.this, CommentsReplyActivity.class);
-//                    intent.putExtras(bundle);
-//                    startActivity(intent);
-//
-//                }
-//            });
-//
-//
-//        }
-//    };
+    private  void showRemovePostAlertDialog(String message, final Context context, final String postId){
+        AlertDialog.Builder builder1 = new AlertDialog.Builder(context);
+        builder1.setMessage( message);
+        builder1.setCancelable(true);
+        builder1.setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int id) {
+                removePost(postId);
+            }
+        });
+        builder1.setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int id) {
+                dialog.dismiss();
+            }
+        });
+        AlertDialog alert11 = builder1.create();
+        alert11.show();
+    }
 
 
 }

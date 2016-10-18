@@ -9,6 +9,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
@@ -32,15 +34,18 @@ public class PhonebookAdapter extends RecyclerView.Adapter<PhonebookAdapter.Recy
 
     private ArrayList<UsersPojo> indieCoreUsersLIst;
     private Context context;
-    String LOG_TAG = "PhonebookAdapter";
+    private String mTAb = "";
+    private String FAVOURITE = "favourite";
+    private String LOG_TAG = "PhonebookAdapter";
     OnContactCardClickListner onContactCardClickListner;
 
 
-    public PhonebookAdapter(Context context, ArrayList<UsersPojo> indieCoreUsersLIst, OnContactCardClickListner onContactCardClickListner) {
+    public PhonebookAdapter(Context context, ArrayList<UsersPojo> indieCoreUsersLIst, OnContactCardClickListner onContactCardClickListner, String TAB) {
 
         this.indieCoreUsersLIst = indieCoreUsersLIst;
         this.context = context;
-        this.onContactCardClickListner=onContactCardClickListner;
+        this.onContactCardClickListner = onContactCardClickListner;
+        this.mTAb = TAB;
 
     }
 
@@ -56,6 +61,20 @@ public class PhonebookAdapter extends RecyclerView.Adapter<PhonebookAdapter.Recy
     @Override
     public void onBindViewHolder(final RecyclerViewHolders holder, final int position) {
         try {
+            if (mTAb.equalsIgnoreCase(FAVOURITE)) {
+                holder.mBadgeIconConatiner.setVisibility(View.VISIBLE);
+                if(indieCoreUsersLIst.get(position).getBadges().equalsIgnoreCase("off")){
+                    holder.mBadgeIconConatiner.setBackgroundResource(R.drawable.badge_off);
+                }else {
+                    holder.mBadgeIconConatiner.setBackgroundResource(R.drawable.blank_badge);
+                    holder.mMutualBadgeCount.setText(indieCoreUsersLIst.get(position).getBadges());
+                }
+
+                holder.mStarContainer.setVisibility(View.VISIBLE);
+            }else {
+                holder.mBadgeIconConatiner.setVisibility(View.GONE);
+                holder.mStarContainer.setVisibility(View.GONE);
+            }
             holder.mContactName.setText(indieCoreUsersLIst.get(position).getProfile().getFirstName());
             if (indieCoreUsersLIst.get(position).getProfile().getProfilePic() != null) {
                 Glide.with(context).load(WebServiceClient.HTTP_STAGING + indieCoreUsersLIst.get(position).getProfile().getProfilePic())
@@ -69,7 +88,7 @@ public class PhonebookAdapter extends RecyclerView.Adapter<PhonebookAdapter.Recy
             }
             holder.mText.setText(indieCoreUsersLIst.get(position).getProfile().getDesc());
 
-            Log.e("Adapter","-----"+indieCoreUsersLIst.get(position).getMobileNo());
+            Log.e("Adapter", "-----" + indieCoreUsersLIst.get(position).getMobileNo());
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -78,7 +97,7 @@ public class PhonebookAdapter extends RecyclerView.Adapter<PhonebookAdapter.Recy
         holder.mContactImage.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                onContactCardClickListner.onContactCardClicked(holder.mContactImage,position,indieCoreUsersLIst.get(position).getUserId());
+                onContactCardClickListner.onContactCardClicked(holder.mContactImage, position, indieCoreUsersLIst.get(position).getUserId());
             }
         });
 
@@ -86,16 +105,13 @@ public class PhonebookAdapter extends RecyclerView.Adapter<PhonebookAdapter.Recy
             @Override
             public void onClick(View view) {
                 try {
-//                    context.startActivity(new Intent(context, ChatActivity.class));
-                    Intent intent=new Intent(context,ChatActivity.class);
-                    intent.putExtra(Constants.PERSON_ID,indieCoreUsersLIst.get(position).getUserId());
-                    intent.putExtra(Constants.NAME,indieCoreUsersLIst.get(position).getProfile().getFirstName()+" "+indieCoreUsersLIst.get(position).getProfile().getLastName());
-                    intent.putExtra(Constants.INDEX,44);
+                    Intent intent = new Intent(context, ChatActivity.class);
+                    intent.putExtra(Constants.PERSON_ID, indieCoreUsersLIst.get(position).getUserId());
+                    intent.putExtra(Constants.NAME, indieCoreUsersLIst.get(position).getProfile().getFirstName() + " " + indieCoreUsersLIst.get(position).getProfile().getLastName());
+                    intent.putExtra(Constants.INDEX, 44);
                     context.startActivity(intent);
-//                    DashBoardActivity.bottomNavigation.setCurrentItem(3);
 
-
-                }catch (Exception e){
+                } catch (Exception e) {
                     e.printStackTrace();
                 }
             }
@@ -113,8 +129,11 @@ public class PhonebookAdapter extends RecyclerView.Adapter<PhonebookAdapter.Recy
     public class RecyclerViewHolders extends RecyclerView.ViewHolder implements View.OnClickListener {
 
         public TextView mContactName;
-        public ImageView mContactImage;
         public TextView mText;
+        public TextView mMutualBadgeCount;
+        public LinearLayout mStarContainer;
+        public RelativeLayout mBadgeIconConatiner;
+        public ImageView mContactImage;
         public CardView mCardView;
 
         public RecyclerViewHolders(final View itemView) {
@@ -124,7 +143,9 @@ public class PhonebookAdapter extends RecyclerView.Adapter<PhonebookAdapter.Recy
             mContactImage = (ImageView) itemView.findViewById(R.id.iv_contact_image);
             mText = (TextView) itemView.findViewById(R.id.tv_text);
             mCardView = (CardView) itemView.findViewById(R.id.cv_phonebook);
-
+            mStarContainer = (LinearLayout) itemView.findViewById(R.id.ll_star_container);
+            mBadgeIconConatiner = (RelativeLayout) itemView.findViewById(R.id.rl_badges_fav_tab);
+            mMutualBadgeCount = (TextView) itemView.findViewById(R.id.tv_mut_badge_count_fav_tab);
 
         }
 

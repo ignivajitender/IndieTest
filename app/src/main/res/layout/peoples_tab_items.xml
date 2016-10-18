@@ -134,18 +134,22 @@
                             android:paddingTop="5dp"
                             android:src="@drawable/grey_star" />
 
-                        <ImageView
-                            android:id="@+id/iv_right_arrow"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
+                        <LinearLayout
+                            android:id="@+id/ll_drop_down"
+                            android:layout_width="30dp"
+                            android:layout_height="30dp"
+                            android:gravity="center"
                             android:layout_gravity="center"
-                            android:paddingLeft="10dp"
-                            android:layout_marginTop="2dp"
-                            android:paddingTop="12dp"
-                            android:paddingBottom="3dp"
-                            android:paddingRight="10dp"
-                            android:src="@drawable/next_arrow_icon" />
+                            android:layout_marginTop="2dp">
 
+                            <ImageView
+                                android:id="@+id/iv_right_arrow"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_gravity="center"
+                                android:src="@drawable/next_arrow_icon" />
+
+                        </LinearLayout>
                     </LinearLayout>
                 </LinearLayout>
             </android.support.v7.widget.CardView>
@@ -158,7 +162,7 @@
             android:layout_gravity="right"
             android:layout_marginRight="15dp"
             android:layout_marginTop="90dp"
-            android:src="@drawable/report_abuse"
+            android:src="@drawable/block_user"
             android:visibility="gone" />
     </FrameLayout>
 </LinearLayout>

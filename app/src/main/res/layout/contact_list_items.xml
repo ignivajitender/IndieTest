@@ -25,21 +25,44 @@
             android:layout_height="match_parent"
             android:layout_gravity="center_vertical"
             android:layout_marginLeft="10dp"
-
             >
-
+            <RelativeLayout
+                android:layout_width="0dp"
+                android:layout_height="80dp"
+                android:layout_gravity="center_vertical"
+                android:layout_weight="2">
             <com.igniva.indiecore.utils.CircularImageView
                 android:id="@+id/iv_contact_image"
                 android:layout_width="80dp"
                 android:layout_height="80dp"
                 android:layout_gravity="center"
                 android:src="@drawable/default_user" />
+                <RelativeLayout
+                    android:id="@+id/rl_badges_fav_tab"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:visibility="gone"
+                    android:layout_alignParentBottom="true"
+                    android:layout_alignParentRight="true"
+                    android:background="@drawable/blank_badge">
 
+                    <TextView
+                        android:id="@+id/tv_mut_badge_count_fav_tab"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerInParent="true"
+                        android:textColor="@color/white"
+                        android:textSize="10sp" />
+
+
+                </RelativeLayout>
+            </RelativeLayout>
             <LinearLayout
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical"
                 android:layout_marginLeft="15dp"
+                android:layout_weight="6.5"
                 android:layout_marginTop="5dp"
                 android:layout_marginBottom="5dp"
                 android:orientation="vertical">
@@ -65,6 +88,25 @@
                     android:text="@string/description" />
             </LinearLayout>
 
+            <LinearLayout
+                android:id="@+id/ll_star_container"
+                android:layout_width="0dp"
+                android:layout_weight="1.5"
+                android:visibility="gone"
+                android:layout_gravity="center"
+                android:layout_height="wrap_content">
+
+                <ImageView
+                    android:id="@+id/iv_star_fav_tab"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:paddingBottom="3dp"
+                    android:paddingLeft="10dp"
+                    android:paddingRight="10dp"
+                    android:paddingTop="5dp"
+                    android:src="@drawable/rating_star" />
+            </LinearLayout>
 
         </LinearLayout>
     </android.support.v7.widget.CardView>

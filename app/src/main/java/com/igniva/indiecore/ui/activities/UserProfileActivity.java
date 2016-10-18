@@ -44,12 +44,12 @@ import java.util.ArrayList;
  * Created by igniva-andriod-05 on 5/8/16.
  */
 public class UserProfileActivity extends BaseActivity implements View.OnClickListener {
-    private TextView mTvUserName, mTvUserLocation, mTvUserDescription, mTvNoPostAvailable,mTvLabel;
+    private TextView mTvUserName, mTvUserLocation, mTvUserDescription, mTvNoPostAvailable, mTvLabel;
     private ImageView mIvUserIcon, mIvCoverPic, mIvStar, mIvDropDown, mIvBlockUser;
     private TextView mTvTitle;
     private RecyclerView mRvUserPost;
     private boolean isLoading;
-    private int totalPostCount=0;
+    private int totalPostCount = 0;
     int pastVisibleItems, visibleItemCount, totalItemCount;
     private LinearLayoutManager mLlManger = new LinearLayoutManager(this);
     private GridLayoutManager mGlManager = new GridLayoutManager(UserProfileActivity.this, 4);
@@ -58,7 +58,7 @@ public class UserProfileActivity extends BaseActivity implements View.OnClickLis
     private MyBadgesAdapter mMutualBadgeAdapter;
     private String LOG_TAG = "UserProfileActivity";
     private String PROFILE = "profile";
-    private  int PAGE = 1, LIMIT = 20;
+    private int PAGE = 1, LIMIT = 20;
     private Toolbar mToolbar;
     private String mUserId = "";
     private String mBusinessId = "";
@@ -125,9 +125,9 @@ public class UserProfileActivity extends BaseActivity implements View.OnClickLis
         mIvCoverPic = (ImageView) findViewById(R.id.iv_cover_pic_activity_user_profile);
         mRvUserPost = (RecyclerView) findViewById(R.id.rv_posts_activity_user_profile);
         mTvNoPostAvailable = (TextView) findViewById(R.id.tv_no_post_available);
-        mTvLabel=(TextView) findViewById(R.id.tv_label_activity_user_profile);
+        mTvLabel = (TextView) findViewById(R.id.tv_label_activity_user_profile);
         mIvStar = (ImageView) findViewById(R.id.iv_star_activity_user_profile);
-        mIvStar.setOnClickListener(this);
+//        mIvStar.setOnClickListener(this);
         mIvBlockUser = (ImageView) findViewById(R.id.iv_block_user_user_profile_activity);
         mIvBlockUser.setOnClickListener(this);
 
@@ -180,12 +180,12 @@ public class UserProfileActivity extends BaseActivity implements View.OnClickLis
                                 isLoading = true;
                                 //Do pagination.. i.e. fetch new data
                                 if (mUserWallPostList.size() < 1) {
-                                    PAGE=1;
+                                    PAGE = 1;
                                     viewAllPost();
                                 }
                                 if (mUserWallPostList.size() < totalPostCount) {
-                                    Log.e("list size",""+mUserWallPostList.size());
-                                    PAGE+=1;
+                                    Log.e("list size", "" + mUserWallPostList.size());
+                                    PAGE += 1;
                                     viewAllPost();
                                 }
                             }
@@ -204,10 +204,11 @@ public class UserProfileActivity extends BaseActivity implements View.OnClickLis
     }
 
 
-     /*
-    * payload to call user profile service
+    /**
+     * payload to call user profile service
+     *
      * @params token, userId
-    * */
+     */
 
     public String createPayload(String userId) {
         JSONObject payload = null;
@@ -222,9 +223,9 @@ public class UserProfileActivity extends BaseActivity implements View.OnClickLis
     }
 
 
-    /*
-    * service call to view user profile
-    * */
+    /**
+     * service call to view user profile
+     */
     public void getUserProfile(String user_id) {
 
         try {
@@ -256,6 +257,13 @@ public class UserProfileActivity extends BaseActivity implements View.OnClickLis
                             mTvTitle.setText(name);
                             mTvUserName.setText(name);
                             mTvUserDescription.setText(userDetails.getProfile().getDesc());
+
+                            if (userDetails.is_favourite()) {
+                                mIvStar.setImageResource(R.drawable.rating_star);
+                            } else {
+                                mIvStar.setImageResource(R.drawable.grey_star);
+                            }
+
                             try {
                                 if (!userDetails.getProfile().getProfilePic().isEmpty()) {
                                     Glide.with(UserProfileActivity.this).load(WebServiceClient.HTTP_STAGING + userDetails.getProfile().getProfilePic())
@@ -283,14 +291,15 @@ public class UserProfileActivity extends BaseActivity implements View.OnClickLis
                             }
                             try {
 
-                                String countryCode=userDetails.getLocation().getCountryCode();
-                                String[] rl=UserProfileActivity.this.getResources().getStringArray(R.array.countryList);
-                                for(int i=0;i<rl.length;i++){
-                                    String[] g=rl[i].split(",");
-                                    if(g[1].trim().equals(countryCode.trim())){
-                                       String countryName=g[0];
+                                String countryCode = userDetails.getLocation().getCountryCode();
+                                String[] rl = UserProfileActivity.this.getResources().getStringArray(R.array.countryList);
+                                for (int i = 0; i < rl.length; i++) {
+                                    String[] g = rl[i].split(",");
+                                    if (g[1].trim().equals(countryCode.trim())) {
+                                        String countryName = g[0];
                                         mTvUserLocation.setText(countryName);
-                                        break;  }
+                                        break;
+                                    }
 
                                 }
                             } catch (NumberFormatException e) {
@@ -314,11 +323,11 @@ public class UserProfileActivity extends BaseActivity implements View.OnClickLis
                     mProgressDialog.dismiss();
                 }
 
-                if(userDetails.is_favourite() && INDEX!=11){
+                if (userDetails.is_favourite() && INDEX != 11) {
 
                     mTvLabel.setText("Mutual Badges");
                     setMutualBadges(result.getBadges());
-                }else {
+                } else {
                     viewAllPost();
                 }
 
@@ -331,24 +340,26 @@ public class UserProfileActivity extends BaseActivity implements View.OnClickLis
     };
 
 
-
-//    set mutual Badges in recycler view
-    public void setMutualBadges(ArrayList<BadgesPojo> mMutualBadges){
+    /**
+     * set mutual Badges in recycler view
+     *
+     * @param mMutualBadges
+     */
+    public void setMutualBadges(ArrayList<BadgesPojo> mMutualBadges) {
         try {
             mRvUserPost.setLayoutManager(mGlManager);
-            mMutualBadgeAdapter=null;
-            mMutualBadgeAdapter= new MyBadgesAdapter(this,mMutualBadges,onCardClickListner);
+            mMutualBadgeAdapter = null;
+            mMutualBadgeAdapter = new MyBadgesAdapter(this, mMutualBadges, onCardClickListner);
             mRvUserPost.setAdapter(mMutualBadgeAdapter);
 
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
 
     }
 
 
-
-    OnCardClickListner onCardClickListner=new OnCardClickListner() {
+    OnCardClickListner onCardClickListner = new OnCardClickListner() {
         @Override
         public void onCardClicked(ImageView view, int position) {
 
@@ -356,11 +367,11 @@ public class UserProfileActivity extends BaseActivity implements View.OnClickLis
     };
 
 
-    /*
-  *
-  * create payload to get all post of a business
-  *@Params  token, userId, roomId, postType, page, limit
-  * */
+    /**
+     * create payload to get all post of a business
+     *
+     * @Params token, userId, roomId, postType, page, limit
+     */
     public String createPayload() {
         JSONObject payload = null;
         try {
@@ -378,12 +389,9 @@ public class UserProfileActivity extends BaseActivity implements View.OnClickLis
         return payload.toString();
     }
 
-    /*
-    *
-    *
-    * to get all the post of this business wall
-    *
-    * */
+    /**
+     * to get all the post of this business wall
+     */
     public void viewAllPost() {
         String payload = createPayload();
         if (!payload.isEmpty()) {
@@ -393,11 +401,9 @@ public class UserProfileActivity extends BaseActivity implements View.OnClickLis
         }
     }
 
-    /*
-    *
-    * posts response and list inflation
-    *
-    * */
+    /**
+     * posts response and list inflation
+     */
     ResponseHandlerListener responseHandler = new ResponseHandlerListener() {
         @Override
         public void onComplete(ResponsePojo result, WebServiceClient.WebError error, ProgressDialog mProgressDialog) {
@@ -408,17 +414,17 @@ public class UserProfileActivity extends BaseActivity implements View.OnClickLis
 
                     if (result.getSuccess().equalsIgnoreCase("true")) {
 
-                        totalPostCount=result.getTotalPosts();
+                        totalPostCount = result.getTotalPosts();
                         mRvUserPost.setVisibility(View.VISIBLE);
 
                         if (mUserWallPostList != null)
 //                            mUserWallPostList.clear();
-                        mUserWallPostList.addAll(result.getPostList());
+                            mUserWallPostList.addAll(result.getPostList());
 
                         if (mUserWallPostList.size() > 0) {
                             try {
                                 mWallPostAdapter = null;
-                                mWallPostAdapter = new WallPostAdapter(UserProfileActivity.this, mUserWallPostList, Constants.USERPROFILEACTIVITY,onLikeClickListner,onDisLikeClickListner,onNeutralClickListner,onCommentClickListner,onMediaPostClickListner,onDeletePostClickListner);
+                                mWallPostAdapter = new WallPostAdapter(UserProfileActivity.this, mUserWallPostList, Constants.USERPROFILEACTIVITY, onLikeClickListner, onDisLikeClickListner, onNeutralClickListner, onCommentClickListner, onMediaPostClickListner, onDeletePostClickListner);
                                 mRvUserPost.setAdapter(mWallPostAdapter);
                                 mRvUserPost.getRecycledViewPool().clear();
                                 mWallPostAdapter.notifyDataSetChanged();
@@ -435,7 +441,7 @@ public class UserProfileActivity extends BaseActivity implements View.OnClickLis
                     }
 
                 }
-                isLoading=false;
+                isLoading = false;
                 if (mProgressDialog != null && mProgressDialog.isShowing()) {
                     mProgressDialog.dismiss();
                 }
@@ -446,11 +452,11 @@ public class UserProfileActivity extends BaseActivity implements View.OnClickLis
         }
     };
 
-    OnLikeClickListner onLikeClickListner =new OnLikeClickListner() {
+    OnLikeClickListner onLikeClickListner = new OnLikeClickListner() {
         @Override
         public void onLikeClicked(TextView like, int position, String postId, String type) {
             try {
-                POSITION=position;
+                POSITION = position;
                 action = 1;
                 likeUnlikePost(mActionTypeLike, postId);
             } catch (Exception e) {
@@ -459,11 +465,11 @@ public class UserProfileActivity extends BaseActivity implements View.OnClickLis
         }
     };
 
-    OnDisLikeClickListner onDisLikeClickListner =new OnDisLikeClickListner() {
+    OnDisLikeClickListner onDisLikeClickListner = new OnDisLikeClickListner() {
         @Override
         public void onDisLikeClicked(TextView dislike, int position, String postId, String type) {
             try {
-                POSITION=position;
+                POSITION = position;
                 action = 2;
                 likeUnlikePost(mActionTypeDislike, postId);
             } catch (Exception e) {
@@ -471,11 +477,11 @@ public class UserProfileActivity extends BaseActivity implements View.OnClickLis
             }
         }
     };
-    OnNeutralClickListner onNeutralClickListner =new OnNeutralClickListner() {
+    OnNeutralClickListner onNeutralClickListner = new OnNeutralClickListner() {
         @Override
         public void onNeutralClicked(TextView neutral, int position, String postId, String type) {
             try {
-                POSITION=position;
+                POSITION = position;
                 action = 3;
                 likeUnlikePost(mActionTypeNeutral, postId);
             } catch (Exception e) {
@@ -484,7 +490,7 @@ public class UserProfileActivity extends BaseActivity implements View.OnClickLis
         }
     };
 
-    OnCommentClickListner onCommentClickListner= new OnCommentClickListner() {
+    OnCommentClickListner onCommentClickListner = new OnCommentClickListner() {
         @Override
         public void onCommentClicked(TextView comment, int position, String postId, String type) {
             Bundle bundle = new Bundle();
@@ -496,7 +502,7 @@ public class UserProfileActivity extends BaseActivity implements View.OnClickLis
         }
     };
 
-    OnMediaPostClickListner onMediaPostClickListner= new OnMediaPostClickListner() {
+    OnMediaPostClickListner onMediaPostClickListner = new OnMediaPostClickListner() {
         @Override
         public void onMediaPostClicked(ImageView media, int position, String postId, String type) {
             Bundle bundle = new Bundle();
@@ -507,7 +513,7 @@ public class UserProfileActivity extends BaseActivity implements View.OnClickLis
         }
     };
 
-    OnDeletePostClickListner onDeletePostClickListner= new OnDeletePostClickListner() {
+    OnDeletePostClickListner onDeletePostClickListner = new OnDeletePostClickListner() {
         @Override
         public void ondeletePostClicked(ImageView delete, int position, String postId, String type) {
             try {
@@ -520,10 +526,11 @@ public class UserProfileActivity extends BaseActivity implements View.OnClickLis
         }
     };
 
-    //
-// create payload to like unlike a post
-//   token, userId, type(like/dislike/neutral), post_id
-// */
+    /**
+     * // create payload to like unlike a post
+     * //   token, userId, type(like/dislike/neutral), post_id
+     * //
+     */
     public String createPayload(String type, String postId) {
 
         JSONObject payload = null;
@@ -541,11 +548,11 @@ public class UserProfileActivity extends BaseActivity implements View.OnClickLis
     }
 
 
-    /*
-    * like/unlike/neutral action to a post
-    * @parms post_id
-    *
-    * */
+    /**
+     * like/unlike/neutral action to a post
+     *
+     * @parms post_id
+     */
     public void likeUnlikePost(String type, String postId) {
         //create payload with parameters is to be call here
 
@@ -557,9 +564,9 @@ public class UserProfileActivity extends BaseActivity implements View.OnClickLis
         }
     }
 
-    /*
-    * like unlike response
-    * */
+    /**
+     * like unlike response
+     */
     ResponseHandlerListener responseHandlerLike = new ResponseHandlerListener() {
         @Override
         public void onComplete(ResponsePojo result, WebServiceClient.WebError error, ProgressDialog mProgressDialog) {
@@ -636,75 +643,75 @@ public class UserProfileActivity extends BaseActivity implements View.OnClickLis
         }
     };
 
+//    /**
+//    * payload to set a user favourite
+//    *@Params:-token, userId, personId, businessId
+//    *
+//    * */
+//    public String generatePayload() {
+//        JSONObject payload = null;
+//        try {
+//            payload = new JSONObject();
+//            payload.put(Constants.TOKEN, PreferenceHandler.readString(this, PreferenceHandler.PREF_KEY_USER_TOKEN, ""));
+//            payload.put(Constants.USERID, PreferenceHandler.readString(this, PreferenceHandler.PREF_KEY_USER_ID, ""));
+//            payload.put(Constants.BUSINESS_ID, mBusinessId);
+//            payload.put(Constants.PERSON_ID, mUserId);
+//
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//
+//        }
+//        return payload.toString();
+//    }
+
+//    /**
+//     * set A user Favourite
+//     *
+//     */
+//    public void set_favourite() {
+//
+//        try {
+//            String payload = generatePayload();
+//            if (payload != null) {
+//
+//                WebNotificationManager.registerResponseListener(favouriteResponseHandler);
+//                WebServiceClient.set_favourite(this, payload, favouriteResponseHandler);
+//            }
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//        }
+//    }
+
+
+//    ResponseHandlerListener favouriteResponseHandler = new ResponseHandlerListener() {
+//        @Override
+//        public void onComplete(ResponsePojo result, WebServiceClient.WebError error, ProgressDialog mProgressDialog) {
+//            try {
+//                WebNotificationManager.unRegisterResponseListener(favouriteResponseHandler);
+//
+//                if (error == null) {
+//                    if (result.getSuccess().equalsIgnoreCase("true")) {
+//
+//                        Utility.showToastMessageLong(UserProfileActivity.this, "Set Favourite");
+//                    } else {
+//                        Utility.showToastMessageLong(UserProfileActivity.this, getResources().getString(R.string.some_unknown_error));
+//                    }
+//                }
+//                //            finish the dialog
+//                if (mProgressDialog != null && mProgressDialog.isShowing()) {
+//                    mProgressDialog.dismiss();
+//                }
+//            } catch (Exception e) {
+//                e.printStackTrace();
+//            }
+//        }
+//    };
+
+
     /**
-    * payload to set a user favourite
-    *@Params:-token, userId, personId, businessId
-    *
-    * */
-    public String generatePayload() {
-        JSONObject payload = null;
-        try {
-            payload = new JSONObject();
-            payload.put(Constants.TOKEN, PreferenceHandler.readString(this, PreferenceHandler.PREF_KEY_USER_TOKEN, ""));
-            payload.put(Constants.USERID, PreferenceHandler.readString(this, PreferenceHandler.PREF_KEY_USER_ID, ""));
-            payload.put(Constants.BUSINESS_ID, mBusinessId);
-            payload.put(Constants.PERSON_ID, mUserId);
-
-        } catch (Exception e) {
-            e.printStackTrace();
-
-        }
-        return payload.toString();
-    }
-
-    /**
-     * set A user Favourite
-     *
+     * create payload to block an user
+     * token, userId, personId
      */
-    public void set_favourite() {
-
-        try {
-            String payload = generatePayload();
-            if (payload != null) {
-
-                WebNotificationManager.registerResponseListener(favouriteResponseHandler);
-                WebServiceClient.set_favourite(this, payload, favouriteResponseHandler);
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-
-
-    ResponseHandlerListener favouriteResponseHandler = new ResponseHandlerListener() {
-        @Override
-        public void onComplete(ResponsePojo result, WebServiceClient.WebError error, ProgressDialog mProgressDialog) {
-            try {
-                WebNotificationManager.unRegisterResponseListener(favouriteResponseHandler);
-
-                if (error == null) {
-                    if (result.getSuccess().equalsIgnoreCase("true")) {
-
-                        Utility.showToastMessageLong(UserProfileActivity.this, "Set Favourite");
-                    } else {
-                        Utility.showToastMessageLong(UserProfileActivity.this, getResources().getString(R.string.some_unknown_error));
-                    }
-                }
-                //            finish the dialog
-                if (mProgressDialog != null && mProgressDialog.isShowing()) {
-                    mProgressDialog.dismiss();
-                }
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        }
-    };
-
-
-    /*
-    * create payload to block an user
-    * token, userId, personId
-    * */
     public String generatePayload(String userId) {
         JSONObject payload = null;
         try {
@@ -740,7 +747,7 @@ public class UserProfileActivity extends BaseActivity implements View.OnClickLis
 
                 if (result.getSuccess().equalsIgnoreCase("true")) {
 
-Utility.showToastMessageShort(UserProfileActivity.this,"User blocked");
+                    Utility.showToastMessageShort(UserProfileActivity.this, "User blocked");
 
                 }
             }
@@ -756,10 +763,9 @@ Utility.showToastMessageShort(UserProfileActivity.this,"User blocked");
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
-            case R.id.iv_star_activity_user_profile:
-                set_favourite();
-                break;
-
+//            case R.id.iv_star_activity_user_profile:
+//                set_favourite();
+//                break;
             case R.id.iv_dropdown_activity_user_profile:
 
                 if (IsBlockIconVisible == false) {
@@ -774,7 +780,7 @@ Utility.showToastMessageShort(UserProfileActivity.this,"User blocked");
                 break;
 
             case R.id.iv_block_user_user_profile_activity:
-            blockUser(mUserId);
+                blockUser(mUserId);
                 break;
             default:
                 break;

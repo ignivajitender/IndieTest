@@ -9,8 +9,16 @@ public class UsersPojo {
 
     private String userId;
     private String mobileNo;
+    private String badges;
     private ProfilePojo profile;
+    private CountryCodePojo location;
 
+    public String getBadges() {
+        return badges;
+    }
+    public void setBadges(String badges) {
+        this.badges = badges;
+    }
     public CountryCodePojo getLocation() {
         return location;
     }
@@ -19,7 +27,6 @@ public class UsersPojo {
         this.location = location;
     }
 
-    private CountryCodePojo location;
 
     public String getMobileNo() {
         return mobileNo;

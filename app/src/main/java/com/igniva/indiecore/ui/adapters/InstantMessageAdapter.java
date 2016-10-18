@@ -72,7 +72,7 @@ public class InstantMessageAdapter extends RecyclerView.Adapter<InstantMessageAd
 //        holder.mContactImage.setOnClickListener(new View.OnClickListener() {
 //            @Override
 //            public void onClick(View v) {
-//                onContactCardClickListner.onContactCardClicked(holder.mContactImage, position, indieCoreUsersLIst.get(position).getUserId());
+//                mOnsetFavouriteListner.onContactCardClicked(holder.mContactImage, position, indieCoreUsersLIst.get(position).getUserId());
 //            }
 //        });
 

@@ -247,7 +247,7 @@ public class ChatActivity extends BaseActivity implements MeteorCallback {
             if (!mRoomId.isEmpty()) {
                 dbBadges = new BadgesDb(this);
                 messageList = dbBadges.retrieveUserChat(mRoomId, this);
-//                Collections.reverse(messageList);
+                Collections.reverse(messageList);
                 if (messageList.size() > 0) {
                     mChatAdapter = new ChatAdapter(ChatActivity.this, messageList, CHAT_ACTIVITY, mMessageId);
                     mRvChatMessages.setAdapter(mChatAdapter);
@@ -418,15 +418,16 @@ public class ChatActivity extends BaseActivity implements MeteorCallback {
     @Override
     public void onDataAdded(String collectionName, String documentID, String newValuesJson) {
         Gson gson = new Gson();
-        Log.e(LOG_TAG, "ondataadded+++" + newValuesJson);
+        Log.e(LOG_TAG, "ondataadded+++collectionName" + collectionName);
+        Log.e(LOG_TAG, "ondataadded+++documentID" + documentID);
+        Log.e(LOG_TAG, "ondataadded+++newValuesJson" + newValuesJson);
         try {
             instantChatPojo = gson.fromJson(newValuesJson, InstantChatPojo.class);
             mChatPojo = new ChatPojo();
-
 //            TODO use UTC time converter
             String date = convertDate(instantChatPojo.getDate_updated().get$date(), "hh:mm");
             if (mRoomId != null && collectionName.equalsIgnoreCase("message")) {
-                if (IsClicked && mRoomId.equals(instantChatPojo.getRoomId()) && !instantChatPojo.getText().isEmpty()) {
+                if (mRoomId.equals(instantChatPojo.getRoomId()) && !instantChatPojo.getText().isEmpty()) {
 //                        if (!instantChatPojo.getText().isEmpty()) {
 
                     mChatPojo.setIcon(instantChatPojo.getIcon());
@@ -438,7 +439,9 @@ public class ChatActivity extends BaseActivity implements MeteorCallback {
                     mChatPojo.setRelation(instantChatPojo.getRelation());
                     mChatPojo.setDate_updated(date);
                     mChatPojo.setType(instantChatPojo.getType());
-                    messageList.add(mChatPojo);
+                    if(IsClicked) {
+                        messageList.add(mChatPojo);
+                    }
                     insertSingleMessage(mChatPojo);
                 } else {
                     mChatPojo.setIcon(instantChatPojo.getIcon());
@@ -511,6 +514,8 @@ public class ChatActivity extends BaseActivity implements MeteorCallback {
 
     @Override
     public void onDataChanged(String collectionName, String documentID, String updatedValuesJson, String removedValuesJson) {
+        Log.e(LOG_TAG, "ondatachnaged+++" + collectionName);
+        Log.e(LOG_TAG, "ondatachnaged+++" + documentID);
         Log.e(LOG_TAG, "ondatachnaged+++" + updatedValuesJson);
         Log.e(LOG_TAG, "ondatachnaged----" + removedValuesJson);
         Gson gson = new Gson();
@@ -532,7 +537,8 @@ public class ChatActivity extends BaseActivity implements MeteorCallback {
 
     @Override
     public void onDataRemoved(String collectionName, String documentID) {
-        Log.e(LOG_TAG, "" + collectionName);
+        Log.e(LOG_TAG, "onDataRemoved++" + collectionName);
+        Log.e(LOG_TAG, "documentID++" + documentID);
 
     }
 

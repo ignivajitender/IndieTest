@@ -44,6 +44,9 @@ public class ContactsFragment extends BaseFragment {
     private LinearLayoutManager mLlManager;
     private TextView mTvPhoneBook, mTvFavourite, mComingSoon;
     private PhonebookAdapter mPhoneBookAdapter;
+    private String FAVOURITE="favourite";
+    private String PHONEBOOK="phonebook";
+
     BadgesDb usersDb;
     View rootView;
 
@@ -110,7 +113,7 @@ public class ContactsFragment extends BaseFragment {
 
             if (mSavedUsersList.size() > 0) {
                 mPhoneBookAdapter = null;
-                mPhoneBookAdapter = new PhonebookAdapter(getActivity(), mSavedUsersList, onContactCardClickListner);
+                mPhoneBookAdapter = new PhonebookAdapter(getActivity(), mSavedUsersList, onContactCardClickListner,PHONEBOOK);
                 mRvUsers.setAdapter(mPhoneBookAdapter);
                 mLlNoContactText.setVisibility(View.GONE);
             } else {
@@ -138,7 +141,7 @@ public class ContactsFragment extends BaseFragment {
             if (mSavedUsersList.size() > 0) {
                 mRvUsers.setVisibility(View.VISIBLE);
                 mPhoneBookAdapter = null;
-                mPhoneBookAdapter = new PhonebookAdapter(getActivity(), mSavedUsersList, onContactCardClickListner);
+                mPhoneBookAdapter = new PhonebookAdapter(getActivity(), mSavedUsersList, onContactCardClickListner,PHONEBOOK);
                 mRvUsers.setAdapter(mPhoneBookAdapter);
                 mLlNoContactText.setVisibility(View.GONE);
                 } else {
@@ -168,7 +171,7 @@ public class ContactsFragment extends BaseFragment {
                 mRvUsers.setVisibility(View.VISIBLE);
                mLlNoContactText.setVisibility(View.GONE);
                 mPhoneBookAdapter = null;
-                mPhoneBookAdapter = new PhonebookAdapter(getActivity(), mFavouriteList, onContactCardClickListner);
+                mPhoneBookAdapter = new PhonebookAdapter(getActivity(), mFavouriteList, onContactCardClickListner,FAVOURITE);
                 mRvUsers.setAdapter(mPhoneBookAdapter);
 
             }else {
@@ -254,7 +257,7 @@ public class ContactsFragment extends BaseFragment {
                             mRvUsers.setVisibility(View.VISIBLE);
                             mLlNoContactText.setVisibility(View.GONE);
                             mPhoneBookAdapter = null;
-                            mPhoneBookAdapter = new PhonebookAdapter(getActivity(), mFavouriteList, onContactCardClickListner);
+                            mPhoneBookAdapter = new PhonebookAdapter(getActivity(), mFavouriteList, onContactCardClickListner,FAVOURITE);
                             mRvUsers.setAdapter(mPhoneBookAdapter);
                         }else {
                             Utility.showToastMessageShort(getActivity(),"No user set a favourite");
