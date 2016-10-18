@@ -406,7 +406,6 @@ public class BoardActivity extends BaseActivity implements View.OnClickListener 
 
     /**
      * create payload to get all post of a business
-     *
      * @Params:token, userId, roomId, postType, page, limit
      */
     public String createPayload() {
@@ -448,7 +447,6 @@ public class BoardActivity extends BaseActivity implements View.OnClickListener 
         public void onComplete(ResponsePojo result, WebServiceClient.WebError error, ProgressDialog mProgressDialog) {
             WebNotificationManager.unRegisterResponseListener(responseHandler);
             try {
-
                 if (error == null) {
                     if (result.getSuccess().equalsIgnoreCase("true")) {
                         totalPostCount = result.getTotalPosts();
@@ -509,7 +507,6 @@ public class BoardActivity extends BaseActivity implements View.OnClickListener 
 
     /**
      * like/unlike/neutral action to a post
-     *
      * @parms post_id
      */
     public void likeUnlikePost(String type, String postId) {
