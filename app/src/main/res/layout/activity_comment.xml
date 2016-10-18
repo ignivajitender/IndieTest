@@ -317,7 +317,7 @@
                     android:layout_marginRight="8dp"
 
                     android:layout_marginTop="-8dp"
-                    android:src="@drawable/delete_icon"
+                    android:src="@drawable/delete_button"
                     android:visibility="gone" />
 
             </FrameLayout>

@@ -271,7 +271,7 @@ public class WallPostAdapter extends RecyclerView.Adapter<WallPostAdapter.Recycl
 
                                 String userID=PreferenceHandler.readString(mContext,PreferenceHandler.PREF_KEY_USER_ID,"");
                                 if (wallItemsList.get(position).getUserId().equalsIgnoreCase(userID)) {
-                                    holder.mDeletePost.setImageResource(R.drawable.delete_icon);
+                                    holder.mDeletePost.setImageResource(R.drawable.delete_button);
                                     ACTION = "DELETE";
                                 } else {
                                     holder.mDeletePost.setImageResource(R.drawable.report_abuse);

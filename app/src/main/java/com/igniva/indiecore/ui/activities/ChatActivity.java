@@ -426,7 +426,7 @@ public class ChatActivity extends BaseActivity implements MeteorCallback {
 //            TODO use UTC time converter
             String date = convertDate(instantChatPojo.getDate_updated().get$date(), "hh:mm");
             if (mRoomId != null && collectionName.equalsIgnoreCase("message")) {
-                if (mRoomId.equals(instantChatPojo.getRoomId()) && !instantChatPojo.getText().isEmpty()) {
+                if (IsClicked && mRoomId.equals(instantChatPojo.getRoomId()) && !instantChatPojo.getText().isEmpty()) {
 //                        if (!instantChatPojo.getText().isEmpty()) {
 
                     mChatPojo.setIcon(instantChatPojo.getIcon());

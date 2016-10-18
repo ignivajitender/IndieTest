@@ -275,7 +275,7 @@ public class CommentActivity extends BaseActivity implements View.OnClickListene
 
                         if (selected_post_data.getRelation().equalsIgnoreCase("self")) {
                             mReportPost.setVisibility(View.VISIBLE);
-                            mReportPost.setImageResource(R.drawable.delete_icon);
+                            mReportPost.setImageResource(R.drawable.delete_button);
                             ACTION = "DELETE";
                             isDeleteBtnVisible = true;
 
