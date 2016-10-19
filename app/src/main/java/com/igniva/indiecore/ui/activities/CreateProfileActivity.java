@@ -171,8 +171,6 @@ public class CreateProfileActivity extends BaseActivity implements AsyncResult,V
         try {
             Bundle bundle = getIntent().getExtras();
             index = bundle.getInt(Constants.INDEX);
-//            numberLenth = bundle.getInt(Constants.NUMBER_LENGTH);
-//            mCountryCode = bundle.getString(Constants.COUNTRY_CODE);
         } catch (Exception e) {
             e.printStackTrace();
         }

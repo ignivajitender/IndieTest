@@ -296,6 +296,9 @@ public class BoardActivity extends BaseActivity implements View.OnClickListener 
             if (mWallPostList.size() > 0) {
                 mAdapter = new WallPostAdapter(this, mWallPostList, Constants.CHATFRAGMENT, onLikeClickListner, onDisLikeClickListner, onNeutralClickListner, onCommentClickListner, onMediaPostClickListner, onDeleteClickListner);
                 mRvWallPosts.setAdapter(mAdapter);
+            }else {
+                mComingSoon.setVisibility(View.VISIBLE);
+                mComingSoon.setText(getResources().getString(R.string.no_post_found));
             }
 
         } catch (Exception e) {
@@ -937,6 +940,11 @@ public class BoardActivity extends BaseActivity implements View.OnClickListener 
         builder1.setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int id) {
                 dialog.dismiss();
+                try {
+                    mIvDelete.setVisibility(View.GONE);
+                }catch (Exception e){
+                    e.printStackTrace();
+                }
             }
         });
         AlertDialog alert11 = builder1.create();
