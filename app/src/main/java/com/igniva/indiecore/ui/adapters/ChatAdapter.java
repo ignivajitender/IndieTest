@@ -51,7 +51,7 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.RecyclerViewHo
                     holder.mRlThis.setVisibility(View.VISIBLE);
                     holder.mRlOther.setVisibility(View.GONE);
                     holder.mTvThisUserName.setVisibility(View.GONE);
-                    if (mChatList.get(position).getIcon() != null) {
+                    if (mChatList.get(position).getIcon() != null && !mChatList.get(position).getIcon().isEmpty()) {
                         Glide.with(context).load(WebServiceClient.HTTP_STAGING + mChatList.get(position).getIcon())
                                 .thumbnail(1f)
                                 .crossFade()
@@ -78,15 +78,15 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.RecyclerViewHo
 
                     }
 
-                    if(!mMessageId.isEmpty()&&mChatList.get(position).getMessageId().equalsIgnoreCase(mMessageId)){
-                        holder.mIvMessageStatus.setImageResource(R.drawable.ic_double_tick);
-                    }
+//                    if(!mMessageId.isEmpty()&&mChatList.get(position).getMessageId().equalsIgnoreCase(mMessageId)){
+//                        holder.mIvMessageStatus.setImageResource(R.drawable.ic_double_tick);
+//                    }
                 } else {
                     holder.mRlThis.setVisibility(View.GONE);
                     holder.mRlOther.setVisibility(View.VISIBLE);
 
                     holder.mTvOtherUserName.setText(mChatList.get(position).getName());
-                    if (mChatList.get(position).getIcon() != null) {
+                    if (mChatList.get(position).getIcon() != null && !mChatList.get(position).getIcon().isEmpty()) {
                         Glide.with(context).load(WebServiceClient.HTTP_STAGING + mChatList.get(position).getIcon())
                                 .thumbnail(1f)
                                 .crossFade()

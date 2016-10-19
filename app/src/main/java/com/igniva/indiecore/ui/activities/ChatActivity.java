@@ -139,7 +139,7 @@ public class ChatActivity extends BaseActivity implements MeteorCallback {
             mLlManager = new LinearLayoutManager(this);
             mRvChatMessages.setLayoutManager(mLlManager);
 
-                loadMessages(mRoomId);
+            loadMessages(mRoomId);
 //            try {
 //                // set a custom ScrollListner to your RecyclerView
 //                mRvChatMessages.addOnScrollListener(new RecyclerView.OnScrollListener() {
@@ -440,10 +440,12 @@ public class ChatActivity extends BaseActivity implements MeteorCallback {
                     mChatPojo.setMessageId(instantChatPojo.getMessageId());
                     mChatPojo.setRelation(instantChatPojo.getRelation());
                     mChatPojo.setDate_updated(date);
+                    mChatPojo.setStatus(instantChatPojo.getStatus());
+                    mChatPojo.setBadges(instantChatPojo.getBadges());
                     mChatPojo.setType(instantChatPojo.getType());
                     insertSingleMessage(mChatPojo);
 
-                    if(IsClicked){
+                    if (IsClicked) {
                         messageList.add(mChatPojo);
                     }
                 } else {
@@ -455,19 +457,40 @@ public class ChatActivity extends BaseActivity implements MeteorCallback {
                     mChatPojo.setMessageId(instantChatPojo.getMessageId());
                     mChatPojo.setRelation(instantChatPojo.getRelation());
                     mChatPojo.setDate_updated(date);
+                    mChatPojo.setStatus(instantChatPojo.getStatus());
+                    mChatPojo.setBadges(instantChatPojo.getBadges());
                     mChatPojo.setType(instantChatPojo.getType());
                     insertSingleMessage(mChatPojo);
                 }
             }
+            if (instantChatPojo.getStatus() == 1) {
+                dbBadges.updateChatRow(mChatPojo);
+                for(int i=0;i<messageList.size();i++){
+                    if(messageList.get(i).getMessageId().equals(mChatPojo.getMessageId())){
+                        messageList.get(i).setStatus(1);
+                    }
+                }
+                mChatAdapter.notifyDataSetChanged();
+            }
+            if (instantChatPojo.getStatus() == 2) {
+                dbBadges.updateChatRow(mChatPojo);
+                for(int i=0;i<messageList.size();i++){
+                    if(messageList.get(i).getMessageId().equals(mChatPojo.getMessageId())){
+                        messageList.get(i).setStatus(2);
+                    }
+                }
+                mChatAdapter.notifyDataSetChanged();
+            }
+
             try {
-                if(!instantChatPojo.getRelation().equalsIgnoreCase("self")) {
-                 mMeteor.call(MARK_MESSAGE_DELIVERED, new Object[]{TOKEN, USER_ID_1, instantChatPojo.getMessageId()});
-                  }
+                if (!instantChatPojo.getRelation().equalsIgnoreCase("self")) {
+                    mMeteor.call(MARK_MESSAGE_DELIVERED, new Object[]{TOKEN, USER_ID_1, instantChatPojo.getMessageId()});
+                }
             } catch (Exception e) {
                 e.printStackTrace();
             }
             try {
-                if(isInFront && !instantChatPojo.getRelation().equalsIgnoreCase("self")){
+                if (isInFront && !instantChatPojo.getRelation().equalsIgnoreCase("self")) {
                     mMeteor.call(MARK_MESSAGE_READ, new Object[]{TOKEN, USER_ID_1, instantChatPojo.getMessageId()});
                 }
             } catch (Exception e) {
@@ -539,7 +562,6 @@ public class ChatActivity extends BaseActivity implements MeteorCallback {
         messageIDPojo = gson.fromJson(updatedValuesJson, MessageIdPojo.class);
 
 
-
         mMessageId = messageIDPojo.getLast_message_Id();
 
 //        try {
@@ -569,7 +591,6 @@ public class ChatActivity extends BaseActivity implements MeteorCallback {
         } catch (Exception e) {
             e.printStackTrace();
         }
-
     }
 
 

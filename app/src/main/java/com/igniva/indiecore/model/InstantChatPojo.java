@@ -11,7 +11,7 @@ public class InstantChatPojo {
     private String text;
     private String media;
     private String thumb;
-    private String status;
+    private int status;
     private String messageId;
     private String name;
     private String icon;
@@ -19,6 +19,13 @@ public class InstantChatPojo {
     private String badges;
     DateModel date_updated;
 
+    public int getStatus() {
+        return status;
+    }
+
+    public void setStatus(int status) {
+        this.status = status;
+    }
 
     public String getType() {
         return type;
@@ -66,14 +73,6 @@ public class InstantChatPojo {
 
     public void setThumb(String thumb) {
         this.thumb = thumb;
-    }
-
-    public String getStatus() {
-        return status;
-    }
-
-    public void setStatus(String status) {
-        this.status = status;
     }
 
     public String getMessageId() {

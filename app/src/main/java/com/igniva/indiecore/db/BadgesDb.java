@@ -151,7 +151,7 @@ public class BadgesDb extends SQLiteOpenHelper {
             value.put(RELATION,message.getRelation());
             value.put(BADGES,message.getBadges());
             // Inserting Single Row
-            db.insertWithOnConflict(TABLE_CHAT, null, value, SQLiteDatabase.CONFLICT_REPLACE);
+            db.insertWithOnConflict(TABLE_CHAT, null, value, SQLiteDatabase.CONFLICT_IGNORE);
 
         }catch (Exception e){
             e.printStackTrace();
@@ -175,6 +175,8 @@ public class BadgesDb extends SQLiteOpenHelper {
     }
 
 
+
+
     public  void insertMessage(ChatPojo message){
         SQLiteDatabase db=this.getWritableDatabase();
         try {
@@ -186,6 +188,19 @@ public class BadgesDb extends SQLiteOpenHelper {
             db.close();
         }
 
+    }
+
+
+    public void updateChatRow(ChatPojo message) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        try {
+            db.execSQL("UPDATE " + TABLE_CHAT + " SET " + STATUS + "=" + message.getStatus() + " WHERE " + MESSAGE_ID + " = '" + message.getMessageId() + "'");
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            db.close();
+        }
     }
 
     public void insertSingleBadge(SQLiteDatabase db, BadgesPojo badges) {
@@ -201,7 +216,7 @@ public class BadgesDb extends SQLiteOpenHelper {
             values.put(BADGE_SKU, badges.getSku());
             values.put(IS_ACTIVE, badges.getActive());
             // Inserting Single Row
-            db.insertWithOnConflict(TABLE_BADGES, null, values, SQLiteDatabase.CONFLICT_REPLACE);
+            db.insertWithOnConflict(TABLE_BADGES, null, values, SQLiteDatabase.CONFLICT_IGNORE);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -221,7 +236,7 @@ public class BadgesDb extends SQLiteOpenHelper {
             values.put(TYPE, 1);
             values.put(USER_ID,users.getUserId());
             values.put(COUNTRY_CODE,users.getLocation().getCountryCode());
-            db.insertWithOnConflict(TABLE_USERS, null, values, SQLiteDatabase.CONFLICT_REPLACE);
+            db.insertWithOnConflict(TABLE_USERS, null, values, SQLiteDatabase.CONFLICT_IGNORE);
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -240,6 +255,8 @@ public class BadgesDb extends SQLiteOpenHelper {
             db.close();
         }
     }
+
+
 
 
     public void insertAllBadges(ArrayList<BadgesPojo> mTotalBadges) {
