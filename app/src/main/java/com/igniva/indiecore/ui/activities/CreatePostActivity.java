@@ -6,10 +6,12 @@ import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Environment;
+import android.os.ParcelFileDescriptor;
 import android.provider.MediaStore;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.Toolbar;
@@ -42,9 +44,12 @@ import org.json.JSONObject;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.FileDescriptor;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+
+import id.zelory.compressor.Compressor;
 
 
 /**
@@ -59,6 +64,7 @@ public class CreatePostActivity extends BaseActivity implements AsyncResult,View
     public static final int REQUEST_CAMERA = 100;
     public static final int SELECT_FILE = 200;
     private Toolbar mToolbar;
+    private String mImagePath;
     public final static String BUSINESS = "business";
     String mBusinessId="";
 
@@ -162,9 +168,12 @@ public class CreatePostActivity extends BaseActivity implements AsyncResult,View
         }
     }
 
-
+    /**
+     * payload to create a post
+     * @param;  token, userId, roomId, postType, media_url, text
+     * @return
+     */
     public String createPayload() {
-//        token, userId, roomId, postType, media_url, text
         JSONObject payload = null;
         try {
             payload = new JSONObject();
@@ -188,6 +197,10 @@ public class CreatePostActivity extends BaseActivity implements AsyncResult,View
         return payload.toString();
     }
 
+    /**
+     * create post
+     *
+     */
     public void createPost() {
         try {
             if (!mMediaPostId.isEmpty() || !mPostText.getText().toString().isEmpty()) {
@@ -236,7 +249,7 @@ public class CreatePostActivity extends BaseActivity implements AsyncResult,View
         }
     };
 
-    /*
+    /**
     * pic media from gallery
     *
     * */
@@ -244,14 +257,14 @@ public class CreatePostActivity extends BaseActivity implements AsyncResult,View
         try {
             Intent intent = new Intent();
             intent.setType("image/*");
-            intent.setAction(Intent.ACTION_GET_CONTENT);//
+            intent.setAction(Intent.ACTION_GET_CONTENT);
             startActivityForResult(Intent.createChooser(intent, "Select File"), SELECT_FILE);
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
-    /*
+    /**
     * click image from camera
     * */
     public void cameraEvent() {
@@ -279,8 +292,8 @@ public class CreatePostActivity extends BaseActivity implements AsyncResult,View
         Bitmap bm = null;
         if (data != null) {
             try {
-                bm = MediaStore.Images.Media.getBitmap(getApplicationContext().getContentResolver(), data.getData());
-            } catch (IOException e) {
+                bm = getImage(data);
+            } catch (Exception e) {
                 e.printStackTrace();
             }
         }
@@ -290,27 +303,69 @@ public class CreatePostActivity extends BaseActivity implements AsyncResult,View
 
     }
 
-    private void onCaptureImageResult(Intent data) {
-        Bitmap thumbnail = (Bitmap) data.getExtras().get("data");
-        ByteArrayOutputStream bytes = new ByteArrayOutputStream();
-        thumbnail.compress(Bitmap.CompressFormat.JPEG, 90, bytes);
-        File destination = new File(Environment.getExternalStorageDirectory(),
-                System.currentTimeMillis() + ".jpg");
-        FileOutputStream fo;
+    /**
+    * get image bitmap from data
+    * */
+    public Bitmap getImage(Intent data){
+        Uri imgUri;
+        Bitmap bitmap = null;
+        File imageFile;
+
         try {
-            destination.createNewFile();
-            fo = new FileOutputStream(destination);
-            fo.write(bytes.toByteArray());
-            fo.close();
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
+            bitmap=getBitmapFromUri(data.getData());
+            imgUri=getImageUri(this,bitmap);
+            mImagePath=getPath(imgUri);
+            imageFile  = new File(mImagePath);
+            bitmap=Compressor.getDefault(this).compressToBitmap(imageFile);
+
+        } catch (Exception e) {
             e.printStackTrace();
         }
-        mIvMediaPost.setVisibility(View.VISIBLE);
+        return  bitmap ;
 
-        uploadBitmapAsMultipart(thumbnail);
-        mIvMediaPost.setImageBitmap(thumbnail);
+    }
+
+
+    private Bitmap getBitmapFromUri(Uri uri) throws IOException {
+        ParcelFileDescriptor parcelFileDescriptor =
+                getContentResolver().openFileDescriptor(uri, "r");
+        FileDescriptor fileDescriptor = parcelFileDescriptor.getFileDescriptor();
+        Bitmap image = BitmapFactory.decodeFileDescriptor(fileDescriptor);
+        parcelFileDescriptor.close();
+        return image;
+    }
+
+
+    /**
+     * get path from uri
+     *
+     * @param uri
+     * @return
+     */
+    public String getPath(Uri uri)
+    {
+        String[] projection = { MediaStore.Images.Media.DATA };
+        Cursor cursor = getContentResolver().query(uri, projection, null, null, null);
+        if (cursor == null) return null;
+        int column_index =cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
+        cursor.moveToFirst();
+        String s=cursor.getString(column_index);
+        cursor.close();
+        return s;
+    }
+
+    private void onCaptureImageResult(Intent data) {
+        Bitmap bm = null;
+        if (data != null) {
+            try {
+                bm = getImage(data);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+        mIvMediaPost.setVisibility(View.VISIBLE);
+        uploadBitmapAsMultipart(bm);
+        mIvMediaPost.setImageBitmap(bm);
 
     }
 
@@ -318,12 +373,8 @@ public class CreatePostActivity extends BaseActivity implements AsyncResult,View
     private void uploadBitmapAsMultipart(Bitmap myBitmap) {
         ContentBody contentPart = null;
         try {
-
-            Uri uri = getImageUri(this, myBitmap);
-            String imagePath = getRealPathFromURI(uri);
-            String url = WebServiceClient.HTTP_UPLOAD_IMAGE;
             ByteArrayOutputStream bos = new ByteArrayOutputStream();
-            if (imagePath.endsWith(".png")) {
+            if (mImagePath.endsWith(".png")) {
                 myBitmap.compress(Bitmap.CompressFormat.PNG, 80, bos);
                 contentPart = new ByteArrayBody(bos.toByteArray(), "Image.png");
             } else {
@@ -335,7 +386,7 @@ public class CreatePostActivity extends BaseActivity implements AsyncResult,View
             reqEntity.addPart("fileToUpload", contentPart);
 
             if (Utility.isInternetConnection(CreatePostActivity.this)) {
-                new WebServiceClientUploadImage(CreatePostActivity.this, this, url, reqEntity, 3).execute();
+                new WebServiceClientUploadImage(CreatePostActivity.this, this, WebServiceClient.HTTP_UPLOAD_IMAGE, reqEntity, 3).execute();
             } else {
                 // open dialog here
                 new Utility().showNoInternetDialog((Activity) CreatePostActivity.this);

@@ -75,7 +75,6 @@ public class WallPostAdapter extends RecyclerView.Adapter<WallPostAdapter.Recycl
     @Override
     public void onBindViewHolder(final RecyclerViewHolders holder, final int position) {
         try {
-//            wallItemsList.get(position) = wallItemsList.get(position);
             if (!wallItemsList.get(position).getFirstName().isEmpty()) {
                 String Name = (wallItemsList.get(position).getFirstName() + " " + (wallItemsList.get(position).getLastName()).charAt(0) + ".");
                 holder.mUserName.setText(Name);

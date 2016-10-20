@@ -35,6 +35,7 @@ public class WebServiceClient {
     private static HttpMethod method;
     private static ProgressDialog progressDialog;
     private static ResponseHandlerListener mResponseHandlerListener;
+    private static boolean isImageUpload=false;
     /**
      * Webservice Urls
      */
@@ -337,7 +338,13 @@ public class WebServiceClient {
        checkNetworkState(url,payload,method,context);
    }
 
-
+    // Upload Image using Multipart
+    public static void uploadImage(final Context mContext, MultipartEntity reqEntity,ResponseHandlerListener responseHandlerListener){
+        url = HTTP_UPLOAD_IMAGE;
+        method = HttpMethod.HTTP_PUT;
+        mResponseHandlerListener = responseHandlerListener;
+        checkNetworkStateImageUpload(url, reqEntity, method, mContext);
+    }
     /**
      * Check Available Network connection and make http call only if network is
      * available else show no network available
@@ -351,7 +358,28 @@ public class WebServiceClient {
     private static void checkNetworkState(String url, String _payload,
                                           HttpMethod method, Context context) {
         if (Utility.isInternetConnection(context)) {
-            new CallWebserviceTask(url, _payload, method, context).execute();
+            new CallWebserviceTask(url, _payload, method,null, context).execute();
+        } else {
+            // open dialog here
+            new Utility().showNoInternetDialog((Activity) context);
+
+        }
+    }
+
+    /**
+     * Check Available Network connection and make http call only if network is
+     * available else show no network available
+     *
+     * @param url      , the url to be called
+     * @param _payload ,the data to be send while making http call
+     * @param method   , the requested method
+     * @param context  , the context of calling class
+     */
+    private static void checkNetworkStateImageUpload(String url, MultipartEntity _payload,
+                                                     HttpMethod method, Context context) {
+        if (Utility.isInternetConnection(context)) {
+            isImageUpload=true;
+            new CallWebserviceTask(url, "", method,_payload, context).execute();
         } else {
             // open dialog here
             new Utility().showNoInternetDialog((Activity) context);
@@ -368,15 +396,17 @@ public class WebServiceClient {
         private final String mUrl;
         private final String mPayload;
         private final HttpMethod mMethod;
+        MultipartEntity mReqEntity;
         private  boolean isDisplayDialog=true;
         private Context mContext;
 
         public CallWebserviceTask(String url, String _payload,
-                                  HttpMethod method, final Context context) {
+                                  HttpMethod method,MultipartEntity reqEntity, final Context context) {
             mContext = context;
             mUrl = url;
             mPayload = _payload;
             mMethod = method;
+            this.mReqEntity=reqEntity;
             mContext = context;
             Log.d(LOG_TAG,"url is "+url);
             Log.d(LOG_TAG,"payload is "+_payload);
@@ -394,8 +424,79 @@ public class WebServiceClient {
             }
         }
 
+//        @Override
+//        protected Object[] doInBackground(Void... vParams) {
+//            ResponsePojo responsePojo = null;
+//            WebError error = null;
+//            String method = "";
+//
+//            URL url = null;
+//            try {
+//                url = new URL(mUrl);
+//                HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+//                connection.setRequestProperty("Content-Type", "application/json");
+//                connection.setRequestProperty("USER-AGENT", "Mozilla/5.0");
+//                connection.setRequestProperty("ACCEPT-LANGUAGE", "en-US,en;0.5");
+//                connection.setReadTimeout(40000);
+//                connection.setConnectTimeout(30000);
+//                if (mMethod.equals(HttpMethod.HTTP_GET)) {
+//                    connection.setRequestMethod("GET");
+//                } else if (mMethod.equals(HttpMethod.HTTP_POST)) {
+//                    connection.setRequestMethod("POST");
+//                    connection.setDoInput(true);
+//                    connection.setDoOutput(true);
+//                }
+//                //
+//                OutputStream os = connection.getOutputStream();
+//                BufferedWriter writer = new BufferedWriter(
+//                        new OutputStreamWriter(os, "UTF-8"));
+//                writer.write(mPayload);
+//                writer.flush();
+//                writer.close();
+//                os.close();
+//
+////                DataOutputStream dStream = new DataOutputStream(connection.getOutputStream());
+////                dStream.writeBytes(mPayload); //Writes out the string to the underlying output stream as a sequence of bytes
+////                dStream.flush(); // Flushes the data output stream.
+////                dStream.close(); // Closing the output stream.
+//                  connection.connect();
+//
+//                int successCode = connection.getResponseCode();
+//
+//                if (successCode == 200) {
+////                    final StringBuilder output = new StringBuilder("Request URL " + url);
+////                    output.append(System.getProperty("line.separator") + "Request Parameters " + mPayload);
+////                    output.append(System.getProperty("line.separator")  + "Response Code " + successCode);
+//                    BufferedReader br = new BufferedReader(new InputStreamReader(connection.getInputStream(), "UTF-8"));
+//                    String line = "";
+//                    StringBuilder responseOutput = new StringBuilder();
+//                    System.out.println("output===============" + br);
+//                    while ((line = br.readLine()) != null) {
+//                        responseOutput.append(line);
+//                    }
+//                    br.close();
+//                    Log.d(LOG_TAG, responseOutput.toString());
+//                    Gson gson = new Gson();
+//                    responsePojo = gson.fromJson(responseOutput.toString(), ResponsePojo.class);
+//                    // output.append(System.getProperty("line.separator") + "Response " + System.getProperty("line.separator") + System.getProperty("line.separator") + responseOutput.toString());
+//                } else {
+//                    Log.d(LOG_TAG, "Success code is " + successCode);
+//                    InputStream inputStreamReader = connection.getErrorStream();
+//                    connection.getResponseMessage();
+//                    error = WebError.UNKNOWN;
+//                }
+//            } catch (Exception e) {
+//                error = WebError.UNKNOWN;
+//                e.printStackTrace();
+//            }
+//
+//            return new Object[]{responsePojo, error};
+//        }
+
+
         @Override
         protected Object[] doInBackground(Void... vParams) {
+
             ResponsePojo responsePojo = null;
             WebError error = null;
             String method = "";
@@ -404,32 +505,61 @@ public class WebServiceClient {
             try {
                 url = new URL(mUrl);
                 HttpURLConnection connection = (HttpURLConnection) url.openConnection();
-                connection.setRequestProperty("Content-Type", "application/json");
+
                 connection.setRequestProperty("USER-AGENT", "Mozilla/5.0");
                 connection.setRequestProperty("ACCEPT-LANGUAGE", "en-US,en;0.5");
-                connection.setReadTimeout(40000);
+                connection.setReadTimeout(10000);
                 connection.setConnectTimeout(30000);
                 if (mMethod.equals(HttpMethod.HTTP_GET)) {
                     connection.setRequestMethod("GET");
-                } else if (mMethod.equals(HttpMethod.HTTP_POST)) {
-                    connection.setRequestMethod("POST");
+                }
+                else if(mMethod.equals(HttpMethod.HTTP_PUT))
+                {
+                    connection.setRequestMethod("PUT");
                     connection.setDoInput(true);
                     connection.setDoOutput(true);
                 }
-                //
+                else if (mMethod.equals(HttpMethod.HTTP_POST)) {
+                    connection.setRequestMethod("POST");
+                    connection.setDoInput(true);
+                    connection.setDoOutput(true);
+
+                }
+
+                // Image upload service
+                if (isImageUpload){
+                    connection.setRequestProperty("Connection", "Keep-Alive");
+                    connection.addRequestProperty("Content-length", mReqEntity.getContentLength() + "");
+                    connection.addRequestProperty(mReqEntity.getContentType().getName(), mReqEntity.getContentType().getValue());
+                }
+                else{
+                    connection.setRequestProperty("Content-Type", "application/json");
+                }
+
+
                 OutputStream os = connection.getOutputStream();
                 BufferedWriter writer = new BufferedWriter(
                         new OutputStreamWriter(os, "UTF-8"));
-                writer.write(mPayload);
+                if (isImageUpload){
+                    mReqEntity.writeTo(os);
+                    isImageUpload=false;
+                }
+                else{
+                    writer.write(mPayload);
+                }
+
+
                 writer.flush();
                 writer.close();
                 os.close();
 
+
+//
 //                DataOutputStream dStream = new DataOutputStream(connection.getOutputStream());
 //                dStream.writeBytes(mPayload); //Writes out the string to the underlying output stream as a sequence of bytes
 //                dStream.flush(); // Flushes the data output stream.
 //                dStream.close(); // Closing the output stream.
-                  connection.connect();
+                connection.connect();
 
                 int successCode = connection.getResponseCode();
 
@@ -448,6 +578,7 @@ public class WebServiceClient {
                     Log.d(LOG_TAG, responseOutput.toString());
                     Gson gson = new Gson();
                     responsePojo = gson.fromJson(responseOutput.toString(), ResponsePojo.class);
+
                     // output.append(System.getProperty("line.separator") + "Response " + System.getProperty("line.separator") + System.getProperty("line.separator") + responseOutput.toString());
                 } else {
                     Log.d(LOG_TAG, "Success code is " + successCode);
@@ -459,6 +590,7 @@ public class WebServiceClient {
                 error = WebError.UNKNOWN;
                 e.printStackTrace();
             }
+
 
             return new Object[]{responsePojo, error};
         }

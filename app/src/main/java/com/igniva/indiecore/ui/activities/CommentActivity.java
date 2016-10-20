@@ -101,18 +101,9 @@ public class CommentActivity extends BaseActivity implements View.OnClickListene
     protected void setUpLayout() {
         try {
             mRvComment = (RecyclerView) findViewById(R.id.rv_comment_activity);
-            //mRvComment.setLayoutManager(mLlmanager);
-
             final LinearLayoutManager layoutManager = new LinearLayoutManager(this);
             layoutManager.setOrientation(LinearLayoutManager.VERTICAL);
             mRvComment.setLayoutManager(layoutManager);
-
-//            MyLinearLayoutManager manager = new MyLinearLayoutManager(CommentActivity.this,LinearLayoutManager.VERTICAL,false);
-//            mRvComment.setLayoutManager(manager);
-//            mRvComment.setNestedScrollingEnabled(false);
-//            holder.childList.setAdapter(adapter);
-//            mRvComment.setLayoutManager(new MyLinearLayoutManager(getApplicationContext(),1,false));
-
             mIvPostComment = (ImageView) findViewById(R.id.iv_post_comment);
             mIvPostComment.setOnClickListener(this);
             mEtCommentText = (EditText) findViewById(R.id.et_comment_text);
@@ -139,7 +130,6 @@ public class CommentActivity extends BaseActivity implements View.OnClickListene
             selected_post_data = (PostPojo) bundle.getSerializable("POST");
             postId = selected_post_data.getPostId();
 
-//            viewAllComments(selected_post_data.getPostId());
             setDataInViewObjects();
         } catch (Exception e) {
        e.printStackTrace();
@@ -153,25 +143,28 @@ public class CommentActivity extends BaseActivity implements View.OnClickListene
         try {
             String Name = ((selected_post_data.getFirstName()) + " " + (selected_post_data.getLastName()).charAt(0) + ".");
             mUserName.setText(Name);
-            if (!selected_post_data.getProfile_pic().isEmpty()) {
-                Glide.with(this).load(WebServiceClient.HTTP_STAGING + selected_post_data.getProfile_pic())
-                        .thumbnail(1f)
-                        .crossFade()
-                        .diskCacheStrategy(DiskCacheStrategy.ALL)
-                        .into(mUserImage);
-            } else {
-                mUserImage.setImageResource(R.drawable.default_user);
+            try {
+                if (!selected_post_data.getProfile_pic().isEmpty() && selected_post_data.getProfile_pic()!=null) {
+                    Glide.with(this).load(WebServiceClient.HTTP_STAGING + selected_post_data.getProfile_pic())
+                            .thumbnail(1f)
+                            .crossFade()
+                            .diskCacheStrategy(DiskCacheStrategy.ALL)
+                            .into(mUserImage);
+                } else {
+                    mUserImage.setImageResource(R.drawable.default_user);
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
             }
 
             try {
-
                 if (!selected_post_data.getMediaUrl().isEmpty()) {
+                    mPostMedia.setVisibility(View.VISIBLE);
                     Glide.with(this).load(WebServiceClient.HTTP_STAGING + selected_post_data.getMediaUrl())
                             .thumbnail(1f)
                             .crossFade()
                             .diskCacheStrategy(DiskCacheStrategy.ALL)
                             .into(mPostMedia);
-                    mPostMedia.setVisibility(View.VISIBLE);
                 }
             }catch (Exception e){
                 e.printStackTrace();
