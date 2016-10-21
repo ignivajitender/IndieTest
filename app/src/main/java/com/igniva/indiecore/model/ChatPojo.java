@@ -20,6 +20,17 @@ public class ChatPojo {
     private String icon;
     private String relation;
     private String badges;
+    private String imagePath;
+
+
+    public String getImagePath() {
+        return imagePath;
+    }
+
+    public void setImagePath(String imagePath) {
+        this.imagePath = imagePath;
+    }
+
     public int getStatus() {
         return status;
     }

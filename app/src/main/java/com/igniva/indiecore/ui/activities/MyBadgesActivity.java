@@ -89,9 +89,7 @@ public class MyBadgesActivity extends IABActivity implements View.OnClickListene
             mTVMyBadges.setOnClickListener(this);
             mTVBadgesMarket = (TextView) findViewById(R.id.tv_badge_market);
             mTVBadgesMarket.setOnClickListener(this);
-
             findViewById(R.id.btn_load_more).setOnClickListener(this);
-
             mGlManager = new GridLayoutManager(MyBadgesActivity.this, 4);
             mRvMyBadges = (RecyclerView) findViewById(R.id.recycler_view_activity_mybadges);
             mRvMyBadges.setHasFixedSize(true);
@@ -638,9 +636,8 @@ public class MyBadgesActivity extends IABActivity implements View.OnClickListene
          *        verifyDeveloperPayload() for more info. Since this is a SAMPLE, we just use
          *        an empty string, but on a production app you should carefully generate this. */
         String payload = "";
-
         try {
-            mHelper.launchPurchaseFlow(this, SKU_GAS, RC_REQUEST,
+            mHelper.launchPurchaseFlow(this, SKU_SLOT, RC_REQUEST,
                     mPurchaseFinishedListener, payload);
         } catch (IabHelper.IabAsyncInProgressException e) {
             complain("Error launching purchase flow. Another async operation in progress.");

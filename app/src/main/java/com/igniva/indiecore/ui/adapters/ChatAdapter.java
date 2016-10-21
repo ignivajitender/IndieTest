@@ -1,11 +1,16 @@
 package com.igniva.indiecore.ui.adapters;
 
 import android.content.Context;
+import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.support.v7.widget.RecyclerView;
+import android.util.Base64;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -14,6 +19,9 @@ import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.igniva.indiecore.R;
 import com.igniva.indiecore.controller.WebServiceClient;
 import com.igniva.indiecore.model.ChatPojo;
+import com.igniva.indiecore.ui.activities.ViewMediaActivity;
+import com.igniva.indiecore.utils.Constants;
+import com.igniva.indiecore.utils.Log;
 
 import java.util.ArrayList;
 
@@ -60,7 +68,21 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.RecyclerViewHo
                     } else {
                         holder.mIvThisUserImage.setImageResource(R.drawable.default_user);
                     }
-                    holder.mTv_LastMessage_ThisUser.setText(mChatList.get(position).getText());
+                    if(!mChatList.get(position).getText().isEmpty()) {
+                        holder.mTv_LastMessage_ThisUser.setVisibility(View.VISIBLE);
+                        holder.mMediaThis.setVisibility(View.GONE);
+                        holder.mLlThis.setBackgroundResource(R.drawable.ic_chat_box_right);
+                        holder.mTv_LastMessage_ThisUser.setText(mChatList.get(position).getText());
+                    }else {
+                        holder.mTv_LastMessage_ThisUser.setVisibility(View.GONE);
+                        holder.mMediaThis.setVisibility(View.VISIBLE);
+                        if(!mChatList.get(position).getThumb().isEmpty()){
+                            holder.mLlThis.setBackgroundResource(0);
+                            holder.mMediaThis.setImageBitmap(decodeBase64(mChatList.get(position).getThumb()));
+                        }else {
+                            holder.mLlThis.setBackgroundResource(R.drawable.ic_chat_box_right);
+                        }
+                    }
                     time = mChatList.get(position).getDate_updated();
                     if (time != null && time.length() > 0 && time.contains("T")) {
                         holder.mThisUserLastTextTime.setText(time.substring(time.indexOf("T") + 1, time.indexOf(".") - 3));
@@ -95,7 +117,23 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.RecyclerViewHo
                     } else {
                         holder.mIvOtherUserImage.setImageResource(R.drawable.default_user);
                     }
-                    holder.mTv_LastMessage_OtherUser.setText(mChatList.get(position).getText());
+                    if(!mChatList.get(position).getText().isEmpty()) {
+                        holder.mTv_LastMessage_OtherUser.setVisibility(View.VISIBLE);
+                        holder.mMediaOther.setVisibility(View.GONE);
+                        holder.mLlOther.setBackgroundResource(R.drawable.ic_chat_box_left);
+                        holder.mTv_LastMessage_OtherUser.setText(mChatList.get(position).getText());
+                    }else {
+                              holder.mTv_LastMessage_OtherUser.setVisibility(View.GONE);
+                        holder.mMediaOther.setVisibility(View.VISIBLE);
+
+                        if(!mChatList.get(position).getThumb().isEmpty()){
+                            holder.mLlOther.setBackgroundResource(0);
+                            holder.mMediaOther.setImageBitmap(decodeBase64(mChatList.get(position).getThumb()));
+                        }else {
+                            holder.mLlOther.setBackgroundResource(R.drawable.ic_chat_box_left);
+
+                        }
+                    }
                     time = mChatList.get(position).getDate_updated();
                     if (time != null && time.length() > 0 && time.contains("T")) {
                         holder.mOtherUserLastTextTime.setText(time.substring(time.indexOf("T") + 1, time.indexOf(".") - 3));
@@ -103,6 +141,25 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.RecyclerViewHo
                         holder.mOtherUserLastTextTime.setText(time);
                     }
                 }
+
+
+            holder.mMediaThis.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Log.e("+++CHATADapetrto MediaView+++++++++++++++++++++",""+mChatList.get(position).getImagePath());
+                    Intent intent=new Intent(context, ViewMediaActivity.class);
+                    intent.putExtra(Constants.MEDIA_PATH,mChatList.get(position).getImagePath());
+                    context.startActivity(intent);
+                }
+            });
+            holder.mMediaOther.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent intent=new Intent(context, ViewMediaActivity.class);
+                    intent.putExtra(Constants.MEDIA_PATH,mChatList.get(position).getImagePath());
+                    context.startActivity(intent);
+                }
+            });
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -116,12 +173,19 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.RecyclerViewHo
         return this.mChatList.size();
     }
 
+    public static Bitmap decodeBase64(String input)
+    {
+        byte[] decodedByte = Base64.decode(input, 0);
+        return BitmapFactory.decodeByteArray(decodedByte, 0, decodedByte.length);
+    }
 
     public class RecyclerViewHolders extends RecyclerView.ViewHolder implements View.OnClickListener {
 
         private TextView mTv_LastMessage_OtherUser;
         private TextView mTvOtherUserName;
         private ImageView mIvOtherUserImage;
+        private ImageView mMediaOther;
+        private ImageView mMediaThis;
         private TextView mOtherUserLastTextTime;
         private TextView mTv_LastMessage_ThisUser;
         private TextView mTvThisUserName;
@@ -129,6 +193,8 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.RecyclerViewHo
         private TextView mThisUserLastTextTime;
         private RelativeLayout mRlThis;
         private RelativeLayout mRlOther;
+        private LinearLayout mLlOther;
+        private LinearLayout mLlThis;
         private ImageView mIvMessageStatus;
 
         public RecyclerViewHolders(final View itemView) {
@@ -138,11 +204,16 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.RecyclerViewHo
             mTvOtherUserName = (TextView) itemView.findViewById(R.id.tv_user_name_other);
             mIvOtherUserImage = (ImageView) itemView.findViewById(R.id.iv_otheruser_chat);
             mOtherUserLastTextTime = (TextView) itemView.findViewById(R.id.tv_otheruser_texttime);
+            mMediaOther=(ImageView) itemView.findViewById(R.id.iv_media_other);
+            mLlOther=(LinearLayout) itemView.findViewById(R.id.ll_other);
 
             mTv_LastMessage_ThisUser = (TextView) itemView.findViewById(R.id.tv_lasttext_this);
             mTvThisUserName = (TextView) itemView.findViewById(R.id.tv_this_user_name);
             mIvThisUserImage = (ImageView) itemView.findViewById(R.id.iv_this_user_chat);
             mThisUserLastTextTime = (TextView) itemView.findViewById(R.id.tv_lasttext_time);
+            mMediaThis=(ImageView) itemView.findViewById(R.id.iv_media_this);
+            mLlThis=(LinearLayout) itemView.findViewById(R.id.ll_this);
+
 
             mRlThis = (RelativeLayout) itemView.findViewById(R.id.ll_chat_this_user);
             mRlOther = (RelativeLayout) itemView.findViewById(R.id.ll_chat_other);

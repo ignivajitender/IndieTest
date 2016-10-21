@@ -3,20 +3,24 @@ package com.igniva.indiecore.ui.activities;
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.media.ThumbnailUtils;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.ParcelFileDescriptor;
 import android.provider.MediaStore;
 import android.support.annotation.Nullable;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.text.format.DateFormat;
+import android.util.Base64;
 import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
@@ -84,7 +88,13 @@ public class ChatActivity extends BaseActivity implements AsyncResult, MeteorCal
     public static final String MARK_ROOM_READ = "markRoomRead";
     public static final String MARK_MESSAGE_READ = "markMessageRead";
     public static final String SENDMESSAGES = "sendMessage";
+    public static  final String PHOTO="Photo";
+    public static  final String VIDEO="Video";
+    public static  final String TEXT="Text";
     public static final int SELECT_FILE = 500;
+    public static final int REQUEST_CAMERA = 600;
+    final CharSequence[] items = { "Take Photo", "Choose from Gallery",
+            "Cancel" };
     public static final String LOG_TAG = "ChatActivity";
     private boolean IsClicked = false;
     private BadgesDb dbBadges;
@@ -97,8 +107,9 @@ public class ChatActivity extends BaseActivity implements AsyncResult, MeteorCal
     private LinearLayoutManager mLlManager;
     private String USER_ID_1;
     private String TOKEN;
-    private String USER_ID_2 = "";
-    private String mImagePath="";
+    private String USER_ID_2;
+    private String mImagePath;
+    private  String base64Encoded;
     private int PAGE = 1;
     private int LIMIT = 60;
     private String mRoomId = "";
@@ -204,7 +215,7 @@ public class ChatActivity extends BaseActivity implements AsyncResult, MeteorCal
             mLlOpenMedia.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    galleryEvent();
+                    selectImage();
 //                    Utility.showToastMessageShort(ChatActivity.this, getResources().getString(R.string.coming_soon));
                 }
             });
@@ -223,7 +234,7 @@ public class ChatActivity extends BaseActivity implements AsyncResult, MeteorCal
 
                             String messageId = mRoomId + randomString();
                             IsClicked = true;
-                            mMeteor.call(SENDMESSAGES, new Object[]{TOKEN, messageId, mRoomId, USER_ID_1, "text", mEtMessageText.getText().toString(), "", ""}, new ResultListener() {
+                            mMeteor.call(SENDMESSAGES, new Object[]{TOKEN, messageId, mRoomId, USER_ID_1,TEXT, mEtMessageText.getText().toString(), "", ""}, new ResultListener() {
                                 @Override
                                 public void onSuccess(String result) {
                                     mMessageId = result;
@@ -276,6 +287,17 @@ public class ChatActivity extends BaseActivity implements AsyncResult, MeteorCal
             e.printStackTrace();
         }
     }
+    /**
+     * click image from camera
+     * */
+    public void cameraEvent() {
+        try {
+            Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+            startActivityForResult(intent, REQUEST_CAMERA);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 
 
     @Override
@@ -284,17 +306,28 @@ public class ChatActivity extends BaseActivity implements AsyncResult, MeteorCal
         if (resultCode == Activity.RESULT_OK) {
             if (requestCode == SELECT_FILE)
                 onSelectFromGalleryResult(data);
+            else if (requestCode == REQUEST_CAMERA)
+                onCaptureImageResult(data);
+        }
+    }
+    private void onCaptureImageResult(Intent data) {
+        Bitmap bm;
+        if (data != null) {
+            try {
+                bm = getImage(data);
+                uploadBitmapAsMultipart(bm);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         }
     }
 
 
     private void onSelectFromGalleryResult(Intent data) {
         try {
-            Bitmap bm = null;
+            Bitmap bm;
             if (data != null) {
                 try {
-                    Uri uri=data.getData();
-
                     bm=getImage(data);
                     uploadBitmapAsMultipart(bm);
                 } catch (Exception e) {
@@ -314,6 +347,7 @@ public class ChatActivity extends BaseActivity implements AsyncResult, MeteorCal
         try {
             String url = WebServiceClient.HTTP_UPLOAD_IMAGE;
             ByteArrayOutputStream bos = new ByteArrayOutputStream();
+            Log.e(LOG_TAG,"++++++____________++++++++++++++_____________.png"+mImagePath);
             if (mImagePath.endsWith(".png")) {
                 myBitmap.compress(Bitmap.CompressFormat.PNG, 80, bos);
                 contentPart = new ByteArrayBody(bos.toByteArray(), "Image.png");
@@ -350,6 +384,27 @@ public class ChatActivity extends BaseActivity implements AsyncResult, MeteorCal
           String  mMediaPostId = obj.optString("fileId");
             com.igniva.indiecore.utils.Log.e("Media Id ", "" + mMediaPostId);
             Log.e(LOG_TAG,"+++++++++============"+mMediaPostId);
+
+            try {
+                if(!mMediaPostId.isEmpty()) {
+                    String messageId = mRoomId + randomString();
+                    mMeteor.call(SENDMESSAGES, new Object[]{TOKEN, messageId, mRoomId, USER_ID_1, PHOTO, "", mMediaPostId,base64Encoded}, new ResultListener() {
+                        @Override
+                        public void onSuccess(String result) {
+                            mMessageId = result;
+                            android.util.Log.d(LOG_TAG, result);
+
+                        }
+
+                        @Override
+                        public void onError(String error, String reason, String details) {
+                            android.util.Log.d(LOG_TAG, " error is " + error + " reason is " + reason + " details" + details);
+                        }
+                    });
+                }
+            }catch (Exception e){
+                e.printStackTrace();
+            }
         } catch (Exception e) {
 
         }
@@ -362,13 +417,17 @@ public class ChatActivity extends BaseActivity implements AsyncResult, MeteorCal
         Uri imgUri;
         Bitmap bitmap = null;
         File imageFile;
-
+        int THUMBSIZE=70;
         try {
             bitmap=getBitmapFromUri(data.getData());
             imgUri=getImageUri(this,bitmap);
             mImagePath=getPath(imgUri);
+            Log.e(LOG_TAG,"++++++____________++++++++++++++_____________getImage"+mImagePath);
             imageFile  = new File(mImagePath);
             bitmap=Compressor.getDefault(this).compressToBitmap(imageFile);
+            Bitmap ThumbImage = ThumbnailUtils.extractThumbnail(BitmapFactory.decodeFile(mImagePath),
+                    THUMBSIZE, THUMBSIZE);
+            base64Encoded =encodeTobase64(ThumbImage);
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -382,6 +441,17 @@ public class ChatActivity extends BaseActivity implements AsyncResult, MeteorCal
         inImage.compress(Bitmap.CompressFormat.JPEG, 100, bytes);
         String path = MediaStore.Images.Media.insertImage(inContext.getContentResolver(), inImage, "Title", null);
         return Uri.parse(path);
+    }
+
+
+    public static String encodeTobase64(Bitmap image)
+    {
+        Bitmap immagex=image;
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        immagex.compress(Bitmap.CompressFormat.PNG, 100, baos);
+        byte[] b = baos.toByteArray();
+        String imageEncoded = Base64.encodeToString(b, Base64.DEFAULT);
+        return imageEncoded;
     }
 
     private Bitmap getBitmapFromUri(Uri uri) throws IOException {
@@ -416,7 +486,7 @@ public class ChatActivity extends BaseActivity implements AsyncResult, MeteorCal
             if (!mRoomId.isEmpty()) {
                 dbBadges = new BadgesDb(this);
                 messageList = dbBadges.retrieveUserChat(mRoomId, this);
-                Collections.reverse(messageList);
+//                Collections.reverse(messageList);
                 if (messageList.size() > 0) {
                     mChatAdapter = new ChatAdapter(ChatActivity.this, messageList, CHAT_ACTIVITY, mMessageId);
                     mRvChatMessages.setAdapter(mChatAdapter);
@@ -519,7 +589,7 @@ public class ChatActivity extends BaseActivity implements AsyncResult, MeteorCal
             dbBadges = new BadgesDb(this);
             messageList.clear();
             messageList = dbBadges.retrieveUserChat(mRoomId, this);
-            Collections.reverse(messageList);
+//            Collections.reverse(messageList);
             if (messageList.size() > 0) {
                 mChatAdapter = new ChatAdapter(ChatActivity.this, messageList, CHAT_ACTIVITY, mMessageId);
                 mRvChatMessages.setAdapter(mChatAdapter);
@@ -606,59 +676,101 @@ public class ChatActivity extends BaseActivity implements AsyncResult, MeteorCal
 //            TODO use UTC time converter
             String date = convertDate(instantChatPojo.getDate_updated().get$date(), "hh:mm");
             if (mRoomId != null && collectionName.equalsIgnoreCase("message")) {
-                if (mRoomId.equals(instantChatPojo.getRoomId()) && !instantChatPojo.getText().isEmpty()) {
-                    mChatPojo.setIcon(instantChatPojo.getIcon());
-                    mChatPojo.setName(instantChatPojo.getName());
-                    mChatPojo.set_id(instantChatPojo.getUserId());
-                    mChatPojo.setText(instantChatPojo.getText());
-                    mChatPojo.setRoomId(instantChatPojo.getRoomId());
-                    mChatPojo.setMessageId(instantChatPojo.getMessageId());
-                    mChatPojo.setRelation(instantChatPojo.getRelation());
-                    mChatPojo.setDate_updated(date);
-                    mChatPojo.setStatus(instantChatPojo.getStatus());
-                    mChatPojo.setBadges(instantChatPojo.getBadges());
-                    mChatPojo.setType(instantChatPojo.getType());
-                    insertSingleMessage(mChatPojo);
+                if (mRoomId.equals(instantChatPojo.getRoomId())) {
+                    if (instantChatPojo.getType().equalsIgnoreCase("Text")) {
+                        mChatPojo.setIcon(instantChatPojo.getIcon());
+                        mChatPojo.setName(instantChatPojo.getName());
+                        mChatPojo.set_id(instantChatPojo.getUserId());
+                        mChatPojo.setText(instantChatPojo.getText());
+                        mChatPojo.setRoomId(instantChatPojo.getRoomId());
+                        mChatPojo.setMessageId(instantChatPojo.getMessageId());
+                        mChatPojo.setRelation(instantChatPojo.getRelation());
+                        mChatPojo.setDate_updated(date);
+                        mChatPojo.setStatus(instantChatPojo.getStatus());
+                        mChatPojo.setBadges(instantChatPojo.getBadges());
+                        mChatPojo.setType(instantChatPojo.getType());
+                        insertSingleMessage(mChatPojo);
 
-                    if (IsClicked) {
-                        messageList.add(mChatPojo);
+                        if (IsClicked) {
+                            messageList.add(mChatPojo);
+                        }
+                    } else if (instantChatPojo.getType().equalsIgnoreCase("Photo")) {
+                        mChatPojo.setIcon(instantChatPojo.getIcon());
+                        mChatPojo.setName(instantChatPojo.getName());
+                        mChatPojo.set_id(instantChatPojo.getUserId());
+                        mChatPojo.setMedia(instantChatPojo.getMedia());
+                        mChatPojo.setText(instantChatPojo.getText());
+                        mChatPojo.setThumb(instantChatPojo.getThumb());
+                        mChatPojo.setRoomId(instantChatPojo.getRoomId());
+                        mChatPojo.setMessageId(instantChatPojo.getMessageId());
+                        mChatPojo.setRelation(instantChatPojo.getRelation());
+                        mChatPojo.setDate_updated(date);
+                        mChatPojo.setStatus(instantChatPojo.getStatus());
+                        mChatPojo.setBadges(instantChatPojo.getBadges());
+                        mChatPojo.setType(instantChatPojo.getType());
+                        mChatPojo.setImagePath(mImagePath);
+                        insertSingleMessage(mChatPojo);
+
+                        if (IsClicked) {
+                            messageList.add(mChatPojo);
+                        }
                     }
                 } else {
-                    mChatPojo.setIcon(instantChatPojo.getIcon());
-                    mChatPojo.setName(instantChatPojo.getName());
-                    mChatPojo.set_id(instantChatPojo.getUserId());
-                    mChatPojo.setText(instantChatPojo.getText());
-                    mChatPojo.setRoomId(instantChatPojo.getRoomId());
-                    mChatPojo.setMessageId(instantChatPojo.getMessageId());
-                    mChatPojo.setRelation(instantChatPojo.getRelation());
-                    mChatPojo.setDate_updated(date);
-                    mChatPojo.setStatus(instantChatPojo.getStatus());
-                    mChatPojo.setBadges(instantChatPojo.getBadges());
-                    mChatPojo.setType(instantChatPojo.getType());
-                    insertSingleMessage(mChatPojo);
-                }
-            }
-            if (instantChatPojo.getStatus() == 1) {
+                    if (instantChatPojo.getType().equalsIgnoreCase("Text")) {
+                        mChatPojo.setIcon(instantChatPojo.getIcon());
+                        mChatPojo.setName(instantChatPojo.getName());
+                        mChatPojo.set_id(instantChatPojo.getUserId());
+                        mChatPojo.setText(instantChatPojo.getText());
+                        mChatPojo.setRoomId(instantChatPojo.getRoomId());
+                        mChatPojo.setMessageId(instantChatPojo.getMessageId());
+                        mChatPojo.setRelation(instantChatPojo.getRelation());
+                        mChatPojo.setDate_updated(date);
+                        mChatPojo.setStatus(instantChatPojo.getStatus());
+                        mChatPojo.setBadges(instantChatPojo.getBadges());
+                        mChatPojo.setType(instantChatPojo.getType());
+                        insertSingleMessage(mChatPojo);
 
-                for(int i=0;i<messageList.size();i++){
-                    if(messageList.get(i).getMessageId().equals(mChatPojo.getMessageId())){
-                        messageList.get(i).setStatus(1);
-                        dbBadges.updateChatRow(mChatPojo);
+                    } else if (instantChatPojo.getType().equalsIgnoreCase("Photo")) {
+                        mChatPojo.setIcon(instantChatPojo.getIcon());
+                        mChatPojo.setName(instantChatPojo.getName());
+                        mChatPojo.set_id(instantChatPojo.getUserId());
+                        mChatPojo.setMedia(instantChatPojo.getMedia());
+                        mChatPojo.setText(instantChatPojo.getText());
+                        mChatPojo.setThumb(instantChatPojo.getThumb());
+                        mChatPojo.setRoomId(instantChatPojo.getRoomId());
+                        mChatPojo.setMessageId(instantChatPojo.getMessageId());
+                        mChatPojo.setRelation(instantChatPojo.getRelation());
+                        mChatPojo.setDate_updated(date);
+                        mChatPojo.setStatus(instantChatPojo.getStatus());
+                        mChatPojo.setBadges(instantChatPojo.getBadges());
+                        mChatPojo.setType(instantChatPojo.getType());
+                        insertSingleMessage(mChatPojo);
                     }
-                }
-                mChatAdapter.notifyDataSetChanged();
-            }
-            if (instantChatPojo.getStatus() == 2) {
-                for(int i=0;i<messageList.size();i++){
-                    if(messageList.get(i).getMessageId().equals(mChatPojo.getMessageId())){
-                        messageList.get(i).setStatus(2);
-                        dbBadges.updateChatRow(mChatPojo);
 
-                    }
                 }
-                mChatAdapter.notifyDataSetChanged();
             }
 
+//            if (instantChatPojo.getStatus() == 1) {
+//
+//                for(int i=0;i<messageList.size();i++){
+//                    if(messageList.get(i).getMessageId().equals(mChatPojo.getMessageId())){
+//                        messageList.get(i).setStatus(1);
+//                        dbBadges.updateChatRow(mChatPojo);
+//                    }
+//                }
+//                mChatAdapter.notifyDataSetChanged();
+//            }
+//            if (instantChatPojo.getStatus() == 2) {
+//                for(int i=0;i<messageList.size();i++){
+//                    if(messageList.get(i).getMessageId().equals(mChatPojo.getMessageId())){
+//                        messageList.get(i).setStatus(2);
+//                        dbBadges.updateChatRow(mChatPojo);
+//
+//                    }
+//                }
+//                mChatAdapter.notifyDataSetChanged();
+//            }
+            runThread();
             try {
                 if (!instantChatPojo.getRelation().equalsIgnoreCase("self")) {
                     mMeteor.call(MARK_MESSAGE_DELIVERED, new Object[]{TOKEN, USER_ID_1, instantChatPojo.getMessageId()});
@@ -673,7 +785,6 @@ public class ChatActivity extends BaseActivity implements AsyncResult, MeteorCal
             } catch (Exception e) {
                 e.printStackTrace();
             }
-            runThread();
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -789,5 +900,24 @@ public class ChatActivity extends BaseActivity implements AsyncResult, MeteorCal
 
     }
 
+
+    private void selectImage() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(ChatActivity.this);
+        builder.setTitle("Add Photo!");
+        builder.setItems(items, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int item) {
+//                boolean result=Utility.checkPermission(MainActivity.this);
+                if (items[item].equals("Take Photo")) {
+                        cameraEvent();
+                } else if (items[item].equals("Choose from Gallery")) {
+                        galleryEvent();
+                } else if (items[item].equals("Cancel")) {
+                    dialog.dismiss();
+                }
+            }
+        });
+        builder.show();
+    }
 
 }

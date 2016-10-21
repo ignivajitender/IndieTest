@@ -21,7 +21,7 @@ public abstract class IABActivity extends BaseActivity implements IabBroadcastRe
         DialogInterface.OnClickListener{
     String LOG_TAG="IABActivity";
     protected static final String SKU_GAS = "gas";
-    protected static final String SKU_SLOT = "slot";
+    protected static final String SKU_SLOT = "slot_one";
     // (arbitrary) request code for the purchase flow
     protected static final int RC_REQUEST = 10001;
     // The helper object

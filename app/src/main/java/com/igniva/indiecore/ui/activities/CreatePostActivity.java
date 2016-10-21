@@ -390,9 +390,7 @@ public class CreatePostActivity extends BaseActivity implements AsyncResult,View
             } else {
                 // open dialog here
                 new Utility().showNoInternetDialog((Activity) CreatePostActivity.this);
-
             }
-
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -422,13 +420,13 @@ public class CreatePostActivity extends BaseActivity implements AsyncResult,View
         String path = MediaStore.Images.Media.insertImage(inContext.getContentResolver(), inImage, "Title", null);
         return Uri.parse(path);
     }
-
-    public String getRealPathFromURI(Uri uri) {
-        Cursor cursor = getContentResolver().query(uri, null, null, null, null);
-        cursor.moveToFirst();
-        int idx = cursor.getColumnIndex(MediaStore.Images.ImageColumns.DATA);
-        return cursor.getString(idx);
-    }
+//
+//    public String getRealPathFromURI(Uri uri) {
+//        Cursor cursor = getContentResolver().query(uri, null, null, null, null);
+//        cursor.moveToFirst();
+//        int idx = cursor.getColumnIndex(MediaStore.Images.ImageColumns.DATA);
+//        return cursor.getString(idx);
+//    }
 
 
 }

@@ -100,12 +100,13 @@ public class BadgesDb extends SQLiteOpenHelper {
     public  static  final String ICON="icon";
     public  static  final String RELATION="relation";
     public  static  final String BADGES="badges";
+    public static  final  String IMAGE_PATH ="image_path";
 //    TABLE CHAT END
  public static String createTableUserChat(){
      return  "CREATE TABLE IF NOT EXISTS " + TABLE_CHAT + "(" + Id + " TEXT," + ROOM_ID + " TEXT," +
              USERID + " TEXT," + MESSAGE_TYPE + " TEXT," + TEXT + " TEXT," + MEDIA + " TEXT," + THUMB + " TEXT," +
              STATUS + " INTEGER," + CREATED_AT + " TEXT," + DATE_UPDATED + " TEXT," + MESSAGE_ID + " TEXT PRIMARY KEY," +
-             NAME + " TEXT," + ICON + " TEXT," + RELATION + " TEXT," + BADGES + " TEXT" + ")";
+             NAME + " TEXT," + ICON + " TEXT," + RELATION + " TEXT," + BADGES + " TEXT," + IMAGE_PATH + " TEXT" + ")";
 
  }
 
@@ -150,6 +151,7 @@ public class BadgesDb extends SQLiteOpenHelper {
             value.put(ICON,message.getIcon());
             value.put(RELATION,message.getRelation());
             value.put(BADGES,message.getBadges());
+            value.put(IMAGE_PATH,message.getImagePath());
             // Inserting Single Row
             db.insertWithOnConflict(TABLE_CHAT, null, value, SQLiteDatabase.CONFLICT_IGNORE);
 

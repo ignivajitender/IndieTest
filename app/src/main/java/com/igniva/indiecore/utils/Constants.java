@@ -77,7 +77,7 @@ public static  final String SELF="self";
     public static  final String RELATION_UNKNOWN="unknown";
 
 
-
+public static  final String MEDIA_PATH="media_path";
 //    businessId, badge_status
 
     //    token, userId, location, latlong, sort, limit, page
