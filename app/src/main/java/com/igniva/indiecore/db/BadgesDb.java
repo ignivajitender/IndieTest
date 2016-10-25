@@ -414,6 +414,7 @@ public class BadgesDb extends SQLiteOpenHelper {
                     mUsersChatPojoObj.setIcon(cursor.getString(12));
                     mUsersChatPojoObj.setRelation(cursor.getString(13));
                     mUsersChatPojoObj.setBadges(cursor.getString(14));
+                    mUsersChatPojoObj.setImagePath(cursor.getString(15));
                     savedUserMessages.add(mUsersChatPojoObj);
                 }
             }

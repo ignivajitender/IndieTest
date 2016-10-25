@@ -592,13 +592,11 @@ public class CreateProfileActivity extends BaseActivity implements AsyncResult,V
             reqEntity.addPart("fileToUpload", contentPart);
 
             if (Utility.isInternetConnection(CreateProfileActivity.this)) {
-                new WebServiceClientUploadImage(CreateProfileActivity.this, this, url, reqEntity, 3).execute();
+                new WebServiceClientUploadImage(CreateProfileActivity.this, this, url, reqEntity, 3,Constants.UPLOAD).execute();
             } else {
                 // open dialog here
                 new Utility().showNoInternetDialog((Activity) CreateProfileActivity.this);
-
             }
-
 
         } catch (Exception e) {
             e.printStackTrace();

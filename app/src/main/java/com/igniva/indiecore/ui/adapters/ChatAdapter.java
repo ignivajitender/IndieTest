@@ -11,12 +11,14 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.igniva.indiecore.R;
+import com.igniva.indiecore.controller.OnImageDownloadClick;
 import com.igniva.indiecore.controller.WebServiceClient;
 import com.igniva.indiecore.model.ChatPojo;
 import com.igniva.indiecore.ui.activities.ViewMediaActivity;
@@ -35,13 +37,15 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.RecyclerViewHo
     private Context context;
     private String mContextName;
     private String mMessageId;
+    OnImageDownloadClick mOnImageDownload;
 
 
-    public ChatAdapter(Context context, ArrayList<ChatPojo> chatList, String contextName,String messageID) {
+    public ChatAdapter(Context context, ArrayList<ChatPojo> chatList, String contextName,String messageID,OnImageDownloadClick onImageDownloadClick) {
         this.context = context;
         this.mChatList = chatList;
         this.mContextName = contextName;
         this.mMessageId=messageID;
+        this.mOnImageDownload=onImageDownloadClick;
     }
 
     @Override
@@ -146,7 +150,6 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.RecyclerViewHo
             holder.mMediaThis.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    Log.e("+++CHATADapetrto MediaView+++++++++++++++++++++",""+mChatList.get(position).getImagePath());
                     Intent intent=new Intent(context, ViewMediaActivity.class);
                     intent.putExtra(Constants.MEDIA_PATH,mChatList.get(position).getImagePath());
                     context.startActivity(intent);
@@ -155,9 +158,7 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.RecyclerViewHo
             holder.mMediaOther.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    Intent intent=new Intent(context, ViewMediaActivity.class);
-                    intent.putExtra(Constants.MEDIA_PATH,mChatList.get(position).getImagePath());
-                    context.startActivity(intent);
+                   mOnImageDownload.onDownloadClick(holder.mprogressBar,position,mChatList.get(position).getMedia());
                 }
             });
 
@@ -196,6 +197,7 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.RecyclerViewHo
         private LinearLayout mLlOther;
         private LinearLayout mLlThis;
         private ImageView mIvMessageStatus;
+        ProgressBar mprogressBar;
 
         public RecyclerViewHolders(final View itemView) {
             super(itemView);
@@ -215,6 +217,7 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.RecyclerViewHo
             mLlThis=(LinearLayout) itemView.findViewById(R.id.ll_this);
 
 
+            mprogressBar = (ProgressBar) itemView.findViewById(R.id.circular_progress_bar);
             mRlThis = (RelativeLayout) itemView.findViewById(R.id.ll_chat_this_user);
             mRlOther = (RelativeLayout) itemView.findViewById(R.id.ll_chat_other);
             mIvMessageStatus=(ImageView) itemView.findViewById(R.id.iv_message_status);

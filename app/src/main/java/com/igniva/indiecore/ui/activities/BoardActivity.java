@@ -976,7 +976,6 @@ public class BoardActivity extends BaseActivity implements View.OnClickListener 
             WebNotificationManager.registerResponseListener(blockResponseHandler);
             WebServiceClient.block_a_user(BoardActivity.this, payload, blockResponseHandler);
         }
-
     }
 
     ResponseHandlerListener blockResponseHandler = new ResponseHandlerListener() {
@@ -985,8 +984,8 @@ public class BoardActivity extends BaseActivity implements View.OnClickListener 
             WebNotificationManager.unRegisterResponseListener(blockResponseHandler);
 
             if (error == null) {
-
                 if (result.getSuccess().equalsIgnoreCase("true")) {
+                    mPeoplesList.remove(POSITION);
                        mPeoplesTabAdapter.notifyDataSetChanged();
                     Utility.showToastMessageShort(BoardActivity.this, "User blocked");
 

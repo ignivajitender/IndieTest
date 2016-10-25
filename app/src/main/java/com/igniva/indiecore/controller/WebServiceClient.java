@@ -49,6 +49,7 @@ public class WebServiceClient {
     public static final String HTTP_VERIFY_OTP = HTTP_PROTOCOL + HTTP_HOST_IP + "user/verify";
     public static final String HTTP_RESEND_OTP=HTTP_PROTOCOL+HTTP_HOST_IP+"user/control";
     public static  final String HTTP_UPLOAD_IMAGE=HTTP_STAGING+"/files/upload";
+    public static  final String HTTP_DOWNLOAD_IMAGE=HTTP_STAGING+"/files/uploads";
     public static final String HTTP_SYNC_CONTACTS=HTTP_PROTOCOL+HTTP_HOST_IP+"user/sync";
     public static final String  HTTP_SELECTED_BADGES=HTTP_PROTOCOL+HTTP_HOST_IP+"badge/get";
     public  static  final String HTTP_ON_OFF_BADGES=HTTP_PROTOCOL+HTTP_HOST_IP+"badge/onoff";

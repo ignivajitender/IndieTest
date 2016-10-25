@@ -11,14 +11,13 @@
         android:layout_gravity="left"
         android:layout_marginLeft="5dp"
         android:layout_marginTop="10dp"
-        android:orientation="horizontal"
-        >
+        android:orientation="horizontal">
 
         <com.igniva.indiecore.utils.CircularImageView
             android:id="@+id/iv_otheruser_chat"
             android:layout_width="40dp"
-            android:layout_alignParentTop="true"
             android:layout_height="40dp"
+            android:layout_alignParentTop="true"
             android:src="@drawable/default_user" />
 
         <LinearLayout
@@ -26,20 +25,20 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerInParent="true"
-            android:paddingLeft="10dp"
-            android:paddingRight="10dp"
-            android:background="@drawable/ic_chat_box_left"
             android:layout_toRightOf="@+id/iv_otheruser_chat"
-            android:orientation="vertical">
+            android:background="@drawable/ic_chat_box_left"
+            android:orientation="vertical"
+            android:paddingLeft="10dp"
+            android:paddingRight="10dp">
 
             <TextView
                 android:id="@+id/tv_user_name_other"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="left"
-                android:text="Siddharth awasthi"
                 android:layout_marginLeft="5dp"
                 android:layout_marginTop="5dp"
+                android:text="Siddharth awasthi"
                 android:textColor="@color/orange"
 
                 />
@@ -49,18 +48,34 @@
                 android:layout_height="wrap_content"
                 android:orientation="vertical">
 
-                <ImageView
-                    android:id="@+id/iv_media_other"
-                    android:layout_width="150dp"
-                    android:layout_height="150dp"
-                    android:layout_gravity="left"
-                    android:layout_marginLeft="5dp"
-                    android:gravity="start"
-                    android:visibility="gone"
-                    android:hint="some text"
-                    android:paddingBottom="4dp"
-                    android:paddingRight="15dp"
-                    android:paddingTop="4dp"/>
+                <RelativeLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content">
+
+                    <ImageView
+                        android:id="@+id/iv_media_other"
+                        android:layout_width="150dp"
+                        android:layout_height="150dp"
+                        android:layout_gravity="left"
+                        android:layout_marginLeft="5dp"
+                        android:gravity="start"
+                        android:hint="some text"
+                        android:paddingBottom="4dp"
+                        android:paddingRight="15dp"
+                        android:paddingTop="4dp"
+                        android:visibility="gone" />
+                    <ProgressBar
+                        android:id="@+id/circular_progress_bar"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="30dp"
+                        android:visibility="gone"
+                        android:layout_centerInParent="true"
+                        android:indeterminate="false"
+                        android:max="48"
+                        android:progress="1"/>
+                </RelativeLayout>
+
                 <TextView
                     android:id="@+id/tv_otheruser_lasttext"
                     android:layout_width="wrap_content"
@@ -68,12 +83,12 @@
                     android:layout_gravity="left"
                     android:layout_marginLeft="5dp"
                     android:gravity="start"
-                    android:visibility="gone"
                     android:hint="some text"
                     android:paddingBottom="4dp"
                     android:paddingRight="15dp"
                     android:paddingTop="4dp"
-                    android:textColor="@color/black" />
+                    android:textColor="@color/black"
+                    android:visibility="gone" />
 
                 <TextView
                     android:id="@+id/tv_otheruser_texttime"
@@ -83,9 +98,9 @@
                     android:layout_marginLeft="5dp"
                     android:gravity="start"
                     android:paddingBottom="5dp"
-                    android:textSize="12sp"
                     android:paddingRight="15dp"
-                    android:textColor="@color/light_black" />
+                    android:textColor="@color/light_black"
+                    android:textSize="12sp" />
             </LinearLayout>
 
         </LinearLayout>
@@ -97,12 +112,11 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="right"
-        android:gravity="bottom"
         android:layout_marginBottom="10dp"
         android:layout_marginRight="5dp"
         android:layout_marginTop="5dp"
-        android:orientation="horizontal"
-        >
+        android:gravity="bottom"
+        android:orientation="horizontal">
 
         <LinearLayout
             android:id="@+id/ll_container"
@@ -134,11 +148,12 @@
                     android:layout_gravity="left"
                     android:layout_marginLeft="5dp"
                     android:gravity="start"
-                    android:visibility="gone"
                     android:hint="some text"
                     android:paddingBottom="4dp"
                     android:paddingRight="15dp"
-                    android:paddingTop="4dp"/>
+                    android:paddingTop="4dp"
+                    android:visibility="gone" />
+
                 <TextView
                     android:id="@+id/tv_lasttext_this"
                     android:layout_width="wrap_content"
@@ -146,41 +161,42 @@
                     android:layout_gravity="right"
                     android:layout_marginRight="5dp"
                     android:gravity="end"
-                    android:visibility="gone"
                     android:hint="some text"
                     android:paddingBottom="4dp"
                     android:paddingLeft="20dp"
                     android:paddingRight="20dp"
                     android:paddingTop="12dp"
-                    android:textColor="@color/black" />
+                    android:textColor="@color/black"
+                    android:visibility="gone" />
+
                 <LinearLayout
                     android:layout_width="match_parent"
-                    android:orientation="horizontal"
-                    android:layout_height="wrap_content">
-
-                <TextView
-                    android:id="@+id/tv_lasttext_time"
-                    android:layout_width="0dp"
-                    android:layout_weight="2"
                     android:layout_height="wrap_content"
-                    android:layout_gravity="left"
-                    android:layout_marginRight="5dp"
-                    android:gravity="start"
-                    android:hint="00:00"
-                    android:paddingBottom="10dp"
-                    android:textSize="12sp"
-                    android:paddingLeft="20dp"
-                    android:paddingRight="20dp"
-                    android:textColor="@color/light_black" />
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:id="@+id/tv_lasttext_time"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="left"
+                        android:layout_marginRight="5dp"
+                        android:layout_weight="2"
+                        android:gravity="start"
+                        android:hint="00:00"
+                        android:paddingBottom="10dp"
+                        android:paddingLeft="20dp"
+                        android:paddingRight="20dp"
+                        android:textColor="@color/light_black"
+                        android:textSize="12sp" />
 
                     <ImageView
                         android:id="@+id/iv_message_status"
                         android:layout_width="0dp"
-                        android:layout_weight="1"
-                        android:paddingBottom="10dp"
                         android:layout_height="wrap_content"
                         android:layout_gravity="end"
-                        android:src="@drawable/ic_sent_tick"/>
+                        android:layout_weight="1"
+                        android:paddingBottom="10dp"
+                        android:src="@drawable/ic_sent_tick" />
                 </LinearLayout>
             </LinearLayout>
         </LinearLayout>

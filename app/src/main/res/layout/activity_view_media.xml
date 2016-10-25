@@ -3,10 +3,23 @@
     android:orientation="vertical" android:layout_width="match_parent"
     android:layout_height="match_parent">
 
+
+    <include
+        android:id="@+id/toolbar_media_activity"
+        layout="@layout/toolbar" />
     <ImageView
         android:id="@+id/iv_media_image"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         />
+
+    <TextView
+        android:id="@+id/tv_media_not_available"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="center"
+        android:visibility="gone"
+        android:textSize="20dp"
+        android:text="@string/media_not_available"/>
 
 </LinearLayout>

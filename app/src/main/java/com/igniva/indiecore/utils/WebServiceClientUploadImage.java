@@ -2,12 +2,24 @@ package com.igniva.indiecore.utils;
 
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
+import android.os.Environment;
 import android.os.StrictMode;
 import android.util.Log;
+import android.view.View;
+import android.widget.ProgressBar;
+
 import com.igniva.indiecore.R;
+import com.igniva.indiecore.controller.WebServiceClient;
+
 import org.apache.http.entity.mime.MultipartEntity;
+
+import java.io.BufferedInputStream;
 import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -22,26 +34,42 @@ import java.net.URL;
 public class WebServiceClientUploadImage extends
         AsyncTask<String, Integer, String> {
     String mUrl;
+    String mTaskName;
     MultipartEntity mReqEntity;
     Context mContext;
     ProgressDialog progressDialog;
+    ProgressBar mProgressBar;
     StringBuilder builder;
     AsyncResult mCallBack;
     int urlNo;
-    public WebServiceClientUploadImage(Context mContext,AsyncResult callBack,String urlString, MultipartEntity reqEntity,int urlNo) {
+    public WebServiceClientUploadImage(Context mContext,AsyncResult callBack,String urlString, MultipartEntity reqEntity,int urlNo,String taskName) {
         this.mUrl=urlString;
         this.mReqEntity=reqEntity;
         this.mContext=mContext;
         this.mCallBack=callBack;
+        this.urlNo=urlNo;
+        this.mTaskName=taskName;
+    }
+
+    public WebServiceClientUploadImage(ProgressBar progressBar,Context mContext, AsyncResult callBack, String urlString, String taskName, int urlNo) {
+        this.mUrl= WebServiceClient.HTTP_DOWNLOAD_IMAGE+urlString;
+        this.mContext=mContext;
+        this.mCallBack=callBack;
+        this.mTaskName=taskName;
+        this.mProgressBar=progressBar;
         this.urlNo=urlNo;
     }
     @Override
     protected void onPreExecute() {
         super.onPreExecute();
         try {
-            progressDialog = ProgressDialog.show(mContext, "", mContext
-                            .getResources().getString(R.string.please_wait), true,
-                    false);
+            if(mTaskName.equalsIgnoreCase(Constants.DOWNLOAD)){
+                mProgressBar.setVisibility(View.VISIBLE);
+            }else {
+                progressDialog = ProgressDialog.show(mContext, "", mContext
+                                .getResources().getString(R.string.please_wait), true,
+                        false);
+            }
         }catch (Exception e){
             e.printStackTrace();
         }
@@ -66,11 +94,24 @@ public class WebServiceClientUploadImage extends
             conn.setDoOutput(true);
 
             conn.setRequestProperty("Connection", "Keep-Alive");
-            conn.addRequestProperty("Content-length", mReqEntity.getContentLength() + "");
-            conn.addRequestProperty(mReqEntity.getContentType().getName(), mReqEntity.getContentType().getValue());
-            OutputStream os = conn.getOutputStream();
-            mReqEntity.writeTo(conn.getOutputStream());
-            os.close();
+
+            if(mTaskName.equalsIgnoreCase(Constants.DOWNLOAD)) {
+                // getting file length
+                int lenghtOfFile = conn.getContentLength();
+
+                // input stream to read file - with 8k buffer
+                InputStream input = new BufferedInputStream(url.openStream(), 8192);
+                Bitmap   image = BitmapFactory.decodeStream(input);
+                createDirectoryAndSaveFile(image,Utility.randomString());
+
+            }else {
+                conn.addRequestProperty("Content-length", mReqEntity.getContentLength() + "");
+                conn.addRequestProperty(mReqEntity.getContentType().getName(), mReqEntity.getContentType().getValue());
+                OutputStream os = conn.getOutputStream();
+                mReqEntity.writeTo(conn.getOutputStream());
+                os.close();
+
+            }
             conn.connect();
             if (conn.getResponseCode() == HttpURLConnection.HTTP_OK) {
                 BufferedReader reader = null;
@@ -102,13 +143,45 @@ public class WebServiceClientUploadImage extends
         return builder.toString();
     }
 
+    private void createDirectoryAndSaveFile(Bitmap imageToSave, String fileName) {
+
+        File direct = new File(Environment.getExternalStorageDirectory() + "/IndieCore");
+
+        if (!direct.exists()) {
+            File wallpaperDirectory = new File("/chat");
+            wallpaperDirectory.mkdirs();
+        }
+
+        File file = new File(direct, fileName+".png");
+        if (!file.exists()) {
+            try {
+                file.createNewFile();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+        try {
+            FileOutputStream out = new FileOutputStream(file);
+            imageToSave.compress(Bitmap.CompressFormat.JPEG, 100, out);
+            out.flush();
+            out.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 
     @Override
     protected void onPostExecute(String result) {
         super.onPostExecute(result);
         try{
+            Log.e("IMAGEDOWNLOADDDDDDDDDDDDDDDDDDDDDDd",""+result);
             mCallBack.onTaskResponse(result, urlNo);
-            progressDialog.dismiss();
+            if(progressDialog!=null) {
+                progressDialog.dismiss();
+            }
+            if(mProgressBar!=null){
+                mProgressBar.setVisibility(View.GONE);
+            }
         }catch (Exception e){
             e.printStackTrace();
         }

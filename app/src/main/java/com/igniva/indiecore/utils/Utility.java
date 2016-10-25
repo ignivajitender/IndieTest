@@ -1,5 +1,8 @@
 package com.igniva.indiecore.utils;
 
+import java.io.ByteArrayOutputStream;
+import java.io.FileDescriptor;
+import java.io.IOException;
 import java.net.InetAddress;
 import java.net.NetworkInterface;
 import java.text.SimpleDateFormat;
@@ -18,10 +21,16 @@ import android.content.DialogInterface;
 import android.content.DialogInterface.OnClickListener;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.database.Cursor;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.location.LocationManager;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.net.Uri;
 import android.os.Build;
+import android.os.ParcelFileDescriptor;
+import android.provider.MediaStore;
 import android.provider.Settings;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentManager;
@@ -29,6 +38,7 @@ import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
 import android.text.format.DateFormat;
+import android.util.Base64;
 import android.widget.EditText;
 import android.widget.Toast;
 
@@ -355,4 +365,55 @@ public class Utility {
 		return date;
 	}
 
+
+
+	public static Uri getImageUri(Context inContext, Bitmap inImage) {
+
+		ByteArrayOutputStream bytes = new ByteArrayOutputStream();
+		inImage.compress(Bitmap.CompressFormat.JPEG, 100, bytes);
+		String path = MediaStore.Images.Media.insertImage(inContext.getContentResolver(), inImage, "Title", null);
+		return Uri.parse(path);
+	}
+
+
+	public static String encodeTobase64(Bitmap image)
+	{
+		Bitmap immagex=image;
+		ByteArrayOutputStream baos = new ByteArrayOutputStream();
+		immagex.compress(Bitmap.CompressFormat.PNG, 100, baos);
+		byte[] b = baos.toByteArray();
+		String imageEncoded = Base64.encodeToString(b, Base64.DEFAULT);
+		return imageEncoded;
+	}
+
+	public static Bitmap getBitmapFromUri(Context context,Uri uri) throws IOException {
+		ParcelFileDescriptor parcelFileDescriptor = context.getContentResolver().openFileDescriptor(uri, "r");
+		FileDescriptor fileDescriptor = parcelFileDescriptor.getFileDescriptor();
+		Bitmap image = BitmapFactory.decodeFileDescriptor(fileDescriptor);
+		parcelFileDescriptor.close();
+		return image;
+	}
+
+	/**
+	 * get path from uri
+	 *
+	 * @param uri
+	 * @return
+	 */
+	public static String getPath(Context context,Uri uri)
+	{
+		String[] projection = { MediaStore.Images.Media.DATA };
+		Cursor cursor = context.getContentResolver().query(uri, projection, null, null, null);
+		if (cursor == null) return null;
+		int column_index =cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
+		cursor.moveToFirst();
+		String s=cursor.getString(column_index);
+		cursor.close();
+		return s;
+	}
+
+	public static  String randomString() {
+		Long tsLong = System.currentTimeMillis() / 1000;
+		return tsLong.toString();
+	}
 }

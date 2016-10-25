@@ -72,6 +72,8 @@ public static  final String SELF="self";
     public static  final String COMMENT="COMMENT";
     public static  final String DELETE="DELETE";
     public static  final String REPLY="REPLY";
+    public static  final  String DOWNLOAD="downlaod";
+    public static  final  String UPLOAD="upload";
 
     public static  final String RELATION_SELF="self";
     public static  final String RELATION_UNKNOWN="unknown";

@@ -4,7 +4,7 @@
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
     <string name="action_settings">Settings</string>
-    <string name="no_internet_title">No Internt Connection</string>
+    <string name="no_internet_title">No Internet Connection</string>
     <string name="no_internet">Your mobile is not connected to the internet. Please connect to an active internet connection.</string>
     <string name="invalid_session">Invalid Session</string>
     <string name="logout_device">Your session has been expired, Please login again to continue.</string>
@@ -153,6 +153,7 @@
     <string name="available">Available</string>
     <string name="add_post">Please write a post or upload an image</string>
     <string name="write_a_msg">Write a message</string>
+    <string name="media_not_available">This media file is not available in your system</string>
 
     <!--settings-->
 
@@ -167,7 +168,7 @@
     <string name="by_whats_app">By WhatsApp</string>
     <string name="message_by_friends">Message From Friends</string>
     <string name="message_from_others">Message From Others</string>
-<string name="chat_messages">Chats Messages</string>
+    <string name="chat_messages">Chats Messages</string>
     <string name="new_badges">New Badges</string>
 
     <string name="privacy">Privacy</string>
@@ -1176,6 +1177,6 @@
     <string name="add_message">Please write a message.</string>
     <string name="no_peoples_found">No people found at this business.</string>
     <string name="post_reported">Post reported.</string>
-    <string name="block_user">Do you realy want to block this user?</string>
+    <string name="block_user">Do you really want to block this user?</string>
 
 </resources>

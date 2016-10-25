@@ -78,8 +78,10 @@ public class PeoplesTabAdapter extends RecyclerView.Adapter<PeoplesTabAdapter.Re
 
             if (mPeoplesList.get(position).getBadges().equalsIgnoreCase("off")) {
                 holder.mRlMutualbadgesCount.setBackgroundResource(R.drawable.badge_off);
+                holder.mTvBadgeCount.setVisibility(View.GONE);
             } else {
                 holder.mRlMutualbadgesCount.setBackgroundResource(R.drawable.blank_badge);
+                holder.mTvBadgeCount.setVisibility(View.VISIBLE);
                 holder.mTvBadgeCount.setText(mPeoplesList.get(position).getBadges());
             }
 
