@@ -1,5 +1,8 @@
 package com.igniva.indiecore.utils;
 
+import android.os.Environment;
+
+import java.io.File;
 import java.security.PublicKey;
 
 /**
@@ -111,6 +114,11 @@ public static  final String MEDIA_PATH="media_path";
 
     public static  final String MEDIUM="medium";
     public static  final String PROMO_CODE="promo_code";
+
+
+//    ImageDirectory
+    public static  final String  direct =(Environment.getExternalStorageDirectory() + "/IndieCore/Chat");
+//
 
 
 

@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Color;
 import android.support.v7.widget.RecyclerView;
 import android.util.Base64;
 import android.view.LayoutInflater;
@@ -37,6 +38,7 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.RecyclerViewHo
     private Context context;
     private String mContextName;
     private String mMessageId;
+    private boolean Isdownloaded=false;
     OnImageDownloadClick mOnImageDownload;
 
 
@@ -82,6 +84,7 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.RecyclerViewHo
                         holder.mMediaThis.setVisibility(View.VISIBLE);
                         if(!mChatList.get(position).getThumb().isEmpty()){
                             holder.mLlThis.setBackgroundResource(0);
+                            holder.mLlThis.setBackgroundColor(Color.parseColor("#FFFFFF"));
                             holder.mMediaThis.setImageBitmap(decodeBase64(mChatList.get(position).getThumb()));
                         }else {
                             holder.mLlThis.setBackgroundResource(R.drawable.ic_chat_box_right);
@@ -111,6 +114,13 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.RecyclerViewHo
                     holder.mRlThis.setVisibility(View.GONE);
                     holder.mRlOther.setVisibility(View.VISIBLE);
 
+                    if(mChatList.get(position).getType().equalsIgnoreCase("Photo")){
+                        holder.mIvDownloadOther.setVisibility(View.VISIBLE);
+                    }
+                    if(mChatList.get(position).getType().equalsIgnoreCase("TEXT")){
+                        holder.mIvDownloadOther.setVisibility(View.GONE);
+                    }
+
                     holder.mTvOtherUserName.setText(mChatList.get(position).getName());
                     if (mChatList.get(position).getIcon() != null && !mChatList.get(position).getIcon().isEmpty()) {
                         Glide.with(context).load(WebServiceClient.HTTP_STAGING + mChatList.get(position).getIcon())
@@ -121,29 +131,45 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.RecyclerViewHo
                     } else {
                         holder.mIvOtherUserImage.setImageResource(R.drawable.default_user);
                     }
-                    if(!mChatList.get(position).getText().isEmpty()) {
+
+
+                    if (!mChatList.get(position).getText().isEmpty() && mChatList.get(position).getType().equalsIgnoreCase(Constants.TEXT)) {
                         holder.mTv_LastMessage_OtherUser.setVisibility(View.VISIBLE);
                         holder.mMediaOther.setVisibility(View.GONE);
                         holder.mLlOther.setBackgroundResource(R.drawable.ic_chat_box_left);
                         holder.mTv_LastMessage_OtherUser.setText(mChatList.get(position).getText());
-                    }else {
-                              holder.mTv_LastMessage_OtherUser.setVisibility(View.GONE);
+                    } else {
+                        holder.mTv_LastMessage_OtherUser.setVisibility(View.GONE);
                         holder.mMediaOther.setVisibility(View.VISIBLE);
 
-                        if(!mChatList.get(position).getThumb().isEmpty()){
+                        if (!mChatList.get(position).getThumb().isEmpty()) {
                             holder.mLlOther.setBackgroundResource(0);
+                            holder.mLlOther.setBackgroundColor(Color.parseColor("#FFFFFF"));
                             holder.mMediaOther.setImageBitmap(decodeBase64(mChatList.get(position).getThumb()));
-                        }else {
+                        } else {
                             holder.mLlOther.setBackgroundResource(R.drawable.ic_chat_box_left);
-
                         }
                     }
+
                     time = mChatList.get(position).getDate_updated();
                     if (time != null && time.length() > 0 && time.contains("T")) {
                         holder.mOtherUserLastTextTime.setText(time.substring(time.indexOf("T") + 1, time.indexOf(".") - 3));
                     } else {
                         holder.mOtherUserLastTextTime.setText(time);
                     }
+
+                    if(mChatList.get(position).getImagePath()!=null){
+                        if(mChatList.get(position).getImagePath().isEmpty()){
+                            holder.mIvDownloadOther.setVisibility(View.VISIBLE);
+                            holder.mMediaOther.setEnabled(true);
+                            Isdownloaded=false;
+                        }else {
+                            holder.mIvDownloadOther.setVisibility(View.GONE);
+//                            holder.mMediaOther.setEnabled(false);
+                            Isdownloaded=true;
+                        }
+                    }
+
                 }
 
 
@@ -158,7 +184,14 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.RecyclerViewHo
             holder.mMediaOther.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                   mOnImageDownload.onDownloadClick(holder.mprogressBar,position,mChatList.get(position).getMedia());
+                    if (mChatList.get(position).getImagePath() != null && !mChatList.get(position).getImagePath().isEmpty()) {
+                        Intent intent = new Intent(context, ViewMediaActivity.class);
+                        intent.putExtra(Constants.MEDIA_PATH, mChatList.get(position).getImagePath());
+                        context.startActivity(intent);
+                    } else {
+                        holder.mIvDownloadOther.setVisibility(View.GONE);
+                        mOnImageDownload.onDownloadClick(holder.mprogressBar, position, mChatList.get(position).getMedia(), mChatList.get(position).getMessageId(), Isdownloaded);
+                    }
                 }
             });
 
@@ -187,6 +220,7 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.RecyclerViewHo
         private ImageView mIvOtherUserImage;
         private ImageView mMediaOther;
         private ImageView mMediaThis;
+        private ImageView mIvDownloadOther;
         private TextView mOtherUserLastTextTime;
         private TextView mTv_LastMessage_ThisUser;
         private TextView mTvThisUserName;
@@ -208,6 +242,7 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.RecyclerViewHo
             mOtherUserLastTextTime = (TextView) itemView.findViewById(R.id.tv_otheruser_texttime);
             mMediaOther=(ImageView) itemView.findViewById(R.id.iv_media_other);
             mLlOther=(LinearLayout) itemView.findViewById(R.id.ll_other);
+            mIvDownloadOther=(ImageView) itemView.findViewById(R.id.iv_download);
 
             mTv_LastMessage_ThisUser = (TextView) itemView.findViewById(R.id.tv_lasttext_this);
             mTvThisUserName = (TextView) itemView.findViewById(R.id.tv_this_user_name);

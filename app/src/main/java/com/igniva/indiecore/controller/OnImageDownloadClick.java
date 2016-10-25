@@ -8,5 +8,5 @@ import android.widget.ProgressBar;
  */
 public interface OnImageDownloadClick {
 
-      void onDownloadClick(ProgressBar view, int position, String mediaID);
+      void onDownloadClick(ProgressBar view, int position, String mediaID, String messageId,boolean IsDownloaded);
 }

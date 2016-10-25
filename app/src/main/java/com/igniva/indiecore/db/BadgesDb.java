@@ -205,6 +205,18 @@ public class BadgesDb extends SQLiteOpenHelper {
         }
     }
 
+    public void updateMediaPath(ChatPojo message) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        try {
+//            db.execSQL("UPDATE " + TABLE_CHAT + " SET " + IMAGE_PATH +"=" + message.getImagePath() + " WHERE " + MESSAGE_ID + " = '" + message.getMessageId() + "'");
+            db.execSQL("UPDATE " + TABLE_CHAT + " SET " + IMAGE_PATH + "=" + "'" + message.getImagePath() + "'" + " WHERE " + MESSAGE_ID + " = '" + message.getMessageId() + "'");
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            db.close();
+        }
+    }
+
     public void insertSingleBadge(SQLiteDatabase db, BadgesPojo badges) {
         try {
             ContentValues values = new ContentValues();

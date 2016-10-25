@@ -3,14 +3,16 @@
     android:orientation="vertical" android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-
     <include
         android:id="@+id/toolbar_media_activity"
         layout="@layout/toolbar" />
     <ImageView
         android:id="@+id/iv_media_image"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_gravity="center"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
+        android:layout_height="500dp"
         />
 
     <TextView

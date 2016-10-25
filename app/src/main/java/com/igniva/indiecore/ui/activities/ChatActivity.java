@@ -8,7 +8,6 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.media.ThumbnailUtils;
 import android.net.Uri;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.support.annotation.Nullable;
@@ -20,7 +19,6 @@ import android.text.format.DateFormat;
 import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -39,6 +37,7 @@ import com.igniva.indiecore.model.ResponsePojo;
 import com.igniva.indiecore.model.UpdateMessagePojo;
 import com.igniva.indiecore.ui.adapters.ChatAdapter;
 import com.igniva.indiecore.utils.AsyncResult;
+import com.igniva.indiecore.utils.AsyncResultDownload;
 import com.igniva.indiecore.utils.Constants;
 import com.igniva.indiecore.utils.PreferenceHandler;
 import com.igniva.indiecore.utils.Utility;
@@ -48,6 +47,7 @@ import org.apache.http.entity.mime.HttpMultipartMode;
 import org.apache.http.entity.mime.MultipartEntity;
 import org.apache.http.entity.mime.content.ByteArrayBody;
 import org.apache.http.entity.mime.content.ContentBody;
+import org.apache.http.entity.mime.content.StringBody;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -97,6 +97,7 @@ public class ChatActivity extends BaseActivity implements  MeteorCallback {
     private LinearLayoutManager mLlManager;
     private String USER_ID_1;
     private String TOKEN;
+    private String mMediaId;
     private String USER_ID_2;
     private String mImagePath;
     private  String base64Encoded;
@@ -338,7 +339,7 @@ public class ChatActivity extends BaseActivity implements  MeteorCallback {
         try {
             String url = WebServiceClient.HTTP_UPLOAD_IMAGE;
             ByteArrayOutputStream bos = new ByteArrayOutputStream();
-            Log.e(LOG_TAG,"++++++____________++++++++++++++_____________.png"+mImagePath);
+            Log.e(LOG_TAG,"++++++____________++++++++++++++_____________."+mImagePath);
             if (mImagePath.endsWith(".png")) {
                 myBitmap.compress(Bitmap.CompressFormat.PNG, 80, bos);
                 contentPart = new ByteArrayBody(bos.toByteArray(), "Image.png");
@@ -380,6 +381,7 @@ public class ChatActivity extends BaseActivity implements  MeteorCallback {
 
                     try {
                         if(!mMediaPostId.isEmpty()) {
+                            IsClicked=true;
                             String messageId = mRoomId + Utility.randomString();
                             mMeteor.call(SENDMESSAGES, new Object[]{TOKEN, messageId, mRoomId, USER_ID_1, PHOTO, "", mMediaPostId,base64Encoded}, new ResultListener() {
                                 @Override
@@ -399,7 +401,7 @@ public class ChatActivity extends BaseActivity implements  MeteorCallback {
                         e.printStackTrace();
                     }
                 } catch (Exception e) {
-
+e.printStackTrace();
                 }
             }
         }
@@ -420,6 +422,7 @@ public class ChatActivity extends BaseActivity implements  MeteorCallback {
             bitmap=Utility.getBitmapFromUri(this,data.getData());
             imgUri=Utility.getImageUri(this,bitmap);
             mImagePath=Utility.getPath(ChatActivity.this,imgUri);
+            Log.e(LOG_TAG,"++++++____________++++++++++++++__fgfgdfgdfgdfgdfgfd___________."+mImagePath);
             imageFile  = new File(mImagePath);
             bitmap=Compressor.getDefault(this).compressToBitmap(imageFile);
             Bitmap ThumbImage = ThumbnailUtils.extractThumbnail(BitmapFactory.decodeFile(mImagePath),
@@ -499,23 +502,35 @@ public class ChatActivity extends BaseActivity implements  MeteorCallback {
 
     OnImageDownloadClick onImageDownload = new OnImageDownloadClick() {
         @Override
-        public void onDownloadClick(ProgressBar progressBar, int position, String mediaID) {
+        public void onDownloadClick(ProgressBar progressBar, int position, String mediaID, String messageId, boolean IsDownloaded) {
             try {
-                new WebServiceClientUploadImage(progressBar,ChatActivity.this,asyncResult2 ,mediaID,Constants.DOWNLOAD,3).execute();
-                     mProgressBar=progressBar;
+                mMediaId = mediaID;
+                new WebServiceClientUploadImage(progressBar, ChatActivity.this, asyncResultDownload, mediaID, Constants.DOWNLOAD, 77, messageId).execute();
+                mProgressBar = progressBar;
             } catch (Exception e) {
                 e.printStackTrace();
             }
         }
     };
 
-    AsyncResult asyncResult2=new AsyncResult() {
+
+
+
+    AsyncResultDownload asyncResultDownload =new AsyncResultDownload() {
         @Override
-        public void onTaskResponse(Object result, int urlResponseNo) {
-             mProgressBar.setVisibility(View.GONE);
-            Log.e("+++++++++++++ondownlaodimageActivity",""+result);
+        public void onDownloadTaskResponse(Object result, int urlResponseNo, Object messageId , Object mediaId) {
+            mProgressBar.setVisibility(View.GONE);
+//            TODO
+//            mMediaId
+            mChatPojo = new ChatPojo();
+            mChatPojo.setImagePath(result.toString());
+            mChatPojo.setMessageId(messageId.toString());
+            updateMedaiPath(mChatPojo);
+            Intent intent = new Intent(ChatActivity.this, ViewMediaActivity.class);
+            intent.putExtra(Constants.MEDIA_PATH, result.toString());
+            startActivity(intent);
         }
-    } ;
+    };
 
 
     public String createPayload(String mRoomId, int page, int limit) {
@@ -711,35 +726,47 @@ public class ChatActivity extends BaseActivity implements  MeteorCallback {
 //                        }
                         if (IsClicked) {
                             messageList.add(mChatPojo);
-                        }
-                    } else if (instantChatPojo.getType().equalsIgnoreCase("Photo")) {
-                        mChatPojo.setIcon(instantChatPojo.getIcon());
-                        mChatPojo.setName(instantChatPojo.getName());
-                        mChatPojo.setUserId(instantChatPojo.getUserId());
-                        mChatPojo.setMedia(instantChatPojo.getMedia());
-                        mChatPojo.setText(instantChatPojo.getText());
-                        mChatPojo.setThumb(instantChatPojo.getThumb());
-                        mChatPojo.setRoomId(instantChatPojo.getRoomId());
-                        mChatPojo.setMessageId(instantChatPojo.getMessageId());
-                        mChatPojo.setRelation(instantChatPojo.getRelation());
-                        mChatPojo.setDate_updated(date);
-                        mChatPojo.setStatus(instantChatPojo.getStatus());
-                        mChatPojo.setBadges(instantChatPojo.getBadges());
-                        mChatPojo.setType(instantChatPojo.getType());
-                        mChatPojo.setImagePath(mImagePath);
-                        insertSingleMessage(mChatPojo);
-
-//                        for(int i=0;i<messageList.size();i++){
-//                            if(!messageList.get(i).getMessageId().contains(instantChatPojo.getMessageId())){
-//                                messageList.add(mChatPojo);
-//                            }
-//                        }
-
-                        if (IsClicked) {
-                            messageList.add(mChatPojo);
+                            if (mChatAdapter != null) {
+                                mChatAdapter.notifyDataSetChanged();
+                                mEtMessageText.setText("");
+                                mRvChatMessages.smoothScrollToPosition(messageList.size() - 1);
+                            } else {
+                                mChatAdapter = new ChatAdapter(ChatActivity.this, messageList, CHAT_ACTIVITY, null, onImageDownload);
+                                mRvChatMessages.setAdapter(mChatAdapter);
+                            }
                         }
                     }
-                } else {
+                        else if (instantChatPojo.getType().equalsIgnoreCase("Photo")) {
+                            mChatPojo.setIcon(instantChatPojo.getIcon());
+                            mChatPojo.setName(instantChatPojo.getName());
+                            mChatPojo.setUserId(instantChatPojo.getUserId());
+                            mChatPojo.setMedia(instantChatPojo.getMedia());
+                            mChatPojo.setText(instantChatPojo.getText());
+                            mChatPojo.setThumb(instantChatPojo.getThumb());
+                            mChatPojo.setRoomId(instantChatPojo.getRoomId());
+                            mChatPojo.setMessageId(instantChatPojo.getMessageId());
+                            mChatPojo.setRelation(instantChatPojo.getRelation());
+                            mChatPojo.setDate_updated(date);
+                            mChatPojo.setStatus(instantChatPojo.getStatus());
+                            mChatPojo.setBadges(instantChatPojo.getBadges());
+                            mChatPojo.setType(instantChatPojo.getType());
+                            mChatPojo.setImagePath(mImagePath);
+                            mImagePath="";
+                            insertSingleMessage(mChatPojo);
+                            if (IsClicked) {
+                                messageList.add(mChatPojo);
+                                if (mChatAdapter != null) {
+                                    mChatAdapter.notifyDataSetChanged();
+                                    mEtMessageText.setText("");
+                                    mRvChatMessages.smoothScrollToPosition(messageList.size() - 1);
+                                }else {
+                                    mChatAdapter = new ChatAdapter(ChatActivity.this, messageList, CHAT_ACTIVITY, null, onImageDownload);
+                                    mRvChatMessages.setAdapter(mChatAdapter);
+                                }
+                            }
+                        }
+                    }
+                 else {
                     if (instantChatPojo.getType().equalsIgnoreCase("Text")) {
                         mChatPojo.setIcon(instantChatPojo.getIcon());
                         mChatPojo.setName(instantChatPojo.getName());
@@ -793,7 +820,7 @@ public class ChatActivity extends BaseActivity implements  MeteorCallback {
 //                }
 //                mChatAdapter.notifyDataSetChanged();
 //            }
-            runThread();
+//            runThread();
             try {
                 if (!instantChatPojo.getRelation().equalsIgnoreCase("self")) {
                     mMeteor.call(MARK_MESSAGE_DELIVERED, new Object[]{TOKEN, USER_ID_1, instantChatPojo.getMessageId()});
@@ -842,7 +869,6 @@ public class ChatActivity extends BaseActivity implements  MeteorCallback {
                 try {
                     if (messageList.size() > 0) {
                         try {
-
                             if (mChatAdapter != null) {
                                 mChatAdapter.notifyDataSetChanged();
                             } else {
@@ -917,6 +943,15 @@ public class ChatActivity extends BaseActivity implements  MeteorCallback {
         try {
             dbBadges = new BadgesDb(this);
             dbBadges.insertMessage(userMessages);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+    }
+    public void updateMedaiPath(ChatPojo userMessages) {
+        try {
+            dbBadges = new BadgesDb(this);
+            dbBadges.updateMediaPath(userMessages);
         } catch (Exception e) {
             e.printStackTrace();
         }
