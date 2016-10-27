@@ -387,10 +387,15 @@ public class Utility {
 	}
 
 	public static Bitmap getBitmapFromUri(Context context,Uri uri) throws IOException {
-		ParcelFileDescriptor parcelFileDescriptor = context.getContentResolver().openFileDescriptor(uri, "r");
-		FileDescriptor fileDescriptor = parcelFileDescriptor.getFileDescriptor();
-		Bitmap image = BitmapFactory.decodeFileDescriptor(fileDescriptor);
-		parcelFileDescriptor.close();
+		Bitmap image = null;
+		try {
+			ParcelFileDescriptor parcelFileDescriptor = context.getContentResolver().openFileDescriptor(uri, "r");
+			FileDescriptor fileDescriptor = parcelFileDescriptor.getFileDescriptor();
+			image = BitmapFactory.decodeFileDescriptor(fileDescriptor);
+			parcelFileDescriptor.close();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 		return image;
 	}
 

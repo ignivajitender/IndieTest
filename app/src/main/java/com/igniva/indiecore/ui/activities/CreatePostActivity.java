@@ -310,9 +310,18 @@ public class CreatePostActivity extends BaseActivity implements AsyncResult,View
         Uri imgUri;
         Bitmap bitmap = null;
         File imageFile;
-
         try {
-            bitmap=getBitmapFromUri(data.getData());
+            Uri capturedImageUri=data.getData();
+            if(capturedImageUri!=null) {
+                bitmap = Utility.getBitmapFromUri(this, data.getData());
+            }else {
+                bitmap= (Bitmap) data.getExtras().get("data");
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        try {
+//            bitmap=getBitmapFromUri(data.getData());
             imgUri=getImageUri(this,bitmap);
             mImagePath=getPath(imgUri);
             imageFile  = new File(mImagePath);

@@ -193,7 +193,7 @@ public class BadgesDb extends SQLiteOpenHelper {
     }
 
 
-    public void updateChatRow(ChatPojo message) {
+    public void updateMessageStatus(ChatPojo message) {
         SQLiteDatabase db = this.getWritableDatabase();
         try {
             db.execSQL("UPDATE " + TABLE_CHAT + " SET " + STATUS + "=" + message.getStatus() + " WHERE " + MESSAGE_ID + " = '" + message.getMessageId() + "'");

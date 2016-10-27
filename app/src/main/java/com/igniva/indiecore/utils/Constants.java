@@ -117,7 +117,7 @@ public static  final String MEDIA_PATH="media_path";
 
 
 //    ImageDirectory
-    public static  final String  direct =(Environment.getExternalStorageDirectory() + "/IndieCore/Chat");
+    public static  final String  direct =(Environment.getExternalStorageDirectory() + "/IndieCore");
 //
 
 
