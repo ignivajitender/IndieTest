@@ -397,6 +397,8 @@ public class ChatActivity extends BaseActivity implements MeteorCallback {
                             mMeteor.call(SEND_MESSAGES, new Object[]{TOKEN, messageId, mRoomId, USER_ID_1, PHOTO, "", mMediaPostId, base64Encoded}, new ResultListener() {
                                 @Override
                                 public void onSuccess(String result) {
+                                    com.igniva.indiecore.utils.Log.e("","" +result);
+                                    com.igniva.indiecore.utils.Log.e("","" +result);
 //                                    try {
 //                                        mMessageId = result;
 //                                        try{
@@ -536,6 +538,7 @@ public class ChatActivity extends BaseActivity implements MeteorCallback {
                         break;
                     }
                 }
+                mDownloadedImagePath=null;
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -714,7 +717,6 @@ public class ChatActivity extends BaseActivity implements MeteorCallback {
             instantChatPojo = gson.fromJson(newValuesJson, InstantChatPojo.class);
             mChatPojo = new ChatPojo();
 //            TODO use UTC time converter
-
             long timeInMillis = System.currentTimeMillis();
             Calendar cal1 = Calendar.getInstance();
             cal1.setTimeInMillis(timeInMillis);
@@ -763,6 +765,7 @@ public class ChatActivity extends BaseActivity implements MeteorCallback {
                         mChatPojo.setBadges(instantChatPojo.getBadges());
                         mChatPojo.setType(instantChatPojo.getType());
                         mChatPojo.setImagePath(mImagePath);
+                        Log.e("Onaddddeddddddddddddddddddddddddddddddddddd",""+mImagePath);
                         mImagePath = "";
                         insertSingleMessage(mChatPojo);
                         if (IsClicked) {
