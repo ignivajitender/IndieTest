@@ -822,8 +822,8 @@ public class ChatActivity extends BaseActivity implements MeteorCallback {
                 e.printStackTrace();
             }
             try {
-                if (isInFront && !instantChatPojo.getRelation().equalsIgnoreCase("self")) {
-                    mMeteor.call(MARK_MESSAGE_READ, new Object[]{TOKEN, USER_ID_1, instantChatPojo.getMessageId()});
+                if (isInFront && !instantChatPojo.getRelation().equalsIgnoreCase("self") && collectionName.equalsIgnoreCase(MESSAGE)) {
+                    mMeteor.call(MARK_MESSAGE_READ, new Object[]{TOKEN, USER_ID_1, documentID});
                 }
             } catch (Exception e) {
                 e.printStackTrace();
