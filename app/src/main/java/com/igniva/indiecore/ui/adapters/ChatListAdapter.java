@@ -20,6 +20,7 @@ import com.igniva.indiecore.model.ChatListPojo;
 import com.igniva.indiecore.model.UsersPojo;
 import com.igniva.indiecore.ui.activities.BoardActivity;
 import com.igniva.indiecore.ui.activities.ChatActivity;
+import com.igniva.indiecore.ui.activities.DashBoardActivity;
 import com.igniva.indiecore.utils.Constants;
 import com.igniva.indiecore.utils.Log;
 
@@ -81,7 +82,7 @@ public class ChatListAdapter extends RecyclerView.Adapter<ChatListAdapter.Recycl
                             Intent intent = new Intent(context, ChatActivity.class);
                             intent.putExtra(Constants.ROOM_ID, mChatRoomList.get(position).getRoomId());
                             intent.putExtra(Constants.NAME, mChatRoomList.get(position).getName());
-                            context.startActivity(intent);
+                            ((DashBoardActivity)context).startActivityForResult(intent,Constants.STARTACTIVITYFORRESULTFORCHAT);
                         } else {
                             Intent intent = new Intent(context, BoardActivity.class);
                             intent.putExtra(Constants.BUSINESS_ID, mChatRoomList.get(position).getBusinessId());

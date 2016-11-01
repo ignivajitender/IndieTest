@@ -16,6 +16,7 @@ import java.util.regex.Pattern;
 
 import android.annotation.TargetApi;
 import android.app.Activity;
+import android.app.ActivityManager;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.DialogInterface.OnClickListener;
@@ -421,4 +422,5 @@ public class Utility {
 		Long tsLong = System.currentTimeMillis() / 1000;
 		return tsLong.toString();
 	}
+
 }

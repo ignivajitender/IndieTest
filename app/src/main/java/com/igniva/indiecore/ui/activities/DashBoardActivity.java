@@ -14,12 +14,17 @@ import android.widget.TextView;
 
 import com.aurelhubert.ahbottomnavigation.AHBottomNavigation;
 import com.aurelhubert.ahbottomnavigation.AHBottomNavigationItem;
+import com.igniva.indiecore.MyApplication;
 import com.igniva.indiecore.R;
+import com.igniva.indiecore.model.InstantChatPojo;
 import com.igniva.indiecore.ui.fragments.ChatsFragment;
 import com.igniva.indiecore.ui.fragments.CheckInFragment;
 import com.igniva.indiecore.ui.fragments.ContactsFragment;
 import com.igniva.indiecore.ui.fragments.MessagesFragment;
 import com.igniva.indiecore.ui.fragments.SettingsFragment;
+import com.igniva.indiecore.utils.Constants;
+
+import java.util.HashMap;
 
 /**
  * Created by igniva-andriod-05 on 29/6/16.
@@ -165,8 +170,30 @@ public class DashBoardActivity extends BaseActivity {
         bottomNavigation.setCurrentItem(0);
     }
 
-
+    public void addRecentMsg(HashMap<String, InstantChatPojo> recentChatHashMap) {
+        Fragment fragment = getSupportFragmentManager().findFragmentById(R.id.fl_fragment_container);
+        if (fragment instanceof MessagesFragment) {
+            MessagesFragment messagesFragment = (MessagesFragment) fragment;
+            messagesFragment.addRecentMsg(recentChatHashMap);
+        }
+    }
     protected void onClick(View v) {
+
+    }
+//    Call Back method  to get the Message form other Activity
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        // check if the request code is same as what is passed  here it is 2
+        if (requestCode == Constants.STARTACTIVITYFORRESULTFORCHAT && resultCode == RESULT_OK) {
+            ((MyApplication) getApplication()).setCurrentContext(DashBoardActivity.this);
+        }
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        ((MyApplication) getApplication()).setCurrentContext(DashBoardActivity.this);
 
     }
 }

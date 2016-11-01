@@ -1,9 +1,12 @@
 package com.igniva.indiecore.model;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 /**
  * Created by igniva-andriod-05 on 27/9/16.
  */
-public class ChatPojo {
+public class ChatPojo implements Parcelable {
 
     private String _id;
     private String roomId;
@@ -21,6 +24,8 @@ public class ChatPojo {
     private String relation;
     private String badges;
     private String imagePath;
+
+
 
 
     public String getImagePath() {
@@ -151,4 +156,62 @@ public class ChatPojo {
     }
 
 
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(this._id);
+        dest.writeString(this.roomId);
+        dest.writeString(this.userId);
+        dest.writeString(this.type);
+        dest.writeString(this.text);
+        dest.writeString(this.media);
+        dest.writeString(this.thumb);
+        dest.writeInt(this.status);
+        dest.writeString(this.created_at);
+        dest.writeString(this.date_updated);
+        dest.writeString(this.messageId);
+        dest.writeString(this.name);
+        dest.writeString(this.icon);
+        dest.writeString(this.relation);
+        dest.writeString(this.badges);
+        dest.writeString(this.imagePath);
+    }
+
+    public ChatPojo() {
+    }
+
+    protected ChatPojo(Parcel in) {
+        this._id = in.readString();
+        this.roomId = in.readString();
+        this.userId = in.readString();
+        this.type = in.readString();
+        this.text = in.readString();
+        this.media = in.readString();
+        this.thumb = in.readString();
+        this.status = in.readInt();
+        this.created_at = in.readString();
+        this.date_updated = in.readString();
+        this.messageId = in.readString();
+        this.name = in.readString();
+        this.icon = in.readString();
+        this.relation = in.readString();
+        this.badges = in.readString();
+        this.imagePath = in.readString();
+    }
+
+    public static final Parcelable.Creator<ChatPojo> CREATOR = new Parcelable.Creator<ChatPojo>() {
+        @Override
+        public ChatPojo createFromParcel(Parcel source) {
+            return new ChatPojo(source);
+        }
+
+        @Override
+        public ChatPojo[] newArray(int size) {
+            return new ChatPojo[size];
+        }
+    };
 }

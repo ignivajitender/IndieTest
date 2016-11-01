@@ -16,14 +16,18 @@ import com.igniva.indiecore.controller.ResponseHandlerListener;
 import com.igniva.indiecore.controller.WebNotificationManager;
 import com.igniva.indiecore.controller.WebServiceClient;
 import com.igniva.indiecore.model.ChatListPojo;
+import com.igniva.indiecore.model.InstantChatPojo;
 import com.igniva.indiecore.model.ResponsePojo;
 import com.igniva.indiecore.ui.adapters.ChatListAdapter;
 import com.igniva.indiecore.utils.Constants;
+import com.igniva.indiecore.utils.Log;
 import com.igniva.indiecore.utils.PreferenceHandler;
 
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Created by igniva-andriod-11 on 4/7/16.
@@ -38,11 +42,14 @@ public class MessagesFragment extends BaseFragment implements View.OnClickListen
     private ArrayList<ChatListPojo> chatRoomList = new ArrayList<>();
     ArrayList<ChatListPojo> othersList= new ArrayList<>();
     private ChatListAdapter mChatListAdapter;
+    boolean isFriendTabVisible = true;
+    public static boolean isMessageFragmenVisible;
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         rootView = inflater.inflate(R.layout.fragment_messages, container, false);
+        isMessageFragmenVisible=true;
         return rootView;
     }
 
@@ -80,6 +87,7 @@ public class MessagesFragment extends BaseFragment implements View.OnClickListen
             mFriends.setBackgroundColor(Color.parseColor("#1C6DCE"));
             mOthers.setTextColor(Color.parseColor("#1C6DCE"));
             mOthers.setBackgroundResource(R.drawable.simple_border_line_style);
+            isFriendTabVisible = true;
             updateFriendsList();
         } catch (Exception e) {
             e.printStackTrace();
@@ -94,6 +102,7 @@ public class MessagesFragment extends BaseFragment implements View.OnClickListen
             mFriends.setBackgroundResource(R.drawable.simple_border_line_style);
             mOthers.setTextColor(Color.parseColor("#FFFFFF"));
             mOthers.setBackgroundColor(Color.parseColor("#1C6DCE"));
+            isFriendTabVisible = false;
             updateOthersList();
 
         } catch (Exception e) {
@@ -207,6 +216,54 @@ public void updateOthersList(){
             mChatListAdapter = new ChatListAdapter(getActivity(), chatRoomList, MESSAGE_FRAGMENT);
             mRvChatRoom.setAdapter(mChatListAdapter);
         }
+    }
+    public void addRecentMsg(HashMap<String, InstantChatPojo> recentChatHashMap) {
+        Log.e("NewMsg", "come" + recentChatHashMap.size());
+        if (isFriendTabVisible) {
+            //Friend tab
+            for (int i = 0; i < chatRoomList.size(); i++) {
+                for (Map.Entry<String, InstantChatPojo> entry : recentChatHashMap.entrySet()) {
+                    //System.out.println(entry.getKey() + "/" + entry.getValue());
+                    if (chatRoomList.get(i).getRoomId().equalsIgnoreCase(entry.getValue().getRoomId())) {
+                        ChatListPojo chatListPojo2 = chatRoomList.get(i);
+                        chatListPojo2.setLast_message(entry.getValue().getText());
+                        chatListPojo2.setLast_message_Id(entry.getValue().getMessageId());
+                        chatListPojo2.setDate_updated(entry.getValue().getDate_updated().get$date());
+                        chatRoomList.set(i, chatListPojo2);
+                        if (mChatListAdapter != null) {
+                            mChatListAdapter.notifyDataSetChanged();
+                        }
+                        break;
+                    }
+                }
+
+            }
+        } else {
+            //Other tab
+            for (int i = 0; i < othersList.size(); i++) {
+                for (Map.Entry<String, InstantChatPojo> entry : recentChatHashMap.entrySet()) {
+                    //System.out.println(entry.getKey() + "/" + entry.getValue());
+                    if (othersList.get(i).getRoomId().equalsIgnoreCase(entry.getValue().getRoomId())) {
+                        ChatListPojo chatListPojo2 = othersList.get(i);
+                        chatListPojo2.setLast_message(entry.getValue().getText());
+                        chatListPojo2.setLast_message_Id(entry.getValue().getMessageId());
+                        chatListPojo2.setDate_updated(entry.getValue().getDate_updated().get$date());
+                        othersList.set(i, chatListPojo2);
+                        if (mChatListAdapter != null) {
+                            mChatListAdapter.notifyDataSetChanged();
+                        }
+                        break;
+                    }
+                }
+
+            }
+        }
+
+    }
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        isMessageFragmenVisible=false;
     }
 
 }

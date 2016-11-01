@@ -10,7 +10,7 @@ import java.security.PublicKey;
  */
 public class Constants {
 
-
+    public static final int STARTACTIVITYFORRESULTFORCHAT=302;
 
     public static  final String COUNTRY_CODE_VALIDATION="Please enter your country code";
     public static  final String MOBILE_NUMBER_VALIDATION="Please enter your mobile number";
@@ -18,6 +18,9 @@ public class Constants {
     public static  final String NUMBER_LENGTH="NUMBER_LENGTH";
     public static final String OTP_NOT_VALID = "Please enter OTP code you have just received or request a new OTP";
 
+    public static  final String MESSAGE="message";
+    public static  final String MESSAGE_ID="message_id";
+    public static  final String METHOD_NAME="method_name";
 
     //    jsonDataKey
     //    countryCode":"91","mobileNo":"9816428478","code":"3856","locale":"en"
@@ -119,6 +122,16 @@ public static  final String MEDIA_PATH="media_path";
 //    ImageDirectory
     public static  final String  direct =(Environment.getExternalStorageDirectory() + "/IndieCore");
 //
+
+    //Meteor constants
+    public static final String URLWEBSOCKET = "ws://indiecorelive.ignivastaging.com:3000/websocket";
+    public static final String SUBSCRIBECHATS = "subscribeChats";
+    public static final String SUBSCRIBEMESSAGES = "subscribeMessages";
+    public static final String GETROOMID = "getRoomId";
+    public static final String MARK_MESSAGE_DELIVERED = "markMessageDelivered";
+    public static final String MARK_ROOM_READ = "markRoomRead";
+    public static final String MARK_MESSAGE_READ = "markMessageRead";
+    public static final String SENDMESSAGES = "sendMessage";
 
 
 

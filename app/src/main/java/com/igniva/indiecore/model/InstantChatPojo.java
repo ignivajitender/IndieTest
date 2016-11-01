@@ -1,9 +1,12 @@
 package com.igniva.indiecore.model;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 /**
  * Created by igniva-andriod-05 on 4/10/16.
  */
-public class InstantChatPojo {
+public class InstantChatPojo implements Parcelable {
 
     private String roomId;
     private String userId;
@@ -124,9 +127,57 @@ public class InstantChatPojo {
     }
 
 
+    @Override
+    public int describeContents() {
+        return 0;
+    }
 
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(this.roomId);
+        dest.writeString(this.userId);
+        dest.writeString(this.type);
+        dest.writeString(this.text);
+        dest.writeString(this.media);
+        dest.writeString(this.thumb);
+        dest.writeInt(this.status);
+        dest.writeString(this.messageId);
+        dest.writeString(this.name);
+        dest.writeString(this.icon);
+        dest.writeString(this.relation);
+        dest.writeString(this.badges);
+        dest.writeParcelable(this.date_updated, flags);
+    }
 
+    public InstantChatPojo() {
+    }
 
+    protected InstantChatPojo(Parcel in) {
+        this.roomId = in.readString();
+        this.userId = in.readString();
+        this.type = in.readString();
+        this.text = in.readString();
+        this.media = in.readString();
+        this.thumb = in.readString();
+        this.status = in.readInt();
+        this.messageId = in.readString();
+        this.name = in.readString();
+        this.icon = in.readString();
+        this.relation = in.readString();
+        this.badges = in.readString();
+        this.date_updated = in.readParcelable(DateModel.class.getClassLoader());
+    }
 
+    public static final Parcelable.Creator<InstantChatPojo> CREATOR = new Parcelable.Creator<InstantChatPojo>() {
+        @Override
+        public InstantChatPojo createFromParcel(Parcel source) {
+            return new InstantChatPojo(source);
+        }
+
+        @Override
+        public InstantChatPojo[] newArray(int size) {
+            return new InstantChatPojo[size];
+        }
+    };
 }
 

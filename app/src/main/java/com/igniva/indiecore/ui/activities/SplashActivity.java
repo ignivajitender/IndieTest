@@ -1,5 +1,6 @@
 package com.igniva.indiecore.ui.activities;
 
+import android.app.ActivityManager;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -10,6 +11,9 @@ import android.os.Handler;
 import android.preference.PreferenceManager;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.AppCompatActivity;
+
+import com.igniva.indiecore.controller.MeteorCommonClass;
+import com.igniva.indiecore.controller.services.CustomMeteorService;
 import com.igniva.indiecore.utils.Log;
 import android.view.View;
 import android.view.Window;
@@ -44,6 +48,13 @@ public class SplashActivity extends BaseActivity
         setContentView(R.layout.activity_splash);
 
         setUpLayout();
+
+
+        // If user already login then start service
+        if (!PreferenceHandler.readString(this, PreferenceHandler.PREF_KEY_USER_TOKEN, "").isEmpty() && !PreferenceHandler.readString(this, PreferenceHandler.PREF_KEY_USER_ID, "").isEmpty() && !isMyServiceRunning(MeteorCommonClass.class)) {
+            Intent serviceIntent = new Intent(this, CustomMeteorService.class);
+            startService(serviceIntent);
+        }
 
      //   Log.e(TAG,"Above GCM");
         // GCM CODE
@@ -178,5 +189,14 @@ public class SplashActivity extends BaseActivity
        }catch (Exception e){
            e.printStackTrace();
        }
+    }
+    private boolean isMyServiceRunning(Class<?> serviceClass) {
+        ActivityManager manager = (ActivityManager) getSystemService(Context.ACTIVITY_SERVICE);
+        for (ActivityManager.RunningServiceInfo service : manager.getRunningServices(Integer.MAX_VALUE)) {
+            if (serviceClass.getName().equals(service.service.getClassName())) {
+                return true;
+            }
+        }
+        return false;
     }
 }

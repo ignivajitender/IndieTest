@@ -279,6 +279,27 @@
         <meta-data
             android:name="io.fabric.ApiKey"
             android:value="7f13cc184549fdf0b47c81233930bfdccce27582" />
+
+        <service
+            android:name=".controller.services.CustomMeteorService"
+            android:enabled="true" />
+
+        <receiver
+            android:name=".controller.receivers.CustomReceiver"
+            android:enabled="true"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="com.igniva.indiecore.mybroadcast" />
+            </intent-filter>
+        </receiver>
+
+        <receiver
+            android:name=".controller.receivers.NetworkChangeReceiver"
+            android:label="NetworkChangeReceiver" >
+            <intent-filter>
+                <action android:name="android.net.conn.CONNECTIVITY_CHANGE" />
+            </intent-filter>
+        </receiver>
     </application>
 
 </manifest>

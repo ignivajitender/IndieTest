@@ -16,6 +16,7 @@ import android.widget.Toast;
 
 import com.crashlytics.android.Crashlytics;
 import com.igniva.indiecore.controller.WebServiceClient;
+import com.igniva.indiecore.controller.services.CustomMeteorService;
 import com.igniva.indiecore.db.BadgesDb;
 import com.igniva.indiecore.model.BadgesPojo;
 import com.igniva.indiecore.model.ResponsePojo;
@@ -219,6 +220,11 @@ public class EnterMobileActivity extends BaseActivity {
                             PreferenceHandler.writeString(EnterMobileActivity.this,PreferenceHandler.PREF_KEY_DESCRIPTION,result.getProfile().getDesc());
                             PreferenceHandler.writeInteger(EnterMobileActivity.this,PreferenceHandler.TOTAL_BADGE_LIMIT,result.getBadgeLimit());
                             //
+                            //Start Meteor Chat Service
+//                            TODO
+                            Intent serviceIntent = new Intent(EnterMobileActivity.this, CustomMeteorService.class);
+                            startService(serviceIntent);
+
                             Intent in = new Intent(EnterMobileActivity.this, DashBoardActivity.class);
                             Bundle bundle = new Bundle();
 
