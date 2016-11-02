@@ -159,7 +159,6 @@ public class ContactsFragment extends BaseFragment {
 
     public void updateFavouriteUi() {
         try {
-
             mLlManager = new LinearLayoutManager(getActivity());
             mRvUsers.setLayoutManager(mLlManager);
             mTvPhoneBook.setTextColor(Color.parseColor("#1C6DCE"));
@@ -178,10 +177,6 @@ public class ContactsFragment extends BaseFragment {
                 fetchFavourite();
 
             }
-//
-//            mComingSoon.setVisibility(View.VISIBLE);
-//            rootView.findViewById(R.id.tv_coming_soon_two).setVisibility(View.GONE);
-//            mComingSoon.setText(R.string.coming_soon);
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -212,7 +207,7 @@ public class ContactsFragment extends BaseFragment {
         }
     };
 
-    /*
+    /**
     *    create payload to fetch favourite list
     *    token,userid
     *
@@ -230,14 +225,22 @@ public class ContactsFragment extends BaseFragment {
         return payload.toString();
     }
 
+
+/**
+ * web call to get fav list
+* */
     public void fetchFavourite() {
 
 
-        String payload = generatePayload();
-        if (payload != null) {
-            WebNotificationManager.registerResponseListener(FavouriteUsersResponseHandler);
-            WebServiceClient.get_favourite_list(getActivity(), payload, FavouriteUsersResponseHandler);
+        try {
+            String payload = generatePayload();
+            if (payload != null) {
+                WebNotificationManager.registerResponseListener(FavouriteUsersResponseHandler);
+                WebServiceClient.get_favourite_list(getActivity(), payload, FavouriteUsersResponseHandler);
 
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 

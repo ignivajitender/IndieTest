@@ -53,6 +53,7 @@ import org.json.JSONObject;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 
 import id.zelory.compressor.Compressor;
@@ -67,7 +68,6 @@ public class ChatActivity extends BaseActivity {
 
     Toolbar mToolbar;
     public static final String CHAT_ACTIVITY = "CHAT_ACTIVITY";
-
     public static final String PHOTO = "Photo";
     public static final String VIDEO = "Video";
     public static final String TEXT = "Text";
@@ -78,6 +78,7 @@ public class ChatActivity extends BaseActivity {
     public static final String LOG_TAG = "ChatActivity";
     private BadgesDb dbBadges;
     public static boolean isInChatActivity;
+    public static String imagePath;
     private LinearLayout mLlsendMessage, mLlOpenMedia;
     private EditText mEtMessageText;
     private TextView mTitle, mTvLoadMore;
@@ -97,14 +98,17 @@ public class ChatActivity extends BaseActivity {
     private int READ = 3;
     private int PAGE = 1;
     private int LIMIT = 60;
+    private Uri imgUri;
+    private Bitmap bitmap = null;
+    private File imageFile;
+    private int THUMBSIZE = 70;
     private String mRoomId = "";
     private String mUserName = "";
     private String mMessageId = "";
+    private String mDownloadedImagePath = null;
     private int mTotalMessages = 0;
     private int mIndex = 0;
     ChatPojo mChatPojo;
-    InstantChatPojo instantChatPojo = null;
-    UpdateMessagePojo updateMessagePojo = null;
     ArrayList<ChatPojo> messageList = new ArrayList<>();
     ChatAdapter mChatAdapter = null;
     ProgressBar mProgressBar = null;
@@ -152,12 +156,12 @@ public class ChatActivity extends BaseActivity {
                 public void onSuccess(String result) {
                     Log.d(LOG_TAG, result);
                     try {
-                        JSONObject json = new JSONObject(result);
-                        mRoomId = json.getString("_id");
+
+                        mRoomId = result;
                         if (messageList.size() == 0) {
                             loadMessages(mRoomId);
                         }
-                    } catch (JSONException e) {
+                    } catch (Exception e) {
                         e.printStackTrace();
                     }
                 }
@@ -189,8 +193,9 @@ public class ChatActivity extends BaseActivity {
             mRvChatMessages = (RecyclerView) findViewById(R.id.rv_chat_messages);
             mLlManager = new LinearLayoutManager(this);
             mRvChatMessages.setLayoutManager(mLlManager);
-
-            loadMessages(mRoomId);
+            if (mRoomId != null) {
+                loadMessages(mRoomId);
+            }
 
             mTvLoadMore = (TextView) findViewById(R.id.tv_load_more);
             mTitle.setText(mUserName);
@@ -231,19 +236,6 @@ public class ChatActivity extends BaseActivity {
                                 }
                             });
 
-                            /*mMeteor.call(Constants.SENDMESSAGES, new Object[]{TOKEN, messageId, mRoomId, USER_ID_1, TEXT, mEtMessageText.getText().toString(), "", ""}, new ResultListener() {
-                                @Override
-                                public void onSuccess(String result) {
-                                    mMessageId = result;
-                                    Log.d(LOG_TAG, result);
-
-                                }
-
-                                @Override
-                                public void onError(String error, String reason, String details) {
-                                    Log.d(LOG_TAG, " error is " + error + " reason is " + reason + " details" + details);
-                                }
-                            });*/
                         }
 
                     } catch (Exception e) {
@@ -334,7 +326,6 @@ public class ChatActivity extends BaseActivity {
         try {
             String url = WebServiceClient.HTTP_UPLOAD_IMAGE;
             ByteArrayOutputStream bos = new ByteArrayOutputStream();
-            Log.e(LOG_TAG, "++++++____________++++++++++++++_____________." + mImagePath);
             if (mImagePath.endsWith(".png")) {
                 myBitmap.compress(Bitmap.CompressFormat.PNG, 80, bos);
                 contentPart = new ByteArrayBody(bos.toByteArray(), "Image.png");
@@ -367,13 +358,9 @@ public class ChatActivity extends BaseActivity {
             {
                 try {
                     JSONObject jsonObject = new JSONObject(result.toString());
-                    com.igniva.indiecore.utils.Log.e("response media uplaod", jsonObject.toString());
                     JSONArray file = jsonObject.getJSONArray("files");
                     JSONObject obj = file.getJSONObject(0);
                     String mMediaPostId = obj.optString("fileId");
-                    com.igniva.indiecore.utils.Log.e("Media Id ", "" + mMediaPostId);
-                    Log.e(LOG_TAG, "+++++++++============" + mMediaPostId);
-
                     try {
                         if (!mMediaPostId.isEmpty()) {
                             String messageId = mRoomId + Utility.randomString();
@@ -408,15 +395,21 @@ public class ChatActivity extends BaseActivity {
      * get image bitmap from data
      */
     public Bitmap getImage(Intent data) {
-        Uri imgUri;
-        Bitmap bitmap = null;
-        File imageFile;
-        int THUMBSIZE = 70;
         try {
-            bitmap = Utility.getBitmapFromUri(this, data.getData());
+            Uri capturedImageUri = data.getData();
+            if (capturedImageUri != null) {
+                bitmap = Utility.getBitmapFromUri(this, data.getData());
+            } else {
+                bitmap = (Bitmap) data.getExtras().get("data");
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        try {
+
             imgUri = Utility.getImageUri(this, bitmap);
             mImagePath = Utility.getPath(ChatActivity.this, imgUri);
-            Log.e(LOG_TAG, "++++++____________++++++++++++++__fgfgdfgdfgdfgdfgfd___________." + mImagePath);
+            imagePath = mImagePath;
             imageFile = new File(mImagePath);
             bitmap = Compressor.getDefault(this).compressToBitmap(imageFile);
             Bitmap ThumbImage = ThumbnailUtils.extractThumbnail(BitmapFactory.decodeFile(mImagePath),
@@ -450,13 +443,20 @@ public class ChatActivity extends BaseActivity {
         }
     }
 
+
     OnImageDownloadClick onImageDownload = new OnImageDownloadClick() {
         @Override
         public void onDownloadClick(ProgressBar progressBar, int position, String mediaID, String messageId, boolean IsDownloaded) {
             try {
-                mMediaId = mediaID;
-                new WebServiceClientUploadImage(progressBar, ChatActivity.this, asyncResultDownload, mediaID, Constants.DOWNLOAD, 77, messageId).execute();
-                mProgressBar = progressBar;
+                if (mDownloadedImagePath == null) {
+                    mMediaId = mediaID;
+                    new WebServiceClientUploadImage(progressBar, ChatActivity.this, asyncResultDownload, mediaID, Constants.DOWNLOAD, 77, messageId).execute();
+                    mProgressBar = progressBar;
+                } else {
+                    Intent intent = new Intent(ChatActivity.this, ViewMediaActivity.class);
+                    intent.putExtra(Constants.MEDIA_PATH, mDownloadedImagePath);
+                    startActivity(intent);
+                }
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -467,19 +467,28 @@ public class ChatActivity extends BaseActivity {
     AsyncResultDownload asyncResultDownload = new AsyncResultDownload() {
         @Override
         public void onDownloadTaskResponse(Object result, int urlResponseNo, Object messageId, Object mediaId) {
-            mProgressBar.setVisibility(View.GONE);
-//            TODO
-//            mMediaId
-            mChatPojo = new ChatPojo();
-            mChatPojo.setImagePath(result.toString());
-            mChatPojo.setMessageId(messageId.toString());
-            updateMedaiPath(mChatPojo);
-            Intent intent = new Intent(ChatActivity.this, ViewMediaActivity.class);
-            intent.putExtra(Constants.MEDIA_PATH, result.toString());
-            startActivity(intent);
+            try {
+                mProgressBar.setVisibility(View.GONE);
+                mChatPojo = new ChatPojo();
+                mChatPojo.setImagePath(result.toString());
+                mDownloadedImagePath = result.toString();
+                mChatPojo.setMessageId(messageId.toString());
+                updateMediaPath(mChatPojo);
+                for (int i = messageList.size() - 1; i > 0; i--) {
+                    if (messageId.toString().equalsIgnoreCase(messageList.get(i).getMessageId())) {
+                        messageList.get(i).setImagePath(mDownloadedImagePath);
+                        if (mChatAdapter != null) {
+                            mChatAdapter.notifyDataSetChanged();
+                        }
+                        break;
+                    }
+                }
+                mDownloadedImagePath = null;
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         }
     };
-
 
     public String createPayload(String mRoomId, int page, int limit) {
         JSONObject payload = null;
@@ -549,16 +558,19 @@ public class ChatActivity extends BaseActivity {
     @Override
     public void onResume() {
         super.onResume();
-        isInChatActivity = true;
-        isMessageFragmenVisible = false;
-        mCurrentRoomId = mRoomId;
-        ((MyApplication) getApplication()).setCurrentContext(this);
+        try {
+            isInChatActivity = true;
+            isMessageFragmenVisible = false;
+            mCurrentRoomId = mRoomId;
+            ((MyApplication) getApplication()).setCurrentContext(this);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
 
     @Override
     protected void setDataInViewObjects() {
-
         try {
             dbBadges = new BadgesDb(this);
             messageList.clear();
@@ -602,7 +614,7 @@ public class ChatActivity extends BaseActivity {
 
     }
 
-    public void updateMedaiPath(ChatPojo userMessages) {
+    public void updateMediaPath(ChatPojo userMessages) {
         try {
             dbBadges = new BadgesDb(this);
             dbBadges.updateMediaPath(userMessages);
@@ -664,7 +676,6 @@ public class ChatActivity extends BaseActivity {
                         mChatAdapter.notifyDataSetChanged();
                     }
                 }
-
 
             }
         } catch (Exception e) {

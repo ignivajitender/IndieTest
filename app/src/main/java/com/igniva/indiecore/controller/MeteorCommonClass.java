@@ -11,6 +11,7 @@ import com.igniva.indiecore.db.BadgesDb;
 import com.igniva.indiecore.model.ChatPojo;
 import com.igniva.indiecore.model.InstantChatPojo;
 import com.igniva.indiecore.model.UpdateMessagePojo;
+import com.igniva.indiecore.ui.activities.ChatActivity;
 import com.igniva.indiecore.utils.Constants;
 import com.igniva.indiecore.utils.PreferenceHandler;
 
@@ -28,6 +29,7 @@ import im.delight.android.ddp.ResultListener;
 import im.delight.android.ddp.db.memory.InMemoryDatabase;
 
 import static com.igniva.indiecore.controller.services.CustomMeteorService.mMeteorCommonClass;
+import static com.igniva.indiecore.ui.activities.ChatActivity.CHAT_ACTIVITY;
 import static com.igniva.indiecore.ui.activities.ChatActivity.isInChatActivity;
 import static com.igniva.indiecore.ui.activities.ChatActivity.mCurrentRoomId;
 import static com.igniva.indiecore.ui.fragments.MessagesFragment.isMessageFragmenVisible;
@@ -262,9 +264,11 @@ public class MeteorCommonClass implements MeteorCallback {
                     mChatPojo.setRelation(instantChatPojo.getRelation());
                     mChatPojo.setDate_updated(date);
                     mChatPojo.setStatus(instantChatPojo.getStatus());
+                    mChatPojo.setImagePath(ChatActivity.imagePath);
                     mChatPojo.setBadges(instantChatPojo.getBadges());
                     mChatPojo.setType(instantChatPojo.getType());
                     insertSingleMessage(mChatPojo);
+                    ChatActivity.imagePath="";
 
                     if (mCurrentRoomId != null && mCurrentRoomId.equalsIgnoreCase(instantChatPojo.getRoomId()) && isInChatActivity) {
                         //dedicate chat is on for image send msg by broadcast

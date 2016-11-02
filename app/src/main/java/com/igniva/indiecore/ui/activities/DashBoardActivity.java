@@ -86,95 +86,107 @@ public class DashBoardActivity extends BaseActivity {
 
     @Override
     protected void setDataInViewObjects() {
-        final AHBottomNavigationItem item1 = new AHBottomNavigationItem("Check In", R.drawable.check_in, R.color.blue);
-        AHBottomNavigationItem item2 = new AHBottomNavigationItem("Contacts", R.drawable.contact, R.color.blue);
-        AHBottomNavigationItem item3 = new AHBottomNavigationItem("Chats", R.drawable.chats, R.color.blue);
-        AHBottomNavigationItem item4 = new AHBottomNavigationItem("Messages", R.drawable.messages, R.color.blue);
-        AHBottomNavigationItem item5 = new AHBottomNavigationItem("Settings", R.drawable.settings, R.color.blue);
+        try {
+            final AHBottomNavigationItem item1 = new AHBottomNavigationItem("Check In", R.drawable.check_in, R.color.blue);
+            AHBottomNavigationItem item2 = new AHBottomNavigationItem("Contacts", R.drawable.contact, R.color.blue);
+            AHBottomNavigationItem item3 = new AHBottomNavigationItem("Chats", R.drawable.chats, R.color.blue);
+            AHBottomNavigationItem item4 = new AHBottomNavigationItem("Messages", R.drawable.messages, R.color.blue);
+            AHBottomNavigationItem item5 = new AHBottomNavigationItem("Settings", R.drawable.settings, R.color.blue);
 
-        // Add items
-        bottomNavigation.addItem(item1);
-        bottomNavigation.addItem(item2);
-        bottomNavigation.addItem(item3);
-        bottomNavigation.addItem(item4);
-        bottomNavigation.addItem(item5);
+            // Add items
+            bottomNavigation.addItem(item1);
+            bottomNavigation.addItem(item2);
+            bottomNavigation.addItem(item3);
+            bottomNavigation.addItem(item4);
+            bottomNavigation.addItem(item5);
 
 
-        // Set background color
-        bottomNavigation.setDefaultBackgroundColor(Color.parseColor("#FFFFFF"));
+            // Set background color
+            bottomNavigation.setDefaultBackgroundColor(Color.parseColor("#FFFFFF"));
 
-        // Disable the translation inside the CoordinatorLayout
-        bottomNavigation.setBehaviorTranslationEnabled(false);
+            // Disable the translation inside the CoordinatorLayout
+            bottomNavigation.setBehaviorTranslationEnabled(false);
 
-        // Change colors
-        bottomNavigation.setAccentColor(Color.parseColor("#3d92ff"));
-        //   bottomNavigation.setInactiveColor(Color.parseColor("#FFFFFF"));
+            // Change colors
+            bottomNavigation.setAccentColor(Color.parseColor("#3d92ff"));
+            //   bottomNavigation.setInactiveColor(Color.parseColor("#FFFFFF"));
 
-        // Force to tint the drawable (useful for font with icon for example)
-        //        bottomNavigation.setForceTint(true);
+            // Force to tint the drawable (useful for font with icon for example)
+            //        bottomNavigation.setForceTint(true);
 
-        // Force the titles to be displayed (against Material Design guidelines!)
-        bottomNavigation.setForceTitlesDisplay(true);
+            // Force the titles to be displayed (against Material Design guidelines!)
+            bottomNavigation.setForceTitlesDisplay(true);
 
-        // Use colored navigation with circle reveal effect
-        //        bottomNavigation.setColored(true);
+            // Use colored navigation with circle reveal effect
+            //        bottomNavigation.setColored(true);
 
-        // Set current item programmatically
-        bottomNavigation.setCurrentItem(0);
+            // Set current item programmatically
+            bottomNavigation.setCurrentItem(0);
 
-        // Customize notification (title, background, typeface)
-        //        bottomNavigation.setNotificationBackgroundColor(Color.parseColor("#F63D2B"));
+            // Customize notification (title, background, typeface)
+            //        bottomNavigation.setNotificationBackgroundColor(Color.parseColor("#F63D2B"));
 
-        // Add or remove notification for each item
-        bottomNavigation.setNotification("4", 1);
-        bottomNavigation.setNotification("", 1);
+            // Add or remove notification for each item
+            bottomNavigation.setNotification("4", 1);
+            bottomNavigation.setNotification("", 1);
 
-        // Set listener
-        bottomNavigation.setOnTabSelectedListener(new AHBottomNavigation.OnTabSelectedListener() {
-            @Override
-            public boolean onTabSelected(int position, boolean wasSelected) {
-                Fragment fragment = null;
-                switch (position) {
-                    case 0:
-                        fragment = new CheckInFragment();
-                        mTvTitle.setText("Check In");
-                        break;
-                    case 1:
-                        fragment = new ContactsFragment();
-                        mTvTitle.setText("Contacts");
-                        break;
-                    case 2:
-                        fragment = new ChatsFragment();
-                        mTvTitle.setText("Chats");
-                        break;
-                    case 3:
-                        fragment = new MessagesFragment();
-                        mTvTitle.setText("Messages");
-                        break;
-                    case 4:
-                        fragment = new SettingsFragment();
-                        mTvTitle.setText("Settings");
-                        break;
-                    default:
-                        break;
+            // Set listener
+            bottomNavigation.setOnTabSelectedListener(new AHBottomNavigation.OnTabSelectedListener() {
+                @Override
+                public boolean onTabSelected(int position, boolean wasSelected) {
+                    try {
+                        Fragment fragment = null;
+                        switch (position) {
+                            case 0:
+                                fragment = new CheckInFragment();
+                                mTvTitle.setText("Check In");
+                                break;
+                            case 1:
+                                fragment = new ContactsFragment();
+                                mTvTitle.setText("Contacts");
+                                break;
+                            case 2:
+                                fragment = new ChatsFragment();
+                                mTvTitle.setText("Chats");
+                                break;
+                            case 3:
+                                fragment = new MessagesFragment();
+                                mTvTitle.setText("Messages");
+                                break;
+                            case 4:
+                                fragment = new SettingsFragment();
+                                mTvTitle.setText("Settings");
+                                break;
+                            default:
+                                break;
+                        }
+
+                        FragmentManager manager = getSupportFragmentManager();
+                        FragmentTransaction transaction = manager.beginTransaction();
+                        transaction.replace(R.id.fl_fragment_container, fragment);
+                        transaction.commit();
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                    return true;
                 }
+            });
 
-                FragmentManager manager = getSupportFragmentManager();
-                FragmentTransaction transaction = manager.beginTransaction();
-                transaction.replace(R.id.fl_fragment_container, fragment);
-                transaction.commit();
-                return true;
-            }
-        });
-
-        bottomNavigation.setCurrentItem(0);
+            bottomNavigation.setCurrentItem(0);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     public void addRecentMsg(HashMap<String, InstantChatPojo> recentChatHashMap) {
-        Fragment fragment = getSupportFragmentManager().findFragmentById(R.id.fl_fragment_container);
-        if (fragment instanceof MessagesFragment) {
-            MessagesFragment messagesFragment = (MessagesFragment) fragment;
-            messagesFragment.addRecentMsg(recentChatHashMap);
+        try {
+            Fragment fragment = getSupportFragmentManager().findFragmentById(R.id.fl_fragment_container);
+            if (fragment instanceof MessagesFragment) {
+                MessagesFragment messagesFragment = (MessagesFragment) fragment;
+                messagesFragment.addRecentMsg(recentChatHashMap);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
     protected void onClick(View v) {
@@ -185,15 +197,23 @@ public class DashBoardActivity extends BaseActivity {
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         // check if the request code is same as what is passed  here it is 2
-        if (requestCode == Constants.STARTACTIVITYFORRESULTFORCHAT && resultCode == RESULT_OK) {
-            ((MyApplication) getApplication()).setCurrentContext(DashBoardActivity.this);
+        try {
+            if (requestCode == Constants.STARTACTIVITYFORRESULTFORCHAT && resultCode == RESULT_OK) {
+                ((MyApplication) getApplication()).setCurrentContext(DashBoardActivity.this);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-        ((MyApplication) getApplication()).setCurrentContext(DashBoardActivity.this);
+        try {
+            ((MyApplication) getApplication()).setCurrentContext(DashBoardActivity.this);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
 
     }
 }
