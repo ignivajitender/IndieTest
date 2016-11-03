@@ -122,10 +122,7 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.RecyclerViewHo
 
                     } else if (mChatList.get(position).getStatus() == SENT) {
                         holder.mIvMessageStatus.setImageResource(R.drawable.ic_sent_tick);
-                    } else {
-                        holder.mIvMessageStatus.setVisibility(View.GONE);
                     }
-
                 }
                 else
                {

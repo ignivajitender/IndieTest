@@ -38,8 +38,10 @@ public class Constants {
     public static  final String INDEX="";
     public static  final String NAME="NAME";
 
+//activities Name
 
-
+    public static  final String NEWS_FEED_ACTIVITY="news_feed_activity";
+    public static  final String BOARD_ACTIVITY="board_activity";
 
     public static final String TOKEN="token";
     public static final String USERID="userId";
@@ -69,6 +71,7 @@ public class Constants {
     public static  final String CHATFRAGMENT="CHATFRAGMENT";
     public static  final String MYPROFILEACTIVITY="MYPROFILEACTIVITY";
     public static  final String USERPROFILEACTIVITY="USERPROFILEACTIVITY";
+    public static final String  NEWSFEEDACTIVITY="NEWSFEEDACTIVITY";
 
 
 public static  final String SELF="self";
@@ -96,6 +99,7 @@ public static  final String MEDIA_PATH="media_path";
     public static  final String BUSINESS_NAME="BUSINESS_NAME";
     public static  final String PERSON_ID="personId";
      public static  final String BADGE_STATUS="badge_status";
+    public static final String CONTEXT_NAME="context";
 
 
 //        token, userId, roomId, postType, media, text

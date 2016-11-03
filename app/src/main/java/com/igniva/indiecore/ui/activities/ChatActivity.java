@@ -6,6 +6,8 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Matrix;
+import android.media.ExifInterface;
 import android.media.ThumbnailUtils;
 import android.net.Uri;
 import android.os.Bundle;
@@ -452,7 +454,29 @@ public class ChatActivity extends BaseActivity implements OnChatMsgReceiveListen
             mImagePath = Utility.getPath(ChatActivity.this, imgUri);
             imagePath = mImagePath;
             imageFile = new File(mImagePath);
+
+
             bitmap = Compressor.getDefault(this).compressToBitmap(imageFile);
+
+//            ExifInterface ei = new ExifInterface(mImagePath);
+//            int orientation = ei.getAttributeInt(ExifInterface.TAG_ORIENTATION,
+//                    ExifInterface.ORIENTATION_UNDEFINED);
+//
+//            switch(orientation) {
+//                case ExifInterface.ORIENTATION_ROTATE_90:
+//                  bitmap=rotateImage(bitmap, 90);
+//                    break;
+//                case ExifInterface.ORIENTATION_ROTATE_180:
+//                    bitmap=  rotateImage(bitmap, 180);
+//                    break;
+//                case ExifInterface.ORIENTATION_ROTATE_270:
+//                    bitmap=rotateImage(bitmap, 270);
+//                    break;
+//                case ExifInterface.ORIENTATION_NORMAL:
+//                    bitmap=rotateImage(bitmap, 0);
+//                default:
+//                    break;
+//            }
             Bitmap ThumbImage = ThumbnailUtils.extractThumbnail(BitmapFactory.decodeFile(mImagePath),
                     THUMBSIZE, THUMBSIZE);
             base64Encoded = Utility.encodeTobase64(ThumbImage);
@@ -463,6 +487,12 @@ public class ChatActivity extends BaseActivity implements OnChatMsgReceiveListen
         return bitmap;
 
     }
+//    public static Bitmap rotateImage(Bitmap source, float angle) {
+//        Matrix matrix = new Matrix();
+//        matrix.postRotate(angle);
+//        return Bitmap.createBitmap(source, 0, 0, source.getWidth(), source.getHeight(), matrix,
+//                true);
+//    }
 
     private void loadMessages(String mRoomId) {
         try {

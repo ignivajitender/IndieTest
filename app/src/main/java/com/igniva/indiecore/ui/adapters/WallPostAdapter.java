@@ -216,7 +216,7 @@ public class WallPostAdapter extends RecyclerView.Adapter<WallPostAdapter.Recycl
             if(ACTIVITY_NAME.equals(Constants.USERPROFILEACTIVITY)){
                 holder.mUserIcon.setEnabled(false);
             }
-            if(ACTIVITY_NAME.equalsIgnoreCase(Constants.MYPROFILEACTIVITY)){
+            if(ACTIVITY_NAME.equalsIgnoreCase(Constants.MYPROFILEACTIVITY) ||ACTIVITY_NAME.equalsIgnoreCase(Constants.NEWSFEEDACTIVITY)){
                 holder.mRlMutualBadgeTxtBg.setVisibility(View.GONE);
                 holder.mUserIcon.setEnabled(false);
 

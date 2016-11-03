@@ -55,6 +55,7 @@ public class BoardActivity extends BaseActivity implements View.OnClickListener 
     public static final String mActionTypeDislike = "dislike";
     public static final String mActionTypeNeutral = "neutral";
     public final static String BUSINESS = "business";
+    public final static String BOARD_ACTIVITY="board_activity";
     private Toolbar mToolbar;
     private TextView mTvTitle;
     int pastVisibleItems, visibleItemCount, totalItemCount;
@@ -265,6 +266,7 @@ public class BoardActivity extends BaseActivity implements View.OnClickListener 
             case R.id.tv_create_post:
                 Intent intent = new Intent(BoardActivity.this, CreatePostActivity.class);
                 intent.putExtra(Constants.BUSINESS_ID, mBusinessId);
+                intent.putExtra(Constants.CONTEXT_NAME,Constants.BOARD_ACTIVITY);
                 startActivity(intent);
                 break;
 

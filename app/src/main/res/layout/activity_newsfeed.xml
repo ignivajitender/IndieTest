@@ -38,7 +38,7 @@
                 android:id="@+id/ll_lower_nf"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_below="@+id/ll_upper"
+                android:layout_below="@+id/ll_upper_nf"
                 android:background="@color/white">
 
                 <TextView
@@ -50,7 +50,7 @@
                     android:layout_marginLeft="90dp"
                     android:background="@color/white"
                     android:gravity="center_vertical"
-                    android:text="Create a new board message"
+                    android:text="Create a new timeline message"
                     android:textColor="@color/light_black"
                     android:textSize="15sp" />
             </LinearLayout>
@@ -65,13 +65,17 @@
 
 
         </RelativeLayout>
+        <android.support.v4.widget.SwipeRefreshLayout
+            android:id="@+id/swipeContainer"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
 
         <android.support.v7.widget.RecyclerView
             android:id="@+id/rv_user_post_nf"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="2dp"></android.support.v7.widget.RecyclerView>
-
+        </android.support.v4.widget.SwipeRefreshLayout>
     </LinearLayout>
 
     <TextView

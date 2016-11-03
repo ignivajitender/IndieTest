@@ -66,7 +66,7 @@ public class MyProfileActivity extends BaseActivity implements View.OnClickListe
     GridLayoutManager mGlManager;
     ArrayList<BadgesPojo> mSelectedBadgesList = new ArrayList<BadgesPojo>();
     MyBadgesAdapter mMyBadgeAdapter;
-    public static int POSITION = -1;
+    public  int POSITION = -1;
     int mSelectedPosition = -1;
     public String postID = "-1";
     private int action = 0;
@@ -168,8 +168,6 @@ public class MyProfileActivity extends BaseActivity implements View.OnClickListe
 
             }
             if (PreferenceHandler.readString(this, PreferenceHandler.COVER_PIC_URL, null) != null) {
-
-
                 Glide.with(this).load(WebServiceClient.HTTP_STAGING + PreferenceHandler.readString(this, PreferenceHandler.COVER_PIC_URL, ""))
                         .thumbnail(1f)
                         .crossFade()
@@ -294,7 +292,7 @@ public class MyProfileActivity extends BaseActivity implements View.OnClickListe
 
     /**
   *
-  * create payload to get all post of a business
+  * create payload to get all post of a user
   * token, userId, roomId, postType, page, limit
   * */
     public String createPayload() {
@@ -577,7 +575,7 @@ public class MyProfileActivity extends BaseActivity implements View.OnClickListe
     };
 
 
-    /*
+    /**
     * create payload to flag/remove a post
     *
     *
@@ -599,7 +597,7 @@ public class MyProfileActivity extends BaseActivity implements View.OnClickListe
         return payload.toString();
     }
 
-    /*
+    /**
     * remove post call
     *
     * */
@@ -619,7 +617,7 @@ public class MyProfileActivity extends BaseActivity implements View.OnClickListe
     }
 
 
-    /*
+    /**
     * response Remove post
     *
     *
@@ -657,7 +655,7 @@ public class MyProfileActivity extends BaseActivity implements View.OnClickListe
     };
 
 
-    //
+    /**
 // create payload to like unlike a post
 //Params:token, userId, type(like/dislike/neutral), post_id
 // */
@@ -678,7 +676,7 @@ public class MyProfileActivity extends BaseActivity implements View.OnClickListe
     }
 
 
-    /*
+    /**
     * like/unlike/neutral action to a post
     * @parms post_id
     *
@@ -691,7 +689,7 @@ public class MyProfileActivity extends BaseActivity implements View.OnClickListe
         }
     }
 
-    /*
+    /**
     * like unlike response
     * */
     ResponseHandlerListener responseHandlerLike = new ResponseHandlerListener() {

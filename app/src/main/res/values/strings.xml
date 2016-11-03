@@ -1182,5 +1182,6 @@
     <string name="post_reported">Post reported.</string>
     <string name="block_user">Do you really want to block this user?</string>
     <string name="CheckIn_confirmation">Do you really want to check in to this business?</string>
+    <string name="news_feed">News Feed</string>
 
 </resources>

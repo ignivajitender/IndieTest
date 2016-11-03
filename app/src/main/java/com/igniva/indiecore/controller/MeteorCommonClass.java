@@ -176,9 +176,9 @@ public class MeteorCommonClass implements MeteorCallback {
     @Override
     public void onDataRemoved(String collectionName, String documentID) {
         Log.e(LOG_TAG, "onDataRemoved CollectionName" + collectionName + " " + documentID);
-//        if (collectionName.equalsIgnoreCase("message")&&isInChatActivity) {
-//            sendDelieverStatusChat(documentID,Constants.MARK_MESSAGE_READ);
-//        }
+        if (collectionName.equalsIgnoreCase("message")&&isInChatActivity) {
+            onChatMsgStatusListener.onChatMsgStatus(documentID,Constants.MARK_MESSAGE_READ);
+        }
     }
 
     public void makeRoomMeteor(String mRoomId) {

@@ -75,7 +75,7 @@ public class DashBoardActivity extends BaseActivity implements OnRecentChatListe
             mMyProfile.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    startActivity(new Intent(DashBoardActivity.this, MyProfileActivity.class));
+                    startActivity(new Intent(DashBoardActivity.this, NewsFeedActivity.class));
                 }
             });
 

@@ -59,21 +59,24 @@ public class CreatePostActivity extends BaseActivity implements AsyncResult,View
 
     private TextView mCamera, mGallary, mUserName;
     private EditText mPostText;
-    private String mMediaPostId = "";
+    private String mMediaPostId="";
+    private String mContextName;
     private ImageView mIvMediaPost, mUserImage;
     public static final int REQUEST_CAMERA = 100;
     public static final int SELECT_FILE = 200;
     private Toolbar mToolbar;
     private String mImagePath;
-    public final static String BUSINESS = "business";
+    private final  String BUSINESS = "business";
+    private final  String PROFILE = "profile";
+    private final  String TIMELINE = "timeline";
     String mBusinessId="";
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_create_post);
-        initToolbar();
         setUpLayout();
+        initToolbar();
         setDataInViewObjects();
     }
 
@@ -82,8 +85,10 @@ public class CreatePostActivity extends BaseActivity implements AsyncResult,View
 
         try {
             Bundle bundle = getIntent().getExtras();
-            mBusinessId = bundle.getString(Constants.BUSINESS_ID);
-
+            if(bundle!=null) {
+                mBusinessId = bundle.getString(Constants.BUSINESS_ID);
+                mContextName=bundle.getString(Constants.CONTEXT_NAME);
+            }
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -180,7 +185,11 @@ public class CreatePostActivity extends BaseActivity implements AsyncResult,View
             payload.put(Constants.TOKEN, PreferenceHandler.readString(this, PreferenceHandler.PREF_KEY_USER_TOKEN, ""));
             payload.put(Constants.USERID, PreferenceHandler.readString(this, PreferenceHandler.PREF_KEY_USER_ID, ""));
             payload.put(Constants.ROOM_ID, mBusinessId);
-            payload.put(Constants.POST_TYPE, BUSINESS);
+            if(mContextName.equalsIgnoreCase(Constants.NEWS_FEED_ACTIVITY)){
+                payload.put(Constants.POST_TYPE, TIMELINE);
+            }else if(mContextName.equalsIgnoreCase(Constants.BOARD_ACTIVITY)) {
+                payload.put(Constants.POST_TYPE, BUSINESS);
+            }
 
             if (!mMediaPostId.isEmpty()) {
                 payload.put(Constants.MEDIA, mMediaPostId);

@@ -24,6 +24,7 @@ public class MyApplication extends Application implements NetworkChangeReceiver.
     public void onCreate() {
         super.onCreate();
         Fabric.with(this, new Crashlytics());
+        NetworkChangeReceiver.connectivityReceiverListener = this;
     }
 
     private int appRunCount = 0;
