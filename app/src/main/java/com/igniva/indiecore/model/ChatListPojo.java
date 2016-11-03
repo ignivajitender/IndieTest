@@ -19,8 +19,19 @@ public class ChatListPojo {
     private String userId;
     private String name;
     private String icon;
+    private String members;
     private String relation;
     private String badges;
+
+    public String getMembers() {
+        return members;
+    }
+
+    public void setMembers(String members) {
+        this.members = members;
+    }
+
+
 
 
     public String getBusinessId() {

@@ -16,6 +16,8 @@ import com.aurelhubert.ahbottomnavigation.AHBottomNavigation;
 import com.aurelhubert.ahbottomnavigation.AHBottomNavigationItem;
 import com.igniva.indiecore.MyApplication;
 import com.igniva.indiecore.R;
+import com.igniva.indiecore.controller.OnRecentChatListener;
+import com.igniva.indiecore.controller.services.CustomMeteorService;
 import com.igniva.indiecore.model.InstantChatPojo;
 import com.igniva.indiecore.ui.fragments.ChatsFragment;
 import com.igniva.indiecore.ui.fragments.CheckInFragment;
@@ -29,7 +31,7 @@ import java.util.HashMap;
 /**
  * Created by igniva-andriod-05 on 29/6/16.
  */
-public class DashBoardActivity extends BaseActivity {
+public class DashBoardActivity extends BaseActivity implements OnRecentChatListener {
 
     public static AHBottomNavigation bottomNavigation;
     Toolbar mToolbar;
@@ -43,6 +45,7 @@ public class DashBoardActivity extends BaseActivity {
         setUpLayout();
         initToolbar();
         setDataInViewObjects();
+        CustomMeteorService.mMeteorCommonClass.setOnRecentChatListener(this);
     }
 
     @Override
@@ -193,27 +196,45 @@ public class DashBoardActivity extends BaseActivity {
 
     }
 //    Call Back method  to get the Message form other Activity
+//    @Override
+//    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+//        super.onActivityResult(requestCode, resultCode, data);
+//        // check if the request code is same as what is passed  here it is 2
+//        try {
+//            if (requestCode == Constants.STARTACTIVITYFORRESULTFORCHAT && resultCode == RESULT_OK) {
+//                ((MyApplication) getApplication()).setCurrentContext(DashBoardActivity.this);
+//            }
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//        }
+//    }
+
+//    @Override
+//    protected void onResume() {
+//        super.onResume();
+//        try {
+//            ((MyApplication) getApplication()).setCurrentContext(DashBoardActivity.this);
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//        }
+//
+//    }
+
+//    @Override
+//    public void onRecentChat(HashMap<String, InstantChatPojo> recentChatHashMap) {
+//
+//    }
+
+    @Override
+    public void onRecentChat(HashMap<String, InstantChatPojo> recentChatHashMap) {
+        addRecentMsg(recentChatHashMap);
+    }
+    //    Call Back method  to get the Message form other Activity
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        // check if the request code is same as what is passed  here it is 2
-        try {
-            if (requestCode == Constants.STARTACTIVITYFORRESULTFORCHAT && resultCode == RESULT_OK) {
-                ((MyApplication) getApplication()).setCurrentContext(DashBoardActivity.this);
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
+        if (requestCode == Constants.STARTACTIVITYFORRESULTFORCHAT && resultCode == RESULT_OK) {
+            addRecentMsg( CustomMeteorService.mMeteorCommonClass.recentChatHashMap);
         }
-    }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-        try {
-            ((MyApplication) getApplication()).setCurrentContext(DashBoardActivity.this);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
     }
 }

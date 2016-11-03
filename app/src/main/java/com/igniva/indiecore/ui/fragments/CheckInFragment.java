@@ -266,7 +266,6 @@ public class CheckInFragment extends BaseFragment {
                         try {
                             mFindBusinessAdapter = null;
                             mBusinessAdapter = null;
-                            Log.e("", "setting bin adpter" + mBusinessList.size());
                             if (mBusinessList.size() > 0) {
                                 mBusinessAdapter = new BusinessListAdapter(getActivity(), mBusinessList, onCardClickListner);
                                 mRvBusinessGrid.setAdapter(mBusinessAdapter);
@@ -315,7 +314,6 @@ public class CheckInFragment extends BaseFragment {
                 } catch (Exception e) {
                     e.printStackTrace();
                     Utility.showToastMessageLong(getActivity(), getResources().getString(R.string.no_result_found));
-                    Log.e("ccccccccccccccccccccccccc",""+2);
                 }
 
 
@@ -325,7 +323,6 @@ public class CheckInFragment extends BaseFragment {
             } catch (Exception e) {
                 e.printStackTrace();
                 Utility.showToastMessageLong(getActivity(), getResources().getString(R.string.no_result_found));
-                Log.e("dddddddddddddddddddddddddddddddd",""+3);
 
             }
         }
@@ -349,7 +346,7 @@ public class CheckInFragment extends BaseFragment {
                         }
                     }
                 } else {
-                    Utility.showToastMessageLong(getActivity(), "Some error occurred.Please try later");
+                    Utility.showToastMessageLong(getActivity(),getResources().getString(R.string.some_unknown_error));
                 }
 
                 if (mProgressDialog != null && mProgressDialog.isShowing()) {

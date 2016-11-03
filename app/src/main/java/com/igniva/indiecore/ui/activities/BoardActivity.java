@@ -1,5 +1,6 @@
 package com.igniva.indiecore.ui.activities;
 
+import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -79,8 +80,8 @@ public class BoardActivity extends BaseActivity implements View.OnClickListener 
     private String mBusinessId = "";
     private String mBusinessName = "";
     private String postID = "-1";
-    private String BLOCK="block";
-    private String REMOVE="remove";
+    private String BLOCK = "block";
+    private String REMOVE = "remove";
     private ImageView mIvDelete;
 
     @Override
@@ -94,19 +95,46 @@ public class BoardActivity extends BaseActivity implements View.OnClickListener 
 
     void initToolbar() {
         try {
+
+            try {
+                mBusinessId = getIntent().getStringExtra(Constants.BUSINESS_ID);
+                mBusinessName = getIntent().getStringExtra(Constants.BUSINESS_NAME);
+                mTvTitle.setText(mBusinessName);
+
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+
             mToolbar = (Toolbar) findViewById(R.id.toolbar_with_icon);
             mTvTitle = (TextView) mToolbar.findViewById(R.id.toolbar_title_img);
 
-            //
             ImageView mTvNext = (ImageView) mToolbar.findViewById(R.id.toolbar_img);
+            mTvNext.setImageResource(R.drawable.share_location_icon);
             mTvNext.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-//                    startActivity(new Intent(BoardActivity.this, MyBadgesActivity.class));
-                    Utility.showToastMessageShort(BoardActivity.this, getResources().getString(R.string.coming_soon));
+                    AlertDialog.Builder builder = Utility.showAlertDialogBuy(getResources().getString(R.string.CheckIn_confirmation), BoardActivity.this);
+                    builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int id) {
+
+                            // execute check-in call
+                            userCheckIn(mBusinessId);
+
+                            // close dialog
+                            dialog.dismiss();
+
+                        }
+                    });
+                    builder.setNegativeButton("No", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            dialog.dismiss();
+                        }
+                    });
+                    AlertDialog alert11 = builder.create();
+                    alert11.show();
                 }
             });
-            //
 
             ImageView backarrow = (ImageView) mToolbar.findViewById(R.id.toolbar_img_left);
             backarrow.setImageResource(R.drawable.backarrow_icon);
@@ -127,14 +155,7 @@ public class BoardActivity extends BaseActivity implements View.OnClickListener 
 
     @Override
     protected void setUpLayout() {
-        try {
-            mBusinessId = getIntent().getStringExtra(Constants.BUSINESS_ID);
-            mBusinessName = getIntent().getStringExtra(Constants.BUSINESS_NAME);
-            mTvTitle.setText(mBusinessName);
 
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
         mRvWallPosts = (RecyclerView) findViewById(R.id.rv_users_posts);
         mLlManager = new LinearLayoutManager(this);
         mRvWallPosts.setLayoutManager(mLlManager);
@@ -252,6 +273,57 @@ public class BoardActivity extends BaseActivity implements View.OnClickListener 
         }
     }
 
+    public String createPayloadCheckIn(String businessId) {
+
+//        token, userId, businessId
+
+        JSONObject payload = null;
+        try {
+            payload = new JSONObject();
+            payload.put(Constants.TOKEN, PreferenceHandler.readString(this, PreferenceHandler.PREF_KEY_USER_TOKEN, ""));
+            payload.put(Constants.USERID, PreferenceHandler.readString(this, PreferenceHandler.PREF_KEY_USER_ID, ""));
+            payload.put(Constants.BUSINESS_ID, businessId);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return payload.toString();
+    }
+
+    public void userCheckIn(String mBusinessId) {
+        String payload = createPayloadCheckIn(mBusinessId);
+        if (!payload.isEmpty()) {
+
+            WebNotificationManager.registerResponseListener(responseHandlerCheckIn);
+            WebServiceClient.check_in_a_business(this, payload, responseHandlerCheckIn);
+        }
+    }
+
+
+    ResponseHandlerListener responseHandlerCheckIn = new ResponseHandlerListener() {
+        @Override
+        public void onComplete(ResponsePojo result, WebServiceClient.WebError error, ProgressDialog mProgressDialog) {
+            WebNotificationManager.unRegisterResponseListener(responseHandlerCheckIn);
+
+            if (error == null) {
+                if (result.getSuccess().equalsIgnoreCase("true")) {
+
+                    Utility.showToastMessageLong(BoardActivity.this, "Check-in successful");
+                } else {
+                    Utility.showAlertDialog("Error in check-in to this place.Please try later", BoardActivity.this, null);
+
+                }
+
+            } else {
+                Utility.showAlertDialog(getResources().getString(R.string.some_unknown_error), BoardActivity.this, null);
+
+            }
+            if (mProgressDialog != null && mProgressDialog.isShowing()) {
+                mProgressDialog.dismiss();
+            }
+
+
+        }
+    };
 
     public void updateChatUi() {
         try {
@@ -296,7 +368,7 @@ public class BoardActivity extends BaseActivity implements View.OnClickListener 
             if (mWallPostList.size() > 0) {
                 mAdapter = new WallPostAdapter(this, mWallPostList, Constants.CHATFRAGMENT, onLikeClickListner, onDisLikeClickListner, onNeutralClickListner, onCommentClickListner, onMediaPostClickListner, onDeleteClickListner);
                 mRvWallPosts.setAdapter(mAdapter);
-            }else {
+            } else {
                 mComingSoon.setVisibility(View.VISIBLE);
                 mComingSoon.setText(getResources().getString(R.string.no_post_found));
             }
@@ -326,7 +398,7 @@ public class BoardActivity extends BaseActivity implements View.OnClickListener 
 
             if (mPeoplesList.size() > 0) {
                 mPeoplesTabAdapter = null;
-                mPeoplesTabAdapter = new PeoplesTabAdapter(this, mPeoplesList, onStarClick,onBlockClick);
+                mPeoplesTabAdapter = new PeoplesTabAdapter(this, mPeoplesList, onStarClick, onBlockClick);
                 mRvPeoples.setAdapter(mPeoplesTabAdapter);
             } else {
                 get_all_peoples();
@@ -392,7 +464,7 @@ public class BoardActivity extends BaseActivity implements View.OnClickListener 
                         mPeoplesList.addAll(result.getPeoples());
                         if (mPeoplesList.size() > 0) {
                             mPeoplesTabAdapter = null;
-                            mPeoplesTabAdapter = new PeoplesTabAdapter(BoardActivity.this, mPeoplesList, onStarClick,onBlockClick);
+                            mPeoplesTabAdapter = new PeoplesTabAdapter(BoardActivity.this, mPeoplesList, onStarClick, onBlockClick);
                             mRvPeoples.setAdapter(mPeoplesTabAdapter);
                         } else {
                             mComingSoon.setVisibility(View.VISIBLE);
@@ -413,6 +485,7 @@ public class BoardActivity extends BaseActivity implements View.OnClickListener 
 
     /**
      * create payload to get all post of a business
+     *
      * @Params:token, userId, roomId, postType, page, limit
      */
     public String createPayload() {
@@ -514,6 +587,7 @@ public class BoardActivity extends BaseActivity implements View.OnClickListener 
 
     /**
      * like/unlike/neutral action to a post
+     *
      * @parms post_id
      */
     public void likeUnlikePost(String type, String postId) {
@@ -787,7 +861,7 @@ public class BoardActivity extends BaseActivity implements View.OnClickListener 
                 mIvDelete = delete;
                 if (ACTION.equalsIgnoreCase("DELETE")) {
 //TODO
-                    showRemovePostAlertDialog(getResources().getString(R.string.delete_post), BoardActivity.this, postId,REMOVE);
+                    showRemovePostAlertDialog(getResources().getString(R.string.delete_post), BoardActivity.this, postId, REMOVE);
 //                    removePost(BoardActivity.this, postId);
 
                 } else if (ACTION.equalsIgnoreCase("REPORT")) {
@@ -915,8 +989,8 @@ public class BoardActivity extends BaseActivity implements View.OnClickListener 
         public void onContactCardClicked(ImageView view, int position, String userId) {
             try {
 //                starImage = view;
-                POSITION=position;
-                showRemovePostAlertDialog(getResources().getString(R.string.block_user),BoardActivity.this,userId,BLOCK);
+                POSITION = position;
+                showRemovePostAlertDialog(getResources().getString(R.string.block_user), BoardActivity.this, userId, BLOCK);
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -924,15 +998,15 @@ public class BoardActivity extends BaseActivity implements View.OnClickListener 
     };
 
 
-    public  void showRemovePostAlertDialog(String message, final Context context, final String Id, final String method){
+    public void showRemovePostAlertDialog(String message, final Context context, final String Id, final String method) {
         AlertDialog.Builder builder1 = new AlertDialog.Builder(context);
-        builder1.setMessage( message);
+        builder1.setMessage(message);
         builder1.setCancelable(true);
         builder1.setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int id) {
-                if(method.equalsIgnoreCase(REMOVE)) {
+                if (method.equalsIgnoreCase(REMOVE)) {
                     removePost(Id);
-                }else {
+                } else {
                     blockUser(Id);
                 }
             }
@@ -942,7 +1016,7 @@ public class BoardActivity extends BaseActivity implements View.OnClickListener 
                 dialog.dismiss();
                 try {
                     mIvDelete.setVisibility(View.GONE);
-                }catch (Exception e){
+                } catch (Exception e) {
                     e.printStackTrace();
                 }
             }
@@ -950,6 +1024,7 @@ public class BoardActivity extends BaseActivity implements View.OnClickListener 
         AlertDialog alert11 = builder1.create();
         alert11.show();
     }
+
     /**
      * create payload to block an user
      * token, userId, personId
@@ -986,7 +1061,7 @@ public class BoardActivity extends BaseActivity implements View.OnClickListener 
             if (error == null) {
                 if (result.getSuccess().equalsIgnoreCase("true")) {
                     mPeoplesList.remove(POSITION);
-                       mPeoplesTabAdapter.notifyDataSetChanged();
+                    mPeoplesTabAdapter.notifyDataSetChanged();
                     Utility.showToastMessageShort(BoardActivity.this, "User blocked");
 
                 }

@@ -20,22 +20,22 @@ public class CustomReceiver extends BroadcastReceiver {
         // Get extra data included in the Intent
         //Please add try catch may be crash here for null instance
 
-        String messageid = (String) intent.getStringExtra(Constants.MESSAGE_ID);
-        String methodName=(String) intent.getStringExtra(Constants.METHOD_NAME);
-        ChatPojo chatPojo1 = (ChatPojo) intent.getParcelableExtra("chatPojo");
-
-        HashMap<String, InstantChatPojo> recentChatHashMap = (HashMap<String, InstantChatPojo>) intent.getSerializableExtra("recentChatData");
-        if (chatPojo1 != null) {
-            Context c = ((MyApplication) context.getApplicationContext()).getCurrentContext();
-            ((ChatActivity) c).addNewMsgToList(chatPojo1);
-        } else if (recentChatHashMap != null) {
-            Context c = ((MyApplication) context.getApplicationContext()).getCurrentContext();
-            ((DashBoardActivity) c).addRecentMsg(recentChatHashMap);
-        }
-        if(messageid!=null && methodName!=null){
-            Context c = ((MyApplication) context.getApplicationContext()).getCurrentContext();
-            ((ChatActivity) c).updateMessageStatus(messageid,methodName);
-        }
+//        String messageid = (String) intent.getStringExtra(Constants.MESSAGE_ID);
+//        String methodName=(String) intent.getStringExtra(Constants.METHOD_NAME);
+//        ChatPojo chatPojo1 = (ChatPojo) intent.getParcelableExtra("chatPojo");
+//
+//        HashMap<String, InstantChatPojo> recentChatHashMap = (HashMap<String, InstantChatPojo>) intent.getSerializableExtra("recentChatData");
+//        if (chatPojo1 != null) {
+//            Context c = ((MyApplication) context.getApplicationContext()).getCurrentContext();
+//            ((ChatActivity) c).addNewMsgToList(chatPojo1);
+//        } else if (recentChatHashMap != null) {
+//            Context c = ((MyApplication) context.getApplicationContext()).getCurrentContext();
+//            ((DashBoardActivity) c).addRecentMsg(recentChatHashMap);
+//        }
+//        if(messageid!=null && methodName!=null){
+//            Context c = ((MyApplication) context.getApplicationContext()).getCurrentContext();
+//            ((ChatActivity) c).updateMessageStatus(messageid,methodName);
+//        }
 
     }
 }

@@ -292,7 +292,7 @@ public class MyProfileActivity extends BaseActivity implements View.OnClickListe
     }
 
 
-    /*
+    /**
   *
   * create payload to get all post of a business
   * token, userId, roomId, postType, page, limit
@@ -314,7 +314,7 @@ public class MyProfileActivity extends BaseActivity implements View.OnClickListe
         return payload.toString();
     }
 
-    /*
+    /**
     * to get all the post of this business wall
     *
     * */
@@ -327,7 +327,7 @@ public class MyProfileActivity extends BaseActivity implements View.OnClickListe
         }
     }
 
-    /*
+    /**
     *
     * posts response and list inflation
     *
@@ -392,7 +392,7 @@ public class MyProfileActivity extends BaseActivity implements View.OnClickListe
         }
     }
 
-    /*
+    /**
     * create payload to call activate/inactivate a badge
     *    Params:token, userId, badgeId, active (0/1)
         * */

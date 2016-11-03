@@ -133,26 +133,10 @@ public class BusinessListAdapter extends RecyclerView.Adapter<BusinessListAdapte
 
                     mBusiness_Id=mBusinessList.get(position).getBusiness_id();
                     mBusiness_name=mBusinessList.get(position).getName();
-
-                    String payload=createPayload(mBusiness_Id);
-
-                    if(!payload.isEmpty()){
-
-                        WebNotificationManager.registerResponseListener(responseHandler);
-                        WebServiceClient.check_in_a_business(mContext,payload,responseHandler);
-                    }
-
-
-//                    ChatsFragment fragment = new ChatsFragment();
-//                Bundle args = new Bundle();
-//                args.putString(Constants.BUSINESS_ID,mBusinessList.get(position).getBusiness_id());
-//                fragment.setArguments(args);
-//                    //Inflate the fragment
-//
-//                    FragmentTransaction fragmentTransaction = ((AppCompatActivity) mContext).getSupportFragmentManager().beginTransaction();
-//
-//                    fragmentTransaction.add(R.id.fl_fragment_container, fragment);
-//                    fragmentTransaction.commit();
+                    Intent intent= new Intent((Activity)mContext, BoardActivity.class);
+                    intent.putExtra(Constants.BUSINESS_ID,mBusiness_Id);
+                    intent.putExtra(Constants.BUSINESS_NAME,mBusiness_name);
+                    mContext.startActivity(intent);
 
                 }catch (Exception e){
                     e.printStackTrace();
@@ -197,57 +181,5 @@ public class BusinessListAdapter extends RecyclerView.Adapter<BusinessListAdapte
         }
     }
 
-    public String createPayload(String businessId){
-
-//        token, userId, businessId
-
-        JSONObject payload=null;
-        try {
-            payload=new JSONObject();
-            payload.put(Constants.TOKEN, PreferenceHandler.readString(mContext,PreferenceHandler.PREF_KEY_USER_TOKEN,""));
-            payload.put(Constants.USERID, PreferenceHandler.readString(mContext,PreferenceHandler.PREF_KEY_USER_ID,""));
-            payload.put(Constants.BUSINESS_ID,businessId);
-        }catch (Exception e){
-            e.printStackTrace();
-        }
-       return payload.toString();
-    }
-
-
-    ResponseHandlerListener responseHandler= new ResponseHandlerListener() {
-        @Override
-        public void onComplete(ResponsePojo result, WebServiceClient.WebError error, ProgressDialog mProgressDialog) {
-            WebNotificationManager.unRegisterResponseListener(responseHandler);
-
-            if(error==null){
-                if(result.getSuccess().equalsIgnoreCase("true")){
-
-                    Utility.showToastMessageLong((Activity) mContext,"Check-in successful");
-
-//                    DashBoardActivity.bottomNavigation.setCurrentItem(2);
-//                    DashBoardActivity.businessId=mBusiness_Id;
-
-                    Intent intent= new Intent((Activity)mContext, BoardActivity.class);
-                    intent.putExtra(Constants.BUSINESS_ID,mBusiness_Id);
-                    intent.putExtra(Constants.BUSINESS_NAME,mBusiness_name);
-                    mContext.startActivity(intent);
-
-
-                }else {
-                    Utility.showAlertDialog("Error in check-in to this place.Please try later",mContext,null);
-
-                }
-
-            }else {
-                Utility.showAlertDialog(mContext.getResources().getString(R.string.some_unknown_error),mContext,null);
-
-            }
-            if (mProgressDialog != null && mProgressDialog.isShowing()) {
-                mProgressDialog.dismiss();
-            }
-
-
-        }
-    };
 
 }

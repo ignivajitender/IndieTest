@@ -130,7 +130,10 @@
     <string name="friends">Friends</string>
     <string name="others">Others</string>
 
+
+    <!--Activities-->
     <string name="view_media_activity">View Media Activity</string>
+    <string name="news_feed_activity">News Feed Activity</string>
 
     <!--contacts-->
     <string name="phonebook">Phonebook</string>
@@ -1178,5 +1181,6 @@
     <string name="no_peoples_found">No people found at this business.</string>
     <string name="post_reported">Post reported.</string>
     <string name="block_user">Do you really want to block this user?</string>
+    <string name="CheckIn_confirmation">Do you really want to check in to this business?</string>
 
 </resources>

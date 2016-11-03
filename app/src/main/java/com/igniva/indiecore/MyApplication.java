@@ -20,20 +20,12 @@ public class MyApplication extends Application implements NetworkChangeReceiver.
 
 
 
-    Context currentContext = null;
     @Override
     public void onCreate() {
         super.onCreate();
         Fabric.with(this, new Crashlytics());
     }
 
-    public Context getCurrentContext() {
-        return currentContext;
-    }
-
-    public void setCurrentContext(Context currentContext) {
-        this.currentContext = currentContext;
-    }
     private int appRunCount = 0;
 
     public int getAppRunCount() {

@@ -57,7 +57,10 @@ public class MeteorCommonClass implements MeteorCallback {
     private String USER_ID_1;
     private String TOKEN;
     Context context;
-    HashMap<String, InstantChatPojo> recentChatHashMap = new HashMap<String, InstantChatPojo>();
+    public static HashMap<String, InstantChatPojo> recentChatHashMap = new HashMap<String, InstantChatPojo>();
+    private OnChatMsgReceiveListener onChatMsgReceiveListener;
+    private OnRecentChatListener onRecentChatListener;
+    private OnChatMsgStatusListener onChatMsgStatusListener;
 
     //HashMap<String, InstantChatPojo> recentChatHashMap = new HashMap<String, InstantChatPojo>();
 
@@ -71,6 +74,20 @@ public class MeteorCommonClass implements MeteorCallback {
         mMeteor = new Meteor(context, Constants.URLWEBSOCKET, new InMemoryDatabase());
         // register the callback that will handle events and receive messages
         mMeteor.addCallback(this);
+    }
+
+    //For chatActivity for dedicated chat screen
+    public void setOnChatMsgReceiveListener(OnChatMsgReceiveListener onChatMsgReceiveListener1) {
+        this.onChatMsgReceiveListener = onChatMsgReceiveListener1;
+    }
+    //For DashBoardActivity for Recent chat screen
+    public void setOnRecentChatListener(OnRecentChatListener onRecentChatListener1) {
+        this.onRecentChatListener = onRecentChatListener1;
+    }
+
+    //For DashBoardActivity for Recent chat screen
+    public void setOnChatMsgStatusListener(OnChatMsgStatusListener onChatMsgStatusListener1) {
+        this.onChatMsgStatusListener = onChatMsgStatusListener1;
     }
 
     public static MeteorCommonClass getInstance(CustomMeteorService context) {
@@ -144,19 +161,24 @@ public class MeteorCommonClass implements MeteorCallback {
     @Override
     public void onDataChanged(String collectionName, String documentID, String updatedValuesJson, String removedValuesJson) {
         Log.e(LOG_TAG, "onDataChanged " + collectionName + " " + documentID + " " + updatedValuesJson + " " + removedValuesJson);
-        Gson gson = new Gson();
-        UpdateMessagePojo updateMessagePojo = gson.fromJson(updatedValuesJson, UpdateMessagePojo.class);
-        if (collectionName.equalsIgnoreCase("message")&&isInChatActivity) {
-         sendDelieverStatusChat(documentID,Constants.MARK_MESSAGE_DELIVERED);
+//        Gson gson = new Gson();
+//        UpdateMessagePojo updateMessagePojo = gson.fromJson(updatedValuesJson, UpdateMessagePojo.class);
+//        if (collectionName.equalsIgnoreCase("message")&&isInChatActivity) {
+//         sendDelieverStatusChat(documentID,Constants.MARK_MESSAGE_DELIVERED);
+//        }
+
+        if (collectionName.equalsIgnoreCase("message") && isInChatActivity) {
+            //sendDelieverStatusChat(documentID, Constants.MARK_MESSAGE_DELIVERED);
+            onChatMsgStatusListener.onChatMsgStatus(documentID,Constants.MARK_MESSAGE_DELIVERED);
         }
     }
 
     @Override
     public void onDataRemoved(String collectionName, String documentID) {
         Log.e(LOG_TAG, "onDataRemoved CollectionName" + collectionName + " " + documentID);
-        if (collectionName.equalsIgnoreCase("message")&&isInChatActivity) {
-            sendDelieverStatusChat(documentID,Constants.MARK_MESSAGE_READ);
-        }
+//        if (collectionName.equalsIgnoreCase("message")&&isInChatActivity) {
+//            sendDelieverStatusChat(documentID,Constants.MARK_MESSAGE_READ);
+//        }
     }
 
     public void makeRoomMeteor(String mRoomId) {
@@ -243,13 +265,24 @@ public class MeteorCommonClass implements MeteorCallback {
                     mChatPojo.setBadges(instantChatPojo.getBadges());
                     mChatPojo.setType(instantChatPojo.getType());
                     insertSingleMessage(mChatPojo);
-                    if (mCurrentRoomId != null && mCurrentRoomId.equalsIgnoreCase(instantChatPojo.getRoomId()) && isInChatActivity) {
-                        //dedicate chat is on for image send msg by broadcast
-                        sendReceivedChat(mChatPojo);
+//                    if (mCurrentRoomId != null && mCurrentRoomId.equalsIgnoreCase(instantChatPojo.getRoomId()) && isInChatActivity) {
+//                        //dedicate chat is on for image send msg by broadcast
+//                        sendReceivedChat(mChatPojo);
+//                    }
+//                    recentChatHashMap.put(instantChatPojo.getRoomId(), instantChatPojo);
+//                    if (isMessageFragmenVisible && !instantChatPojo.getRelation().equalsIgnoreCase("self")) {
+//                        sendReceivedRecentChat(recentChatHashMap);
+//                    }
+                    if (mCurrentRoomId != null && mCurrentRoomId.equalsIgnoreCase(instantChatPojo.getRoomId()) && isInChatActivity && !instantChatPojo.getRelation().equalsIgnoreCase("self")) {
+                        //dedicate chat is on for text send msg by broadcast
+                        //sendReceivedChat(mChatPojo);
+                        onChatMsgReceiveListener.onChatMsgRecieved(mChatPojo);
+
                     }
                     recentChatHashMap.put(instantChatPojo.getRoomId(), instantChatPojo);
                     if (isMessageFragmenVisible && !instantChatPojo.getRelation().equalsIgnoreCase("self")) {
-                        sendReceivedRecentChat(recentChatHashMap);
+                        //sendReceivedRecentChat(recentChatHashMap);
+                        onRecentChatListener.onRecentChat(recentChatHashMap);
                     }
 
                 } else if (instantChatPojo.getType().equalsIgnoreCase("Photo")) {
@@ -270,13 +303,32 @@ public class MeteorCommonClass implements MeteorCallback {
                     insertSingleMessage(mChatPojo);
                     ChatActivity.imagePath="";
 
-                    if (mCurrentRoomId != null && mCurrentRoomId.equalsIgnoreCase(instantChatPojo.getRoomId()) && isInChatActivity) {
+//                    if (mCurrentRoomId != null && mCurrentRoomId.equalsIgnoreCase(instantChatPojo.getRoomId()) && isInChatActivity) {
+//                        //dedicate chat is on for image send msg by broadcast
+//                        sendReceivedChat(mChatPojo);
+//                    }
+//                    recentChatHashMap.put(instantChatPojo.getRoomId(), instantChatPojo);
+//                    if (isMessageFragmenVisible && !instantChatPojo.getRelation().equalsIgnoreCase("self")) {
+//                        sendReceivedRecentChat(recentChatHashMap);
+//                    }
+//                }
+//
+//                if (!instantChatPojo.getRelation().equalsIgnoreCase("self")) {
+//                    mMeteorCommonClass.msgDelieverdMeteor(instantChatPojo.getMessageId());
+//                }
+//                if (isInChatActivity && !instantChatPojo.getRelation().equalsIgnoreCase("self")) {
+//                    mMeteorCommonClass.msgReadMeteor(instantChatPojo.getMessageId());
+//                }
+
+                    if (mCurrentRoomId != null && mCurrentRoomId.equalsIgnoreCase(instantChatPojo.getRoomId()) && isInChatActivity && !instantChatPojo.getRelation().equalsIgnoreCase("self")) {
                         //dedicate chat is on for image send msg by broadcast
-                        sendReceivedChat(mChatPojo);
+                        //sendReceivedChat(mChatPojo);
+                        onChatMsgReceiveListener.onChatMsgRecieved(mChatPojo);
                     }
                     recentChatHashMap.put(instantChatPojo.getRoomId(), instantChatPojo);
                     if (isMessageFragmenVisible && !instantChatPojo.getRelation().equalsIgnoreCase("self")) {
-                        sendReceivedRecentChat(recentChatHashMap);
+                        //sendReceivedRecentChat(recentChatHashMap);
+                        onRecentChatListener.onRecentChat(recentChatHashMap);
                     }
                 }
 
@@ -336,36 +388,36 @@ public class MeteorCommonClass implements MeteorCallback {
     }*/
 
     //Send to chatpojo msg to ChatActivity (dedicated Chat)
-    private void sendReceivedChat(ChatPojo chatPojo) {
-        //Intent intent = new Intent("MsgByMeteorCommonClass");
-        Intent intent = new Intent();
-        // You can also include some extra data.
-        intent.putExtra("chatPojo", chatPojo);
-        intent.setAction("com.igniva.indiecore.mybroadcast");
-        context.sendBroadcast(intent);
-        //LocalBroadcastManager.getInstance(context).sendBroadcast(intent);
-    }
-
-    //Send to chatpojo msg to ChatActivity (dedicated Chat)
-    private void sendDelieverStatusChat(String messageId,String methodName) {
-        //Intent intent = new Intent("MsgByMeteorCommonClass");
-        Intent intent = new Intent();
-        // You can also include some extra data.
-        intent.putExtra(Constants.MESSAGE_ID,messageId);
-        intent.putExtra(Constants.METHOD_NAME,methodName);
-        intent.setAction("com.igniva.indiecore.mybroadcast");
-        context.sendBroadcast(intent);
-        //LocalBroadcastManager.getInstance(context).sendBroadcast(intent);
-    }
-
-    public void sendReceivedRecentChat(HashMap<String, InstantChatPojo> recentChatHashMap) {
-        //Intent intent = new Intent("MsgByMeteorCommonClass");
-        Intent intent = new Intent();
-        // You can also include some extra data.
-        intent.putExtra("recentChatData", recentChatHashMap);
-        intent.setAction("com.igniva.indiecore.mybroadcast");
-        context.sendBroadcast(intent);
-        //LocalBroadcastManager.getInstance(context).sendBroadcast(intent);
-    }
+//    private void sendReceivedChat(ChatPojo chatPojo) {
+//        //Intent intent = new Intent("MsgByMeteorCommonClass");
+//        Intent intent = new Intent();
+//        // You can also include some extra data.
+//        intent.putExtra("chatPojo", chatPojo);
+//        intent.setAction("com.igniva.indiecore.mybroadcast");
+//        context.sendBroadcast(intent);
+//        //LocalBroadcastManager.getInstance(context).sendBroadcast(intent);
+//    }
+//
+//    //Send to chatpojo msg to ChatActivity (dedicated Chat)
+//    private void sendDelieverStatusChat(String messageId,String methodName) {
+//        //Intent intent = new Intent("MsgByMeteorCommonClass");
+//        Intent intent = new Intent();
+//        // You can also include some extra data.
+//        intent.putExtra(Constants.MESSAGE_ID,messageId);
+//        intent.putExtra(Constants.METHOD_NAME,methodName);
+//        intent.setAction("com.igniva.indiecore.mybroadcast");
+//        context.sendBroadcast(intent);
+//        //LocalBroadcastManager.getInstance(context).sendBroadcast(intent);
+//    }
+//
+//    public void sendReceivedRecentChat(HashMap<String, InstantChatPojo> recentChatHashMap) {
+//        //Intent intent = new Intent("MsgByMeteorCommonClass");
+//        Intent intent = new Intent();
+//        // You can also include some extra data.
+//        intent.putExtra("recentChatData", recentChatHashMap);
+//        intent.setAction("com.igniva.indiecore.mybroadcast");
+//        context.sendBroadcast(intent);
+//        //LocalBroadcastManager.getInstance(context).sendBroadcast(intent);
+//    }
 
 }

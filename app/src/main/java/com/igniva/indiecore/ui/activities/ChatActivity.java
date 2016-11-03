@@ -26,6 +26,8 @@ import android.widget.TextView;
 import com.igniva.indiecore.MyApplication;
 import com.igniva.indiecore.R;
 import com.igniva.indiecore.controller.ChatResultListener;
+import com.igniva.indiecore.controller.OnChatMsgReceiveListener;
+import com.igniva.indiecore.controller.OnChatMsgStatusListener;
 import com.igniva.indiecore.controller.OnImageDownloadClick;
 import com.igniva.indiecore.controller.ResponseHandlerListener;
 import com.igniva.indiecore.controller.WebNotificationManager;
@@ -54,7 +56,9 @@ import org.json.JSONObject;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 
 import id.zelory.compressor.Compressor;
 
@@ -64,7 +68,7 @@ import static com.igniva.indiecore.ui.fragments.MessagesFragment.isMessageFragme
 /**
  * Created by igniva-andriod-05 on 20/9/16.
  */
-public class ChatActivity extends BaseActivity {
+public class ChatActivity extends BaseActivity implements OnChatMsgReceiveListener, OnChatMsgStatusListener {
 
     Toolbar mToolbar;
     public static final String CHAT_ACTIVITY = "CHAT_ACTIVITY";
@@ -106,6 +110,7 @@ public class ChatActivity extends BaseActivity {
     private String mUserName = "";
     private String mMessageId = "";
     private String mDownloadedImagePath = null;
+    private String myImage;
     private int mTotalMessages = 0;
     private int mIndex = 0;
     ChatPojo mChatPojo;
@@ -122,6 +127,8 @@ public class ChatActivity extends BaseActivity {
         setUpLayout();
         //To Make or Get Room Meteor
         makeOrGetRoomIdMeteor();
+        mMeteorCommonClass.setOnChatMsgReceiveListener(this);
+        mMeteorCommonClass.setOnChatMsgStatusListener(this);
     }
 
 
@@ -136,7 +143,8 @@ public class ChatActivity extends BaseActivity {
             mToolbar.setNavigationOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    finish();
+                    //  finish();
+                    onBackPressed();
                 }
             });
             TextView next = (TextView) mToolbar.findViewById(R.id.toolbar_next);
@@ -156,7 +164,6 @@ public class ChatActivity extends BaseActivity {
                 public void onSuccess(String result) {
                     Log.d(LOG_TAG, result);
                     try {
-
                         mRoomId = result;
                         if (messageList.size() == 0) {
                             loadMessages(mRoomId);
@@ -192,6 +199,7 @@ public class ChatActivity extends BaseActivity {
             mLlOpenMedia = (LinearLayout) findViewById(R.id.ll_add_media);
             mRvChatMessages = (RecyclerView) findViewById(R.id.rv_chat_messages);
             mLlManager = new LinearLayoutManager(this);
+            mLlManager.setStackFromEnd(true);
             mRvChatMessages.setLayoutManager(mLlManager);
             if (mRoomId != null) {
                 loadMessages(mRoomId);
@@ -219,7 +227,7 @@ public class ChatActivity extends BaseActivity {
                             return;
                         } else {
 
-                            String messageId = mRoomId + Utility.randomString();
+                            final String messageId = mRoomId + Utility.randomString();
 
                             //send Msg
                             Object[] object = new Object[]{TOKEN, messageId, mRoomId, USER_ID_1, TEXT, mEtMessageText.getText().toString(), "", ""};
@@ -227,6 +235,21 @@ public class ChatActivity extends BaseActivity {
                                 @Override
                                 public void onSuccess(String result) {
                                     mMessageId = result;
+                                    long timeInMillis = System.currentTimeMillis();
+                                    Calendar cal1 = Calendar.getInstance();
+                                    cal1.setTimeInMillis(timeInMillis);
+                                    SimpleDateFormat dateFormat = new SimpleDateFormat("hh:mm a");
+                                    String date = dateFormat.format(cal1.getTime());
+                                    ChatPojo chatPojo = new ChatPojo();
+                                    chatPojo.setMessageId(messageId);
+                                    chatPojo.setText(mEtMessageText.getText().toString().trim());
+                                    chatPojo.setType("Text");
+                                    chatPojo.setDate_updated(date);
+                                    chatPojo.setRoomId(mRoomId);
+                                    chatPojo.setRelation("self");
+                                    chatPojo.setIcon(myImage);
+                                    chatPojo.setStatus(SENT);
+                                    addNewMsgToList(chatPojo);
                                     Log.d(LOG_TAG, result);
                                 }
 
@@ -246,6 +269,7 @@ public class ChatActivity extends BaseActivity {
 
             USER_ID_1 = PreferenceHandler.readString(this, PreferenceHandler.PREF_KEY_USER_ID, "");
             TOKEN = PreferenceHandler.readString(this, PreferenceHandler.PREF_KEY_USER_TOKEN, "");
+            myImage = PreferenceHandler.readString(this, PreferenceHandler.PROFILE_PIC_URL, "");
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -363,14 +387,31 @@ public class ChatActivity extends BaseActivity {
                     String mMediaPostId = obj.optString("fileId");
                     try {
                         if (!mMediaPostId.isEmpty()) {
-                            String messageId = mRoomId + Utility.randomString();
+                            final String messageId = mRoomId + Utility.randomString();
                             //send Msg
                             Object[] object = new Object[]{TOKEN, messageId, mRoomId, USER_ID_1, PHOTO, "", mMediaPostId, base64Encoded};
                             mMeteorCommonClass.sendMsgMeteor(object, new ChatResultListener() {
                                 @Override
                                 public void onSuccess(String result) {
                                     mMessageId = result;
-                                    Log.d(LOG_TAG, result);
+                                    long timeInMillis = System.currentTimeMillis();
+                                    Calendar cal1 = Calendar.getInstance();
+                                    cal1.setTimeInMillis(timeInMillis);
+                                    SimpleDateFormat dateFormat = new SimpleDateFormat("hh:mm a");
+                                    String date = dateFormat.format(cal1.getTime());
+                                    ChatPojo ChatPojo = new ChatPojo();
+                                    ChatPojo.setIcon(myImage);
+                                    ChatPojo.setUserId(USER_ID_1);
+                                    ChatPojo.setText("");
+                                    ChatPojo.setThumb(base64Encoded);
+                                    ChatPojo.setRoomId(mRoomId);
+                                    ChatPojo.setMessageId(messageId);
+                                    ChatPojo.setRelation("self");
+                                    ChatPojo.setDate_updated(date);
+                                    ChatPojo.setStatus(SENT);
+                                    ChatPojo.setImagePath(ChatActivity.imagePath);
+                                    ChatPojo.setType(PHOTO);
+                                    addNewMsgToList(ChatPojo);
                                 }
 
                                 @Override
@@ -562,7 +603,6 @@ public class ChatActivity extends BaseActivity {
             isInChatActivity = true;
             isMessageFragmenVisible = false;
             mCurrentRoomId = mRoomId;
-            ((MyApplication) getApplication()).setCurrentContext(this);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -684,7 +724,7 @@ public class ChatActivity extends BaseActivity {
     }
 
     @Override
-    protected void onDestroy() {
+    public void onBackPressed() {
         mCurrentRoomId = null;
         if (mIndex != 44) {
             isMessageFragmenVisible = true;
@@ -692,7 +732,18 @@ public class ChatActivity extends BaseActivity {
             setResult(RESULT_OK, intent);
         }
         isInChatActivity = false;
-        super.onDestroy();
+        super.onBackPressed();
+    }
+
+    @Override
+    public void onChatMsgRecieved(ChatPojo chatPojo) {
+        addNewMsgToList(chatPojo);
+    }
+
+
+    @Override
+    public void onChatMsgStatus(String messageId, String methodName) {
+        updateMessageStatus(messageId, methodName);
     }
 
 }

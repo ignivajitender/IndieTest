@@ -27,7 +27,7 @@
             android:layout_height="wrap_content"
             android:layout_centerInParent="true"
             android:layout_toRightOf="@+id/iv_otheruser_chat"
-            android:background="@drawable/ic_chat_box_left"
+            android:background="@drawable/chat_bubble_lt"
             android:orientation="vertical"
             android:paddingLeft="10dp"
             android:paddingRight="10dp">
@@ -141,6 +141,7 @@
                 android:id="@+id/ll_this"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginLeft="10dp"
                 android:background="@drawable/ic_chat_box_right"
                 android:orientation="vertical">
 
