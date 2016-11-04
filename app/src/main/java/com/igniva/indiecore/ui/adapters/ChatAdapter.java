@@ -180,13 +180,9 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.RecyclerViewHo
                             Is_downloaded = false;
                         } else {
                             holder.mIvDownloadOther.setVisibility(View.GONE);
-//                            holder.mMediaOther.setEnabled(false);
                             Is_downloaded = true;
                         }
                     }
-//                   if(Is_Clicked=true){
-//                       holder.mIvDownloadOther.setVisibility(View.GONE);
-//                   }
 
                 }
 
