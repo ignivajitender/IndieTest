@@ -123,8 +123,9 @@
                                 android:layout_height="wrap_content"
                                 android:layout_gravity="center_vertical"
                                 android:layout_weight="1"
+                                android:gravity="center"
                                 android:drawableLeft="@drawable/upload_icon"
-                                android:drawablePadding="10dp"
+                                android:drawablePadding="2dp"
                                 android:text="@string/upload" />
 
                             <TextView
@@ -133,10 +134,21 @@
                                 android:layout_height="wrap_content"
                                 android:layout_gravity="center_vertical"
                                 android:layout_weight="1"
+                                android:gravity="center"
                                 android:drawableLeft="@drawable/camera_icon"
-                                android:drawablePadding="10dp"
+                                android:drawablePadding="1dp"
                                 android:text="Camera" />
 
+                            <TextView
+                                android:id="@+id/tv_video"
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_gravity="center_vertical"
+                                android:layout_weight="1"
+                                android:gravity="center"
+                                android:drawableLeft="@drawable/video"
+                                android:drawablePadding="1dp"
+                                android:text="Video" />
                         </LinearLayout>
 
 

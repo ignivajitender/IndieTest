@@ -79,8 +79,11 @@ public class ChatActivity extends BaseActivity implements OnChatMsgReceiveListen
     public static final String TEXT = "Text";
     public static final int SELECT_FILE = 500;
     public static final int REQUEST_CAMERA = 600;
-    final CharSequence[] items = {"Take Photo", "Choose from Gallery",
+    private static final int CAPTURE_VIDEO_ACTIVITY_REQUEST_CODE = 300;
+    final CharSequence[] items = {"Take Photo", "Choose from Gallery","Record Video",
             "Cancel"};
+    private static final int MEDIA_TYPE_VIDEO = 2;
+    private Uri fileUri;
     public static final String LOG_TAG = "ChatActivity";
     private BadgesDb dbBadges;
     public static boolean isInChatActivity;
@@ -304,16 +307,42 @@ public class ChatActivity extends BaseActivity implements OnChatMsgReceiveListen
         }
     }
 
+    public void recordVideo() {
 
-    @Override
+        try {
+            Intent intent = new Intent(MediaStore.ACTION_VIDEO_CAPTURE);
+            fileUri = Utility.getOutputMediaFileUri(MEDIA_TYPE_VIDEO);
+            intent.putExtra(MediaStore.EXTRA_OUTPUT, fileUri);
+            intent.putExtra(MediaStore.EXTRA_VIDEO_QUALITY, 1);
+            startActivityForResult(intent, CAPTURE_VIDEO_ACTIVITY_REQUEST_CODE);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+
+
+            @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (resultCode == Activity.RESULT_OK) {
-            if (requestCode == SELECT_FILE)
-                onSelectFromGalleryResult(data);
-            else if (requestCode == REQUEST_CAMERA)
-                onCaptureImageResult(data);
-        }
+                try {
+                    if (resultCode == Activity.RESULT_OK) {
+                        if (requestCode == SELECT_FILE)
+                            onSelectFromGalleryResult(data);
+                        else if (requestCode == REQUEST_CAMERA)
+                            onCaptureImageResult(data);
+                        else if(requestCode ==CAPTURE_VIDEO_ACTIVITY_REQUEST_CODE)
+                            onVideoRecord(data);
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+
+    private void onVideoRecord(Intent data) {
+
+        Utility.showToastMessageShort(this,""+data);
+        Log.e("VideoPathChatActivity",""+data.getData());
     }
 
     private void onCaptureImageResult(Intent data) {
@@ -706,6 +735,8 @@ public class ChatActivity extends BaseActivity implements OnChatMsgReceiveListen
                     cameraEvent();
                 } else if (items[item].equals("Choose from Gallery")) {
                     galleryEvent();
+                } else if (items[item].equals("Record Video")) {
+                  recordVideo();
                 } else if (items[item].equals("Cancel")) {
                     dialog.dismiss();
                 }

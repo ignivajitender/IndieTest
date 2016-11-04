@@ -107,6 +107,7 @@ public static  final String MEDIA_PATH="media_path";
     public static  final String ROOM_ID="roomId";
     public static  final String POST_TYPE="postType";
     public static  final String MEDIA="media";
+    public static  final String THUMBNAIL="thumb";
     public static  final String TEXT="text";
     public static  final String POSTID="postId";
     public static  final String POST_ID="post_id";

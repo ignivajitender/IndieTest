@@ -100,14 +100,14 @@ public class BoardActivity extends BaseActivity implements View.OnClickListener 
             try {
                 mBusinessId = getIntent().getStringExtra(Constants.BUSINESS_ID);
                 mBusinessName = getIntent().getStringExtra(Constants.BUSINESS_NAME);
-                mTvTitle.setText(mBusinessName);
-
             } catch (Exception e) {
                 e.printStackTrace();
             }
 
             mToolbar = (Toolbar) findViewById(R.id.toolbar_with_icon);
             mTvTitle = (TextView) mToolbar.findViewById(R.id.toolbar_title_img);
+            mTvTitle.setText(mBusinessName);
+
 
             ImageView mTvNext = (ImageView) mToolbar.findViewById(R.id.toolbar_img);
             mTvNext.setImageResource(R.drawable.share_location_icon);

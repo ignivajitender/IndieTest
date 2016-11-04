@@ -15,6 +15,8 @@
     <permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" android:protectionLevel="signature"/>
     <uses-permission android:name="android.permission.READ_CONTACTS"/>
     <uses-permission android:name="android.permission.WRITE_CONTACTS"/>
+    <!-- For android.media.audiofx.Visualizer -->
+    <uses-permission android:name="android.permission.RECORD_AUDIO" />
 
     <!--MAP PERMISSIONS-->
     <permission
@@ -202,7 +204,7 @@
             android:theme="@style/AppTheme"
             android:name=".ui.activities.ChatActivity"
             android:screenOrientation="portrait"
-            android:windowSoftInputMode="adjustPan"
+            android:windowSoftInputMode="adjustResize"
             android:label="@string/chat"/>
 
 

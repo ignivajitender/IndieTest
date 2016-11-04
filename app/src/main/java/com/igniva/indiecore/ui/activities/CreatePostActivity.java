@@ -4,13 +4,13 @@ import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
+import android.content.res.Resources;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.media.ThumbnailUtils;
 import android.net.Uri;
-import android.os.AsyncTask;
 import android.os.Bundle;
-import android.os.Environment;
 import android.os.ParcelFileDescriptor;
 import android.provider.MediaStore;
 import android.support.annotation.Nullable;
@@ -18,8 +18,8 @@ import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.TextClock;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
@@ -39,14 +39,14 @@ import org.apache.http.entity.mime.HttpMultipartMode;
 import org.apache.http.entity.mime.MultipartEntity;
 import org.apache.http.entity.mime.content.ByteArrayBody;
 import org.apache.http.entity.mime.content.ContentBody;
+import org.apache.http.entity.mime.content.FileBody;
+import org.apache.http.entity.mime.content.StringBody;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileDescriptor;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.IOException;
 
 import id.zelory.compressor.Compressor;
@@ -55,21 +55,26 @@ import id.zelory.compressor.Compressor;
 /**
  * Created by igniva-andriod-05 on 18/7/16.
  */
-public class CreatePostActivity extends BaseActivity implements AsyncResult,View.OnClickListener {
+public class CreatePostActivity extends BaseActivity implements AsyncResult, View.OnClickListener {
 
-    private TextView mCamera, mGallary, mUserName;
+    private static final int MEDIA_TYPE_VIDEO = 2;
+    private TextView mCamera, mGallery, mUserName, mVideoRecord;
     private EditText mPostText;
-    private String mMediaPostId="";
+    private String mMediaPostId = "";
     private String mContextName;
     private ImageView mIvMediaPost, mUserImage;
     public static final int REQUEST_CAMERA = 100;
     public static final int SELECT_FILE = 200;
+    private static final int CAPTURE_VIDEO_ACTIVITY_REQUEST_CODE = 300;
+
     private Toolbar mToolbar;
     private String mImagePath;
-    private final  String BUSINESS = "business";
-    private final  String PROFILE = "profile";
-    private final  String TIMELINE = "timeline";
-    String mBusinessId="";
+    private final String BUSINESS = "business";
+    private final String PROFILE = "profile";
+    private final String TIMELINE = "timeline";
+    private Uri fileUri;
+    String mBusinessId = "";
+    private Bitmap mVideoThumbnail = null;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -85,9 +90,9 @@ public class CreatePostActivity extends BaseActivity implements AsyncResult,View
 
         try {
             Bundle bundle = getIntent().getExtras();
-            if(bundle!=null) {
+            if (bundle != null) {
                 mBusinessId = bundle.getString(Constants.BUSINESS_ID);
-                mContextName=bundle.getString(Constants.CONTEXT_NAME);
+                mContextName = bundle.getString(Constants.CONTEXT_NAME);
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -97,8 +102,11 @@ public class CreatePostActivity extends BaseActivity implements AsyncResult,View
 
         mCamera = (TextView) findViewById(R.id.tv_camera);
         mCamera.setOnClickListener(this);
-        mGallary = (TextView) findViewById(R.id.tv_upload);
-        mGallary.setOnClickListener(this);
+        mGallery = (TextView) findViewById(R.id.tv_upload);
+        mGallery.setOnClickListener(this);
+        mVideoRecord = (TextView) findViewById(R.id.tv_video);
+        mVideoRecord.setOnClickListener(this);
+
         mIvMediaPost = (ImageView) findViewById(R.id.iv_media_post);
         mPostText = (EditText) findViewById(R.id.et_write_post);
 
@@ -136,6 +144,8 @@ public class CreatePostActivity extends BaseActivity implements AsyncResult,View
             case R.id.tv_upload:
                 galleryEvent();
                 break;
+            case R.id.tv_video:
+                recordVideo();
             default:
                 break;
         }
@@ -163,7 +173,7 @@ public class CreatePostActivity extends BaseActivity implements AsyncResult,View
                 @Override
                 public void onClick(View v) {
 
-                        createPost();
+                    createPost();
                 }
             });
 
@@ -175,8 +185,10 @@ public class CreatePostActivity extends BaseActivity implements AsyncResult,View
 
     /**
      * payload to create a post
-     * @param;  token, userId, roomId, postType, media_url, text
+     * Room id is business room id in case of business and user id in case of time line
+     *
      * @return
+     * @param; token, userId, roomId, postType, media_url, text
      */
     public String createPayload() {
         JSONObject payload = null;
@@ -185,18 +197,21 @@ public class CreatePostActivity extends BaseActivity implements AsyncResult,View
             payload.put(Constants.TOKEN, PreferenceHandler.readString(this, PreferenceHandler.PREF_KEY_USER_TOKEN, ""));
             payload.put(Constants.USERID, PreferenceHandler.readString(this, PreferenceHandler.PREF_KEY_USER_ID, ""));
             payload.put(Constants.ROOM_ID, mBusinessId);
-            if(mContextName.equalsIgnoreCase(Constants.NEWS_FEED_ACTIVITY)){
+            if (mContextName.equalsIgnoreCase(Constants.NEWS_FEED_ACTIVITY)) {
                 payload.put(Constants.POST_TYPE, TIMELINE);
-            }else if(mContextName.equalsIgnoreCase(Constants.BOARD_ACTIVITY)) {
+            } else if (mContextName.equalsIgnoreCase(Constants.BOARD_ACTIVITY)) {
                 payload.put(Constants.POST_TYPE, BUSINESS);
             }
 
             if (!mMediaPostId.isEmpty()) {
                 payload.put(Constants.MEDIA, mMediaPostId);
+                if (mVideoThumbnail != null) {
+                    payload.put(Constants.THUMBNAIL, mVideoThumbnail);
+                }
             }
 
             if (!mPostText.getText().toString().isEmpty()) {
-                payload.put(Constants.TEXT,mPostText.getText().toString());
+                payload.put(Constants.TEXT, mPostText.getText().toString());
             }
 
         } catch (Exception e) {
@@ -208,7 +223,6 @@ public class CreatePostActivity extends BaseActivity implements AsyncResult,View
 
     /**
      * create post
-     *
      */
     public void createPost() {
         try {
@@ -220,11 +234,11 @@ public class CreatePostActivity extends BaseActivity implements AsyncResult,View
                     WebServiceClient.create_a_post(this, payload, responseHandler);
 
                 }
-            }else {
+            } else {
 
-                Utility.showAlertDialog(getResources().getString(R.string.add_post),CreatePostActivity.this,null);
+                Utility.showAlertDialog(getResources().getString(R.string.add_post), CreatePostActivity.this, null);
             }
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
@@ -236,18 +250,18 @@ public class CreatePostActivity extends BaseActivity implements AsyncResult,View
 
             WebNotificationManager.unRegisterResponseListener(responseHandler);
             if (error == null) {
-                if(result.getSuccess().equalsIgnoreCase("true")){
+                if (result.getSuccess().equalsIgnoreCase("true")) {
 
-                    Utility.showToastMessageLong(CreatePostActivity.this,"Posted successfully");
+                    Utility.showToastMessageLong(CreatePostActivity.this, "Posted successfully");
                     finish();
 
-                }else {
-                    Utility.showToastMessageLong(CreatePostActivity.this,getResources().getString(R.string.some_unknown_error));
+                } else {
+                    Utility.showToastMessageLong(CreatePostActivity.this, getResources().getString(R.string.some_unknown_error));
 
                 }
 
-            }else {
-                Utility.showToastMessageLong(CreatePostActivity.this,getResources().getString(R.string.some_unknown_error));
+            } else {
+                Utility.showToastMessageLong(CreatePostActivity.this, getResources().getString(R.string.some_unknown_error));
             }
             // Always close the progressdialog
             if (mProgressDialog != null && mProgressDialog.isShowing()) {
@@ -259,9 +273,8 @@ public class CreatePostActivity extends BaseActivity implements AsyncResult,View
     };
 
     /**
-    * pic media from gallery
-    *
-    * */
+     * pic media from gallery
+     */
     public void galleryEvent() {
         try {
             Intent intent = new Intent();
@@ -273,9 +286,22 @@ public class CreatePostActivity extends BaseActivity implements AsyncResult,View
         }
     }
 
+    public void recordVideo() {
+
+        try {
+            Intent intent = new Intent(MediaStore.ACTION_VIDEO_CAPTURE);
+            fileUri = Utility.getOutputMediaFileUri(MEDIA_TYPE_VIDEO);
+            intent.putExtra(MediaStore.EXTRA_OUTPUT, fileUri);
+            intent.putExtra(MediaStore.EXTRA_VIDEO_QUALITY, 1);
+            startActivityForResult(intent, CAPTURE_VIDEO_ACTIVITY_REQUEST_CODE);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
     /**
-    * click image from camera
-    * */
+     * click image from camera
+     */
     public void cameraEvent() {
         try {
             Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
@@ -288,11 +314,53 @@ public class CreatePostActivity extends BaseActivity implements AsyncResult,View
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (resultCode == Activity.RESULT_OK) {
-            if (requestCode == SELECT_FILE)
-                onSelectFromGalleryResult(data);
-            else if (requestCode == REQUEST_CAMERA)
-                onCaptureImageResult(data);
+        try {
+            if (resultCode == Activity.RESULT_OK) {
+                if (requestCode == SELECT_FILE)
+                    onSelectFromGalleryResult(data);
+                else if (requestCode == REQUEST_CAMERA)
+                    onCaptureImageResult(data);
+                else if (requestCode == CAPTURE_VIDEO_ACTIVITY_REQUEST_CODE)
+                    onVideoRecord(data);
+            } else {
+                Utility.showToastMessageShort(this, getResources().getString(R.string.operation_abort));
+            }
+        } catch (Resources.NotFoundException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void onVideoRecord(Intent data) {
+        try {
+            Uri uri = data.getData();
+            uploadVideoToServer(uri);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    /**
+     * upload video to server
+     */
+    private void uploadVideoToServer(Uri uri) {
+        try {
+            String video_path = Utility.getRealPathFromURI(this, uri);
+            FileBody file_body_Video = new FileBody(new File(video_path));
+            // Video captured and saved to fileUri specified in the Intent
+
+            mVideoThumbnail = ThumbnailUtils.createVideoThumbnail(video_path, MediaStore.Video.Thumbnails.MINI_KIND);
+            mIvMediaPost.setImageBitmap(mVideoThumbnail);
+            mIvMediaPost.setVisibility(View.VISIBLE);
+            MultipartEntity reqEntity = new MultipartEntity(HttpMultipartMode.BROWSER_COMPATIBLE);
+            reqEntity.addPart("fileToUpload", file_body_Video);
+            if (Utility.isInternetConnection(CreatePostActivity.this)) {
+                new WebServiceClientUploadImage(CreatePostActivity.this, this, WebServiceClient.HTTP_UPLOAD_IMAGE, reqEntity, 3, Constants.UPLOAD).execute();
+            } else {
+                // open dialog here
+                new Utility().showNoInternetDialog((Activity) CreatePostActivity.this);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 
@@ -313,46 +381,35 @@ public class CreatePostActivity extends BaseActivity implements AsyncResult,View
     }
 
     /**
-    * get image bitmap from data
-    * */
-    public Bitmap getImage(Intent data){
+     * get image bitmap from data
+     */
+    public Bitmap getImage(Intent data) {
         Uri imgUri;
         Bitmap bitmap = null;
         File imageFile;
         try {
-            Uri capturedImageUri=data.getData();
-            if(capturedImageUri!=null) {
+            Uri capturedImageUri = data.getData();
+            if (capturedImageUri != null) {
                 bitmap = Utility.getBitmapFromUri(this, data.getData());
-            }else {
-                bitmap= (Bitmap) data.getExtras().get("data");
+            } else {
+                bitmap = (Bitmap) data.getExtras().get("data");
             }
         } catch (IOException e) {
             e.printStackTrace();
         }
         try {
 //            bitmap=getBitmapFromUri(data.getData());
-            imgUri=getImageUri(this,bitmap);
-            mImagePath=getPath(imgUri);
-            imageFile  = new File(mImagePath);
-            bitmap=Compressor.getDefault(this).compressToBitmap(imageFile);
+            imgUri = getImageUri(this, bitmap);
+            mImagePath = getPath(imgUri);
+            imageFile = new File(mImagePath);
+            bitmap = Compressor.getDefault(this).compressToBitmap(imageFile);
 
         } catch (Exception e) {
             e.printStackTrace();
         }
-        return  bitmap ;
+        return bitmap;
 
     }
-
-
-    private Bitmap getBitmapFromUri(Uri uri) throws IOException {
-        ParcelFileDescriptor parcelFileDescriptor =
-                getContentResolver().openFileDescriptor(uri, "r");
-        FileDescriptor fileDescriptor = parcelFileDescriptor.getFileDescriptor();
-        Bitmap image = BitmapFactory.decodeFileDescriptor(fileDescriptor);
-        parcelFileDescriptor.close();
-        return image;
-    }
-
 
     /**
      * get path from uri
@@ -360,14 +417,13 @@ public class CreatePostActivity extends BaseActivity implements AsyncResult,View
      * @param uri
      * @return
      */
-    public String getPath(Uri uri)
-    {
-        String[] projection = { MediaStore.Images.Media.DATA };
+    public String getPath(Uri uri) {
+        String[] projection = {MediaStore.Images.Media.DATA};
         Cursor cursor = getContentResolver().query(uri, projection, null, null, null);
         if (cursor == null) return null;
-        int column_index =cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
+        int column_index = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
         cursor.moveToFirst();
-        String s=cursor.getString(column_index);
+        String s = cursor.getString(column_index);
         cursor.close();
         return s;
     }
@@ -404,7 +460,7 @@ public class CreatePostActivity extends BaseActivity implements AsyncResult,View
             reqEntity.addPart("fileToUpload", contentPart);
 
             if (Utility.isInternetConnection(CreatePostActivity.this)) {
-                new WebServiceClientUploadImage(CreatePostActivity.this, this, WebServiceClient.HTTP_UPLOAD_IMAGE, reqEntity, 3,Constants.UPLOAD).execute();
+                new WebServiceClientUploadImage(CreatePostActivity.this, this, WebServiceClient.HTTP_UPLOAD_IMAGE, reqEntity, 3, Constants.UPLOAD).execute();
             } else {
                 // open dialog here
                 new Utility().showNoInternetDialog((Activity) CreatePostActivity.this);
@@ -438,13 +494,6 @@ public class CreatePostActivity extends BaseActivity implements AsyncResult,View
         String path = MediaStore.Images.Media.insertImage(inContext.getContentResolver(), inImage, "Title", null);
         return Uri.parse(path);
     }
-//
-//    public String getRealPathFromURI(Uri uri) {
-//        Cursor cursor = getContentResolver().query(uri, null, null, null, null);
-//        cursor.moveToFirst();
-//        int idx = cursor.getColumnIndex(MediaStore.Images.ImageColumns.DATA);
-//        return cursor.getString(idx);
-//    }
 
 
 }

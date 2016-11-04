@@ -1,6 +1,7 @@
 package com.igniva.indiecore.utils;
 
 import java.io.ByteArrayOutputStream;
+import java.io.File;
 import java.io.FileDescriptor;
 import java.io.IOException;
 import java.net.InetAddress;
@@ -52,8 +53,7 @@ import com.igniva.indiecore.ui.activities.InviteContactActivity;
 public class Utility {
 
 
-
-
+	private static final int MEDIA_TYPE_VIDEO = 2;
 
 	public static void checkGPSStatus(final Context context) {
 		try {
@@ -418,9 +418,55 @@ public class Utility {
 		return s;
 	}
 
+
+
+	public static String getRealPathFromURI(Context context,Uri contentUri)
+	{
+		try
+		{
+			String[] proj = {MediaStore.Video.Media.DATA};
+			Cursor cursor = context.getContentResolver().query(contentUri, proj, null, null, null);
+			int column_index = cursor.getColumnIndexOrThrow(MediaStore.Video.Media.DATA);
+			cursor.moveToFirst();
+			return cursor.getString(column_index);
+		}
+		catch (Exception e)
+		{
+			return contentUri.getPath();
+		}
+	}
+
 	public static  String randomString() {
 		Long tsLong = System.currentTimeMillis() / 1000;
 		return tsLong.toString();
 	}
+
+	/** Create a file Uri for saving an image or video */
+	public static Uri getOutputMediaFileUri(int type){
+
+		return Uri.fromFile(getOutputMediaFile(type));
+	}
+	/** Create a File for saving an image or video */
+	public static File getOutputMediaFile(int type){
+		File mediaStorageDir = new File(Constants.direct);
+		if (! mediaStorageDir.exists()){
+
+			if (! mediaStorageDir.mkdirs()){
+				return null;
+			}
+		}
+		File mediaFile;
+
+		if(type == MEDIA_TYPE_VIDEO) {
+			mediaFile = new File(mediaStorageDir.getPath() + File.separator +
+					"VID_"+ Utility.randomString()+".mp4");
+
+		} else {
+			return null;
+		}
+
+		return mediaFile;
+	}
+
 
 }
