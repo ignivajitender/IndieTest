@@ -14,7 +14,6 @@ import android.widget.TextView;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.igniva.indiecore.R;
-import com.igniva.indiecore.controller.OnContactCardClickListner;
 import com.igniva.indiecore.controller.WebServiceClient;
 import com.igniva.indiecore.model.ChatListPojo;
 import com.igniva.indiecore.ui.activities.BoardActivity;
@@ -72,6 +71,8 @@ public class ChatListAdapter extends RecyclerView.Adapter<ChatListAdapter.Recycl
             if (mChatRoomList.get(position).getLast_message_type() != null) {
                 if (mChatRoomList.get(position).getLast_message_type().equalsIgnoreCase("text")) {
                     holder.mTv_lastMessage.setText(mChatRoomList.get(position).getLast_message());
+                } else if (mChatRoomList.get(position).getLast_message_type().equalsIgnoreCase("Video")) {
+                    holder.mTv_lastMessage.setText("VIDEO");
                 } else {
                     holder.mTv_lastMessage.setText("IMAGE");
                 }
@@ -79,7 +80,7 @@ public class ChatListAdapter extends RecyclerView.Adapter<ChatListAdapter.Recycl
             if (mChatRoomList.get(position).getMembers() != null) {
                 holder.mLlMembers.setVisibility(View.VISIBLE);
                 holder.mMemberCount.setText(mChatRoomList.get(position).getMembers());
-            }else {
+            } else {
                 holder.mLlMembers.setVisibility(View.GONE);
 
             }
@@ -128,7 +129,7 @@ public class ChatListAdapter extends RecyclerView.Adapter<ChatListAdapter.Recycl
             mIvUserImage = (ImageView) itemView.findViewById(R.id.iv_user_chatroom);
             mChatRoom = (CardView) itemView.findViewById(R.id.card_view_chat_rooms);
             mMemberCount = (TextView) itemView.findViewById(R.id.tv_member_count);
-            mLlMembers=(LinearLayout) itemView.findViewById(R.id.ll_members);
+            mLlMembers = (LinearLayout) itemView.findViewById(R.id.ll_members);
         }
 
         @Override

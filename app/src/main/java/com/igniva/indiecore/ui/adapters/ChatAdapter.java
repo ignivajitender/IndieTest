@@ -21,8 +21,11 @@ import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.igniva.indiecore.R;
 import com.igniva.indiecore.controller.OnImageDownloadClick;
 import com.igniva.indiecore.controller.WebServiceClient;
+import com.igniva.indiecore.controller.services.DownloadVideoService;
 import com.igniva.indiecore.model.ChatPojo;
+import com.igniva.indiecore.ui.activities.ChatActivity;
 import com.igniva.indiecore.ui.activities.ViewMediaActivity;
+import com.igniva.indiecore.ui.activities.ViewPlayerActivity;
 import com.igniva.indiecore.utils.Constants;
 
 import java.util.ArrayList;
@@ -38,27 +41,26 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.RecyclerViewHo
     private String mContextName;
     private String mMessageId;
     private String STATUS = "status";
-    private String MESSAGE="Message";
+    private String MESSAGE = "Message";
     private String mStatus;
-    private boolean Is_downloaded =false;
-    private boolean Is_Clicked =false;
+    private boolean Is_downloaded = false;
+    private boolean Is_Clicked = false;
     OnImageDownloadClick mOnImageDownload;
-    private int NOT_SENT=0;
-    private int SENT=1;
-    private int DELIVERED=2;
-    private int READ=3;
+    private int NOT_SENT = 0;
+    private int SENT = 1;
+    private int DELIVERED = 2;
+    private int READ = 3;
     private int mStatusValue;
 
 
-
-    public ChatAdapter(Context context, ArrayList<ChatPojo> chatList, String contextName,String messageID,OnImageDownloadClick onImageDownloadClick, String status,int statusValue) {
+    public ChatAdapter(Context context, ArrayList<ChatPojo> chatList, String contextName, String messageID, OnImageDownloadClick onImageDownloadClick, String status, int statusValue) {
         this.context = context;
         this.mChatList = chatList;
         this.mContextName = contextName;
-        this.mMessageId=messageID;
-        this.mOnImageDownload=onImageDownloadClick;
+        this.mMessageId = messageID;
+        this.mOnImageDownload = onImageDownloadClick;
         this.mStatus = status;
-        this.mStatusValue=statusValue;
+        this.mStatusValue = statusValue;
 
     }
 
@@ -79,119 +81,151 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.RecyclerViewHo
     public void onBindViewHolder(final RecyclerViewHolders holder, final int position) {
         try {
             String time;
-                if (mChatList.get(position).getRelation().equalsIgnoreCase("self")) {
-                    holder.mRlThis.setVisibility(View.VISIBLE);
-                    holder.mRlOther.setVisibility(View.GONE);
-                    holder.mTvThisUserName.setVisibility(View.GONE);
-                    if (mChatList.get(position).getIcon() != null && !mChatList.get(position).getIcon().isEmpty()) {
-                        Glide.with(context).load(WebServiceClient.HTTP_STAGING + mChatList.get(position).getIcon())
-                                .thumbnail(1f)
-                                .crossFade()
-                                .diskCacheStrategy(DiskCacheStrategy.ALL)
-                                .into(holder.mIvThisUserImage);
+            if (mChatList.get(position).getRelation().equalsIgnoreCase("self")) {
+                holder.mRlThis.setVisibility(View.VISIBLE);
+                holder.mRlOther.setVisibility(View.GONE);
+                holder.mTvThisUserName.setVisibility(View.GONE);
+                if (mChatList.get(position).getIcon() != null && !mChatList.get(position).getIcon().isEmpty()) {
+                    Glide.with(context).load(WebServiceClient.HTTP_STAGING + mChatList.get(position).getIcon())
+                            .thumbnail(1f)
+                            .crossFade()
+                            .diskCacheStrategy(DiskCacheStrategy.ALL)
+                            .into(holder.mIvThisUserImage);
+                } else {
+                    holder.mIvThisUserImage.setImageResource(R.drawable.default_user);
+                }
+
+
+                if (!mChatList.get(position).getText().isEmpty()) {
+                    //For text chat
+                    holder.mTv_LastMessage_ThisUser.setVisibility(View.VISIBLE);
+                    holder.mMediaThis.setVisibility(View.GONE);
+                    holder.mLlThis.setBackgroundResource(R.drawable.chat_bubble_rt);
+                    holder.mTv_LastMessage_ThisUser.setText(mChatList.get(position).getText());
+                } else {
+                    holder.mTv_LastMessage_ThisUser.setVisibility(View.GONE);
+                    holder.mMediaThis.setVisibility(View.VISIBLE);
+                    if (!mChatList.get(position).getThumb().isEmpty()) {
+
+                        holder.mLlThis.setBackgroundResource(0);
+                        holder.mLlThis.setBackgroundColor(Color.parseColor("#FFFFFF"));
+                        holder.mMediaThis.setImageBitmap(decodeBase64(mChatList.get(position).getThumb()));
+
+                       /* if (mChatList.get(position).getType().equalsIgnoreCase("video")) {
+                            //For video chat
+                        } else {
+                            //For image chat
+                        }*/
                     } else {
-                        holder.mIvThisUserImage.setImageResource(R.drawable.default_user);
-                    }
-                    if (!mChatList.get(position).getText().isEmpty()) {
-                        holder.mTv_LastMessage_ThisUser.setVisibility(View.VISIBLE);
-                        holder.mMediaThis.setVisibility(View.GONE);
                         holder.mLlThis.setBackgroundResource(R.drawable.chat_bubble_rt);
-                        holder.mTv_LastMessage_ThisUser.setText(mChatList.get(position).getText());
-                    } else {
-                        holder.mTv_LastMessage_ThisUser.setVisibility(View.GONE);
-                        holder.mMediaThis.setVisibility(View.VISIBLE);
-                        if (!mChatList.get(position).getThumb().isEmpty()) {
-                            holder.mLlThis.setBackgroundResource(0);
-                            holder.mLlThis.setBackgroundColor(Color.parseColor("#FFFFFF"));
-                            holder.mMediaThis.setImageBitmap(decodeBase64(mChatList.get(position).getThumb()));
-                        } else {
-                            holder.mLlThis.setBackgroundResource(R.drawable.chat_bubble_rt);
-                        }
-                    }
-                    time = mChatList.get(position).getDate_updated();
-                    if (time != null && time.length() > 0 && time.contains("T")) {
-                        holder.mThisUserLastTextTime.setText(time.substring(time.indexOf("T") + 1, time.indexOf(".") - 3));
-                    } else {
-                        holder.mThisUserLastTextTime.setText(time);
-                    }
-
-                    if (mChatList.get(position).getStatus() == READ) {
-                        holder.mIvMessageStatus.setImageResource(R.drawable.ic_double_seen_tick);
-                    } else if (mChatList.get(position).getStatus() == DELIVERED) {
-                        holder.mIvMessageStatus.setImageResource(R.drawable.ic_double_tick);
-
-                    } else if (mChatList.get(position).getStatus() == SENT) {
-                        holder.mIvMessageStatus.setImageResource(R.drawable.ic_sent_tick);
                     }
                 }
-                else
-               {
-                    holder.mRlThis.setVisibility(View.GONE);
-                    holder.mRlOther.setVisibility(View.VISIBLE);
+                time = mChatList.get(position).getDate_updated();
+                if (time != null && time.length() > 0 && time.contains("T")) {
+                    holder.mThisUserLastTextTime.setText(time.substring(time.indexOf("T") + 1, time.indexOf(".") - 3));
+                } else {
+                    holder.mThisUserLastTextTime.setText(time);
+                }
 
-                    if (mChatList.get(position).getType().equalsIgnoreCase("Photo")) {
-                        holder.mIvDownloadOther.setVisibility(View.VISIBLE);
-                    }
-                    if (mChatList.get(position).getType().equalsIgnoreCase("TEXT")) {
-                        holder.mIvDownloadOther.setVisibility(View.GONE);
-                    }
+                if (mChatList.get(position).getStatus() == READ) {
+                    holder.mIvMessageStatus.setImageResource(R.drawable.ic_double_seen_tick);
+                } else if (mChatList.get(position).getStatus() == DELIVERED) {
+                    holder.mIvMessageStatus.setImageResource(R.drawable.ic_double_tick);
 
-                    holder.mTvOtherUserName.setText(mChatList.get(position).getName());
-                    if (mChatList.get(position).getIcon() != null && !mChatList.get(position).getIcon().isEmpty()) {
-                        Glide.with(context).load(WebServiceClient.HTTP_STAGING + mChatList.get(position).getIcon())
-                                .thumbnail(1f)
-                                .crossFade()
-                                .diskCacheStrategy(DiskCacheStrategy.ALL)
-                                .into(holder.mIvOtherUserImage);
+                } else if (mChatList.get(position).getStatus() == SENT) {
+                    holder.mIvMessageStatus.setImageResource(R.drawable.ic_sent_tick);
+                }
+            } else {
+                holder.mRlThis.setVisibility(View.GONE);
+                holder.mRlOther.setVisibility(View.VISIBLE);
+                holder.mProgressBar.setVisibility(View.GONE);
+
+                if (mChatList.get(position).getType().equalsIgnoreCase("TEXT")) {
+                    holder.mIvDownloadOther.setVisibility(View.GONE);
+                } else {
+                    holder.mIvDownloadOther.setVisibility(View.VISIBLE);
+                }
+
+                /*if (mChatList.get(position).getType().equalsIgnoreCase("TEXT")) {
+                    holder.mIvDownloadOther.setVisibility(View.GONE);
+                } else if (mChatList.get(position).getType().equalsIgnoreCase("Photo")) {
+                    holder.mIvDownloadOther.setVisibility(View.VISIBLE);
+                    holder.mIvDownloadOther.setImageDrawable(context.getApplicationContext().getResources().getDrawable(R.drawable.download_icon));
+                } else if (mChatList.get(position).getType().equalsIgnoreCase("video")) {
+                    //change icon in video
+                    holder.mIvDownloadOther.setVisibility(View.VISIBLE);
+                    holder.mIvDownloadOther.setImageDrawable(context.getApplicationContext().getResources().getDrawable(R.drawable.play));
+                }*/
+
+                holder.mTvOtherUserName.setText(mChatList.get(position).getName());
+                if (mChatList.get(position).getIcon() != null && !mChatList.get(position).getIcon().isEmpty()) {
+                    Glide.with(context).load(WebServiceClient.HTTP_STAGING + mChatList.get(position).getIcon())
+                            .thumbnail(1f)
+                            .crossFade()
+                            .diskCacheStrategy(DiskCacheStrategy.ALL)
+                            .into(holder.mIvOtherUserImage);
+                } else {
+                    holder.mIvOtherUserImage.setImageResource(R.drawable.default_user);
+                }
+
+
+                if (!mChatList.get(position).getText().isEmpty() && mChatList.get(position).getType().equalsIgnoreCase(Constants.TEXT)) {
+                    holder.mTv_LastMessage_OtherUser.setVisibility(View.VISIBLE);
+                    holder.mMediaOther.setVisibility(View.GONE);
+                    holder.mLlOther.setBackgroundResource(R.drawable.chat_bubble_lt);
+                    holder.mTv_LastMessage_OtherUser.setText(mChatList.get(position).getText());
+                } else {
+                    holder.mTv_LastMessage_OtherUser.setVisibility(View.GONE);
+                    holder.mMediaOther.setVisibility(View.VISIBLE);
+
+                    if (!mChatList.get(position).getThumb().isEmpty()) {
+                        holder.mLlOther.setBackgroundResource(0);
+                        holder.mLlOther.setBackgroundColor(Color.parseColor("#FFFFFF"));
+                        holder.mMediaOther.setImageBitmap(decodeBase64(mChatList.get(position).getThumb()));
+
+                           /* if (mChatList.get(position).getType().equalsIgnoreCase("video")) {
+                            //For video chat
+                        } else {
+                            //For image chat
+                        }*/
+
                     } else {
-                        holder.mIvOtherUserImage.setImageResource(R.drawable.default_user);
-                    }
-
-
-                    if (!mChatList.get(position).getText().isEmpty() && mChatList.get(position).getType().equalsIgnoreCase(Constants.TEXT)) {
-                        holder.mTv_LastMessage_OtherUser.setVisibility(View.VISIBLE);
-                        holder.mMediaOther.setVisibility(View.GONE);
                         holder.mLlOther.setBackgroundResource(R.drawable.chat_bubble_lt);
-                        holder.mTv_LastMessage_OtherUser.setText(mChatList.get(position).getText());
-                    } else {
-                        holder.mTv_LastMessage_OtherUser.setVisibility(View.GONE);
-                        holder.mMediaOther.setVisibility(View.VISIBLE);
-
-                        if (!mChatList.get(position).getThumb().isEmpty()) {
-                            holder.mLlOther.setBackgroundResource(0);
-                            holder.mLlOther.setBackgroundColor(Color.parseColor("#FFFFFF"));
-                            holder.mMediaOther.setImageBitmap(decodeBase64(mChatList.get(position).getThumb()));
-                        } else {
-                            holder.mLlOther.setBackgroundResource(R.drawable.chat_bubble_lt);
-                        }
                     }
-
-                    time = mChatList.get(position).getDate_updated();
-                    if (time != null && time.length() > 0 && time.contains("T")) {
-                        holder.mOtherUserLastTextTime.setText(time.substring(time.indexOf("T") + 1, time.indexOf(".") - 3));
-                    } else {
-                        holder.mOtherUserLastTextTime.setText(time);
-                    }
-
-                    if (mChatList.get(position).getImagePath() != null) {
-                        if (mChatList.get(position).getImagePath().isEmpty()) {
-                            holder.mIvDownloadOther.setVisibility(View.VISIBLE);
-                            holder.mMediaOther.setEnabled(true);
-                            Is_downloaded = false;
-                        } else {
-                            holder.mIvDownloadOther.setVisibility(View.GONE);
-                            Is_downloaded = true;
-                        }
-                    }
-
                 }
+
+                time = mChatList.get(position).getDate_updated();
+                if (time != null && time.length() > 0 && time.contains("T")) {
+                    holder.mOtherUserLastTextTime.setText(time.substring(time.indexOf("T") + 1, time.indexOf(".") - 3));
+                } else {
+                    holder.mOtherUserLastTextTime.setText(time);
+                }
+
+                if (mChatList.get(position).getImagePath() != null) {
+                    if (mChatList.get(position).getImagePath().isEmpty()) {
+                        holder.mIvDownloadOther.setVisibility(View.VISIBLE);
+                        holder.mMediaOther.setEnabled(true);
+                        Is_downloaded = false;
+                    } else {
+                        holder.mIvDownloadOther.setVisibility(View.GONE);
+                        Is_downloaded = true;
+                    }
+                }
+
+            }
 
 
             holder.mMediaThis.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    Intent intent=new Intent(context, ViewMediaActivity.class);
-                    intent.putExtra(Constants.MEDIA_PATH,mChatList.get(position).getImagePath());
+                    Intent intent;
+                    if (mChatList.get(position).getType().equalsIgnoreCase("photo")) {
+                        intent = new Intent(context, ViewMediaActivity.class);
+                    } else {
+                        intent = new Intent(context, ViewPlayerActivity.class);
+                        //intent.putExtra(Constants.LOCALE, true);
+                    }
+                    intent.putExtra(Constants.MEDIA_PATH, mChatList.get(position).getImagePath());
                     context.startActivity(intent);
                 }
             });
@@ -199,13 +233,38 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.RecyclerViewHo
                 @Override
                 public void onClick(View v) {
                     if (mChatList.get(position).getImagePath() != null && !mChatList.get(position).getImagePath().isEmpty()) {
-                        Intent intent = new Intent(context, ViewMediaActivity.class);
+                        Intent intent;
+                        if (mChatList.get(position).getType().equalsIgnoreCase("photo")) {
+                            intent = new Intent(context, ViewMediaActivity.class);
+                        } else {
+                            intent = new Intent(context, ViewPlayerActivity.class);
+                            //intent.putExtra(Constants.LOCALE, true);
+                        }
                         intent.putExtra(Constants.MEDIA_PATH, mChatList.get(position).getImagePath());
                         context.startActivity(intent);
                     } else {
-                        Is_Clicked = true;
-                        holder.mIvDownloadOther.setVisibility(View.GONE);
-                        mOnImageDownload.onDownloadClick(holder.mProgressBar, position, mChatList.get(position).getMedia(), mChatList.get(position).getMessageId(), Is_downloaded);
+                        if (mChatList.get(position).getType().equalsIgnoreCase("video")) {
+                            Is_Clicked = true;
+                            holder.mIvDownloadOther.setVisibility(View.GONE);
+                            holder.mProgressBar.setVisibility(View.VISIBLE);
+                            Intent intent = new Intent(context, DownloadVideoService.class);
+                            intent.putExtra(Constants.MEDIA_PATH, WebServiceClient.HTTP_DOWNLOAD_IMAGE + mChatList.get(position).getMedia());
+                            intent.putExtra(Constants.POSITION, position);
+                            intent.putExtra(Constants.MESSAGE_ID, mChatList.get(position).getMessageId());
+                            intent.putExtra(Constants.RESULT_RECEIVER, ((ChatActivity) context).callDownloadReceiver());
+                            context.startService(intent);
+
+                          /*  Intent intent = new Intent(context, ViewPlayerActivity.class);
+                            intent.putExtra(Constants.MEDIA_PATH, mChatList.get(position).getMedia());
+                            intent.putExtra(Constants.POSITION, position);
+                            intent.putExtra(Constants.MESSAGE_ID, mChatList.get(position).getMessageId());
+                            intent.putExtra(Constants.LOCALE, false);
+                            ((ChatActivity) context).startActivityForResult(intent, Constants.STARTACTIVITYFORRESULTFORVIDEOVIEW);*/
+                        } else {
+                            Is_Clicked = true;
+                            holder.mIvDownloadOther.setVisibility(View.GONE);
+                            mOnImageDownload.onDownloadClick(holder.mProgressBar, position, mChatList.get(position).getMedia(), mChatList.get(position).getMessageId(), Is_downloaded);
+                        }
                     }
                 }
             });
@@ -255,27 +314,27 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.RecyclerViewHo
             mTvOtherUserName = (TextView) itemView.findViewById(R.id.tv_user_name_other);
             mIvOtherUserImage = (ImageView) itemView.findViewById(R.id.iv_otheruser_chat);
             mOtherUserLastTextTime = (TextView) itemView.findViewById(R.id.tv_otheruser_texttime);
-            mMediaOther=(ImageView) itemView.findViewById(R.id.iv_media_other);
-            mLlOther=(LinearLayout) itemView.findViewById(R.id.ll_other);
-            mIvDownloadOther=(ImageView) itemView.findViewById(R.id.iv_download);
+            mMediaOther = (ImageView) itemView.findViewById(R.id.iv_media_other);
+            mLlOther = (LinearLayout) itemView.findViewById(R.id.ll_other);
+            mIvDownloadOther = (ImageView) itemView.findViewById(R.id.iv_download);
 
             mTv_LastMessage_ThisUser = (TextView) itemView.findViewById(R.id.tv_lasttext_this);
             mTvThisUserName = (TextView) itemView.findViewById(R.id.tv_this_user_name);
             mIvThisUserImage = (ImageView) itemView.findViewById(R.id.iv_this_user_chat);
             mThisUserLastTextTime = (TextView) itemView.findViewById(R.id.tv_lasttext_time);
-            mMediaThis=(ImageView) itemView.findViewById(R.id.iv_media_this);
-            mLlThis=(LinearLayout) itemView.findViewById(R.id.ll_this);
+            mMediaThis = (ImageView) itemView.findViewById(R.id.iv_media_this);
+            mLlThis = (LinearLayout) itemView.findViewById(R.id.ll_this);
 
 
             mProgressBar = (ProgressBar) itemView.findViewById(R.id.circular_progress_bar);
             mRlThis = (RelativeLayout) itemView.findViewById(R.id.ll_chat_this_user);
             mRlOther = (RelativeLayout) itemView.findViewById(R.id.ll_chat_other);
-            mIvMessageStatus=(ImageView) itemView.findViewById(R.id.iv_message_status);
+            mIvMessageStatus = (ImageView) itemView.findViewById(R.id.iv_message_status);
+
         }
 
         @Override
         public void onClick(View view) {
-
 
         }
     }

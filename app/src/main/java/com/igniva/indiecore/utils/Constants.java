@@ -2,15 +2,13 @@ package com.igniva.indiecore.utils;
 
 import android.os.Environment;
 
-import java.io.File;
-import java.security.PublicKey;
-
 /**
  * Created by igniva-andriod-11 on 2/6/16.
  */
 public class Constants {
 
     public static final int STARTACTIVITYFORRESULTFORCHAT=302;
+    public static final int STARTACTIVITYFORRESULTFORVIDEOVIEW=303;
 
     public static  final String COUNTRY_CODE_VALIDATION="Please enter your country code";
     public static  final String MOBILE_NUMBER_VALIDATION="Please enter your mobile number";
@@ -89,6 +87,8 @@ public static  final String SELF="self";
 
 
 public static  final String MEDIA_PATH="media_path";
+    public static final String RESULT_RECEIVER="result_receiver";
+
 //    businessId, badge_status
 
     //    token, userId, location, latlong, sort, limit, page

@@ -80,6 +80,7 @@ public class MeteorCommonClass implements MeteorCallback {
     public void setOnChatMsgReceiveListener(OnChatMsgReceiveListener onChatMsgReceiveListener1) {
         this.onChatMsgReceiveListener = onChatMsgReceiveListener1;
     }
+
     //For DashBoardActivity for Recent chat screen
     public void setOnRecentChatListener(OnRecentChatListener onRecentChatListener1) {
         this.onRecentChatListener = onRecentChatListener1;
@@ -169,15 +170,15 @@ public class MeteorCommonClass implements MeteorCallback {
 
         if (collectionName.equalsIgnoreCase("message") && isInChatActivity) {
             //sendDelieverStatusChat(documentID, Constants.MARK_MESSAGE_DELIVERED);
-            onChatMsgStatusListener.onChatMsgStatus(documentID,Constants.MARK_MESSAGE_DELIVERED);
+            onChatMsgStatusListener.onChatMsgStatus(documentID, Constants.MARK_MESSAGE_DELIVERED);
         }
     }
 
     @Override
     public void onDataRemoved(String collectionName, String documentID) {
         Log.e(LOG_TAG, "onDataRemoved CollectionName" + collectionName + " " + documentID);
-        if (collectionName.equalsIgnoreCase("message")&&isInChatActivity) {
-            onChatMsgStatusListener.onChatMsgStatus(documentID,Constants.MARK_MESSAGE_READ);
+        if (collectionName.equalsIgnoreCase("message") && isInChatActivity) {
+            onChatMsgStatusListener.onChatMsgStatus(documentID, Constants.MARK_MESSAGE_READ);
         }
     }
 
@@ -301,7 +302,52 @@ public class MeteorCommonClass implements MeteorCallback {
                     mChatPojo.setBadges(instantChatPojo.getBadges());
                     mChatPojo.setType(instantChatPojo.getType());
                     insertSingleMessage(mChatPojo);
-                    ChatActivity.imagePath="";
+                    ChatActivity.imagePath = "";
+
+//                    if (mCurrentRoomId != null && mCurrentRoomId.equalsIgnoreCase(instantChatPojo.getRoomId()) && isInChatActivity) {
+//                        //dedicate chat is on for image send msg by broadcast
+//                        sendReceivedChat(mChatPojo);
+//                    }
+//                    recentChatHashMap.put(instantChatPojo.getRoomId(), instantChatPojo);
+//                    if (isMessageFragmenVisible && !instantChatPojo.getRelation().equalsIgnoreCase("self")) {
+//                        sendReceivedRecentChat(recentChatHashMap);
+//                    }
+//                }
+//
+//                if (!instantChatPojo.getRelation().equalsIgnoreCase("self")) {
+//                    mMeteorCommonClass.msgDelieverdMeteor(instantChatPojo.getMessageId());
+//                }
+//                if (isInChatActivity && !instantChatPojo.getRelation().equalsIgnoreCase("self")) {
+//                    mMeteorCommonClass.msgReadMeteor(instantChatPojo.getMessageId());
+//                }
+
+                    if (mCurrentRoomId != null && mCurrentRoomId.equalsIgnoreCase(instantChatPojo.getRoomId()) && isInChatActivity && !instantChatPojo.getRelation().equalsIgnoreCase("self")) {
+                        //dedicate chat is on for image send msg by broadcast
+                        //sendReceivedChat(mChatPojo);
+                        onChatMsgReceiveListener.onChatMsgRecieved(mChatPojo);
+                    }
+                    recentChatHashMap.put(instantChatPojo.getRoomId(), instantChatPojo);
+                    if (isMessageFragmenVisible && !instantChatPojo.getRelation().equalsIgnoreCase("self")) {
+                        //sendReceivedRecentChat(recentChatHashMap);
+                        onRecentChatListener.onRecentChat(recentChatHashMap);
+                    }
+                } else if (instantChatPojo.getType().equalsIgnoreCase("Video")) {
+                    mChatPojo.setIcon(instantChatPojo.getIcon());
+                    mChatPojo.setName(instantChatPojo.getName());
+                    mChatPojo.setUserId(instantChatPojo.getUserId());
+                    mChatPojo.setMedia(instantChatPojo.getMedia());
+                    mChatPojo.setText(instantChatPojo.getText());
+                    mChatPojo.setThumb(instantChatPojo.getThumb());
+                    mChatPojo.setRoomId(instantChatPojo.getRoomId());
+                    mChatPojo.setMessageId(instantChatPojo.getMessageId());
+                    mChatPojo.setRelation(instantChatPojo.getRelation());
+                    mChatPojo.setDate_updated(date);
+                    mChatPojo.setStatus(instantChatPojo.getStatus());
+                    mChatPojo.setImagePath(ChatActivity.mVideoPath);
+                    mChatPojo.setBadges(instantChatPojo.getBadges());
+                    mChatPojo.setType(instantChatPojo.getType());
+                    insertSingleMessage(mChatPojo);
+                    ChatActivity.mVideoPath = "";
 
 //                    if (mCurrentRoomId != null && mCurrentRoomId.equalsIgnoreCase(instantChatPojo.getRoomId()) && isInChatActivity) {
 //                        //dedicate chat is on for image send msg by broadcast

@@ -2,234 +2,203 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.igniva.indiecore">
 
-
-    <!--IN APP BILLING PERMISSIONS. -->
+    <!-- IN APP BILLING PERMISSIONS. -->
     <uses-permission android:name="com.android.vending.BILLING" />
-    <!--GENERAL PERMISSIONS. -->
+    <!-- GENERAL PERMISSIONS. -->
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.RECEIVE_SMS" />
     <uses-permission android:name="android.permission.READ_SMS" />
-    <permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" android:protectionLevel="signature"/>
-    <uses-permission android:name="android.permission.READ_CONTACTS"/>
-    <uses-permission android:name="android.permission.WRITE_CONTACTS"/>
+
+    <permission
+        android:name="android.permission.WRITE_EXTERNAL_STORAGE"
+        android:protectionLevel="signature" />
+
+    <uses-permission android:name="android.permission.READ_CONTACTS" />
+    <uses-permission android:name="android.permission.WRITE_CONTACTS" />
     <!-- For android.media.audiofx.Visualizer -->
     <uses-permission android:name="android.permission.RECORD_AUDIO" />
 
-    <!--MAP PERMISSIONS-->
+    <!-- MAP PERMISSIONS -->
     <permission
         android:name="com.igniva.indiecore.permission.MAPS_RECEIVE"
         android:protectionLevel="signature" />
+
     <uses-permission android:name="com.igniva.indiecore.permission.MAPS_RECEIVE" />
     <uses-permission android:name="com.google.android.providers.gsf.permission.READ_GSERVICES" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
-    <!--GCM PERMISSIONS   -->
+    <!-- GCM PERMISSIONS -->
     <uses-permission android:name="android.permission.WAKE_LOCK" />
+
     <permission
         android:name="com.igniva.indiecore.permission.C2D_MESSAGE"
         android:protectionLevel="signature" />
-    <uses-permission android:name="com.igniva.indiecore.permission.C2D_MESSAGE" />
-    <!--GCM PERMISSIONS END -->
 
+    <uses-permission android:name="com.igniva.indiecore.permission.C2D_MESSAGE" />
+
+    <!-- GCM PERMISSIONS END -->
     <application
-        android:largeHeap="true"
         android:name=".MyApplication"
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
+        android:largeHeap="true"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-
         <activity
-            android:screenOrientation="portrait"
             android:name=".ui.activities.SplashActivity"
             android:label="@string/app_name"
-            android:windowSoftInputMode="adjustResize"
-            android:theme="@style/AppTheme.NoActionBar.FullScreen">
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme.NoActionBar.FullScreen"
+            android:windowSoftInputMode="adjustResize">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-
-
         <activity
-            android:theme="@style/AppTheme"
             android:name=".ui.activities.ReceiveActivity"
+            android:label="@string/contact_number"
             android:screenOrientation="portrait"
-            android:windowSoftInputMode="stateHidden"
-            android:label="@string/contact_number">
-
+            android:theme="@style/AppTheme"
+            android:windowSoftInputMode="stateHidden">
             <intent-filter>
                 <action android:name="android.intent.action.SEND" />
+
                 <category android:name="android.intent.category.DEFAULT" />
+
                 <data android:mimeType="text/plain" />
             </intent-filter>
-
         </activity>
-
         <activity
-            android:theme="@style/AppTheme"
             android:name=".ui.activities.EnterMobileActivity"
+            android:label="@string/contact_number"
             android:screenOrientation="portrait"
-            android:windowSoftInputMode="stateHidden"
-            android:label="@string/contact_number"/>
-
-        <activity
             android:theme="@style/AppTheme"
+            android:windowSoftInputMode="stateHidden" />
+        <activity
             android:name=".ui.activities.OtpVerificationActivity"
+            android:label="@string/contact_number"
             android:screenOrientation="portrait"
-            android:label="@string/contact_number"/>
-
+            android:theme="@style/AppTheme" />
         <activity
-            android:theme="@style/AppTheme"
             android:name=".ui.activities.SyncContactsActivity"
+            android:label="@string/contacts_sync"
             android:screenOrientation="portrait"
-            android:windowSoftInputMode="stateHidden"
-            android:label="@string/contacts_sync"/>
-        <activity
             android:theme="@style/AppTheme"
+            android:windowSoftInputMode="stateHidden" />
+        <activity
             android:name=".ui.activities.CreateProfileActivity"
+            android:label="@string/create_profile"
             android:screenOrientation="portrait"
-            android:windowSoftInputMode="stateHidden"
-            android:label="@string/create_profile"/>
-
-        <activity
             android:theme="@style/AppTheme"
+            android:windowSoftInputMode="stateHidden" />
+        <activity
             android:name=".ui.activities.BadgesActivity"
+            android:label="@string/badges"
             android:screenOrientation="portrait"
-            android:windowSoftInputMode="stateHidden"
-            android:label="@string/badges"/>
-
-        <activity
             android:theme="@style/AppTheme"
+            android:windowSoftInputMode="stateHidden" />
+        <activity
             android:name=".ui.activities.BadgeDetailActivity"
+            android:label="@string/badges"
             android:screenOrientation="portrait"
-            android:windowSoftInputMode="stateHidden"
-            android:label="@string/badges"/>
-
-        <activity
             android:theme="@style/AppTheme"
+            android:windowSoftInputMode="stateHidden" />
+        <activity
             android:name=".ui.activities.MyBadgesActivity"
+            android:label="@string/badges"
             android:launchMode="singleTask"
             android:screenOrientation="portrait"
-            android:label="@string/badges"/>
-
+            android:theme="@style/AppTheme" />
         <activity
-            android:theme="@style/AppTheme"
-            android:windowSoftInputMode="adjustPan"
             android:name=".ui.activities.DashBoardActivity"
+            android:label="@string/badges"
             android:screenOrientation="portrait"
-            android:label="@string/badges"/>
-
-
-        <activity
             android:theme="@style/AppTheme"
+            android:windowSoftInputMode="adjustPan" />
+        <activity
             android:name=".ui.activities.InviteContactActivity"
+            android:label="@string/badges"
             android:screenOrientation="portrait"
-            android:windowSoftInputMode="stateHidden"
-            android:label="@string/badges"/>
-
-        <activity
             android:theme="@style/AppTheme"
+            android:windowSoftInputMode="stateHidden" />
+        <activity
             android:name=".ui.activities.BusinessDetailActivity"
+            android:label="Business Name"
             android:screenOrientation="portrait"
-            android:windowSoftInputMode="stateHidden"
-            android:label="Business Name"/>
-
-
-        <activity
             android:theme="@style/AppTheme"
+            android:windowSoftInputMode="stateHidden" />
+        <activity
             android:name=".ui.activities.RecommendBadgeActivity"
+            android:label="@string/reccomend_badge"
             android:screenOrientation="portrait"
-            android:windowSoftInputMode="stateHidden"
-            android:label="@string/reccomend_badge"/>
-
-
-
-        <activity
             android:theme="@style/AppTheme"
+            android:windowSoftInputMode="stateHidden" />
+        <activity
             android:name=".ui.activities.CreatePostActivity"
+            android:label="@string/create_post_activity"
             android:screenOrientation="portrait"
-            android:windowSoftInputMode="stateHidden"
-            android:label="@string/create_post_activity"/>
-
-        <activity
             android:theme="@style/AppTheme"
+            android:windowSoftInputMode="stateHidden" />
+        <activity
             android:name=".ui.activities.PremiumBadgesActivity"
+            android:label="@string/premium_badges"
             android:screenOrientation="portrait"
-            android:windowSoftInputMode="stateHidden"
-            android:label="@string/premium_badges"/>
-
-
-
-        <activity
             android:theme="@style/AppTheme"
+            android:windowSoftInputMode="stateHidden" />
+        <activity
             android:name=".ui.activities.CommentActivity"
+            android:label="@string/comment_activity"
             android:screenOrientation="portrait"
-            android:windowSoftInputMode="adjustPan"
-            android:label="@string/comment_activity"/>
-
-        <activity
             android:theme="@style/AppTheme"
+            android:windowSoftInputMode="adjustPan" />
+        <activity
             android:name=".ui.activities.CommentsReplyActivity"
+            android:label="@string/comment_reply_activity"
             android:screenOrientation="portrait"
-            android:windowSoftInputMode="adjustPan"
-            android:label="@string/comment_reply_activity"/>
-
-
-        <activity
             android:theme="@style/AppTheme"
+            android:windowSoftInputMode="adjustPan" />
+        <activity
             android:name=".ui.activities.MyProfileActivity"
+            android:label="@string/my_profile"
             android:screenOrientation="portrait"
-            android:windowSoftInputMode="adjustPan"
-            android:label="@string/my_profile"/>
-
-
-
-        <activity
             android:theme="@style/AppTheme"
+            android:windowSoftInputMode="adjustPan" />
+        <activity
             android:name=".ui.activities.UserProfileActivity"
+            android:label="@string/my_profile"
             android:screenOrientation="portrait"
-            android:windowSoftInputMode="adjustPan"
-            android:label="@string/my_profile"/>
-
-
-
-        <activity
             android:theme="@style/AppTheme"
+            android:windowSoftInputMode="adjustPan" />
+        <activity
             android:name=".ui.activities.ChatActivity"
+            android:label="@string/chat"
             android:screenOrientation="portrait"
-            android:windowSoftInputMode="adjustResize"
-            android:label="@string/chat"/>
-
-
-        <activity
             android:theme="@style/AppTheme"
+            android:windowSoftInputMode="adjustResize" />
+        <activity
             android:name=".ui.activities.BoardActivity"
+            android:label="@string/board_activity"
             android:screenOrientation="portrait"
-            android:windowSoftInputMode="adjustPan"
-            android:label="@string/board_activity"/>
-
-        <activity
             android:theme="@style/AppTheme"
+            android:windowSoftInputMode="adjustPan" />
+        <activity
             android:name=".ui.activities.ViewMediaActivity"
+            android:label="@string/view_media_activity"
             android:screenOrientation="portrait"
-            android:windowSoftInputMode="adjustPan"
-            android:label="@string/view_media_activity"/>
-
-
-        <activity
             android:theme="@style/AppTheme"
+            android:windowSoftInputMode="adjustPan" />
+        <activity
             android:name=".ui.activities.NewsFeedActivity"
+            android:label="@string/news_feed_activity"
             android:screenOrientation="portrait"
-            android:windowSoftInputMode="adjustPan"
-            android:label="@string/news_feed_activity"/>
-
+            android:theme="@style/AppTheme"
+            android:windowSoftInputMode="adjustPan" />
 
         <meta-data
             android:name="com.google.android.gms.version"
@@ -242,31 +211,32 @@
             android:permission="com.google.android.c2dm.permission.SEND">
             <intent-filter>
                 <action android:name="com.google.android.c2dm.intent.RECEIVE" />
+
                 <category android:name="com.igniva.indiecore" />
-                <!--TO SUPPORT PRE-KITKAT DEVICES  -->
+                <!-- TO SUPPORT PRE-KITKAT DEVICES -->
                 <action android:name="com.google.android.c2dm.intent.REGISTRATION" />
             </intent-filter>
         </receiver>
 
         <service
-            android:name="com.igniva.indiecore.utils.gcm.MyGcmListenerService"
+            android:name=".utils.gcm.MyGcmListenerService"
             android:exported="false">
             <intent-filter>
                 <action android:name="com.google.android.c2dm.intent.RECEIVE" />
             </intent-filter>
         </service>
         <service
-            android:name="com.igniva.indiecore.utils.gcm.MyInstanceIDListenerService"
+            android:name=".utils.gcm.MyInstanceIDListenerService"
             android:exported="false">
             <intent-filter>
                 <action android:name="com.google.android.gms.iid.InstanceID" />
             </intent-filter>
         </service>
         <service
-            android:name="com.igniva.indiecore.utils.gcm.RegistrationIntentService"
-            android:exported="false">
-        </service>
-        <!-- GCM END-->
+            android:name=".utils.gcm.RegistrationIntentService"
+            android:exported="false" />
+        <!-- GCM END -->
+
 
         <!-- SMS Receiver -->
         <receiver android:name=".utils.sms.SmsReceiver">
@@ -275,13 +245,11 @@
             </intent-filter>
         </receiver>
 
-
-        <!--<uses-library android:required="true" android:name="com.google.android.maps" />-->
+        <!-- <uses-library android:required="true" android:name="com.google.android.maps" /> -->
 
         <meta-data
             android:name="com.google.android.maps.v2.API_KEY"
             android:value="AIzaSyCTS1JY0GjRdbsIjzoq2YMjlSTqObwBY3Q" />
-
         <meta-data
             android:name="com.google.android.gms.version"
             android:value="@integer/google_play_services_version" />
@@ -294,15 +262,23 @@
             android:name=".controller.services.CustomMeteorService"
             android:enabled="true" />
 
-
-
         <receiver
             android:name=".controller.receivers.NetworkChangeReceiver"
-            android:label="NetworkChangeReceiver" >
+            android:label="NetworkChangeReceiver">
             <intent-filter>
                 <action android:name="android.net.conn.CONNECTIVITY_CHANGE" />
             </intent-filter>
         </receiver>
+
+        <activity
+            android:name=".ui.activities.ViewPlayerActivity"
+            android:configChanges="orientation|screenSize"
+            android:label="@string/title_activity_view_player" />
+
+        <service
+            android:name=".controller.services.DownloadVideoService"
+            android:exported="true"
+            android:enabled="true"></service>
     </application>
 
 </manifest>

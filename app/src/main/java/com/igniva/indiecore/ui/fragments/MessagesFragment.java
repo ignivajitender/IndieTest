@@ -36,11 +36,11 @@ public class MessagesFragment extends BaseFragment implements View.OnClickListen
 
     View rootView;
     private RecyclerView mRvChatRoom;
-    private String MESSAGE_FRAGMENT="MESSAGE_FRAGMENT";
+    private String MESSAGE_FRAGMENT = "MESSAGE_FRAGMENT";
     private LinearLayoutManager mLlManagerChatRoom;
-    private TextView mNoConversations,mFriends,mOthers;
+    private TextView mNoConversations, mFriends, mOthers;
     private ArrayList<ChatListPojo> chatRoomList = new ArrayList<>();
-    ArrayList<ChatListPojo> othersList= new ArrayList<>();
+    ArrayList<ChatListPojo> othersList = new ArrayList<>();
     private ChatListAdapter mChatListAdapter;
     boolean isFriendTabVisible = true;
     public static boolean isMessageFragmenVisible;
@@ -49,7 +49,7 @@ public class MessagesFragment extends BaseFragment implements View.OnClickListen
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         rootView = inflater.inflate(R.layout.fragment_messages, container, false);
-        isMessageFragmenVisible=true;
+        isMessageFragmenVisible = true;
         return rootView;
     }
 
@@ -63,9 +63,9 @@ public class MessagesFragment extends BaseFragment implements View.OnClickListen
     protected void setUpLayout() {
         try {
             mNoConversations = (TextView) rootView.findViewById(R.id.tv_no_conversations);
-            mFriends=(TextView) rootView.findViewById(R.id.tv_friends);
+            mFriends = (TextView) rootView.findViewById(R.id.tv_friends);
             mFriends.setOnClickListener(this);
-            mOthers=(TextView) rootView.findViewById(R.id.tv_others);
+            mOthers = (TextView) rootView.findViewById(R.id.tv_others);
             mOthers.setOnClickListener(this);
             mRvChatRoom = (RecyclerView) rootView.findViewById(R.id.rv_chat_rooms_messagestab);
             mLlManagerChatRoom = new LinearLayoutManager(getActivity());
@@ -78,8 +78,7 @@ public class MessagesFragment extends BaseFragment implements View.OnClickListen
     }
 
 
-
-    public void setFriendUi(){
+    public void setFriendUi() {
         try {
             mRvChatRoom.setVisibility(View.VISIBLE);
             mNoConversations.setVisibility(View.GONE);
@@ -93,7 +92,8 @@ public class MessagesFragment extends BaseFragment implements View.OnClickListen
             e.printStackTrace();
         }
     }
-    public void setOthersUi(){
+
+    public void setOthersUi() {
         try {
             mRvChatRoom.setVisibility(View.VISIBLE);
             mNoConversations.setVisibility(View.GONE);
@@ -112,7 +112,7 @@ public class MessagesFragment extends BaseFragment implements View.OnClickListen
 
     @Override
     public void onClick(View v) {
-        switch (v.getId()){
+        switch (v.getId()) {
 
             case R.id.tv_friends:
                 setFriendUi();
@@ -169,7 +169,7 @@ public class MessagesFragment extends BaseFragment implements View.OnClickListen
                 if (error == null) {
                     if (result.getSuccess().equalsIgnoreCase("true") && !result.getTotalChats().equals(0)) {
                         chatRoomList.clear();
-                        for(int i=0;i<result.getChatList().size();i++) {
+                        for (int i = 0; i < result.getChatList().size(); i++) {
                             if (result.getChatList().get(i).getType() == 0) {
                                 if (!result.getChatList().get(i).getRelation().equalsIgnoreCase("favourite")) {
                                     chatRoomList.add(result.getChatList().get(i));
@@ -179,7 +179,7 @@ public class MessagesFragment extends BaseFragment implements View.OnClickListen
                             }
                         }
                         mChatListAdapter = null;
-                        mChatListAdapter = new ChatListAdapter(getActivity(), chatRoomList,MESSAGE_FRAGMENT);
+                        mChatListAdapter = new ChatListAdapter(getActivity(), chatRoomList, MESSAGE_FRAGMENT);
                         mRvChatRoom.setAdapter(mChatListAdapter);
 
                     } else {
@@ -198,25 +198,26 @@ public class MessagesFragment extends BaseFragment implements View.OnClickListen
         }
     };
 
-public void updateOthersList(){
-    if(othersList.size()>0) {
-        mChatListAdapter = null;
-        mChatListAdapter = new ChatListAdapter(getActivity(), othersList, MESSAGE_FRAGMENT);
-        mRvChatRoom.setAdapter(mChatListAdapter);
-    }else {
-        mRvChatRoom.setVisibility(View.GONE);
-        mNoConversations.setVisibility(View.VISIBLE);
-        mNoConversations.setText("No user is set a favourite");
+    public void updateOthersList() {
+        if (othersList.size() > 0) {
+            mChatListAdapter = null;
+            mChatListAdapter = new ChatListAdapter(getActivity(), othersList, MESSAGE_FRAGMENT);
+            mRvChatRoom.setAdapter(mChatListAdapter);
+        } else {
+            mRvChatRoom.setVisibility(View.GONE);
+            mNoConversations.setVisibility(View.VISIBLE);
+            mNoConversations.setText("No user is set a favourite");
+        }
     }
-}
 
-    public void updateFriendsList(){
-        if(chatRoomList.size()>0) {
+    public void updateFriendsList() {
+        if (chatRoomList.size() > 0) {
             mChatListAdapter = null;
             mChatListAdapter = new ChatListAdapter(getActivity(), chatRoomList, MESSAGE_FRAGMENT);
             mRvChatRoom.setAdapter(mChatListAdapter);
         }
     }
+
     public void addRecentMsg(HashMap<String, InstantChatPojo> recentChatHashMap) {
         Log.e("NewMsg", "come" + recentChatHashMap.size());
         if (isFriendTabVisible) {
@@ -226,7 +227,14 @@ public void updateOthersList(){
                     //System.out.println(entry.getKey() + "/" + entry.getValue());
                     if (chatRoomList.get(i).getRoomId().equalsIgnoreCase(entry.getValue().getRoomId())) {
                         ChatListPojo chatListPojo2 = chatRoomList.get(i);
-                        chatListPojo2.setLast_message(entry.getValue().getText());
+                        if (entry.getValue().getType().equalsIgnoreCase("Text")) {
+                            chatListPojo2.setLast_message(entry.getValue().getText());
+                        } else if (entry.getValue().getType().equalsIgnoreCase("video")) {
+                            chatListPojo2.setLast_message("VIDEO");
+                        } else {
+                            chatListPojo2.setLast_message("IMAGE");
+                        }
+
                         chatListPojo2.setLast_message_Id(entry.getValue().getMessageId());
                         chatListPojo2.setDate_updated(entry.getValue().getDate_updated().get$date());
                         chatRoomList.set(i, chatListPojo2);
@@ -236,7 +244,6 @@ public void updateOthersList(){
                         break;
                     }
                 }
-
             }
         } else {
             //Other tab
@@ -245,7 +252,13 @@ public void updateOthersList(){
                     //System.out.println(entry.getKey() + "/" + entry.getValue());
                     if (othersList.get(i).getRoomId().equalsIgnoreCase(entry.getValue().getRoomId())) {
                         ChatListPojo chatListPojo2 = othersList.get(i);
-                        chatListPojo2.setLast_message(entry.getValue().getText());
+                        if (entry.getValue().getType().equalsIgnoreCase("Text")) {
+                            chatListPojo2.setLast_message(entry.getValue().getText());
+                        } else if (entry.getValue().getType().equalsIgnoreCase("video")) {
+                            chatListPojo2.setLast_message("VIDEO");
+                        } else {
+                            chatListPojo2.setLast_message("IMAGE");
+                        }
                         chatListPojo2.setLast_message_Id(entry.getValue().getMessageId());
                         chatListPojo2.setDate_updated(entry.getValue().getDate_updated().get$date());
                         othersList.set(i, chatListPojo2);
@@ -260,10 +273,11 @@ public void updateOthersList(){
         }
 
     }
+
     @Override
     public void onDestroyView() {
         super.onDestroyView();
-        isMessageFragmenVisible=false;
+        isMessageFragmenVisible = false;
     }
 
 }

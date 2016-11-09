@@ -5,9 +5,7 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
-import android.os.Environment;
 import android.os.StrictMode;
-import android.util.Log;
 import android.view.View;
 import android.widget.ProgressBar;
 
@@ -25,7 +23,6 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.net.HttpURLConnection;
-import java.net.SocketException;
 import java.net.URL;
 
 /**
@@ -70,7 +67,9 @@ public class WebServiceClientUploadImage extends
         super.onPreExecute();
         try {
             if(mTaskName.equalsIgnoreCase(Constants.DOWNLOAD)){
-                mProgressBar.setVisibility(View.VISIBLE);
+                if(mProgressBar!=null) {
+                    mProgressBar.setVisibility(View.VISIBLE);
+                }
             }else {
                 progressDialog = ProgressDialog.show(mContext, "", mContext
                                 .getResources().getString(R.string.please_wait), true,

@@ -2,15 +2,18 @@ package com.igniva.indiecore.ui.activities;
 
 import android.app.Activity;
 import android.app.ProgressDialog;
+import android.content.ContentResolver;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.Matrix;
 import android.media.ExifInterface;
 import android.media.ThumbnailUtils;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.ResultReceiver;
 import android.provider.MediaStore;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AlertDialog;
@@ -20,12 +23,12 @@ import android.support.v7.widget.Toolbar;
 import android.text.format.DateFormat;
 import android.util.Log;
 import android.view.View;
+import android.webkit.MimeTypeMap;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
-import com.igniva.indiecore.MyApplication;
 import com.igniva.indiecore.R;
 import com.igniva.indiecore.controller.ChatResultListener;
 import com.igniva.indiecore.controller.OnChatMsgReceiveListener;
@@ -34,15 +37,15 @@ import com.igniva.indiecore.controller.OnImageDownloadClick;
 import com.igniva.indiecore.controller.ResponseHandlerListener;
 import com.igniva.indiecore.controller.WebNotificationManager;
 import com.igniva.indiecore.controller.WebServiceClient;
+import com.igniva.indiecore.controller.services.DownloadVideoService;
 import com.igniva.indiecore.db.BadgesDb;
 import com.igniva.indiecore.model.ChatPojo;
-import com.igniva.indiecore.model.InstantChatPojo;
 import com.igniva.indiecore.model.ResponsePojo;
-import com.igniva.indiecore.model.UpdateMessagePojo;
 import com.igniva.indiecore.ui.adapters.ChatAdapter;
 import com.igniva.indiecore.utils.AsyncResult;
 import com.igniva.indiecore.utils.AsyncResultDownload;
 import com.igniva.indiecore.utils.Constants;
+import com.igniva.indiecore.utils.FileUtils;
 import com.igniva.indiecore.utils.PreferenceHandler;
 import com.igniva.indiecore.utils.Utility;
 import com.igniva.indiecore.utils.WebServiceClientUploadImage;
@@ -51,26 +54,24 @@ import org.apache.http.entity.mime.HttpMultipartMode;
 import org.apache.http.entity.mime.MultipartEntity;
 import org.apache.http.entity.mime.content.ByteArrayBody;
 import org.apache.http.entity.mime.content.ContentBody;
+import org.apache.http.entity.mime.content.FileBody;
 import org.json.JSONArray;
-import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
-import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 
-import id.zelory.compressor.Compressor;
-
+import static com.bumptech.glide.load.resource.bitmap.TransformationUtils.rotateImage;
 import static com.igniva.indiecore.controller.services.CustomMeteorService.mMeteorCommonClass;
 import static com.igniva.indiecore.ui.fragments.MessagesFragment.isMessageFragmenVisible;
 
 /**
  * Created by igniva-andriod-05 on 20/9/16.
  */
-public class ChatActivity extends BaseActivity implements OnChatMsgReceiveListener, OnChatMsgStatusListener {
+public class ChatActivity extends BaseActivity implements OnChatMsgReceiveListener, OnChatMsgStatusListener, AsyncResult {
 
     Toolbar mToolbar;
     public static final String CHAT_ACTIVITY = "CHAT_ACTIVITY";
@@ -80,7 +81,7 @@ public class ChatActivity extends BaseActivity implements OnChatMsgReceiveListen
     public static final int SELECT_FILE = 500;
     public static final int REQUEST_CAMERA = 600;
     private static final int CAPTURE_VIDEO_ACTIVITY_REQUEST_CODE = 300;
-    final CharSequence[] items = {"Take Photo", "Choose from Gallery","Record Video",
+    final CharSequence[] items = {"Take Photo", "Choose from Gallery", "Record Video",
             "Cancel"};
     private static final int MEDIA_TYPE_VIDEO = 2;
     private Uri fileUri;
@@ -88,6 +89,7 @@ public class ChatActivity extends BaseActivity implements OnChatMsgReceiveListen
     private BadgesDb dbBadges;
     public static boolean isInChatActivity;
     public static String imagePath;
+    public static String mVideoPath;
     private LinearLayout mLlsendMessage, mLlOpenMedia;
     private EditText mEtMessageText;
     private TextView mTitle, mTvLoadMore;
@@ -99,6 +101,9 @@ public class ChatActivity extends BaseActivity implements OnChatMsgReceiveListen
     private String USER_ID_2;
     private String mImagePath;
     private String base64Encoded;
+
+    private String base64EncodedVideo;
+
     private String STATUS = "status";
     private String MESSAGE = "Message";
     private int NOT_SENT = 0;
@@ -107,7 +112,7 @@ public class ChatActivity extends BaseActivity implements OnChatMsgReceiveListen
     private int READ = 3;
     private int PAGE = 1;
     private int LIMIT = 60;
-    private Uri imgUri;
+    //private Uri imgUri;
     private Bitmap bitmap = null;
     private File imageFile;
     private int THUMBSIZE = 70;
@@ -123,6 +128,7 @@ public class ChatActivity extends BaseActivity implements OnChatMsgReceiveListen
     ChatAdapter mChatAdapter = null;
     ProgressBar mProgressBar = null;
     public static String mCurrentRoomId = null;
+    public static final long VIDEOLIMIT = 12;  // 12 Mb
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -286,10 +292,23 @@ public class ChatActivity extends BaseActivity implements OnChatMsgReceiveListen
      */
     public void galleryEvent() {
         try {
-            Intent intent = new Intent();
-            intent.setType("image/*");
+           /* Intent intent = new Intent();
+            intent.setType("image*//*");
             intent.setAction(Intent.ACTION_GET_CONTENT);
-            startActivityForResult(Intent.createChooser(intent, "Select File"), SELECT_FILE);
+            startActivityForResult(Intent.createChooser(intent, "Select File"), SELECT_FILE);*/
+
+            if (Build.VERSION.SDK_INT < 19) {
+                Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
+                intent.setType("image/* video/*");
+                startActivityForResult(Intent.createChooser(intent, getResources().getString(R.string.select_picture)), SELECT_FILE);
+            } else {
+                Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT);
+                intent.addCategory(Intent.CATEGORY_OPENABLE);
+                intent.setType("image/*");
+                intent.putExtra(Intent.EXTRA_MIME_TYPES, new String[]{"image/*", "video/*"});
+                startActivityForResult(intent, SELECT_FILE);
+            }
+
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -321,28 +340,32 @@ public class ChatActivity extends BaseActivity implements OnChatMsgReceiveListen
     }
 
 
-
-            @Override
+    @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-                try {
-                    if (resultCode == Activity.RESULT_OK) {
-                        if (requestCode == SELECT_FILE)
-                            onSelectFromGalleryResult(data);
-                        else if (requestCode == REQUEST_CAMERA)
-                            onCaptureImageResult(data);
-                        else if(requestCode ==CAPTURE_VIDEO_ACTIVITY_REQUEST_CODE)
-                            onVideoRecord(data);
-                    }
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
+        try {
+            if (resultCode == RESULT_OK) {
+                if (requestCode == SELECT_FILE)
+                    onSelectFromGalleryResult(data);
+                else if (requestCode == REQUEST_CAMERA)
+                    onCaptureImageResult(data);
+                else if (requestCode == CAPTURE_VIDEO_ACTIVITY_REQUEST_CODE)
+                    onVideoRecord(data);
+               /* else if (requestCode == STARTACTIVITYFORRESULTFORVIDEOVIEW) {
+                    ChatPojo chatPojo1 = data.getParcelableExtra("ChatPojo");
+                    String messageId = data.getStringExtra(Constants.MESSAGE_ID);
+                    updateMediaAfterDownload(chatPojo1, messageId);
+                }*/
             }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 
     private void onVideoRecord(Intent data) {
 
-        Utility.showToastMessageShort(this,""+data);
-        Log.e("VideoPathChatActivity",""+data.getData());
+        Utility.showToastMessageShort(this, "" + data);
+        Log.e("VideoPathChatActivity", "" + data.getData());
     }
 
     private void onCaptureImageResult(Intent data) {
@@ -363,8 +386,18 @@ public class ChatActivity extends BaseActivity implements OnChatMsgReceiveListen
             Bitmap bm;
             if (data != null) {
                 try {
-                    bm = getImage(data);
-                    uploadBitmapAsMultipart(bm);
+                    Uri selectedMediaUri = data.getData();
+                    String mimeType = getMimeType(selectedMediaUri);
+
+                    if (mimeType.contains("video")) {
+                        //handle video
+                        uploadVideoToServer(selectedMediaUri);
+                    } else if (mimeType.contains("image")) {
+                        //handle image
+                        bm = getImage(data);
+                        uploadBitmapAsMultipart(bm);
+                    }
+
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -468,46 +501,61 @@ public class ChatActivity extends BaseActivity implements OnChatMsgReceiveListen
      */
     public Bitmap getImage(Intent data) {
         try {
+
             Uri capturedImageUri = data.getData();
+
             if (capturedImageUri != null) {
                 bitmap = Utility.getBitmapFromUri(this, data.getData());
             } else {
                 bitmap = (Bitmap) data.getExtras().get("data");
+                capturedImageUri = Utility.getImageUri(this, bitmap);
             }
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        try {
 
-            imgUri = Utility.getImageUri(this, bitmap);
-            mImagePath = Utility.getPath(ChatActivity.this, imgUri);
+          /*  mImagePath = Utility.getPath(ChatActivity.this, capturedImageUri);
+            if (mImagePath == null) {*/
+            mImagePath = FileUtils.getPath(this, capturedImageUri);
+            // }
+
             imagePath = mImagePath;
             imageFile = new File(mImagePath);
 
+            //change orientation for samsung device
 
-            bitmap = Compressor.getDefault(this).compressToBitmap(imageFile);
+            ExifInterface ei = new ExifInterface(mImagePath);
+            int orientation = ei.getAttributeInt(ExifInterface.TAG_ORIENTATION,
+                    ExifInterface.ORIENTATION_NORMAL);
+            Log.e(LOG_TAG, orientation + "");
 
-//            ExifInterface ei = new ExifInterface(mImagePath);
-//            int orientation = ei.getAttributeInt(ExifInterface.TAG_ORIENTATION,
-//                    ExifInterface.ORIENTATION_UNDEFINED);
-//
-//            switch(orientation) {
-//                case ExifInterface.ORIENTATION_ROTATE_90:
-//                  bitmap=rotateImage(bitmap, 90);
-//                    break;
-//                case ExifInterface.ORIENTATION_ROTATE_180:
-//                    bitmap=  rotateImage(bitmap, 180);
-//                    break;
-//                case ExifInterface.ORIENTATION_ROTATE_270:
-//                    bitmap=rotateImage(bitmap, 270);
-//                    break;
-//                case ExifInterface.ORIENTATION_NORMAL:
-//                    bitmap=rotateImage(bitmap, 0);
-//                default:
-//                    break;
-//            }
-            Bitmap ThumbImage = ThumbnailUtils.extractThumbnail(BitmapFactory.decodeFile(mImagePath),
+            switch (orientation) {
+                case ExifInterface.ORIENTATION_ROTATE_90:
+                    bitmap = rotateImage(bitmap, 90);
+                    break;
+                case ExifInterface.ORIENTATION_ROTATE_180:
+                    bitmap = rotateImage(bitmap, 180);
+                    break;
+                case ExifInterface.ORIENTATION_ROTATE_270:
+                    bitmap = rotateImage(bitmap, 270);
+                    break;
+                case ExifInterface.ORIENTATION_NORMAL:
+                    bitmap = rotateImage(bitmap, 0);
+                default:
+                    break;
+            }
+
+            //bitmap = Compressor.getDefault(this).compressToBitmap(imageFile);
+
+            ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+            bitmap.compress(Bitmap.CompressFormat.PNG, 80, byteArrayOutputStream);
+
+            byte[] array = byteArrayOutputStream.toByteArray();
+            bitmap = BitmapFactory.decodeByteArray(array, 0, array.length);
+
+            Bitmap ThumbImage = ThumbnailUtils.extractThumbnail(bitmap,
                     THUMBSIZE, THUMBSIZE);
+
+        /*   Bitmap ThumbImage = ThumbnailUtils.extractThumbnail(BitmapFactory.decodeFile(mImagePath),
+                    THUMBSIZE, THUMBSIZE);*/
+
             base64Encoded = Utility.encodeTobase64(ThumbImage);
 
         } catch (Exception e) {
@@ -568,27 +616,32 @@ public class ChatActivity extends BaseActivity implements OnChatMsgReceiveListen
         @Override
         public void onDownloadTaskResponse(Object result, int urlResponseNo, Object messageId, Object mediaId) {
             try {
+                Log.e(LOG_TAG, result.toString());
                 mProgressBar.setVisibility(View.GONE);
                 mChatPojo = new ChatPojo();
                 mChatPojo.setImagePath(result.toString());
                 mDownloadedImagePath = result.toString();
                 mChatPojo.setMessageId(messageId.toString());
                 updateMediaPath(mChatPojo);
-                for (int i = messageList.size() - 1; i > 0; i--) {
-                    if (messageId.toString().equalsIgnoreCase(messageList.get(i).getMessageId())) {
-                        messageList.get(i).setImagePath(mDownloadedImagePath);
-                        if (mChatAdapter != null) {
-                            mChatAdapter.notifyDataSetChanged();
-                        }
-                        break;
-                    }
-                }
+                updateMediaAfterDownload(mChatPojo, messageId);
                 mDownloadedImagePath = null;
             } catch (Exception e) {
                 e.printStackTrace();
             }
         }
     };
+
+    public void updateMediaAfterDownload(ChatPojo mChatPojo, Object messageId) {
+        for (int i = messageList.size() - 1; i > 0; i--) {
+            if (messageId.toString().equalsIgnoreCase(messageList.get(i).getMessageId())) {
+                messageList.get(i).setImagePath(mChatPojo.getImagePath());
+                if (mChatAdapter != null) {
+                    mChatAdapter.notifyDataSetChanged();
+                }
+                break;
+            }
+        }
+    }
 
     public String createPayload(String mRoomId, int page, int limit) {
         JSONObject payload = null;
@@ -736,7 +789,7 @@ public class ChatActivity extends BaseActivity implements OnChatMsgReceiveListen
                 } else if (items[item].equals("Choose from Gallery")) {
                     galleryEvent();
                 } else if (items[item].equals("Record Video")) {
-                  recordVideo();
+                    recordVideo();
                 } else if (items[item].equals("Cancel")) {
                     dialog.dismiss();
                 }
@@ -805,6 +858,147 @@ public class ChatActivity extends BaseActivity implements OnChatMsgReceiveListen
     @Override
     public void onChatMsgStatus(String messageId, String methodName) {
         updateMessageStatus(messageId, methodName);
+    }
+
+    /**
+     * upload video to server
+     */
+    private void uploadVideoToServer(Uri uri) {
+        try {
+            //String video_path = Utility.getRealPathFromURI(this, uri);
+
+            String video_path = FileUtils.getPath(this, uri);
+            mVideoPath = video_path;
+            File videoFile = new File(video_path);
+
+            long fileSize = videoFile.length(); // it return in byte
+            fileSize = fileSize / 1024;
+            fileSize = fileSize / 1024;
+
+
+            if (fileSize <= VIDEOLIMIT) {
+                FileBody file_body_Video = new FileBody(videoFile);
+                // Video captured and saved to fileUri specified in the Intent
+
+                Bitmap mVideoThumbnail = ThumbnailUtils.createVideoThumbnail(video_path, MediaStore.Video.Thumbnails.MINI_KIND);
+
+                base64EncodedVideo = Utility.encodeTobase64(mVideoThumbnail);
+
+                //mIvMediaPost.setImageBitmap(mVideoThumbnail);
+                MultipartEntity reqEntity = new MultipartEntity(HttpMultipartMode.BROWSER_COMPATIBLE);
+                reqEntity.addPart("fileToUpload", file_body_Video);
+                if (Utility.isInternetConnection(ChatActivity.this)) {
+                    new WebServiceClientUploadImage(ChatActivity.this, this, WebServiceClient.HTTP_UPLOAD_IMAGE, reqEntity, 3, Constants.UPLOAD).execute();
+                } else {
+                    // open dialog here
+                    new Utility().showNoInternetDialog((Activity) ChatActivity.this);
+                }
+            } else {
+                new Utility().showAlertDialog("Your Video File size is exceeded than 12 Mb.", ChatActivity.this, "");
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+
+    }
+
+    @Override
+    public void onTaskResponse(Object result, int urlResponseNo) {
+        try {
+            JSONObject jsonObject = new JSONObject(result.toString());
+            com.igniva.indiecore.utils.Log.e("response media uplaod", jsonObject.toString());
+            JSONArray file = jsonObject.getJSONArray("files");
+            JSONObject obj = file.getJSONObject(0);
+            String mMediaVideoPostId = obj.optString("fileId");
+            com.igniva.indiecore.utils.Log.e("Video Media Id ", "" + mMediaVideoPostId);
+
+            try {
+                if (!mMediaVideoPostId.isEmpty()) {
+                    final String messageId = mRoomId + Utility.randomString();
+                    //send Msg
+                    Object[] object = new Object[]{TOKEN, messageId, mRoomId, USER_ID_1, VIDEO, "", mMediaVideoPostId, base64EncodedVideo};
+                    mMeteorCommonClass.sendMsgMeteor(object, new ChatResultListener() {
+                        @Override
+                        public void onSuccess(String result) {
+                            mMessageId = result;
+                            long timeInMillis = System.currentTimeMillis();
+                            Calendar cal1 = Calendar.getInstance();
+                            cal1.setTimeInMillis(timeInMillis);
+                            SimpleDateFormat dateFormat = new SimpleDateFormat("hh:mm a");
+                            String date = dateFormat.format(cal1.getTime());
+                            ChatPojo ChatPojo = new ChatPojo();
+                            ChatPojo.setIcon(myImage);
+                            ChatPojo.setUserId(USER_ID_1);
+                            ChatPojo.setText("");
+                            ChatPojo.setThumb(base64EncodedVideo);
+                            ChatPojo.setRoomId(mRoomId);
+                            ChatPojo.setMessageId(messageId);
+                            ChatPojo.setRelation("self");
+                            ChatPojo.setDate_updated(date);
+                            ChatPojo.setStatus(SENT);
+                            ChatPojo.setImagePath(ChatActivity.mVideoPath);
+                            ChatPojo.setType(VIDEO);
+                            addNewMsgToList(ChatPojo);
+                        }
+
+                        @Override
+                        public void onError(String error, String reason, String details) {
+                            Log.d(LOG_TAG, " error is " + error + " reason is " + reason + " details" + details);
+                        }
+                    });
+
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+
+        } catch (Exception e) {
+
+        }
+    }
+
+    public String getMimeType(Uri uri) {
+        String mimeType = null;
+        if (uri.getScheme().equals(ContentResolver.SCHEME_CONTENT)) {
+            ContentResolver cr = this.getContentResolver();
+            mimeType = cr.getType(uri);
+        } else {
+            String fileExtension = MimeTypeMap.getFileExtensionFromUrl(uri
+                    .toString());
+            mimeType = MimeTypeMap.getSingleton().getMimeTypeFromExtension(
+                    fileExtension.toLowerCase());
+        }
+        return mimeType;
+    }
+
+    public DownloadReceiver callDownloadReceiver() {
+        return new DownloadReceiver(new Handler());
+    }
+
+    public class DownloadReceiver extends ResultReceiver {
+        public DownloadReceiver(Handler handler) {
+            super(handler);
+        }
+
+        @Override
+        protected void onReceiveResult(int resultCode, Bundle resultData) {
+            super.onReceiveResult(resultCode, resultData);
+            if (resultCode == DownloadVideoService.UPDATE_PROGRESS) {
+                int progress = resultData.getInt("progress");
+                ChatPojo chatPojo = resultData.getParcelable("ChatPojo");
+                String messageId = resultData.getString(Constants.MESSAGE_ID);
+                // mProgressDialog.setProgress(progress);
+                if (progress == 100) {
+                    //mProgressDialog.dismiss();
+                    com.igniva.indiecore.utils.Log.e("Download Completed");
+                    if (ChatActivity.isInChatActivity) {
+                        updateMediaAfterDownload(chatPojo, messageId);
+                    }
+                }
+            }
+        }
     }
 
 }

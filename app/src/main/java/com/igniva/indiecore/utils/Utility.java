@@ -1,5 +1,31 @@
 package com.igniva.indiecore.utils;
 
+import android.annotation.TargetApi;
+import android.app.Activity;
+import android.content.Context;
+import android.content.DialogInterface;
+import android.content.DialogInterface.OnClickListener;
+import android.content.Intent;
+import android.database.Cursor;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.location.LocationManager;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
+import android.net.Uri;
+import android.os.Build;
+import android.os.ParcelFileDescriptor;
+import android.provider.MediaStore;
+import android.provider.Settings;
+import android.support.v7.app.AlertDialog;
+import android.text.format.DateFormat;
+import android.util.Base64;
+import android.widget.Toast;
+
+import com.igniva.indiecore.R;
+import com.igniva.indiecore.ui.activities.EnterMobileActivity;
+import com.igniva.indiecore.ui.activities.InviteContactActivity;
+
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileDescriptor;
@@ -12,43 +38,6 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.TimeZone;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
-import android.annotation.TargetApi;
-import android.app.Activity;
-import android.app.ActivityManager;
-import android.content.Context;
-import android.content.DialogInterface;
-import android.content.DialogInterface.OnClickListener;
-import android.content.Intent;
-import android.content.pm.PackageManager;
-import android.database.Cursor;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.location.LocationManager;
-import android.net.ConnectivityManager;
-import android.net.NetworkInfo;
-import android.net.Uri;
-import android.os.Build;
-import android.os.ParcelFileDescriptor;
-import android.provider.MediaStore;
-import android.provider.Settings;
-import android.support.v4.app.ActivityCompat;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentTransaction;
-import android.support.v4.content.ContextCompat;
-import android.support.v7.app.AlertDialog;
-import android.text.format.DateFormat;
-import android.util.Base64;
-import android.widget.EditText;
-import android.widget.Toast;
-
-import com.igniva.indiecore.Manifest;
-import com.igniva.indiecore.R;
-import com.igniva.indiecore.ui.activities.BoardActivity;
-import com.igniva.indiecore.ui.activities.EnterMobileActivity;
-import com.igniva.indiecore.ui.activities.InviteContactActivity;
 
 public class Utility {
 
@@ -197,6 +186,27 @@ public class Utility {
 					mContext.getResources().getString(R.string.no_internet));
 		}
 	}
+
+
+	public static void showOkAndFinish(String message, final Context context){
+		AlertDialog.Builder builder1 = new AlertDialog.Builder(context);
+		builder1.setMessage( message);
+		builder1.setCancelable(true);
+		builder1.setPositiveButton(android.R.string.ok, new OnClickListener() {
+			public void onClick(DialogInterface dialog, int id) {
+				dialog.dismiss();
+				((Activity) context).finish();
+			}
+		});
+		/*builder1.setNegativeButton(android.R.string.cancel, new OnClickListener() {
+			public void onClick(DialogInterface dialog, int id) {
+				dialog.dismiss();
+			}
+		});*/
+		AlertDialog alert11 = builder1.create();
+		alert11.show();
+	}
+
 
 
     public static void showInvalidSessionDialog(final Activity mContext) {
