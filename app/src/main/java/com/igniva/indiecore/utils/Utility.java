@@ -38,6 +38,7 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.ContextCompat;
+import android.support.v4.content.CursorLoader;
 import android.support.v7.app.AlertDialog;
 import android.text.format.DateFormat;
 import android.util.Base64;
@@ -434,6 +435,17 @@ public class Utility {
 		{
 			return contentUri.getPath();
 		}
+	}
+
+	public static String getRealPathFromVideoURI(Context mContext, Uri contentUri) {
+		String[] proj = { MediaStore.Video.Media.DATA };
+		CursorLoader loader = new CursorLoader(mContext, contentUri, proj, null, null, null);
+		Cursor cursor = loader.loadInBackground();
+		int column_index = cursor.getColumnIndexOrThrow(MediaStore.Video.Media.DATA);
+		cursor.moveToFirst();
+		String result = cursor.getString(column_index);
+		cursor.close();
+		return result;
 	}
 
 	public static  String randomString() {

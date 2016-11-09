@@ -46,37 +46,39 @@ public class WebServiceClientUploadImage extends
     String path;
     String mMessageId;
     int urlNo;
-    public WebServiceClientUploadImage(Context mContext,AsyncResult callBackUpload,String urlString, MultipartEntity reqEntity,int urlNo,String taskName) {
-        this.mUrl=urlString;
-        this.mReqEntity=reqEntity;
-        this.mContext=mContext;
-        this.mCallBack=callBackUpload;
-        this.urlNo=urlNo;
-        this.mTaskName=taskName;
+
+    public WebServiceClientUploadImage(Context mContext, AsyncResult callBackUpload, String urlString, MultipartEntity reqEntity, int urlNo, String taskName) {
+        this.mUrl = urlString;
+        this.mReqEntity = reqEntity;
+        this.mContext = mContext;
+        this.mCallBack = callBackUpload;
+        this.urlNo = urlNo;
+        this.mTaskName = taskName;
     }
 
-    public WebServiceClientUploadImage(ProgressBar progressBar,Context mContext, AsyncResultDownload callBackDownload, String urlString, String taskName, int urlNo,String messageId) {
-        this.mUrl= WebServiceClient.HTTP_DOWNLOAD_IMAGE+urlString;
-        this.mContext=mContext;
-        this.mCallBackDownlaod=callBackDownload;
-        this.mTaskName=taskName;
-        this.mProgressBar=progressBar;
-        this.urlNo=urlNo;
-        this.mediaId=urlString;
-        this.mMessageId=messageId;
+    public WebServiceClientUploadImage(ProgressBar progressBar, Context mContext, AsyncResultDownload callBackDownload, String urlString, String taskName, int urlNo, String messageId) {
+        this.mUrl = WebServiceClient.HTTP_DOWNLOAD_IMAGE + urlString;
+        this.mContext = mContext;
+        this.mCallBackDownlaod = callBackDownload;
+        this.mTaskName = taskName;
+        this.mProgressBar = progressBar;
+        this.urlNo = urlNo;
+        this.mediaId = urlString;
+        this.mMessageId = messageId;
     }
+
     @Override
     protected void onPreExecute() {
         super.onPreExecute();
         try {
-            if(mTaskName.equalsIgnoreCase(Constants.DOWNLOAD)){
+            if (mTaskName.equalsIgnoreCase(Constants.DOWNLOAD)) {
                 mProgressBar.setVisibility(View.VISIBLE);
-            }else {
+            } else {
                 progressDialog = ProgressDialog.show(mContext, "", mContext
                                 .getResources().getString(R.string.please_wait), true,
                         false);
             }
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
@@ -101,16 +103,16 @@ public class WebServiceClientUploadImage extends
 
             conn.setRequestProperty("Connection", "Keep-Alive");
 
-            if(mTaskName.equalsIgnoreCase(Constants.DOWNLOAD)) {
+            if (mTaskName.equalsIgnoreCase(Constants.DOWNLOAD)) {
                 // getting file length
                 int lenghtOfFile = conn.getContentLength();
 
                 // input stream to read file - with 8k buffer
                 InputStream input = new BufferedInputStream(url.openStream(), 8192);
-                Bitmap   image = BitmapFactory.decodeStream(input);
-                path = createDirectoryAndSaveFile(image,Utility.randomString());
+                Bitmap image = BitmapFactory.decodeStream(input);
+                path = createDirectoryAndSaveFile(image, Utility.randomString());
                 conn.connect();
-            }else {
+            } else {
                 conn.addRequestProperty("Content-length", mReqEntity.getContentLength() + "");
                 conn.addRequestProperty(mReqEntity.getContentType().getName(), mReqEntity.getContentType().getValue());
                 OutputStream os = conn.getOutputStream();
@@ -145,10 +147,10 @@ public class WebServiceClientUploadImage extends
             e.printStackTrace();
             return "";
         }
-if(builder!=null)
-    return builder.toString();
+        if (builder != null)
+            return builder.toString();
         else
-    return path;
+            return path;
     }
 
     private String createDirectoryAndSaveFile(Bitmap imageToSave, String fileName) {
@@ -159,7 +161,7 @@ if(builder!=null)
             wallpaperDirectory.mkdirs();
         }
 
-        File file = new File(direct, fileName+".jpg");
+        File file = new File(direct, fileName + ".jpg");
         if (!file.exists()) {
             try {
                 file.createNewFile();
@@ -175,25 +177,25 @@ if(builder!=null)
         } catch (Exception e) {
             e.printStackTrace();
         }
-        return  file.getPath();
+        return file.getPath();
     }
 
     @Override
     protected void onPostExecute(String result) {
         super.onPostExecute(result);
-        try{
-            if(urlNo==77){
-                mCallBackDownlaod.onDownloadTaskResponse(result, urlNo,mMessageId,mediaId);
-            }else {
+        try {
+            if (urlNo == 77) {
+                mCallBackDownlaod.onDownloadTaskResponse(result, urlNo, mMessageId, mediaId);
+            } else {
                 mCallBack.onTaskResponse(result, urlNo);
             }
-            if(progressDialog!=null) {
+            if (progressDialog != null) {
                 progressDialog.dismiss();
             }
-            if(mProgressBar!=null){
+            if (mProgressBar != null) {
                 mProgressBar.setVisibility(View.GONE);
             }
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }

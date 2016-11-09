@@ -51,6 +51,7 @@ import org.apache.http.entity.mime.HttpMultipartMode;
 import org.apache.http.entity.mime.MultipartEntity;
 import org.apache.http.entity.mime.content.ByteArrayBody;
 import org.apache.http.entity.mime.content.ContentBody;
+import org.apache.http.entity.mime.content.FileBody;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -341,8 +342,7 @@ public class ChatActivity extends BaseActivity implements OnChatMsgReceiveListen
 
     private void onVideoRecord(Intent data) {
 
-        Utility.showToastMessageShort(this,""+data);
-        Log.e("VideoPathChatActivity",""+data.getData());
+
     }
 
     private void onCaptureImageResult(Intent data) {
@@ -375,6 +375,31 @@ public class ChatActivity extends BaseActivity implements OnChatMsgReceiveListen
 
 
     }
+
+    /**
+     * upload video to server
+     */
+//    private void uploadVideoToServer(Uri uri) {
+//        try {
+//            String video_path = Utility.getRealPathFromURI(this, uri);
+//            FileBody file_body_Video = new FileBody(new File(video_path));
+//            // Video captured and saved to fileUri specified in the Intent
+//
+//            mVideoThumbnail = ThumbnailUtils.createVideoThumbnail(video_path, MediaStore.Video.Thumbnails.MINI_KIND);
+//            mIvMediaPost.setImageBitmap(mVideoThumbnail);
+//            mIvMediaPost.setVisibility(View.VISIBLE);
+//            MultipartEntity reqEntity = new MultipartEntity(HttpMultipartMode.BROWSER_COMPATIBLE);
+//            reqEntity.addPart("fileToUpload", file_body_Video);
+//            if (Utility.isInternetConnection(ChatActivity.this)) {
+//                new WebServiceClientUploadImage(ChatActivity.this, asyncResult, WebServiceClient.HTTP_UPLOAD_IMAGE, reqEntity, 3, Constants.UPLOAD).execute();
+//            } else {
+//                // open dialog here
+//                new Utility().showNoInternetDialog((Activity) ChatActivity.this);
+//            }
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//        }
+//    }
 
     private void uploadBitmapAsMultipart(Bitmap myBitmap) {
         ContentBody contentPart = null;
