@@ -2,6 +2,7 @@ package com.igniva.indiecore.ui.activities;
 
 import android.app.Activity;
 import android.app.ProgressDialog;
+import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.Resources;
@@ -15,6 +16,7 @@ import android.provider.MediaStore;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
+import android.webkit.MimeTypeMap;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -40,7 +42,6 @@ import org.apache.http.entity.mime.MultipartEntity;
 import org.apache.http.entity.mime.content.ByteArrayBody;
 import org.apache.http.entity.mime.content.ContentBody;
 import org.apache.http.entity.mime.content.FileBody;
-import org.apache.http.entity.mime.content.StringBody;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -48,10 +49,8 @@ import org.json.JSONObject;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
-import java.nio.charset.Charset;
 
 import id.zelory.compressor.Compressor;
-import id.zelory.compressor.FileUtil;
 
 
 /**
@@ -80,6 +79,7 @@ public class CreatePostActivity extends BaseActivity implements AsyncResult, Vie
     private Uri fileUri;
     String mBusinessId = "";
     private Bitmap mVideoThumbnail = null;
+    public static final String TAG = "CreatePostActivity";
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -348,7 +348,7 @@ public class CreatePostActivity extends BaseActivity implements AsyncResult, Vie
     private void onVideoRecord(Intent data) {
         try {
             mVideoUri = data.getData();
-            String video_path = Utility.getRealPathFromURI(this, mVideoUri);
+            String video_path = FileUtils.getPath(this, mVideoUri);
             mVideoThumbnail = ThumbnailUtils.createVideoThumbnail(video_path, MediaStore.Video.Thumbnails.MINI_KIND);
             if (mVideoThumbnail != null) {
                 uploadBitmapAsMultipart(mVideoThumbnail);
@@ -366,9 +366,11 @@ public class CreatePostActivity extends BaseActivity implements AsyncResult, Vie
         try {
 //            Charset utf8 = Charset.forName("utf-8");
             String video_path = FileUtils.getPath(this, uri);
-//            ContentType contentType = ContentType.create(ContentType.create("video/mp4").getMimeType());
+            String mimeType = getMimeType(uri);
+            Log.e(TAG,mimeType);
+            ContentType contentType = ContentType.create(ContentType.create("video/mp4").getMimeType());
 //
-            FileBody file_body_Video = new FileBody(new File(video_path));
+            FileBody file_body_Video = new FileBody(new File(video_path), contentType);
 //            // Video captured and saved to fileUri specified in the Intent
 //
 //            mVideoThumbnail = ThumbnailUtils.createVideoThumbnail(video_path, MediaStore.Video.Thumbnails.MINI_KIND);
@@ -393,13 +395,13 @@ public class CreatePostActivity extends BaseActivity implements AsyncResult, Vie
     private void onSelectFromGalleryResult(Intent data) {
         Bitmap bm = null;
         mVideoUri = data.getData();
-        String path= data.getData().getPath();
+        String path = data.getData().getPath();
         if (data != null) {
             try {
 //                in case of video first we have to upload its thumbnail to server
 //                after that we have to start video upload
                 if (mVideoUri.toString().contains("video")) {
-                    String video_path = FileUtils.getPath(this,mVideoUri);
+                    String video_path = FileUtils.getPath(this, mVideoUri);
                     mVideoThumbnail = ThumbnailUtils.createVideoThumbnail(video_path, MediaStore.Video.Thumbnails.MINI_KIND);
                     if (mVideoThumbnail != null) {
                         uploadBitmapAsMultipart(mVideoThumbnail);
@@ -552,6 +554,21 @@ public class CreatePostActivity extends BaseActivity implements AsyncResult, Vie
         inImage.compress(Bitmap.CompressFormat.JPEG, 100, bytes);
         String path = MediaStore.Images.Media.insertImage(inContext.getContentResolver(), inImage, "Title", null);
         return Uri.parse(path);
+    }
+
+
+    public String getMimeType(Uri uri) {
+        String mimeType = null;
+        if (uri.getScheme().equals(ContentResolver.SCHEME_CONTENT)) {
+            ContentResolver cr = this.getContentResolver();
+            mimeType = cr.getType(uri);
+        } else {
+            String fileExtension = MimeTypeMap.getFileExtensionFromUrl(uri
+                    .toString());
+            mimeType = MimeTypeMap.getSingleton().getMimeTypeFromExtension(
+                    fileExtension.toLowerCase());
+        }
+        return mimeType;
     }
 
 
