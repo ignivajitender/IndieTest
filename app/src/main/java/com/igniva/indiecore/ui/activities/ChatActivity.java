@@ -1,5 +1,6 @@
 package com.igniva.indiecore.ui.activities;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.ContentResolver;
@@ -292,11 +293,6 @@ public class ChatActivity extends BaseActivity implements OnChatMsgReceiveListen
      */
     public void galleryEvent() {
         try {
-            Intent intent = new Intent();
-            intent.setType("image/*");
-            intent.setAction(Intent.ACTION_GET_CONTENT);
-            startActivityForResult(Intent.createChooser(intent, "Select File"), SELECT_FILE);*/
-
             if (Build.VERSION.SDK_INT < 19) {
                 Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
                 intent.setType("image/* video/*");
@@ -976,6 +972,7 @@ public class ChatActivity extends BaseActivity implements OnChatMsgReceiveListen
         return new DownloadReceiver(new Handler());
     }
 
+    @SuppressLint("ParcelCreator")
     public class DownloadReceiver extends ResultReceiver {
         public DownloadReceiver(Handler handler) {
             super(handler);
