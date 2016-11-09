@@ -1185,10 +1185,8 @@
     <string name="CheckIn_confirmation">Do you really want to check in to this business?</string>
     <string name="news_feed">News Feed</string>
     <string name="operation_abort">Operation aborted</string>
-    <string name="select_picture">Select File</string>
 
 
-    <string name="internal_storage">Internal storage</string>
     <string name="title_activity_view_player">ViewPlayerActivity</string>
     <string name="select_picture">Select file</string>
 
