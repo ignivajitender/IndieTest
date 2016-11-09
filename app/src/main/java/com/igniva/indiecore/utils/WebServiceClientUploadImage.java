@@ -23,7 +23,6 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.net.HttpURLConnection;
-import java.net.SocketException;
 import java.net.URL;
 
 /**
@@ -73,12 +72,13 @@ public class WebServiceClientUploadImage extends
                     mProgressBar.setVisibility(View.VISIBLE);
                 }
             }else {
-            if (mTaskName.equalsIgnoreCase(Constants.DOWNLOAD)) {
-                mProgressBar.setVisibility(View.VISIBLE);
-            } else {
-                progressDialog = ProgressDialog.show(mContext, "", mContext
-                                .getResources().getString(R.string.please_wait), true,
-                        false);
+                if (mTaskName.equalsIgnoreCase(Constants.DOWNLOAD)) {
+                    mProgressBar.setVisibility(View.VISIBLE);
+                } else {
+                    progressDialog = ProgressDialog.show(mContext, "", mContext
+                                    .getResources().getString(R.string.please_wait), true,
+                            false);
+                }
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -117,6 +117,7 @@ public class WebServiceClientUploadImage extends
             } else {
                 conn.addRequestProperty("Content-length", mReqEntity.getContentLength() + "");
                 conn.addRequestProperty(mReqEntity.getContentType().getName(), mReqEntity.getContentType().getValue());
+               String mmtype=mReqEntity.getContentType().getValue();
                 OutputStream os = conn.getOutputStream();
                 mReqEntity.writeTo(conn.getOutputStream());
                 os.close();

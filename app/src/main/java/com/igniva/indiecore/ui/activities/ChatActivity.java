@@ -292,11 +292,6 @@ public class ChatActivity extends BaseActivity implements OnChatMsgReceiveListen
      */
     public void galleryEvent() {
         try {
-            Intent intent = new Intent();
-            intent.setType("image/*");
-            intent.setAction(Intent.ACTION_GET_CONTENT);
-            startActivityForResult(Intent.createChooser(intent, "Select File"), SELECT_FILE);*/
-
             if (Build.VERSION.SDK_INT < 19) {
                 Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
                 intent.setType("image/* video/*");
