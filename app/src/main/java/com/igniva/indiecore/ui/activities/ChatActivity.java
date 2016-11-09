@@ -292,8 +292,8 @@ public class ChatActivity extends BaseActivity implements OnChatMsgReceiveListen
      */
     public void galleryEvent() {
         try {
-           /* Intent intent = new Intent();
-            intent.setType("image*//*");
+            Intent intent = new Intent();
+            intent.setType("image/*");
             intent.setAction(Intent.ACTION_GET_CONTENT);
             startActivityForResult(Intent.createChooser(intent, "Select File"), SELECT_FILE);*/
 
@@ -366,6 +366,7 @@ public class ChatActivity extends BaseActivity implements OnChatMsgReceiveListen
 
         Utility.showToastMessageShort(this, "" + data);
         Log.e("VideoPathChatActivity", "" + data.getData());
+
     }
 
     private void onCaptureImageResult(Intent data) {
@@ -501,9 +502,7 @@ public class ChatActivity extends BaseActivity implements OnChatMsgReceiveListen
      */
     public Bitmap getImage(Intent data) {
         try {
-
             Uri capturedImageUri = data.getData();
-
             if (capturedImageUri != null) {
                 bitmap = Utility.getBitmapFromUri(this, data.getData());
             } else {

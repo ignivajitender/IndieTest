@@ -14,6 +14,7 @@
 
     <string name="create_post_activity">Create Post</string>
 
+    <string name="internal_storage">Internal storage</string>
     <!--preimium badges activity-->
     <string name="premium_badges">In-App purchase</string>
     <string name="about_premium_badges">Did you run short of slots?.Purchase 10 Slots for £0,69 and add more badges to your profile.</string>
@@ -1189,5 +1190,6 @@
 
     <string name="internal_storage">Internal storage</string>
     <string name="title_activity_view_player">ViewPlayerActivity</string>
+    <string name="select_picture">Select file</string>
 
 </resources>

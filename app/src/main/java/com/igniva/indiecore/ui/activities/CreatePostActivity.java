@@ -7,11 +7,10 @@ import android.content.Intent;
 import android.content.res.Resources;
 import android.database.Cursor;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.media.ThumbnailUtils;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
-import android.os.ParcelFileDescriptor;
 import android.provider.MediaStore;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.Toolbar;
@@ -19,7 +18,6 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
@@ -30,11 +28,13 @@ import com.igniva.indiecore.controller.WebServiceClient;
 import com.igniva.indiecore.model.ResponsePojo;
 import com.igniva.indiecore.utils.AsyncResult;
 import com.igniva.indiecore.utils.Constants;
+import com.igniva.indiecore.utils.FileUtils;
 import com.igniva.indiecore.utils.Log;
 import com.igniva.indiecore.utils.PreferenceHandler;
 import com.igniva.indiecore.utils.Utility;
 import com.igniva.indiecore.utils.WebServiceClientUploadImage;
 
+import org.apache.http.entity.ContentType;
 import org.apache.http.entity.mime.HttpMultipartMode;
 import org.apache.http.entity.mime.MultipartEntity;
 import org.apache.http.entity.mime.content.ByteArrayBody;
@@ -42,14 +42,16 @@ import org.apache.http.entity.mime.content.ContentBody;
 import org.apache.http.entity.mime.content.FileBody;
 import org.apache.http.entity.mime.content.StringBody;
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
-import java.io.FileDescriptor;
 import java.io.IOException;
+import java.nio.charset.Charset;
 
 import id.zelory.compressor.Compressor;
+import id.zelory.compressor.FileUtil;
 
 
 /**
@@ -60,13 +62,16 @@ public class CreatePostActivity extends BaseActivity implements AsyncResult, Vie
     private static final int MEDIA_TYPE_VIDEO = 2;
     private TextView mCamera, mGallery, mUserName, mVideoRecord;
     private EditText mPostText;
-    private String mMediaPostId = "";
+    private String mImageMediaId = "";
+    private String mVideoMediaId = "";
     private String mContextName;
     private ImageView mIvMediaPost, mUserImage;
     public static final int REQUEST_CAMERA = 100;
     public static final int SELECT_FILE = 200;
     private static final int CAPTURE_VIDEO_ACTIVITY_REQUEST_CODE = 300;
-
+    private String videoUrl = "";
+    private Uri mVideoUri;
+    private boolean IsThumbNailUploaded = false;
     private Toolbar mToolbar;
     private String mImagePath;
     private final String BUSINESS = "business";
@@ -203,15 +208,18 @@ public class CreatePostActivity extends BaseActivity implements AsyncResult, Vie
                 payload.put(Constants.POST_TYPE, BUSINESS);
             }
 
-            if (!mMediaPostId.isEmpty()) {
-                payload.put(Constants.MEDIA, mMediaPostId);
-                if (mVideoThumbnail != null) {
-                    payload.put(Constants.THUMBNAIL, mVideoThumbnail);
-                }
-            }
-
             if (!mPostText.getText().toString().isEmpty()) {
                 payload.put(Constants.TEXT, mPostText.getText().toString());
+            }
+            try {
+                if (videoUrl.contains(".mp4")) {
+                    payload.put(Constants.MEDIA, mVideoMediaId);
+                    payload.put(Constants.THUMBNAIL, mImageMediaId);
+                } else {
+                    payload.put(Constants.MEDIA, mImageMediaId);
+                }
+            } catch (JSONException e) {
+                e.printStackTrace();
             }
 
         } catch (Exception e) {
@@ -226,7 +234,7 @@ public class CreatePostActivity extends BaseActivity implements AsyncResult, Vie
      */
     public void createPost() {
         try {
-            if (!mMediaPostId.isEmpty() || !mPostText.getText().toString().isEmpty()) {
+            if (!mImageMediaId.isEmpty() || !mPostText.getText().toString().isEmpty()) {
                 String payload = createPayload();
                 if (!payload.isEmpty()) {
 
@@ -277,10 +285,17 @@ public class CreatePostActivity extends BaseActivity implements AsyncResult, Vie
      */
     public void galleryEvent() {
         try {
-            Intent intent = new Intent();
-            intent.setType("image/*");
-            intent.setAction(Intent.ACTION_GET_CONTENT);
-            startActivityForResult(Intent.createChooser(intent, "Select File"), SELECT_FILE);
+            if (Build.VERSION.SDK_INT < 19) {
+                Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
+                intent.setType("image/* video/*");
+                startActivityForResult(Intent.createChooser(intent, getResources().getString(R.string.select_picture)), SELECT_FILE);
+            } else {
+                Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT);
+                intent.addCategory(Intent.CATEGORY_OPENABLE);
+                intent.setType("image/*");
+                intent.putExtra(Intent.EXTRA_MIME_TYPES, new String[]{"image/*", "video/*"});
+                startActivityForResult(intent, SELECT_FILE);
+            }
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -332,8 +347,13 @@ public class CreatePostActivity extends BaseActivity implements AsyncResult, Vie
 
     private void onVideoRecord(Intent data) {
         try {
-            Uri uri = data.getData();
-            uploadVideoToServer(uri);
+            mVideoUri = data.getData();
+            String video_path = Utility.getRealPathFromURI(this, mVideoUri);
+            mVideoThumbnail = ThumbnailUtils.createVideoThumbnail(video_path, MediaStore.Video.Thumbnails.MINI_KIND);
+            if (mVideoThumbnail != null) {
+                uploadBitmapAsMultipart(mVideoThumbnail);
+                IsThumbNailUploaded = true;
+            }
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -344,15 +364,20 @@ public class CreatePostActivity extends BaseActivity implements AsyncResult, Vie
      */
     private void uploadVideoToServer(Uri uri) {
         try {
-            String video_path = Utility.getRealPathFromURI(this, uri);
+//            Charset utf8 = Charset.forName("utf-8");
+            String video_path = FileUtils.getPath(this, uri);
+//            ContentType contentType = ContentType.create(ContentType.create("video/mp4").getMimeType());
+//
             FileBody file_body_Video = new FileBody(new File(video_path));
-            // Video captured and saved to fileUri specified in the Intent
-
-            mVideoThumbnail = ThumbnailUtils.createVideoThumbnail(video_path, MediaStore.Video.Thumbnails.MINI_KIND);
-            mIvMediaPost.setImageBitmap(mVideoThumbnail);
-            mIvMediaPost.setVisibility(View.VISIBLE);
+//            // Video captured and saved to fileUri specified in the Intent
+//
+//            mVideoThumbnail = ThumbnailUtils.createVideoThumbnail(video_path, MediaStore.Video.Thumbnails.MINI_KIND);
+            if (mVideoThumbnail != null) {
+                mIvMediaPost.setVisibility(View.VISIBLE);
+                mIvMediaPost.setImageBitmap(mVideoThumbnail);
+            }
             MultipartEntity reqEntity = new MultipartEntity(HttpMultipartMode.BROWSER_COMPATIBLE);
-            reqEntity.addPart("fileToUpload", file_body_Video);
+            reqEntity.addPart("VideoFile", file_body_Video);
             if (Utility.isInternetConnection(CreatePostActivity.this)) {
                 new WebServiceClientUploadImage(CreatePostActivity.this, this, WebServiceClient.HTTP_UPLOAD_IMAGE, reqEntity, 3, Constants.UPLOAD).execute();
             } else {
@@ -367,16 +392,30 @@ public class CreatePostActivity extends BaseActivity implements AsyncResult, Vie
 
     private void onSelectFromGalleryResult(Intent data) {
         Bitmap bm = null;
+        mVideoUri = data.getData();
+        String path= data.getData().getPath();
         if (data != null) {
             try {
-                bm = getImage(data);
+//                in case of video first we have to upload its thumbnail to server
+//                after that we have to start video upload
+                if (mVideoUri.toString().contains("video")) {
+                    String video_path = FileUtils.getPath(this,mVideoUri);
+                    mVideoThumbnail = ThumbnailUtils.createVideoThumbnail(video_path, MediaStore.Video.Thumbnails.MINI_KIND);
+                    if (mVideoThumbnail != null) {
+                        uploadBitmapAsMultipart(mVideoThumbnail);
+                        IsThumbNailUploaded = true;
+                    }
+                } else {
+                    bm = getImage(data);
+                    uploadBitmapAsMultipart(bm);
+                    mIvMediaPost.setVisibility(View.VISIBLE);
+                    mIvMediaPost.setImageBitmap(bm);
+                }
             } catch (Exception e) {
                 e.printStackTrace();
             }
         }
-        uploadBitmapAsMultipart(bm);
-        mIvMediaPost.setVisibility(View.VISIBLE);
-        mIvMediaPost.setImageBitmap(bm);
+
 
     }
 
@@ -447,16 +486,26 @@ public class CreatePostActivity extends BaseActivity implements AsyncResult, Vie
     private void uploadBitmapAsMultipart(Bitmap myBitmap) {
         ContentBody contentPart = null;
         try {
+//            Charset utf8 = Charset.forName("utf-8");
             ByteArrayOutputStream bos = new ByteArrayOutputStream();
-            if (mImagePath.endsWith(".png")) {
-                myBitmap.compress(Bitmap.CompressFormat.PNG, 80, bos);
-                contentPart = new ByteArrayBody(bos.toByteArray(), "Image.png");
+            ContentType contentType = ContentType.create(ContentType.create("Image/jpeg").getMimeType());
+
+
+            if (mImagePath != null) {
+                if (mImagePath.endsWith(".png")) {
+                    myBitmap.compress(Bitmap.CompressFormat.PNG, 80, bos);
+                    contentPart = new ByteArrayBody(bos.toByteArray(), contentType, "Image.png");
+                } else {
+                    myBitmap.compress(Bitmap.CompressFormat.JPEG, 80, bos);
+                    contentPart = new ByteArrayBody(bos.toByteArray(), contentType, "Image.jpg");
+                }
             } else {
                 myBitmap.compress(Bitmap.CompressFormat.JPEG, 80, bos);
-                contentPart = new ByteArrayBody(bos.toByteArray(), "Image.jpg");
+                contentPart = new ByteArrayBody(bos.toByteArray(), contentType, "Image.jpg");
             }
-
             MultipartEntity reqEntity = new MultipartEntity(HttpMultipartMode.BROWSER_COMPATIBLE);
+//            MultipartEntity reqEntity = new MultipartEntity(HttpMultipartMode.BROWSER_COMPATIBLE);
+//            MultipartEntity reqEntity = new MultipartEntity();
             reqEntity.addPart("fileToUpload", contentPart);
 
             if (Utility.isInternetConnection(CreatePostActivity.this)) {
@@ -479,8 +528,18 @@ public class CreatePostActivity extends BaseActivity implements AsyncResult, Vie
             Log.e("response media uplaod", jsonObject.toString());
             JSONArray file = jsonObject.getJSONArray("files");
             JSONObject obj = file.getJSONObject(0);
-            mMediaPostId = obj.optString("fileId");
-            Log.e("Media Id ", "" + mMediaPostId);
+            videoUrl = obj.optString("url");
+            if (obj.optString("url").contains(".mp4")) {
+                mVideoMediaId = obj.optString("fileId");
+            } else {
+                mImageMediaId = obj.optString("fileId");
+                if (IsThumbNailUploaded) {
+                    uploadVideoToServer(mVideoUri);
+                }
+                IsThumbNailUploaded = false;
+
+            }
+            Log.e("Media Id ", "" + mImageMediaId);
         } catch (Exception e) {
 
         }

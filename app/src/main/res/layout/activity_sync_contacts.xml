@@ -17,25 +17,31 @@
         android:orientation="vertical">
 
         <TextView
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
+            android:gravity="center"
+            android:maxLines="1"
             android:text="@string/it_is_recommended_to_choose_a"
             android:textSize="20sp" />
 
         <TextView
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
+            android:gravity="center"
             android:layout_marginTop="5dp"
+            android:maxLines="1"
             android:text="@string/it_is_recommended_to_choose_b"
             android:textSize="20sp" />
 
         <TextView
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
+            android:gravity="center"
             android:layout_marginTop="5dp"
+            android:maxLines="1"
             android:text="@string/it_is_recommended_to_choose_c"
             android:textSize="20sp" />
 

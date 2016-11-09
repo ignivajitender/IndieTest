@@ -55,6 +55,7 @@ public class CommentActivity extends BaseActivity implements View.OnClickListene
     private PostCommentAdapter mCommentAdapter;
     private String ACTION = "";
     private int INDEX = 0;
+    private String mediaurl;
     private boolean isDeleteBtnVisible = false;
     public static final String mActionTypeLike = "like";
     public static final String mActionTypeDislike = "dislike";
@@ -130,7 +131,11 @@ public class CommentActivity extends BaseActivity implements View.OnClickListene
             selected_post_data = (PostPojo) bundle.getSerializable("POST");
             postId = selected_post_data.getPostId();
 
+             mediaurl=selected_post_data.getMediaUrl();
+
+
             setDataInViewObjects();
+
         } catch (Exception e) {
        e.printStackTrace();
         }
@@ -312,13 +317,13 @@ public class CommentActivity extends BaseActivity implements View.OnClickListene
         }
 
     }
-
+/**
     // create payload to like unlike a post
-// */
+ //        token, userId, type(like/dislike/neutral), post_id
+ // */
     public String createPayload(String type, String postId) {
 
         JSONObject payload = null;
-//        token, userId, type(like/dislike/neutral), post_id
         try {
             payload = new JSONObject();
             payload.put(Constants.TOKEN, PreferenceHandler.readString(this, PreferenceHandler.PREF_KEY_USER_TOKEN, ""));
@@ -698,7 +703,6 @@ public class CommentActivity extends BaseActivity implements View.OnClickListene
                                 mCommentList.get(POSITION).setAction(null);
                                 if (a > 0) {
                                     mCommentList.get(POSITION).setLike(a-1);
-//
                                 }
                             }
 
