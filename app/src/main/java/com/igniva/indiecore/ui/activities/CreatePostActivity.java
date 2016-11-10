@@ -347,8 +347,8 @@ public class CreatePostActivity extends BaseActivity implements AsyncResult, Vie
 
     private void onVideoRecord(Intent data) {
         try {
-           // mVideoUri = data.getData();
-            mVideoUri=fileUri;
+            // mVideoUri = data.getData();
+            mVideoUri = fileUri;
             String video_path = FileUtils.getPath(this, mVideoUri);
             mVideoThumbnail = ThumbnailUtils.createVideoThumbnail(video_path, MediaStore.Video.Thumbnails.MINI_KIND);
             if (mVideoThumbnail != null) {
@@ -368,10 +368,10 @@ public class CreatePostActivity extends BaseActivity implements AsyncResult, Vie
 //            Charset utf8 = Charset.forName("utf-8");
             String video_path = FileUtils.getPath(this, uri);
             String mimeType = getMimeType(uri);
-            Log.e(TAG,mimeType);
+            Log.e(TAG, mimeType);
             //ContentType contentType = ContentType.create(ContentType.create("video/mp4").getMimeType());
 //
-            FileBody file_body_Video = new FileBody(new File(video_path));
+            FileBody file_body_Video = new FileBody(new File(video_path), "video/mp4");
 //            // Video captured and saved to fileUri specified in the Intent
 //
 //            mVideoThumbnail = ThumbnailUtils.createVideoThumbnail(video_path, MediaStore.Video.Thumbnails.MINI_KIND);

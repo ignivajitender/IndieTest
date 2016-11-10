@@ -97,7 +97,7 @@ public class WebServiceClientUploadImage extends
             URL url = new URL(mUrl);
             HttpURLConnection conn = (HttpURLConnection) url.openConnection();
             conn.setReadTimeout(10000);
-            conn.setConnectTimeout(15000);
+            conn.setConnectTimeout(20000);
             conn.setRequestMethod("POST");
             conn.setUseCaches(false);
             conn.setDoInput(true);
@@ -117,7 +117,9 @@ public class WebServiceClientUploadImage extends
             } else {
                 conn.addRequestProperty("Content-length", mReqEntity.getContentLength() + "");
                 conn.addRequestProperty(mReqEntity.getContentType().getName(), mReqEntity.getContentType().getValue());
-               String mmtype=mReqEntity.getContentType().getValue();
+
+               //String mmtype=mReqEntity.getContentType().getValue();
+
                 OutputStream os = conn.getOutputStream();
                 mReqEntity.writeTo(conn.getOutputStream());
                 os.close();
