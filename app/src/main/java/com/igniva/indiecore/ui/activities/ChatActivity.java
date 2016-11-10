@@ -953,6 +953,18 @@ public class ChatActivity extends BaseActivity implements OnChatMsgReceiveListen
         }
     }
 
+    public void updateMessageList(String messageId) {
+        for (int i = messageList.size() - 1; i > 0; i--) {
+            if (messageId.equalsIgnoreCase(messageList.get(i).getMessageId())) {
+                messageList.get(i).setVideoDownload(true);
+                if (mChatAdapter != null) {
+                    mChatAdapter.notifyDataSetChanged();
+                }
+                break;
+            }
+        }
+    }
+
     public String getMimeType(Uri uri) {
         String mimeType = null;
         if (uri.getScheme().equals(ContentResolver.SCHEME_CONTENT)) {
