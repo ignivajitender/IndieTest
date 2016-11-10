@@ -1,6 +1,7 @@
 package com.igniva.indiecore.ui.activities;
 
 import android.content.res.Configuration;
+import android.content.res.Resources;
 import android.os.Bundle;
 import android.widget.MediaController;
 import android.widget.VideoView;
@@ -38,7 +39,8 @@ public class ViewPlayerActivity extends BaseActivity {
 
     @Override
     protected void setDataInViewObjects() {
-        mediaPath = getIntent().getStringExtra(Constants.MEDIA_PATH);
+        try {
+            mediaPath = getIntent().getStringExtra(Constants.MEDIA_PATH);
       /*  position = getIntent().getIntExtra(Constants.POSITION, 0);
         messageId = getIntent().getStringExtra(Constants.MESSAGE_ID);
         localPath = getIntent().getBooleanExtra(Constants.LOCALE, true);*/
@@ -48,27 +50,27 @@ public class ViewPlayerActivity extends BaseActivity {
         } else {
             mediaPath = mediaId;
         }*/
-        if (mediaPath != null) {
-            MediaController mediaController = new MediaController(this);
+            if (mediaPath != null) {
+                MediaController mediaController = new MediaController(this);
 
-            //mediaController.setAnchorView(vvPlayer);
-            mediaController.setMediaPlayer(vvPlayer);
-            vvPlayer.setVideoPath(mediaPath);
-            vvPlayer.setMediaController(mediaController);
-            vvPlayer.requestFocus();
-            vvPlayer.start();
-            mediaController.show();
+                //mediaController.setAnchorView(vvPlayer);
+                mediaController.setMediaPlayer(vvPlayer);
+                vvPlayer.setVideoPath(mediaPath);
+                vvPlayer.setMediaController(mediaController);
+                vvPlayer.requestFocus();
+                vvPlayer.start();
+                mediaController.show();
 
-           /* vvPlayer.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
-                @Override
-                public void onCompletion(MediaPlayer mediaPlayer) {
-                    finish();
-                }
-            });*/
+               /* vvPlayer.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
+                    @Override
+                    public void onCompletion(MediaPlayer mediaPlayer) {
+                        finish();
+                    }
+                });*/
 
-        } else {
-            new Utility().showOkAndFinish("Sorry This Video is not available.", this);
-        }
+            } else {
+                new Utility().showOkAndFinish(getResources().getString(R.string.media_not_available), this);
+            }
 
         /*if (messageId != null) {
             // DownloadFromUrl(mediaPath, "DownloadedFileVide");
@@ -76,6 +78,9 @@ public class ViewPlayerActivity extends BaseActivity {
             // new VideoDownloader().execute(mediaPath);
             new ProgressBack().execute();
         }*/
+        } catch (Resources.NotFoundException e) {
+            e.printStackTrace();
+        }
     }
 
     @Override

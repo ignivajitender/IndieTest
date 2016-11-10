@@ -212,11 +212,13 @@ public class CreatePostActivity extends BaseActivity implements AsyncResult, Vie
                 payload.put(Constants.TEXT, mPostText.getText().toString());
             }
             try {
-                if (videoUrl.contains(".mp4")) {
-                    payload.put(Constants.MEDIA, mVideoMediaId);
-                    payload.put(Constants.THUMBNAIL, mImageMediaId);
-                } else {
-                    payload.put(Constants.MEDIA, mImageMediaId);
+                if(!mImageMediaId.isEmpty()) {
+                    if (videoUrl.contains(".mp4")) {
+                        payload.put(Constants.MEDIA, mVideoMediaId);
+                        payload.put(Constants.THUMBNAIL, mImageMediaId);
+                    } else {
+                        payload.put(Constants.MEDIA, mImageMediaId);
+                    }
                 }
             } catch (JSONException e) {
                 e.printStackTrace();
@@ -371,7 +373,7 @@ public class CreatePostActivity extends BaseActivity implements AsyncResult, Vie
             Log.e(TAG,mimeType);
             //ContentType contentType = ContentType.create(ContentType.create("video/mp4").getMimeType());
 //
-            FileBody file_body_Video = new FileBody(new File(video_path));
+            FileBody file_body_Video = new FileBody(new File(video_path),ContentType.MULTIPART_FORM_DATA);
 //            // Video captured and saved to fileUri specified in the Intent
 //
 //            mVideoThumbnail = ThumbnailUtils.createVideoThumbnail(video_path, MediaStore.Video.Thumbnails.MINI_KIND);

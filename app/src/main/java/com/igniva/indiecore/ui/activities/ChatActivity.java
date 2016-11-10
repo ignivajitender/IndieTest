@@ -359,9 +359,9 @@ public class ChatActivity extends BaseActivity implements OnChatMsgReceiveListen
     }
 
     private void onVideoRecord(Intent data) {
-
-        Utility.showToastMessageShort(this, "" + data);
-        Log.e("VideoPathChatActivity", "" + data.getData());
+        uploadVideoToServer(fileUri);
+//        Utility.showToastMessageShort(this, "" + data);
+//        Log.e("VideoPathChatActivity", "" + data.getData());
 
     }
 

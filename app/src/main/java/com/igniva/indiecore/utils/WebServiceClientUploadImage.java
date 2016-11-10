@@ -117,7 +117,6 @@ public class WebServiceClientUploadImage extends
             } else {
                 conn.addRequestProperty("Content-length", mReqEntity.getContentLength() + "");
                 conn.addRequestProperty(mReqEntity.getContentType().getName(), mReqEntity.getContentType().getValue());
-               String mmtype=mReqEntity.getContentType().getValue();
                 OutputStream os = conn.getOutputStream();
                 mReqEntity.writeTo(conn.getOutputStream());
                 os.close();
