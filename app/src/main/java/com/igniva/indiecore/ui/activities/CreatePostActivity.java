@@ -39,6 +39,7 @@ import com.igniva.indiecore.utils.WebServiceClientUploadImage;
 import org.apache.http.entity.ContentType;
 import org.apache.http.entity.mime.HttpMultipartMode;
 import org.apache.http.entity.mime.MultipartEntity;
+import org.apache.http.entity.mime.MultipartEntityBuilder;
 import org.apache.http.entity.mime.content.ByteArrayBody;
 import org.apache.http.entity.mime.content.ContentBody;
 import org.apache.http.entity.mime.content.FileBody;
@@ -49,6 +50,7 @@ import org.json.JSONObject;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
+import java.util.List;
 
 import id.zelory.compressor.Compressor;
 
@@ -349,8 +351,8 @@ public class CreatePostActivity extends BaseActivity implements AsyncResult, Vie
 
     private void onVideoRecord(Intent data) {
         try {
-           // mVideoUri = data.getData();
-            mVideoUri=fileUri;
+            // mVideoUri = data.getData();
+            mVideoUri = fileUri;
             String video_path = FileUtils.getPath(this, mVideoUri);
             mVideoThumbnail = ThumbnailUtils.createVideoThumbnail(video_path, MediaStore.Video.Thumbnails.MINI_KIND);
             if (mVideoThumbnail != null) {
@@ -362,6 +364,9 @@ public class CreatePostActivity extends BaseActivity implements AsyncResult, Vie
         }
     }
 
+
+
+
     /**
      * upload video to server
      */
@@ -370,19 +375,20 @@ public class CreatePostActivity extends BaseActivity implements AsyncResult, Vie
 //            Charset utf8 = Charset.forName("utf-8");
             String video_path = FileUtils.getPath(this, uri);
             String mimeType = getMimeType(uri);
-            Log.e(TAG,mimeType);
-            //ContentType contentType = ContentType.create(ContentType.create("video/mp4").getMimeType());
-//
-            FileBody file_body_Video = new FileBody(new File(video_path),ContentType.MULTIPART_FORM_DATA);
-//            // Video captured and saved to fileUri specified in the Intent
-//
-//            mVideoThumbnail = ThumbnailUtils.createVideoThumbnail(video_path, MediaStore.Video.Thumbnails.MINI_KIND);
+            Log.e(TAG, mimeType);
+            FileBody file_body_Video = new FileBody(new File(video_path),"video/mp4");
             if (mVideoThumbnail != null) {
                 mIvMediaPost.setVisibility(View.VISIBLE);
                 mIvMediaPost.setImageBitmap(mVideoThumbnail);
             }
-            MultipartEntity reqEntity = new MultipartEntity(HttpMultipartMode.BROWSER_COMPATIBLE);
-            reqEntity.addPart("VideoFile", file_body_Video);
+
+
+            MultipartEntityBuilder builder = MultipartEntityBuilder.create();
+                builder.setMode(HttpMultipartMode.BROWSER_COMPATIBLE);
+            ContentType contentType = ContentType.create("video/mp4");
+//            builder.addPart("video", new FileBody(file_body_Video, contentType, ""));
+          MultipartEntity reqEntity = new MultipartEntity(HttpMultipartMode.BROWSER_COMPATIBLE);
+//            reqEntity.addPart("VideoFile", file_body_Video);
             if (Utility.isInternetConnection(CreatePostActivity.this)) {
                 new WebServiceClientUploadImage(CreatePostActivity.this, this, WebServiceClient.HTTP_UPLOAD_IMAGE, reqEntity, 3, Constants.UPLOAD).execute();
             } else {

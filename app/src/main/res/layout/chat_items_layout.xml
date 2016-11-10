@@ -17,8 +17,8 @@
             android:id="@+id/iv_otheruser_chat"
             android:layout_width="40dp"
             android:layout_height="40dp"
-            android:layout_marginRight="5dp"
             android:layout_alignParentTop="true"
+            android:layout_marginRight="5dp"
             android:src="@drawable/default_user" />
 
         <LinearLayout
@@ -37,14 +37,12 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="left"
-                android:paddingLeft="5dp"
-                android:paddingRight="10dp"
                 android:layout_marginLeft="10dp"
                 android:layout_marginTop="10dp"
+                android:paddingLeft="5dp"
+                android:paddingRight="10dp"
                 android:text="Siddharth awasthi"
-                android:textColor="@color/orange"
-
-                />
+                android:textColor="@color/orange" />
 
             <LinearLayout
                 android:layout_width="wrap_content"
@@ -63,22 +61,24 @@
                         android:paddingBottom="4dp"
                         android:paddingTop="4dp"
                         android:visibility="gone" />
+
                     <ProgressBar
                         android:id="@+id/circular_progress_bar"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="30dp"
-                        android:visibility="gone"
                         android:layout_centerInParent="true"
+                        android:layout_marginTop="30dp"
                         android:indeterminate="false"
                         android:max="48"
-                        android:progress="1"/>
+                        android:progress="1"
+                        android:visibility="gone" />
+
                     <ImageView
                         android:id="@+id/iv_download"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_centerInParent="true"
-                        android:src="@drawable/download_icon"/>
+                        android:src="@drawable/download_icon" />
                 </RelativeLayout>
 
                 <TextView
@@ -101,16 +101,14 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="left"
                     android:gravity="start"
-                    android:paddingLeft="18dp"
                     android:paddingBottom="10dp"
+                    android:paddingLeft="18dp"
                     android:paddingRight="15dp"
                     android:textColor="@color/light_black"
                     android:textSize="12sp" />
             </LinearLayout>
-
         </LinearLayout>
     </RelativeLayout>
-
 
     <RelativeLayout
         android:id="@+id/ll_chat_this_user"
@@ -147,18 +145,32 @@
                 android:background="@drawable/ic_chat_box_right"
                 android:orientation="vertical">
 
-                <ImageView
-                    android:id="@+id/iv_media_this"
+                <RelativeLayout
+                    android:id="@+id/rlThisImg"
                     android:layout_width="150dp"
                     android:layout_height="150dp"
-                    android:layout_gravity="start"
-                    android:layout_marginLeft="5dp"
-                    android:gravity="start"
-                    android:hint="some text"
-                    android:paddingBottom="2dp"
-                    android:paddingRight="5dp"
-                    android:paddingTop="4dp"
-                    android:visibility="gone" />
+                    android:visibility="gone">
+
+                    <ImageView
+                        android:id="@+id/iv_media_this"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_gravity="start"
+                        android:layout_marginLeft="5dp"
+                        android:gravity="start"
+                        android:hint="some text"
+                        android:paddingBottom="2dp"
+                        android:paddingRight="5dp"
+                        android:paddingTop="4dp" />
+
+                    <ImageView
+                        android:id="@+id/imgPlay"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerInParent="true"
+                        android:src="@drawable/play"
+                        android:visibility="gone" />
+                </RelativeLayout>
 
                 <TextView
                     android:id="@+id/tv_lasttext_this"
@@ -178,10 +190,10 @@
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:paddingBottom="5dp"
                     android:gravity="center"
-                    android:paddingLeft="10dp"
-                    android:orientation="horizontal">
+                    android:orientation="horizontal"
+                    android:paddingBottom="5dp"
+                    android:paddingLeft="10dp">
 
                     <TextView
                         android:id="@+id/tv_lasttext_time"
@@ -192,8 +204,8 @@
                         android:layout_weight="4"
                         android:gravity="start"
                         android:hint="00:00"
-                        android:paddingLeft="5dp"
                         android:paddingBottom="10dp"
+                        android:paddingLeft="5dp"
                         android:paddingRight="5dp"
                         android:textColor="@color/light_black"
                         android:textSize="12sp" />
@@ -204,8 +216,8 @@
                         android:layout_height="wrap_content"
                         android:layout_gravity="center_vertical"
                         android:layout_weight="1"
-                        android:paddingRight="5dp"
                         android:paddingBottom="2dp"
+                        android:paddingRight="5dp"
                         android:src="@drawable/ic_sent_tick" />
                 </LinearLayout>
             </LinearLayout>
@@ -215,10 +227,9 @@
             android:id="@+id/iv_this_user_chat"
             android:layout_width="40dp"
             android:layout_height="40dp"
-            android:layout_marginLeft="5dp"
             android:layout_alignParentBottom="true"
             android:layout_alignParentRight="true"
+            android:layout_marginLeft="5dp"
             android:src="@drawable/default_user" />
     </RelativeLayout>
-
 </LinearLayout>

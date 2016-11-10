@@ -99,23 +99,27 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.RecyclerViewHo
                 if (!mChatList.get(position).getText().isEmpty()) {
                     //For text chat
                     holder.mTv_LastMessage_ThisUser.setVisibility(View.VISIBLE);
-                    holder.mMediaThis.setVisibility(View.GONE);
+                    holder.mRlThisImg.setVisibility(View.GONE);
+                    // holder.mMediaThis.setVisibility(View.GONE);
                     holder.mLlThis.setBackgroundResource(R.drawable.chat_bubble_rt);
                     holder.mTv_LastMessage_ThisUser.setText(mChatList.get(position).getText());
                 } else {
                     holder.mTv_LastMessage_ThisUser.setVisibility(View.GONE);
-                    holder.mMediaThis.setVisibility(View.VISIBLE);
+                    holder.mRlThisImg.setVisibility(View.VISIBLE);
+                    // holder.mMediaThis.setVisibility(View.VISIBLE);
                     if (!mChatList.get(position).getThumb().isEmpty()) {
 
                         holder.mLlThis.setBackgroundResource(0);
                         holder.mLlThis.setBackgroundColor(Color.parseColor("#FFFFFF"));
                         holder.mMediaThis.setImageBitmap(decodeBase64(mChatList.get(position).getThumb()));
 
-                       /* if (mChatList.get(position).getType().equalsIgnoreCase("video")) {
+                        if (mChatList.get(position).getType().equalsIgnoreCase("video")) {
                             //For video chat
+                            holder.mImgPlay.setVisibility(View.VISIBLE);
                         } else {
                             //For image chat
-                        }*/
+                            holder.mImgPlay.setVisibility(View.GONE);
+                        }
                     } else {
                         holder.mLlThis.setBackgroundResource(R.drawable.chat_bubble_rt);
                     }
@@ -140,23 +144,6 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.RecyclerViewHo
                 holder.mRlOther.setVisibility(View.VISIBLE);
                 holder.mProgressBar.setVisibility(View.GONE);
 
-                if (mChatList.get(position).getType().equalsIgnoreCase("TEXT")) {
-                    holder.mIvDownloadOther.setVisibility(View.GONE);
-                } else {
-                    holder.mIvDownloadOther.setVisibility(View.VISIBLE);
-                }
-
-                /*if (mChatList.get(position).getType().equalsIgnoreCase("TEXT")) {
-                    holder.mIvDownloadOther.setVisibility(View.GONE);
-                } else if (mChatList.get(position).getType().equalsIgnoreCase("Photo")) {
-                    holder.mIvDownloadOther.setVisibility(View.VISIBLE);
-                    holder.mIvDownloadOther.setImageDrawable(context.getApplicationContext().getResources().getDrawable(R.drawable.download_icon));
-                } else if (mChatList.get(position).getType().equalsIgnoreCase("video")) {
-                    //change icon in video
-                    holder.mIvDownloadOther.setVisibility(View.VISIBLE);
-                    holder.mIvDownloadOther.setImageDrawable(context.getApplicationContext().getResources().getDrawable(R.drawable.play));
-                }*/
-
                 holder.mTvOtherUserName.setText(mChatList.get(position).getName());
                 if (mChatList.get(position).getIcon() != null && !mChatList.get(position).getIcon().isEmpty()) {
                     Glide.with(context).load(WebServiceClient.HTTP_STAGING + mChatList.get(position).getIcon())
@@ -168,8 +155,53 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.RecyclerViewHo
                     holder.mIvOtherUserImage.setImageResource(R.drawable.default_user);
                 }
 
+                if (!mChatList.get(position).getText().isEmpty() && mChatList.get(position).getType().equalsIgnoreCase("TEXT")) {
 
-                if (!mChatList.get(position).getText().isEmpty() && mChatList.get(position).getType().equalsIgnoreCase(Constants.TEXT)) {
+                    holder.mIvDownloadOther.setVisibility(View.GONE);
+                    holder.mTv_LastMessage_OtherUser.setVisibility(View.VISIBLE);
+                    holder.mMediaOther.setVisibility(View.GONE);
+                    holder.mLlOther.setBackgroundResource(R.drawable.chat_bubble_lt);
+                    holder.mTv_LastMessage_OtherUser.setText(mChatList.get(position).getText());
+
+                } else {
+                    holder.mTv_LastMessage_OtherUser.setVisibility(View.GONE);
+                    holder.mMediaOther.setVisibility(View.VISIBLE);
+
+                    if (!mChatList.get(position).getThumb().isEmpty()) {
+                        holder.mLlOther.setBackgroundResource(0);
+                        holder.mLlOther.setBackgroundColor(Color.parseColor("#FFFFFF"));
+                        holder.mMediaOther.setImageBitmap(decodeBase64(mChatList.get(position).getThumb()));
+
+                    } else {
+                        holder.mLlOther.setBackgroundResource(R.drawable.chat_bubble_lt);
+                    }
+
+                    if (mChatList.get(position).getType().equalsIgnoreCase("Photo")) {
+                        if (mChatList.get(position).getImagePath() != null && !mChatList.get(position).getImagePath().isEmpty()) {
+                            //Received photo has local path
+                            holder.mIvDownloadOther.setVisibility(View.GONE);
+                            Is_downloaded = true;
+                        } else {
+                            //Received photo has no local path
+                            Is_downloaded = false;
+                            holder.mIvDownloadOther.setVisibility(View.VISIBLE);
+                            holder.mIvDownloadOther.setImageDrawable(context.getApplicationContext().getResources().getDrawable(R.drawable.download_icon));
+                        }
+                    } else {
+                        //change icon in video
+                        if (mChatList.get(position).getImagePath() != null && !mChatList.get(position).getImagePath().isEmpty()) {
+                            //Received video has local path
+                            holder.mIvDownloadOther.setVisibility(View.VISIBLE);
+                            holder.mIvDownloadOther.setImageDrawable(context.getApplicationContext().getResources().getDrawable(R.drawable.play));
+                        } else {
+                            //Received video has no local path
+                            holder.mIvDownloadOther.setVisibility(View.VISIBLE);
+                            holder.mIvDownloadOther.setImageDrawable(context.getApplicationContext().getResources().getDrawable(R.drawable.download_icon));
+                        }
+                    }
+                }
+
+               /* if (!mChatList.get(position).getText().isEmpty() && mChatList.get(position).getType().equalsIgnoreCase(Constants.TEXT)) {
                     holder.mTv_LastMessage_OtherUser.setVisibility(View.VISIBLE);
                     holder.mMediaOther.setVisibility(View.GONE);
                     holder.mLlOther.setBackgroundResource(R.drawable.chat_bubble_lt);
@@ -183,16 +215,16 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.RecyclerViewHo
                         holder.mLlOther.setBackgroundColor(Color.parseColor("#FFFFFF"));
                         holder.mMediaOther.setImageBitmap(decodeBase64(mChatList.get(position).getThumb()));
 
-                           /* if (mChatList.get(position).getType().equalsIgnoreCase("video")) {
+                           *//* if (mChatList.get(position).getType().equalsIgnoreCase("video")) {
                             //For video chat
                         } else {
                             //For image chat
-                        }*/
+                        }*//*
 
                     } else {
                         holder.mLlOther.setBackgroundResource(R.drawable.chat_bubble_lt);
                     }
-                }
+                }*/
 
                 time = mChatList.get(position).getDate_updated();
                 if (time != null && time.length() > 0 && time.contains("T")) {
@@ -201,7 +233,7 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.RecyclerViewHo
                     holder.mOtherUserLastTextTime.setText(time);
                 }
 
-                if (mChatList.get(position).getImagePath() != null) {
+                /*if (mChatList.get(position).getImagePath() != null) {
                     if (mChatList.get(position).getImagePath().isEmpty()) {
                         holder.mIvDownloadOther.setVisibility(View.VISIBLE);
                         holder.mMediaOther.setEnabled(true);
@@ -210,7 +242,7 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.RecyclerViewHo
                         holder.mIvDownloadOther.setVisibility(View.GONE);
                         Is_downloaded = true;
                     }
-                }
+                }*/
 
             }
 
@@ -229,6 +261,17 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.RecyclerViewHo
                     context.startActivity(intent);
                 }
             });
+
+            holder.mImgPlay.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    Intent intent = new Intent(context, ViewPlayerActivity.class);
+                    intent.putExtra(Constants.MEDIA_PATH, mChatList.get(position).getImagePath());
+                    context.startActivity(intent);
+                }
+            });
+
+
             holder.mMediaOther.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -243,7 +286,7 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.RecyclerViewHo
                         intent.putExtra(Constants.MEDIA_PATH, mChatList.get(position).getImagePath());
                         context.startActivity(intent);
                     } else {
-                        if (mChatList.get(position).getType().equalsIgnoreCase("video")) {
+                        if (mChatList.get(position).getType().equalsIgnoreCase("video") ) {
                             Is_Clicked = true;
                             holder.mIvDownloadOther.setVisibility(View.GONE);
                             holder.mProgressBar.setVisibility(View.VISIBLE);
@@ -307,6 +350,9 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.RecyclerViewHo
         private ImageView mIvMessageStatus;
         ProgressBar mProgressBar;
 
+        private RelativeLayout mRlThisImg;
+        private ImageView mImgPlay;
+
         public RecyclerViewHolders(final View itemView) {
             super(itemView);
             itemView.setOnClickListener(this);
@@ -331,10 +377,13 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.RecyclerViewHo
             mRlOther = (RelativeLayout) itemView.findViewById(R.id.ll_chat_other);
             mIvMessageStatus = (ImageView) itemView.findViewById(R.id.iv_message_status);
 
+            mRlThisImg = (RelativeLayout) itemView.findViewById(R.id.rlThisImg);
+            mImgPlay = (ImageView) itemView.findViewById(R.id.imgPlay);
         }
 
         @Override
         public void onClick(View view) {
+
 
         }
     }

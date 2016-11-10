@@ -12,6 +12,7 @@ import android.widget.ProgressBar;
 import com.igniva.indiecore.R;
 import com.igniva.indiecore.controller.WebServiceClient;
 
+import org.apache.http.HttpEntity;
 import org.apache.http.entity.mime.MultipartEntity;
 
 import java.io.BufferedInputStream;
@@ -50,6 +51,13 @@ public class WebServiceClientUploadImage extends
         this.mContext = mContext;
         this.mCallBack = callBackUpload;
         this.urlNo = urlNo;
+        this.mTaskName = taskName;
+    }
+    public WebServiceClientUploadImage(Context mContext, AsyncResult callBackUpload, String urlString, MultipartEntity reqEntity, String taskName) {
+        this.mUrl = urlString;
+        this.mReqEntity = reqEntity;
+        this.mContext = mContext;
+        this.mCallBack = callBackUpload;
         this.mTaskName = taskName;
     }
 
@@ -97,7 +105,7 @@ public class WebServiceClientUploadImage extends
             URL url = new URL(mUrl);
             HttpURLConnection conn = (HttpURLConnection) url.openConnection();
             conn.setReadTimeout(10000);
-            conn.setConnectTimeout(15000);
+            conn.setConnectTimeout(20000);
             conn.setRequestMethod("POST");
             conn.setUseCaches(false);
             conn.setDoInput(true);

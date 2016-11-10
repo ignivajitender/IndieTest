@@ -876,9 +876,7 @@ public class ChatActivity extends BaseActivity implements OnChatMsgReceiveListen
                 // Video captured and saved to fileUri specified in the Intent
 
                 Bitmap mVideoThumbnail = ThumbnailUtils.createVideoThumbnail(video_path, MediaStore.Video.Thumbnails.MINI_KIND);
-
-                base64EncodedVideo = Utility.encodeTobase64(mVideoThumbnail);
-
+                  base64EncodedVideo = Utility.encodeTobase64(mVideoThumbnail);
                 //mIvMediaPost.setImageBitmap(mVideoThumbnail);
                 MultipartEntity reqEntity = new MultipartEntity(HttpMultipartMode.BROWSER_COMPATIBLE);
                 reqEntity.addPart("fileToUpload", file_body_Video);
