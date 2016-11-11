@@ -59,10 +59,9 @@ public class ViewPlayerActivity extends BaseActivity {
             mediaPath = mediaId;
         }*/
 
-        if (fromClass.equalsIgnoreCase("WallPostAdapter")) {
+        if (fromClass != null && fromClass.equalsIgnoreCase("WallPostAdapter")) {
             mediaPath = WebServiceClient.HTTP_STAGING + mediaPath;
         }
-
 
         if (mediaPath != null) {
 
@@ -327,5 +326,34 @@ public class ViewPlayerActivity extends BaseActivity {
             vvPlayer.seekTo(stopPosition);
         }*//*
     }*/
+
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        try {
+            if (vvPlayer != null) {
+                vvPlayer.seekTo(stopPosition);
+                 vvPlayer.start();
+                //vvPlayer.resume();
+                if (mProgressbar != null) {
+                    mProgressbar.setVisibility(View.VISIBLE);
+                }
+            }
+        } catch (Exception e) {
+        }
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        try {
+            if (vvPlayer != null) {
+                stopPosition = vvPlayer.getCurrentPosition();
+                vvPlayer.pause();
+            }
+        } catch (Exception e) {
+        }
+    }
 
 }

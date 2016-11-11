@@ -121,7 +121,7 @@ public class MultipartUtility {
      * @throws IOException
      */
     public String finish() throws IOException {
-        StringBuilder responseBuilder=new StringBuilder();
+        StringBuilder responseBuilder = new StringBuilder();
         writer.append(LINE_FEED).flush();
         writer.append("--" + boundary + "--").append(LINE_FEED);
         writer.close();
