@@ -1,8 +1,11 @@
 package com.igniva.indiecore.ui.activities;
 
 import android.content.res.Configuration;
+import android.media.MediaPlayer;
 import android.os.Bundle;
+import android.view.View;
 import android.widget.MediaController;
+import android.widget.ProgressBar;
 import android.widget.VideoView;
 
 import com.igniva.indiecore.R;
@@ -16,6 +19,9 @@ public class ViewPlayerActivity extends BaseActivity {
     //String mediaId;
     String mediaPath;
     String fromClass;
+    ProgressBar mProgressbar;
+    private int stopPosition;
+    //private MediaPlayer mMediaPlayer;
     /* int position;
      String messageId;
      boolean localPath;*/
@@ -36,6 +42,7 @@ public class ViewPlayerActivity extends BaseActivity {
     @Override
     protected void setUpLayout() {
         vvPlayer = (VideoView) findViewById(R.id.vvPlayer);
+        mProgressbar = (ProgressBar) findViewById(R.id.progressbar);
     }
 
     @Override
@@ -58,6 +65,9 @@ public class ViewPlayerActivity extends BaseActivity {
 
 
         if (mediaPath != null) {
+
+            mProgressbar.setVisibility(View.VISIBLE);
+
             MediaController mediaController = new MediaController(this);
 
             //mediaController.setAnchorView(vvPlayer);
@@ -65,7 +75,7 @@ public class ViewPlayerActivity extends BaseActivity {
             vvPlayer.setVideoPath(mediaPath);
             vvPlayer.setMediaController(mediaController);
             vvPlayer.requestFocus();
-            vvPlayer.start();
+            //vvPlayer.start();
             mediaController.show();
 
            /* vvPlayer.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
@@ -74,6 +84,16 @@ public class ViewPlayerActivity extends BaseActivity {
                     finish();
                 }
             });*/
+
+            vvPlayer.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
+                // Close the progress bar and play the video
+                public void onPrepared(MediaPlayer mp) {
+                    //mMediaPlayer = mp;
+                    mProgressbar.setVisibility(View.GONE);
+                    vvPlayer.start();
+                }
+            });
+
 
         } else {
             new Utility().showOkAndFinish("Sorry This Video is not available.", this);
@@ -284,4 +304,28 @@ public class ViewPlayerActivity extends BaseActivity {
         }
 
     }*/
+
+   /* @Override
+    public void onPause() {
+        super.onPause();
+        stopPosition = vvPlayer.getCurrentPosition(); //stopPosition is an int
+        if(mMediaPlayer.isPlaying()){
+            mMediaPlayer.pause();
+        }
+        *//*if (vvPlayer.isPlaying())
+            vvPlayer.pause();*//*
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        if (mMediaPlayer != null) {
+            mMediaPlayer.start();
+        }
+        // mMediaPlayer.seekTo(stopPosition);
+       *//* if (vvPlayer != null) {
+            vvPlayer.seekTo(stopPosition);
+        }*//*
+    }*/
+
 }
