@@ -106,7 +106,7 @@ public class PhonebookAdapter extends RecyclerView.Adapter<PhonebookAdapter.Recy
                     intent.putExtra(Constants.PERSON_ID, indieCoreUsersLIst.get(position).getUserId());
                     if (indieCoreUsersLIst.get(position).getProfile().getLastName() != null) {
                         intent.putExtra(Constants.NAME, indieCoreUsersLIst.get(position).getProfile().getFirstName() + " " + indieCoreUsersLIst.get(position).getProfile().getLastName());
-                    }else{
+                    } else {
                         intent.putExtra(Constants.NAME, indieCoreUsersLIst.get(position).getProfile().getFirstName());
                     }
                     intent.putExtra(Constants.INDEX, 44);
@@ -119,7 +119,6 @@ public class PhonebookAdapter extends RecyclerView.Adapter<PhonebookAdapter.Recy
         });
 
     }
-
 
     @Override
     public int getItemCount() {

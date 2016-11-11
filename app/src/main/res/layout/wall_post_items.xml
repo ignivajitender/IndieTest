@@ -145,13 +145,38 @@
                     android:background="@color/white"
                     android:orientation="vertical">
 
-                    <ImageView
+
+                    <RelativeLayout
+                        android:id="@+id/rlMedia"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:visibility="gone">
+
+                        <ImageView
+                            android:id="@+id/iv_media_post"
+                            android:layout_width="match_parent"
+                            android:layout_height="200dp"
+                            android:layout_margin="5dp"
+                            android:scaleType="centerCrop"
+                            />
+
+                        <ImageView
+                            android:id="@+id/imgPlay"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_centerInParent="true"
+                            android:visibility="gone"
+                            android:src="@drawable/play"/>
+
+                    </RelativeLayout>
+
+                   <!-- <ImageView
                         android:id="@+id/iv_media_post"
                         android:layout_width="match_parent"
                         android:layout_height="200dp"
                         android:layout_margin="5dp"
                         android:scaleType="centerCrop"
-                        android:visibility="gone" />
+                        android:visibility="gone" />-->
 
                     <TextView
                         android:id="@+id/tv_post_text"

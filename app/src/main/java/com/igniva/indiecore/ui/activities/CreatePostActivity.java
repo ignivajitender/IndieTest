@@ -41,7 +41,6 @@ import org.apache.http.entity.mime.HttpMultipartMode;
 import org.apache.http.entity.mime.MultipartEntity;
 import org.apache.http.entity.mime.content.ByteArrayBody;
 import org.apache.http.entity.mime.content.ContentBody;
-import org.apache.http.entity.mime.content.FileBody;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -68,7 +67,8 @@ public class CreatePostActivity extends BaseActivity implements AsyncResult, Vie
     public static final int REQUEST_CAMERA = 100;
     public static final int SELECT_FILE = 200;
     private static final int CAPTURE_VIDEO_ACTIVITY_REQUEST_CODE = 300;
-    private String videoUrl = "";
+    //private String videoUrl = "";
+    private String fileType="";
     private Uri mVideoUri;
     private boolean IsThumbNailUploaded = false;
     private Toolbar mToolbar;
@@ -212,12 +212,20 @@ public class CreatePostActivity extends BaseActivity implements AsyncResult, Vie
                 payload.put(Constants.TEXT, mPostText.getText().toString());
             }
             try {
-                if (videoUrl.contains(".mp4")) {
+                if(fileType.contains("video")){
+                    payload.put(Constants.MEDIA, mVideoMediaId);
+                    payload.put(Constants.THUMBNAIL, mImageMediaId);
+                }else{
+                    payload.put(Constants.MEDIA, mImageMediaId);
+                }
+
+
+               /* if (videoUrl.contains(".mp4")) {
                     payload.put(Constants.MEDIA, mVideoMediaId);
                     payload.put(Constants.THUMBNAIL, mImageMediaId);
                 } else {
                     payload.put(Constants.MEDIA, mImageMediaId);
-                }
+                }*/
             } catch (JSONException e) {
                 e.printStackTrace();
             }
@@ -367,22 +375,13 @@ public class CreatePostActivity extends BaseActivity implements AsyncResult, Vie
         try {
 //            Charset utf8 = Charset.forName("utf-8");
             String video_path = FileUtils.getPath(this, uri);
-            String mimeType = getMimeType(uri);
-            Log.e(TAG, mimeType);
-            //ContentType contentType = ContentType.create(ContentType.create("video/mp4").getMimeType());
-//
-            FileBody file_body_Video = new FileBody(new File(video_path), "video/mp4");
-//            // Video captured and saved to fileUri specified in the Intent
-//
-//            mVideoThumbnail = ThumbnailUtils.createVideoThumbnail(video_path, MediaStore.Video.Thumbnails.MINI_KIND);
             if (mVideoThumbnail != null) {
                 mIvMediaPost.setVisibility(View.VISIBLE);
                 mIvMediaPost.setImageBitmap(mVideoThumbnail);
             }
-            MultipartEntity reqEntity = new MultipartEntity(HttpMultipartMode.BROWSER_COMPATIBLE);
-            reqEntity.addPart("VideoFile", file_body_Video);
+
             if (Utility.isInternetConnection(CreatePostActivity.this)) {
-                new WebServiceClientUploadImage(CreatePostActivity.this, this, WebServiceClient.HTTP_UPLOAD_IMAGE, reqEntity, 3, Constants.UPLOAD).execute();
+                new WebServiceClientUploadImage(CreatePostActivity.this, this, WebServiceClient.HTTP_UPLOAD_IMAGE, video_path, 3, Constants.UPLOAD_VIDEO).execute();
             } else {
                 // open dialog here
                 new Utility().showNoInternetDialog((Activity) CreatePostActivity.this);
@@ -531,8 +530,20 @@ public class CreatePostActivity extends BaseActivity implements AsyncResult, Vie
             Log.e("response media uplaod", jsonObject.toString());
             JSONArray file = jsonObject.getJSONArray("files");
             JSONObject obj = file.getJSONObject(0);
-            videoUrl = obj.optString("url");
-            if (obj.optString("url").contains(".mp4")) {
+           // videoUrl = obj.optString("url");
+            fileType=obj.optString("type");
+            if(fileType.contains("video")){
+                mVideoMediaId = obj.optString("fileId");
+            }else{
+                mImageMediaId = obj.optString("fileId");
+            }
+
+            if (IsThumbNailUploaded) {
+                uploadVideoToServer(mVideoUri);
+            }
+            IsThumbNailUploaded = false;
+
+            /*if (obj.optString("url").contains(".mp4")) {
                 mVideoMediaId = obj.optString("fileId");
             } else {
                 mImageMediaId = obj.optString("fileId");
@@ -541,7 +552,7 @@ public class CreatePostActivity extends BaseActivity implements AsyncResult, Vie
                 }
                 IsThumbNailUploaded = false;
 
-            }
+            }*/
             Log.e("Media Id ", "" + mImageMediaId);
         } catch (Exception e) {
 

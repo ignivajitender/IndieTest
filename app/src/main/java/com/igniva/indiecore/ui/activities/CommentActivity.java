@@ -15,6 +15,7 @@ import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
@@ -43,7 +44,7 @@ import java.util.ArrayList;
 /**
  * Created by igniva-andriod-05 on 22/7/16.
  */
-public class CommentActivity extends BaseActivity implements View.OnClickListener{
+public class CommentActivity extends BaseActivity implements View.OnClickListener {
 
     private Toolbar mToolbar;
     private RecyclerView mRvComment;
@@ -65,6 +66,8 @@ public class CommentActivity extends BaseActivity implements View.OnClickListene
     String postId = "";
     int action = 0;
     PostPojo selected_post_data = null;
+    private RelativeLayout mRlMedia;
+    private ImageView mImgPlay;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -120,24 +123,28 @@ public class CommentActivity extends BaseActivity implements View.OnClickListene
             mPostComments = (TextView) findViewById(R.id.tv_comment_comment_activity);
             mPostTime = (TextView) findViewById(R.id.tv_post_time_comment_activity);
             mPostMedia = (ImageView) findViewById(R.id.iv_media_post_comment_activity);
+            mRlMedia = (RelativeLayout) findViewById(R.id.rlMedia);
+            mImgPlay = (ImageView) findViewById(R.id.imgPlay);
 
             mDropDownOptions = (ImageView) findViewById(R.id.iv_drop_down_menu);
             mDropDownOptions.setOnClickListener(this);
             mReportPost = (ImageView) findViewById(R.id.iv_delete_report_post);
             mReportPost.setOnClickListener(this);
+            mPostMedia.setOnClickListener(this);
+            mImgPlay.setOnClickListener(this);
 
             Intent intent = this.getIntent();
             Bundle bundle = intent.getExtras();
             selected_post_data = (PostPojo) bundle.getSerializable("POST");
             postId = selected_post_data.getPostId();
 
-             mediaurl=selected_post_data.getMediaUrl();
+            mediaurl = selected_post_data.getMediaUrl();
 
 
             setDataInViewObjects();
 
         } catch (Exception e) {
-       e.printStackTrace();
+            e.printStackTrace();
         }
 
     }
@@ -149,7 +156,7 @@ public class CommentActivity extends BaseActivity implements View.OnClickListene
             String Name = ((selected_post_data.getFirstName()) + " " + (selected_post_data.getLastName()).charAt(0) + ".");
             mUserName.setText(Name);
             try {
-                if (!selected_post_data.getProfile_pic().isEmpty() && selected_post_data.getProfile_pic()!=null) {
+                if (!selected_post_data.getProfile_pic().isEmpty() && selected_post_data.getProfile_pic() != null) {
                     Glide.with(this).load(WebServiceClient.HTTP_STAGING + selected_post_data.getProfile_pic())
                             .thumbnail(1f)
                             .crossFade()
@@ -164,25 +171,34 @@ public class CommentActivity extends BaseActivity implements View.OnClickListene
 
             try {
                 if (!selected_post_data.getMediaUrl().isEmpty()) {
-                    mPostMedia.setVisibility(View.VISIBLE);
-                    Glide.with(this).load(WebServiceClient.HTTP_STAGING + selected_post_data.getMediaUrl())
+
+                    String mediaUrl;
+                    mRlMedia.setVisibility(View.VISIBLE);
+                    if (selected_post_data.getMediaType().equalsIgnoreCase("photo")) {
+                        mediaUrl = WebServiceClient.HTTP_STAGING + selected_post_data.getMediaUrl();
+                        mImgPlay.setVisibility(View.GONE);
+                    } else {
+                        mediaUrl = WebServiceClient.HTTP_STAGING + selected_post_data.getThumbUrl();
+                        mImgPlay.setVisibility(View.VISIBLE);
+                    }
+
+                    Glide.with(this).load(mediaUrl)
                             .thumbnail(1f)
                             .crossFade()
                             .diskCacheStrategy(DiskCacheStrategy.ALL)
                             .into(mPostMedia);
                 }
-            }catch (Exception e){
+            } catch (Exception e) {
                 e.printStackTrace();
             }
 
 
-
-            mPostTime.setText((selected_post_data.getDate_created()).substring(0,10));
+            mPostTime.setText((selected_post_data.getDate_created()).substring(0, 10));
             mPostText.setText(selected_post_data.getText());
-            mPostLike.setText(selected_post_data.getLike()+"");
-            mPostDislike.setText(selected_post_data.getDislike()+"");
-            mPostNeutral.setText(selected_post_data.getNeutral()+"");
-            mPostComments.setText(selected_post_data.getComment()+"");
+            mPostLike.setText(selected_post_data.getLike() + "");
+            mPostDislike.setText(selected_post_data.getDislike() + "");
+            mPostNeutral.setText(selected_post_data.getNeutral() + "");
+            mPostComments.setText(selected_post_data.getComment() + "");
 
             if (selected_post_data.getAction() != null) {
                 if (selected_post_data.getAction().equalsIgnoreCase(Constants.LIKE)) {
@@ -206,7 +222,7 @@ public class CommentActivity extends BaseActivity implements View.OnClickListene
                     mPostLike.setEnabled(false);
                     mPostDislike.setEnabled(false);
                     mPostNeutral.setEnabled(true);
-                }else {
+                } else {
                     mPostLike.setCompoundDrawablesWithIntrinsicBounds(R.drawable.like_grey_icon_circle, 0, 0, 0);
                     mPostDislike.setCompoundDrawablesWithIntrinsicBounds(R.drawable.dislike_grey_icon_circle, 0, 0, 0);
                     mPostNeutral.setCompoundDrawablesWithIntrinsicBounds(R.drawable.hand_grey_icon_circle, 0, 0, 0);
@@ -241,7 +257,7 @@ public class CommentActivity extends BaseActivity implements View.OnClickListene
                 try {
                     String comment_text = mEtCommentText.getText().toString().trim();
                     if (comment_text.isEmpty()) {
-                        Utility.showAlertDialog(getResources().getString(R.string.comment_text_validation_message), this,null);
+                        Utility.showAlertDialog(getResources().getString(R.string.comment_text_validation_message), this, null);
                         return;
                     } else {
                         postComment(selected_post_data.getPostId(), comment_text);
@@ -311,16 +327,33 @@ public class CommentActivity extends BaseActivity implements View.OnClickListene
 
                 break;
 
+            case R.id.iv_media_post_comment_activity:
+                if (selected_post_data.getMediaType().equalsIgnoreCase("video")) {
+                    Intent intent = new Intent(this, ViewPlayerActivity.class);
+                    intent.putExtra(Constants.MEDIA_PATH, selected_post_data.getMediaUrl());
+                    intent.putExtra(Constants.FROM_CLASS, "WallPostAdapter");
+                    startActivity(intent);
+                }
+                break;
+            case R.id.imgPlay:
+                Intent intent = new Intent(this, ViewPlayerActivity.class);
+                intent.putExtra(Constants.MEDIA_PATH, selected_post_data.getMediaUrl());
+                intent.putExtra(Constants.FROM_CLASS, "WallPostAdapter");
+                startActivity(intent);
+                break;
+
 
             default:
                 break;
         }
 
     }
-/**
-    // create payload to like unlike a post
- //        token, userId, type(like/dislike/neutral), post_id
- // */
+
+    /**
+     * // create payload to like unlike a post
+     * //        token, userId, type(like/dislike/neutral), post_id
+     * //
+     */
     public String createPayload(String type, String postId) {
 
         JSONObject payload = null;
@@ -339,10 +372,10 @@ public class CommentActivity extends BaseActivity implements View.OnClickListene
 
 
     /**
-  * like/unlike/neutral action to a post
-  * @parms post_id
-  *
-  * */
+     * like/unlike/neutral action to a post
+     *
+     * @parms post_id
+     */
     public void likeUnlikePost(String type, String postId) {
         //create payload with parameters is to be call here
 
@@ -357,8 +390,8 @@ public class CommentActivity extends BaseActivity implements View.OnClickListene
 
 
     /**
- * like unlike response to  a post
- * */
+     * like unlike response to  a post
+     */
     ResponseHandlerListener responseHandl = new ResponseHandlerListener() {
         @Override
         public void onComplete(ResponsePojo result, WebServiceClient.WebError error, ProgressDialog mProgressDialog) {
@@ -477,10 +510,8 @@ public class CommentActivity extends BaseActivity implements View.OnClickListene
 
 
     /**
- * payload to write  a comment to a post
- *
- *
- * */
+     * payload to write  a comment to a post
+     */
     public String genratePayload(String postId, String text) {
         JSONObject payload = null;
         try {
@@ -498,9 +529,8 @@ public class CommentActivity extends BaseActivity implements View.OnClickListene
     }
 
     /**
-    * to post a comment for a businesspost
-    *
-    * */
+     * to post a comment for a businesspost
+     */
     public void postComment(String postId, String text) {
 
         String payload = genratePayload(postId, text);
@@ -513,9 +543,8 @@ public class CommentActivity extends BaseActivity implements View.OnClickListene
     }
 
     /**
-    *
-    * response of  a comment post
-    * */
+     * response of  a comment post
+     */
     ResponseHandlerListener responseHandlerComment = new ResponseHandlerListener() {
         @Override
         public void onComplete(ResponsePojo result, WebServiceClient.WebError error, ProgressDialog mProgressDialog) {
@@ -526,15 +555,15 @@ public class CommentActivity extends BaseActivity implements View.OnClickListene
 
                 if (result.getSuccess().equalsIgnoreCase("true")) {
 
-                                        InputMethodManager imm = (InputMethodManager) getSystemService(
+                    InputMethodManager imm = (InputMethodManager) getSystemService(
                             Activity.INPUT_METHOD_SERVICE);
                     imm.toggleSoftInput(InputMethodManager.HIDE_IMPLICIT_ONLY, 0);
 
 
                     Utility.showToastMessageLong(CommentActivity.this, "comment posted");
-                    String comment_count=mPostComments.getText().toString();
-                    int count=Integer.parseInt(comment_count.trim());
-                    mPostComments.setText(count+1+"");
+                    String comment_count = mPostComments.getText().toString();
+                    int count = Integer.parseInt(comment_count.trim());
+                    mPostComments.setText(count + 1 + "");
                     mEtCommentText.setText("");
                     viewAllComments(postId);
 
@@ -553,10 +582,8 @@ public class CommentActivity extends BaseActivity implements View.OnClickListene
 
 
     /**
-    *
-    * payload to get comments of a post
-    *
-    * */
+     * payload to get comments of a post
+     */
     public String createPayload(String postId) {
 //        PARAMETER: token, userId, postId, page, limit
         JSONObject payload = null;
@@ -577,10 +604,8 @@ public class CommentActivity extends BaseActivity implements View.OnClickListene
 
 
     /**
-    *
-    * to get all comments of a post
-    *
-    * */
+     * to get all comments of a post
+     */
     public void viewAllComments(String postId) {
 
         try {
@@ -597,9 +622,8 @@ public class CommentActivity extends BaseActivity implements View.OnClickListene
     }
 
     /**
-    *
-    * response all get comments
-    * */
+     * response all get comments
+     */
     ResponseHandlerListener responseHandle = new ResponseHandlerListener() {
         @Override
         public void onComplete(ResponsePojo result, WebServiceClient.WebError error, ProgressDialog mProgressDialog) {
@@ -609,12 +633,12 @@ public class CommentActivity extends BaseActivity implements View.OnClickListene
                 if (error == null) {
                     if (result.getSuccess().equalsIgnoreCase("true")) {
 
-                        mPostComments.setText(result.getTotalComments()+"");
+                        mPostComments.setText(result.getTotalComments() + "");
                         mCommentList = new ArrayList<>();
                         mCommentList.addAll(result.getCommentList());
 
                         mCommentAdapter = null;
-                        mCommentAdapter = new PostCommentAdapter(CommentActivity.this, mCommentList, onCommentLikeClickListner,onCommentDislikeClickListner,onCommentNeutralClickListner,onCommentReplyClickListner,onCommentDeleteClickListner);
+                        mCommentAdapter = new PostCommentAdapter(CommentActivity.this, mCommentList, onCommentLikeClickListner, onCommentDislikeClickListner, onCommentNeutralClickListner, onCommentReplyClickListner, onCommentDeleteClickListner);
                         mRvComment.setAdapter(mCommentAdapter);
                     }
                 }
@@ -630,12 +654,10 @@ public class CommentActivity extends BaseActivity implements View.OnClickListene
     };
 
 
-   /**
-   * token, userId, type(like/dislike/neutral), commentId
-   * generate payload to like unlike a comment
-   *
-   *
-   * */
+    /**
+     * token, userId, type(like/dislike/neutral), commentId
+     * generate payload to like unlike a comment
+     */
 
     public String createPayloadLikeUNLikeComment(String type, String commentId) {
         JSONObject payload = null;
@@ -654,11 +676,8 @@ public class CommentActivity extends BaseActivity implements View.OnClickListene
     }
 
     /**
-    *
-    * call request to like unlike a comment
-    *
-    *
-    * */
+     * call request to like unlike a comment
+     */
 
 
     public void commentAction(String type, String commentId) {
@@ -673,10 +692,8 @@ public class CommentActivity extends BaseActivity implements View.OnClickListene
     }
 
     /**
-    * response LIke unlike a comment
-    *
-    *
-    * */
+     * response LIke unlike a comment
+     */
     ResponseHandlerListener responseCommentAction = new ResponseHandlerListener() {
         @Override
         public void onComplete(ResponsePojo result, WebServiceClient.WebError error, ProgressDialog mProgressDialog) {
@@ -693,16 +710,16 @@ public class CommentActivity extends BaseActivity implements View.OnClickListene
                             //                        like
                             int likes_count = mCommentList.get(POSITION).getLike();
                             int a = 0;
-                            a =likes_count;
+                            a = likes_count;
                             if (result.getLike() == 1) {
 
                                 mCommentList.get(POSITION).setAction(Constants.LIKE);
-                                mCommentList.get(POSITION).setLike(a+1);
+                                mCommentList.get(POSITION).setLike(a + 1);
 
-                            } else if(result.getLike()==0){
+                            } else if (result.getLike() == 0) {
                                 mCommentList.get(POSITION).setAction(null);
                                 if (a > 0) {
-                                    mCommentList.get(POSITION).setLike(a-1);
+                                    mCommentList.get(POSITION).setLike(a - 1);
                                 }
                             }
 
@@ -713,29 +730,29 @@ public class CommentActivity extends BaseActivity implements View.OnClickListene
                             b = dislikes_count;
                             if (result.getDislike() == 1) {
                                 mCommentList.get(POSITION).setAction(Constants.DISLIKE);
-                                mCommentList.get(POSITION).setDislike(b+1);
+                                mCommentList.get(POSITION).setDislike(b + 1);
 
-                            } else if(result.getDislike()==0) {
+                            } else if (result.getDislike() == 0) {
                                 mCommentList.get(POSITION).setAction(null);
                                 if (b > 0) {
-                                    mCommentList.get(POSITION).setDislike(b-1);
+                                    mCommentList.get(POSITION).setDislike(b - 1);
                                 }
                             }
 
-                        } else  if(INDEX==3) {
+                        } else if (INDEX == 3) {
                             //                        neutral
-                            int neutral_count =mCommentList.get(POSITION).getNeutral();
+                            int neutral_count = mCommentList.get(POSITION).getNeutral();
                             int c = 0;
                             c = neutral_count;
                             if (result.getNeutral() == 1) {
 
                                 mCommentList.get(POSITION).setAction(Constants.NEUTRAL);
-                                mCommentList.get(POSITION).setNeutral(c+1);
+                                mCommentList.get(POSITION).setNeutral(c + 1);
 
-                            } else if(result.getNeutral()==0) {
+                            } else if (result.getNeutral() == 0) {
                                 mCommentList.get(POSITION).setAction(null);
                                 if (c > 0) {
-                                    mCommentList.get(POSITION).setNeutral(c-1);
+                                    mCommentList.get(POSITION).setNeutral(c - 1);
                                 }
                             }
                         }
@@ -761,10 +778,9 @@ public class CommentActivity extends BaseActivity implements View.OnClickListene
 
 
     /**
-    *
-    * Create payload to remove a comment
-    *   token, userId, commentId
-    * */
+     * Create payload to remove a comment
+     * token, userId, commentId
+     */
 
     public String createPayload_Remove_Comment(String commentId) {
         JSONObject payload = null;
@@ -783,9 +799,8 @@ public class CommentActivity extends BaseActivity implements View.OnClickListene
 
 
     /**
-    *
-    * call to remove a comment
-    * */
+     * call to remove a comment
+     */
 
 
     private void removeComment(String commentId) {
@@ -801,10 +816,8 @@ public class CommentActivity extends BaseActivity implements View.OnClickListene
 
 
     /**
-   * response remove a comment
-   *
-   *
-   * */
+     * response remove a comment
+     */
     ResponseHandlerListener responseCommentRemove = new ResponseHandlerListener() {
         @Override
         public void onComplete(ResponsePojo result, WebServiceClient.WebError error, ProgressDialog mProgressDialog) {
@@ -812,19 +825,18 @@ public class CommentActivity extends BaseActivity implements View.OnClickListene
             WebNotificationManager.unRegisterResponseListener(responseCommentRemove);
             try {
 
-                if(error==null){
-                    if(result.getSuccess().equalsIgnoreCase("true")){
+                if (error == null) {
+                    if (result.getSuccess().equalsIgnoreCase("true")) {
 
-                        Utility.showToastMessageLong(CommentActivity.this,"comment deleted");
+                        Utility.showToastMessageLong(CommentActivity.this, "comment deleted");
 
-                        String comment_count=mPostComments.getText().toString();
-                        int count=Integer.parseInt(comment_count.trim());
-                        mPostComments.setText(count-1+"");
+                        String comment_count = mPostComments.getText().toString();
+                        int count = Integer.parseInt(comment_count.trim());
+                        mPostComments.setText(count - 1 + "");
                         mCommentList.remove(POSITION);
                         mCommentAdapter.notifyDataSetChanged();
 
-                    }else {
-
+                    } else {
 
 
                     }
@@ -842,15 +854,11 @@ public class CommentActivity extends BaseActivity implements View.OnClickListene
             }
         }
     };
-    
-    
 
-    
+
     /**
-    * create payload to flag/remove a post
-    *
-    *
-    * */
+     * create payload to flag/remove a post
+     */
 
 
     private String genratePayload(String postId) {
@@ -871,9 +879,8 @@ public class CommentActivity extends BaseActivity implements View.OnClickListene
     }
 
     /**
-    * remove post call
-    *
-    * */
+     * remove post call
+     */
     private void removePost(String postId) {
         try {
 
@@ -891,10 +898,8 @@ public class CommentActivity extends BaseActivity implements View.OnClickListene
 
 
     /**
-    * response Remove post
-    *
-    *
-    * */
+     * response Remove post
+     */
     ResponseHandlerListener responseRemovePost = new ResponseHandlerListener() {
         @Override
         public void onComplete(ResponsePojo result, WebServiceClient.WebError error, ProgressDialog mProgressDialog) {
@@ -934,11 +939,8 @@ public class CommentActivity extends BaseActivity implements View.OnClickListene
 
 
     /**
-    *
-    * flag post call
-    *
-    *
-    * */
+     * flag post call
+     */
     private void flagPost(String postId) {
 
         String payload = genratePayload(postId);
@@ -953,8 +955,8 @@ public class CommentActivity extends BaseActivity implements View.OnClickListene
 
 
     /**
-    * response flag post
-    * */
+     * response flag post
+     */
     ResponseHandlerListener responseFlagPost = new ResponseHandlerListener() {
         @Override
         public void onComplete(ResponsePojo result, WebServiceClient.WebError error, ProgressDialog mProgressDialog) {
@@ -964,11 +966,11 @@ public class CommentActivity extends BaseActivity implements View.OnClickListene
                 if (error == null) {
                     if (result.getSuccess().equalsIgnoreCase("true")) {
                         mReportPost.setVisibility(View.GONE);
-                        Utility.showToastMessageLong(CommentActivity.this,getResources().getString(R.string.post_reported));
+                        Utility.showToastMessageLong(CommentActivity.this, getResources().getString(R.string.post_reported));
 
 
-                    }else {
-                        Utility.showToastMessageShort(CommentActivity.this,getResources().getString(R.string.some_unknown_error));
+                    } else {
+                        Utility.showToastMessageShort(CommentActivity.this, getResources().getString(R.string.some_unknown_error));
                     }
                 }
 
@@ -985,9 +987,7 @@ public class CommentActivity extends BaseActivity implements View.OnClickListene
     };
 
 
-
-
-    OnCommentLikeClickListner onCommentLikeClickListner =new OnCommentLikeClickListner() {
+    OnCommentLikeClickListner onCommentLikeClickListner = new OnCommentLikeClickListner() {
         @Override
         public void onCommentLikeClicked(TextView like, int position, String commentId, String type) {
             try {
@@ -1001,7 +1001,7 @@ public class CommentActivity extends BaseActivity implements View.OnClickListene
     };
 
 
-    OnCommentDislikeClickListner onCommentDislikeClickListner=new OnCommentDislikeClickListner() {
+    OnCommentDislikeClickListner onCommentDislikeClickListner = new OnCommentDislikeClickListner() {
         @Override
         public void onCommentDislikeClicked(TextView dislike, int position, String commentId, String type) {
             INDEX = 2;
@@ -1012,7 +1012,7 @@ public class CommentActivity extends BaseActivity implements View.OnClickListene
     };
 
 
-    OnCommentNeutralClickListner onCommentNeutralClickListner=new OnCommentNeutralClickListner() {
+    OnCommentNeutralClickListner onCommentNeutralClickListner = new OnCommentNeutralClickListner() {
         @Override
         public void onCommentNeutralClicked(TextView neutral, int position, String commentId, String type) {
             INDEX = 3;
@@ -1022,7 +1022,7 @@ public class CommentActivity extends BaseActivity implements View.OnClickListene
         }
     };
 
-    OnCommentDeleteClickListner onCommentDeleteClickListner=new OnCommentDeleteClickListner() {
+    OnCommentDeleteClickListner onCommentDeleteClickListner = new OnCommentDeleteClickListner() {
         @Override
         public void onCommentDeleteClicked(ImageView delete, int position, String commentId, String type) {
             POSITION = position;
@@ -1031,7 +1031,7 @@ public class CommentActivity extends BaseActivity implements View.OnClickListene
     };
 
 
-    OnCommentReplyClickListner onCommentReplyClickListner=new OnCommentReplyClickListner() {
+    OnCommentReplyClickListner onCommentReplyClickListner = new OnCommentReplyClickListner() {
         @Override
         public void onCommentreplyClicked(TextView reply, int position, String commentId, String type) {
             Bundle bundle = new Bundle();
@@ -1044,9 +1044,9 @@ public class CommentActivity extends BaseActivity implements View.OnClickListene
         }
     };
 
-    private  void showRemovePostAlertDialog(String message, final Context context, final String postId){
+    private void showRemovePostAlertDialog(String message, final Context context, final String postId) {
         AlertDialog.Builder builder1 = new AlertDialog.Builder(context);
-        builder1.setMessage( message);
+        builder1.setMessage(message);
         builder1.setCancelable(true);
         builder1.setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int id) {

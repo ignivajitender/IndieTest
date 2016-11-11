@@ -19,10 +19,27 @@ public class PostPojo implements Serializable{
     private String profile_pic;
     private String badges;
     private String relation;
+    private int like;
+    private int neutral;
+    private int dislike;
+    private int comment;
+    private String mediaUrl;
+    private String mediaType;
+    private String thumbUrl;
     private int userStatus;
     private String is_reported;
-//    private int badges;
+    //    private int badges;
     private String action;
+
+    public String getThumbUrl() {
+        return thumbUrl;
+    }
+
+    public void setThumbUrl(String thumbUrl) {
+        this.thumbUrl = thumbUrl;
+    }
+
+
 
     public int getLike() {
         return like;
@@ -74,12 +91,7 @@ public class PostPojo implements Serializable{
         this.comment = comment;
     }
 
-    private int like;
-    private int neutral;
-    private int dislike;
-    private int comment;
-    private String mediaUrl;
-    private String mediaType;
+
 
 
     public String getPostId() {

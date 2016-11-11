@@ -6,6 +6,7 @@ import android.widget.MediaController;
 import android.widget.VideoView;
 
 import com.igniva.indiecore.R;
+import com.igniva.indiecore.controller.WebServiceClient;
 import com.igniva.indiecore.utils.Constants;
 import com.igniva.indiecore.utils.Utility;
 
@@ -14,6 +15,7 @@ public class ViewPlayerActivity extends BaseActivity {
     VideoView vvPlayer;
     //String mediaId;
     String mediaPath;
+    String fromClass;
     /* int position;
      String messageId;
      boolean localPath;*/
@@ -39,6 +41,7 @@ public class ViewPlayerActivity extends BaseActivity {
     @Override
     protected void setDataInViewObjects() {
         mediaPath = getIntent().getStringExtra(Constants.MEDIA_PATH);
+        fromClass = getIntent().getStringExtra(Constants.FROM_CLASS);
       /*  position = getIntent().getIntExtra(Constants.POSITION, 0);
         messageId = getIntent().getStringExtra(Constants.MESSAGE_ID);
         localPath = getIntent().getBooleanExtra(Constants.LOCALE, true);*/
@@ -48,6 +51,12 @@ public class ViewPlayerActivity extends BaseActivity {
         } else {
             mediaPath = mediaId;
         }*/
+
+        if (fromClass.equalsIgnoreCase("WallPostAdapter")) {
+            mediaPath = WebServiceClient.HTTP_STAGING + mediaPath;
+        }
+
+
         if (mediaPath != null) {
             MediaController mediaController = new MediaController(this);
 
