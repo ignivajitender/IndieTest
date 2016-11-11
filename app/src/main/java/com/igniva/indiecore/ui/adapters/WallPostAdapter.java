@@ -4,7 +4,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -24,6 +23,7 @@ import com.igniva.indiecore.controller.OnNeutralClickListner;
 import com.igniva.indiecore.controller.WebServiceClient;
 import com.igniva.indiecore.model.PostPojo;
 import com.igniva.indiecore.ui.activities.UserProfileActivity;
+import com.igniva.indiecore.ui.activities.ViewPlayerActivity;
 import com.igniva.indiecore.utils.Constants;
 import com.igniva.indiecore.utils.PreferenceHandler;
 
@@ -49,17 +49,17 @@ public class WallPostAdapter extends RecyclerView.Adapter<WallPostAdapter.Recycl
     OnDeletePostClickListner mOnDeletePostClickListner;
 
 
-    public WallPostAdapter(Context context, ArrayList<PostPojo> wallItemsList, String contextName,OnLikeClickListner onLikeClickListner,OnDisLikeClickListner OnDisLikeAdapter,OnNeutralClickListner onNeutralClickListner,OnCommentClickListner onCommentClickListner,OnMediaPostClickListner onMediaPostClickListner,OnDeletePostClickListner onDeletePostClickListner) {
+    public WallPostAdapter(Context context, ArrayList<PostPojo> wallItemsList, String contextName, OnLikeClickListner onLikeClickListner, OnDisLikeClickListner OnDisLikeAdapter, OnNeutralClickListner onNeutralClickListner, OnCommentClickListner onCommentClickListner, OnMediaPostClickListner onMediaPostClickListner, OnDeletePostClickListner onDeletePostClickListner) {
 
         this.wallItemsList = wallItemsList;
         this.mContext = context;
         this.ACTIVITY_NAME = contextName;
-        this.mOnLikeClickListner=onLikeClickListner;
-        this.mOnDisLikeClickListner =OnDisLikeAdapter;
-        this.mOnNeutralClickListner=onNeutralClickListner;
-        this.mOnCommentClickListner=onCommentClickListner;
-        this.mOnMediaPostClickListner=onMediaPostClickListner;
-        this.mOnDeletePostClickListner=onDeletePostClickListner;
+        this.mOnLikeClickListner = onLikeClickListner;
+        this.mOnDisLikeClickListner = OnDisLikeAdapter;
+        this.mOnNeutralClickListner = onNeutralClickListner;
+        this.mOnCommentClickListner = onCommentClickListner;
+        this.mOnMediaPostClickListner = onMediaPostClickListner;
+        this.mOnDeletePostClickListner = onDeletePostClickListner;
     }
 
 
@@ -91,16 +91,28 @@ public class WallPostAdapter extends RecyclerView.Adapter<WallPostAdapter.Recycl
             String time = wallItemsList.get(position).getDate_created();
             holder.mPostTime.setText(time.substring(0, 10));
 
+            //Bitmap bm = ThumbnailUtils.createVideoThumbnail("picturePath", MediaStore.Video.Thumbnails.MINI_KIND);
+
+            //Bitmap bm=retriveVideoFrameFromVideo(wallItemsList.get(position).getMediaUrl());
+
             try {
                 if (wallItemsList.get(position).getMediaUrl() != null) {
-                    holder.mMediaPost.setVisibility(View.VISIBLE);
-                    Glide.with(mContext).load(WebServiceClient.HTTP_STAGING + wallItemsList.get(position).getMediaUrl())
+                    String mediaUrl;
+                    holder.mRlMedia.setVisibility(View.VISIBLE);
+                    if (wallItemsList.get(position).getMediaType().equalsIgnoreCase("photo")) {
+                        mediaUrl = WebServiceClient.HTTP_STAGING + wallItemsList.get(position).getMediaUrl();
+                        holder.mImgPlay.setVisibility(View.GONE);
+                    } else {
+                        mediaUrl = WebServiceClient.HTTP_STAGING + wallItemsList.get(position).getThumbUrl();
+                        holder.mImgPlay.setVisibility(View.VISIBLE);
+                    }
+                    Glide.with(mContext).load(mediaUrl)
                             .thumbnail(1f)
                             .crossFade()
                             .diskCacheStrategy(DiskCacheStrategy.ALL)
                             .into(holder.mMediaPost);
                 } else {
-                    holder.mMediaPost.setVisibility(View.GONE);
+                    holder.mRlMedia.setVisibility(View.GONE);
                 }
             } catch (Exception e) {
                 e.printStackTrace();
@@ -166,7 +178,7 @@ public class WallPostAdapter extends RecyclerView.Adapter<WallPostAdapter.Recycl
                 @Override
                 public void onClick(View v) {
 
-                    mOnLikeClickListner.onLikeClicked(holder.like,position, wallItemsList.get(position).getPostId(), Constants.LIKE);
+                    mOnLikeClickListner.onLikeClicked(holder.like, position, wallItemsList.get(position).getPostId(), Constants.LIKE);
                 }
             });
 
@@ -175,7 +187,7 @@ public class WallPostAdapter extends RecyclerView.Adapter<WallPostAdapter.Recycl
                 @Override
                 public void onClick(View v) {
 
-                    mOnDisLikeClickListner.onDisLikeClicked(holder.dislike,position, wallItemsList.get(position).getPostId(), Constants.DISLIKE);
+                    mOnDisLikeClickListner.onDisLikeClicked(holder.dislike, position, wallItemsList.get(position).getPostId(), Constants.DISLIKE);
                 }
             });
 
@@ -184,14 +196,14 @@ public class WallPostAdapter extends RecyclerView.Adapter<WallPostAdapter.Recycl
                 @Override
                 public void onClick(View v) {
 
-                    mOnNeutralClickListner.onNeutralClicked(holder.dislike,position, wallItemsList.get(position).getPostId(), Constants.DISLIKE);
+                    mOnNeutralClickListner.onNeutralClicked(holder.dislike, position, wallItemsList.get(position).getPostId(), Constants.DISLIKE);
                 }
             });
 
             holder.comment.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    mOnCommentClickListner.onCommentClicked(holder.comment,position, wallItemsList.get(position).getPostId(), Constants.COMMENT);
+                    mOnCommentClickListner.onCommentClicked(holder.comment, position, wallItemsList.get(position).getPostId(), Constants.COMMENT);
                 }
             });
 
@@ -199,24 +211,40 @@ public class WallPostAdapter extends RecyclerView.Adapter<WallPostAdapter.Recycl
             holder.mMediaPost.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    mOnMediaPostClickListner.onMediaPostClicked(holder.mMediaPost,position, wallItemsList.get(position).getPostId(), Constants.MEDIA);
+                    if (wallItemsList.get(position).getMediaType().equalsIgnoreCase("photo")) {
+                        mOnMediaPostClickListner.onMediaPostClicked(holder.mMediaPost, position, wallItemsList.get(position).getPostId(), Constants.MEDIA);
+                    } else {
+                        Intent intent = new Intent(mContext, ViewPlayerActivity.class);
+                        intent.putExtra(Constants.MEDIA_PATH, wallItemsList.get(position).getMediaUrl());
+                        intent.putExtra(Constants.FROM_CLASS, "WallPostAdapter");
+                        mContext.startActivity(intent);
+                    }
+                }
+            });
 
+            holder.mImgPlay.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    Intent intent = new Intent(mContext, ViewPlayerActivity.class);
+                    intent.putExtra(Constants.MEDIA_PATH, wallItemsList.get(position).getMediaUrl());
+                    intent.putExtra(Constants.FROM_CLASS, "WallPostAdapter");
+                    mContext.startActivity(intent);
                 }
             });
 
             holder.mDeletePost.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    mOnDeletePostClickListner.ondeletePostClicked(holder.mDeletePost,position, wallItemsList.get(position).getPostId(),ACTION);
+                    mOnDeletePostClickListner.ondeletePostClicked(holder.mDeletePost, position, wallItemsList.get(position).getPostId(), ACTION);
 
                 }
             });
 
 
-            if(ACTIVITY_NAME.equals(Constants.USERPROFILEACTIVITY)){
+            if (ACTIVITY_NAME.equals(Constants.USERPROFILEACTIVITY)) {
                 holder.mUserIcon.setEnabled(false);
             }
-            if(ACTIVITY_NAME.equalsIgnoreCase(Constants.MYPROFILEACTIVITY) ||ACTIVITY_NAME.equalsIgnoreCase(Constants.NEWSFEEDACTIVITY)){
+            if (ACTIVITY_NAME.equalsIgnoreCase(Constants.MYPROFILEACTIVITY) || ACTIVITY_NAME.equalsIgnoreCase(Constants.NEWSFEEDACTIVITY)) {
                 holder.mRlMutualBadgeTxtBg.setVisibility(View.GONE);
                 holder.mUserIcon.setEnabled(false);
 
@@ -227,13 +255,13 @@ public class WallPostAdapter extends RecyclerView.Adapter<WallPostAdapter.Recycl
                 public void onClick(View v) {
 
                     try {
-                            Bundle bundle = new Bundle();
-                            Intent intent = new Intent(mContext, UserProfileActivity.class);
-                            bundle.putString(Constants.USERID, wallItemsList.get(position).getUserId());
-                            bundle.putString(Constants.BUSINESS_ID, wallItemsList.get(position).getRoomId());
-                            bundle.putInt(Constants.INDEX, 11);
-                            intent.putExtras(bundle);
-                            mContext.startActivity(intent);
+                        Bundle bundle = new Bundle();
+                        Intent intent = new Intent(mContext, UserProfileActivity.class);
+                        bundle.putString(Constants.USERID, wallItemsList.get(position).getUserId());
+                        bundle.putString(Constants.BUSINESS_ID, wallItemsList.get(position).getRoomId());
+                        bundle.putInt(Constants.INDEX, 11);
+                        intent.putExtras(bundle);
+                        mContext.startActivity(intent);
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
@@ -241,13 +269,13 @@ public class WallPostAdapter extends RecyclerView.Adapter<WallPostAdapter.Recycl
             });
 
             try {
-                if(wallItemsList.get(position).getBadges().equalsIgnoreCase("OFF")){
+                if (wallItemsList.get(position).getBadges().equalsIgnoreCase("OFF")) {
                     holder.mRlMutualBadgeTxtBg.setBackgroundResource(R.drawable.badge_off);
                     holder.mMutualBadgeCount.setText("");
-                }else {
-                    String in=wallItemsList.get(position).getBadges();
+                } else {
+                    String in = wallItemsList.get(position).getBadges();
                     holder.mRlMutualBadgeTxtBg.setBackgroundResource(R.drawable.blank_badge);
-                    holder.mMutualBadgeCount.setText(Integer.parseInt(in)+"");
+                    holder.mMutualBadgeCount.setText(Integer.parseInt(in) + "");
                 }
             } catch (NumberFormatException e) {
                 e.printStackTrace();
@@ -268,13 +296,13 @@ public class WallPostAdapter extends RecyclerView.Adapter<WallPostAdapter.Recycl
                             //
                             holder.mDeletePost.setVisibility(View.VISIBLE);
 
-                                String userID=PreferenceHandler.readString(mContext,PreferenceHandler.PREF_KEY_USER_ID,"");
-                                if (wallItemsList.get(position).getUserId().equalsIgnoreCase(userID)) {
-                                    holder.mDeletePost.setImageResource(R.drawable.delete_button);
-                                    ACTION = "DELETE";
-                                } else {
-                                    holder.mDeletePost.setImageResource(R.drawable.report_abuse);
-                                    ACTION = "REPORT";
+                            String userID = PreferenceHandler.readString(mContext, PreferenceHandler.PREF_KEY_USER_ID, "");
+                            if (wallItemsList.get(position).getUserId().equalsIgnoreCase(userID)) {
+                                holder.mDeletePost.setImageResource(R.drawable.delete_button);
+                                ACTION = "DELETE";
+                            } else {
+                                holder.mDeletePost.setImageResource(R.drawable.report_abuse);
+                                ACTION = "REPORT";
 
                             }
                             deletePostVisible = true;
@@ -308,6 +336,8 @@ public class WallPostAdapter extends RecyclerView.Adapter<WallPostAdapter.Recycl
         public ImageView mUserIcon;
         public TextView mPostTime;
         public ImageView mMediaPost;
+        public RelativeLayout mRlMedia;
+        public ImageView mImgPlay;
         public TextView mTextPost;
         public TextView mAvailable;
         public TextView like;
@@ -328,6 +358,9 @@ public class WallPostAdapter extends RecyclerView.Adapter<WallPostAdapter.Recycl
             mPostTime = (TextView) itemView.findViewById(R.id.tv_post_time_);
 
             mMediaPost = (ImageView) itemView.findViewById(R.id.iv_media_post);
+            mRlMedia = (RelativeLayout) itemView.findViewById(R.id.rlMedia);
+            mImgPlay = (ImageView) itemView.findViewById(R.id.imgPlay);
+
             mTextPost = (TextView) itemView.findViewById(R.id.tv_post_text);
             mAvailable = (TextView) itemView.findViewById(R.id.tv_available_);
             like = (TextView) itemView.findViewById(R.id.tv_like);
@@ -335,8 +368,8 @@ public class WallPostAdapter extends RecyclerView.Adapter<WallPostAdapter.Recycl
             neutral = (TextView) itemView.findViewById(R.id.tv_neutral);
             comment = (TextView) itemView.findViewById(R.id.tv_comment);
 
-            mRlMutualBadgeTxtBg=(RelativeLayout) itemView.findViewById(R.id.rl_mutual_badge_bg);
-            mMutualBadgeCount=(TextView) itemView.findViewById(R.id.tv_mutual_badge_count);
+            mRlMutualBadgeTxtBg = (RelativeLayout) itemView.findViewById(R.id.rl_mutual_badge_bg);
+            mMutualBadgeCount = (TextView) itemView.findViewById(R.id.tv_mutual_badge_count);
 
 
             dropDownOptions = (ImageView) itemView.findViewById(R.id.iv_drop_down_options);
@@ -345,5 +378,4 @@ public class WallPostAdapter extends RecyclerView.Adapter<WallPostAdapter.Recycl
         }
 
     }
-
 }

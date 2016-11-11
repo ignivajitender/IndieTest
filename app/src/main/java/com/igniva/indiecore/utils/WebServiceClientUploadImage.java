@@ -12,7 +12,6 @@ import android.widget.ProgressBar;
 import com.igniva.indiecore.R;
 import com.igniva.indiecore.controller.WebServiceClient;
 
-import org.apache.http.HttpEntity;
 import org.apache.http.entity.mime.MultipartEntity;
 
 import java.io.BufferedInputStream;
@@ -34,6 +33,7 @@ public class WebServiceClientUploadImage extends
     String mUrl;
     String mTaskName;
     MultipartEntity mReqEntity;
+    String videoPath;
     Context mContext;
     ProgressDialog progressDialog;
     ProgressBar mProgressBar;
@@ -53,11 +53,14 @@ public class WebServiceClientUploadImage extends
         this.urlNo = urlNo;
         this.mTaskName = taskName;
     }
-    public WebServiceClientUploadImage(Context mContext, AsyncResult callBackUpload, String urlString, MultipartEntity reqEntity, String taskName) {
+
+    //for video upload
+    public WebServiceClientUploadImage(Context mContext, AsyncResult callBackUpload, String urlString, String videoPath1, int urlNo, String taskName) {
         this.mUrl = urlString;
-        this.mReqEntity = reqEntity;
+        this.videoPath = videoPath1;
         this.mContext = mContext;
         this.mCallBack = callBackUpload;
+        this.urlNo = urlNo;
         this.mTaskName = taskName;
     }
 
@@ -71,15 +74,16 @@ public class WebServiceClientUploadImage extends
         this.mediaId = urlString;
         this.mMessageId = messageId;
     }
+
     @Override
     protected void onPreExecute() {
         super.onPreExecute();
         try {
-            if(mTaskName.equalsIgnoreCase(Constants.DOWNLOAD)){
-                if(mProgressBar!=null) {
+            if (mTaskName.equalsIgnoreCase(Constants.DOWNLOAD)) {
+                if (mProgressBar != null) {
                     mProgressBar.setVisibility(View.VISIBLE);
                 }
-            }else {
+            } else {
                 if (mTaskName.equalsIgnoreCase(Constants.DOWNLOAD)) {
                     mProgressBar.setVisibility(View.VISIBLE);
                 } else {
@@ -102,57 +106,69 @@ public class WebServiceClientUploadImage extends
                 StrictMode.setThreadPolicy(policy);
             }
 
-            URL url = new URL(mUrl);
-            HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-            conn.setReadTimeout(10000);
-            conn.setConnectTimeout(20000);
-            conn.setRequestMethod("POST");
-            conn.setUseCaches(false);
-            conn.setDoInput(true);
-            conn.setDoOutput(true);
 
-            conn.setRequestProperty("Connection", "Keep-Alive");
-
-            if(mTaskName.equalsIgnoreCase(Constants.DOWNLOAD)) {
-                // getting file length
-                int lenghtOfFile = conn.getContentLength();
-
-                // input stream to read file - with 8k buffer
-                InputStream input = new BufferedInputStream(url.openStream(), 8192);
-                Bitmap image = BitmapFactory.decodeStream(input);
-                path = createDirectoryAndSaveFile(image, Utility.randomString());
-                conn.connect();
+            if (mTaskName.equalsIgnoreCase(Constants.UPLOAD_VIDEO)) {
+                //code for uploading video
+                MultipartUtility multipart = new MultipartUtility(mUrl, "UTF-8");
+                multipart.addFilePart("VideoFile", new File(videoPath));
+                String reponse1 = multipart.finish();
+                return reponse1;
             } else {
-                conn.addRequestProperty("Content-length", mReqEntity.getContentLength() + "");
-                conn.addRequestProperty(mReqEntity.getContentType().getName(), mReqEntity.getContentType().getValue());
-                OutputStream os = conn.getOutputStream();
-                mReqEntity.writeTo(conn.getOutputStream());
-                os.close();
-                conn.connect();
+                URL url = new URL(mUrl);
+                HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+                conn.setReadTimeout(10000);
+                conn.setConnectTimeout(20000);
+                conn.setRequestMethod("POST");
+                conn.setUseCaches(false);
+                conn.setDoInput(true);
+                conn.setDoOutput(true);
 
-                if (conn.getResponseCode() == HttpURLConnection.HTTP_OK) {
-                    BufferedReader reader = null;
-                    builder = new StringBuilder();
-                    try {
-                        reader = new BufferedReader(new InputStreamReader(conn.getInputStream()));
-                        String line = "";
-                        while ((line = reader.readLine()) != null) {
-                            builder.append(line);
-                        }
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    } finally {
-                        if (reader != null) {
-                            try {
-                                reader.close();
-                            } catch (IOException e) {
-                                e.printStackTrace();
+                conn.setRequestProperty("Connection", "Keep-Alive");
+
+                if (mTaskName.equalsIgnoreCase(Constants.DOWNLOAD)) {
+                    // getting file length
+                    int lenghtOfFile = conn.getContentLength();
+
+                    // input stream to read file - with 8k buffer
+                    InputStream input = new BufferedInputStream(url.openStream(), 8192);
+                    Bitmap image = BitmapFactory.decodeStream(input);
+                    path = createDirectoryAndSaveFile(image, Utility.randomString());
+                    conn.connect();
+                } else {
+                    conn.addRequestProperty("Content-length", mReqEntity.getContentLength() + "");
+                    conn.addRequestProperty(mReqEntity.getContentType().getName(), mReqEntity.getContentType().getValue());
+
+                    //String mmtype=mReqEntity.getContentType().getValue();
+
+                    OutputStream os = conn.getOutputStream();
+                    mReqEntity.writeTo(conn.getOutputStream());
+                    os.close();
+                    conn.connect();
+
+                    if (conn.getResponseCode() == HttpURLConnection.HTTP_OK) {
+                        BufferedReader reader = null;
+                        builder = new StringBuilder();
+                        try {
+                            reader = new BufferedReader(new InputStreamReader(conn.getInputStream()));
+                            String line = "";
+                            while ((line = reader.readLine()) != null) {
+                                builder.append(line);
+                            }
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        } finally {
+                            if (reader != null) {
+                                try {
+                                    reader.close();
+                                } catch (IOException e) {
+                                    e.printStackTrace();
+                                }
                             }
                         }
                     }
                 }
-            }
 
+            }
         } catch (Exception e) {
             e.printStackTrace();
             return "";
@@ -193,6 +209,7 @@ public class WebServiceClientUploadImage extends
     @Override
     protected void onPostExecute(String result) {
         super.onPostExecute(result);
+        Log.e("Response",result);
         try {
             if (urlNo == 77) {
                 mCallBackDownlaod.onDownloadTaskResponse(result, urlNo, mMessageId, mediaId);

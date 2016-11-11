@@ -1,6 +1,5 @@
 package com.igniva.indiecore.ui.adapters;
 
-import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.support.v7.widget.CardView;
@@ -20,10 +19,8 @@ import com.igniva.indiecore.controller.OnContactCardClickListner;
 import com.igniva.indiecore.controller.WebServiceClient;
 import com.igniva.indiecore.model.UsersPojo;
 import com.igniva.indiecore.ui.activities.ChatActivity;
-import com.igniva.indiecore.ui.activities.DashBoardActivity;
 import com.igniva.indiecore.utils.Constants;
 import com.igniva.indiecore.utils.Log;
-import com.igniva.indiecore.utils.Utility;
 
 import java.util.ArrayList;
 
@@ -63,15 +60,15 @@ public class PhonebookAdapter extends RecyclerView.Adapter<PhonebookAdapter.Recy
         try {
             if (mTAb.equalsIgnoreCase(FAVOURITE)) {
                 holder.mBadgeIconConatiner.setVisibility(View.VISIBLE);
-                if(indieCoreUsersLIst.get(position).getBadges().equalsIgnoreCase("off")){
+                if (indieCoreUsersLIst.get(position).getBadges().equalsIgnoreCase("off")) {
                     holder.mBadgeIconConatiner.setBackgroundResource(R.drawable.badge_off);
-                }else {
+                } else {
                     holder.mBadgeIconConatiner.setBackgroundResource(R.drawable.blank_badge);
                     holder.mMutualBadgeCount.setText(indieCoreUsersLIst.get(position).getBadges());
                 }
 
                 holder.mStarContainer.setVisibility(View.VISIBLE);
-            }else {
+            } else {
                 holder.mBadgeIconConatiner.setVisibility(View.GONE);
                 holder.mStarContainer.setVisibility(View.GONE);
             }
@@ -107,7 +104,11 @@ public class PhonebookAdapter extends RecyclerView.Adapter<PhonebookAdapter.Recy
                 try {
                     Intent intent = new Intent(context, ChatActivity.class);
                     intent.putExtra(Constants.PERSON_ID, indieCoreUsersLIst.get(position).getUserId());
-                    intent.putExtra(Constants.NAME, indieCoreUsersLIst.get(position).getProfile().getFirstName() + " " + indieCoreUsersLIst.get(position).getProfile().getLastName());
+                    if (indieCoreUsersLIst.get(position).getProfile().getLastName() != null) {
+                        intent.putExtra(Constants.NAME, indieCoreUsersLIst.get(position).getProfile().getFirstName() + " " + indieCoreUsersLIst.get(position).getProfile().getLastName());
+                    } else {
+                        intent.putExtra(Constants.NAME, indieCoreUsersLIst.get(position).getProfile().getFirstName());
+                    }
                     intent.putExtra(Constants.INDEX, 44);
                     context.startActivity(intent);
 
@@ -118,7 +119,6 @@ public class PhonebookAdapter extends RecyclerView.Adapter<PhonebookAdapter.Recy
         });
 
     }
-
 
     @Override
     public int getItemCount() {

@@ -2,9 +2,12 @@ package com.igniva.indiecore.ui.activities;
 
 import android.app.Activity;
 import android.app.ProgressDialog;
+import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
@@ -55,6 +58,7 @@ public class CommentsReplyActivity extends BaseActivity implements View.OnClickL
     public static final String mActionTypeLike = "like";
     public static final String mActionTypeDislike = "dislike";
     public static final String mActionTypeNeutral = "neutral";
+    public static int replyCount=0;
     private int action = 0;
     private int INDEX=0;
     private String page = "1";
@@ -247,7 +251,6 @@ public class CommentsReplyActivity extends BaseActivity implements View.OnClickL
                         Utility.showToastMessageLong(CommentsReplyActivity.this, "Please write a reply");
                     } else {
                         replyToComment(commentId, reply_txt);
-
                     }
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -405,6 +408,8 @@ public class CommentsReplyActivity extends BaseActivity implements View.OnClickL
             try {
                 mRelpiesLIst = new ArrayList<RepliesPojo>();
                 mRelpiesLIst.addAll(result.getRepliesList());
+
+                replyCount=mRelpiesLIst.size();
 
                 mAdapter = null;
                 mAdapter = new CommentReplyAdapter(CommentsReplyActivity.this, mRelpiesLIst, onReplyLikeClickListner,onReplyDislikeClickListner,onReplyNeutralClickListner,onReplyDeleteClickListner);
@@ -860,53 +865,29 @@ public class CommentsReplyActivity extends BaseActivity implements View.OnClickL
         @Override
         public void onReplyDeleteClicked(ImageView delete, int position, String replyId, String type) {
             POSTION=position;
-            removeReply(replyId);
+            showRemoveReplyAlertDialog(getResources().getString(R.string.remove_reply),CommentsReplyActivity.this,replyId);
         }
     };
 
 
-//    OnReplyListItemClickListner onReplyListItemClicked = new OnReplyListItemClickListner() {
-//        @Override
-//        public void onReplyListItemClick(CommentReplyAdapter.RecyclerViewHolders holder, final int position, final String replyId) {
-//            POSTION = position;
-//
-//            holder.mImageDelete.setOnClickListener(new View.OnClickListener() {
-//                @Override
-//                public void onClick(View v) {
-//                    POSTION = position;
-//                    removeReply(replyId);
-//                }
-//            });
-//
-//
-//            holder.mReplyLike.setOnClickListener(new View.OnClickListener() {
-//                @Override
-//                public void onClick(View v) {
-//                    INDEX=1;
-//                    POSTION = position;
-//                    actionOnReply(replyId, mActionTypeLike);
-//                }
-//            });
-//            holder.mReplyDislike.setOnClickListener(new View.OnClickListener() {
-//                @Override
-//                public void onClick(View v) {
-//                    INDEX=2;
-//                    POSTION = position;
-//                    actionOnReply(replyId, mActionTypeDislike);
-//                }
-//            });
-//            holder.mReplyNeutral.setOnClickListener(new View.OnClickListener() {
-//                @Override
-//                public void onClick(View v) {
-//                    INDEX=3;
-//                    POSTION = position;
-//                    actionOnReply(replyId, mActionTypeNeutral);
-//                }
-//            });
-//
-//
-//        }
-//    };
+    private  void showRemoveReplyAlertDialog(String message, final Context context, final String replyId){
+        AlertDialog.Builder builder1 = new AlertDialog.Builder(context);
+        builder1.setMessage( message);
+        builder1.setCancelable(true);
+        builder1.setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int id) {
+                removeReply(replyId);
+
+            }
+        });
+        builder1.setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int id) {
+                dialog.dismiss();
+            }
+        });
+        AlertDialog alert11 = builder1.create();
+        alert11.show();
+    }
 
 
 }

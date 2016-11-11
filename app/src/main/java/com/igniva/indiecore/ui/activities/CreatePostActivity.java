@@ -42,7 +42,6 @@ import org.apache.http.entity.mime.MultipartEntity;
 import org.apache.http.entity.mime.MultipartEntityBuilder;
 import org.apache.http.entity.mime.content.ByteArrayBody;
 import org.apache.http.entity.mime.content.ContentBody;
-import org.apache.http.entity.mime.content.FileBody;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -50,6 +49,7 @@ import org.json.JSONObject;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
+import java.net.ConnectException;
 import java.util.List;
 
 import id.zelory.compressor.Compressor;
@@ -70,7 +70,8 @@ public class CreatePostActivity extends BaseActivity implements AsyncResult, Vie
     public static final int REQUEST_CAMERA = 100;
     public static final int SELECT_FILE = 200;
     private static final int CAPTURE_VIDEO_ACTIVITY_REQUEST_CODE = 300;
-    private String videoUrl = "";
+    //private String videoUrl = "";
+    private String fileType="";
     private Uri mVideoUri;
     private boolean IsThumbNailUploaded = false;
     private Toolbar mToolbar;
@@ -215,7 +216,7 @@ public class CreatePostActivity extends BaseActivity implements AsyncResult, Vie
             }
             try {
                 if(!mImageMediaId.isEmpty()) {
-                    if (videoUrl.contains(".mp4")) {
+                    if (fileType.contains("video")) {
                         payload.put(Constants.MEDIA, mVideoMediaId);
                         payload.put(Constants.THUMBNAIL, mImageMediaId);
                     } else {
@@ -374,23 +375,8 @@ public class CreatePostActivity extends BaseActivity implements AsyncResult, Vie
         try {
 //            Charset utf8 = Charset.forName("utf-8");
             String video_path = FileUtils.getPath(this, uri);
-            String mimeType = getMimeType(uri);
-            Log.e(TAG, mimeType);
-            FileBody file_body_Video = new FileBody(new File(video_path),"video/mp4");
-            if (mVideoThumbnail != null) {
-                mIvMediaPost.setVisibility(View.VISIBLE);
-                mIvMediaPost.setImageBitmap(mVideoThumbnail);
-            }
-
-
-            MultipartEntityBuilder builder = MultipartEntityBuilder.create();
-                builder.setMode(HttpMultipartMode.BROWSER_COMPATIBLE);
-            ContentType contentType = ContentType.create("video/mp4");
-//            builder.addPart("video", new FileBody(file_body_Video, contentType, ""));
-          MultipartEntity reqEntity = new MultipartEntity(HttpMultipartMode.BROWSER_COMPATIBLE);
-//            reqEntity.addPart("VideoFile", file_body_Video);
             if (Utility.isInternetConnection(CreatePostActivity.this)) {
-                new WebServiceClientUploadImage(CreatePostActivity.this, this, WebServiceClient.HTTP_UPLOAD_IMAGE, reqEntity, 3, Constants.UPLOAD).execute();
+                new WebServiceClientUploadImage(CreatePostActivity.this, this, WebServiceClient.HTTP_UPLOAD_IMAGE, video_path, 3, Constants.UPLOAD_VIDEO).execute();
             } else {
                 // open dialog here
                 new Utility().showNoInternetDialog((Activity) CreatePostActivity.this);
@@ -448,9 +434,8 @@ public class CreatePostActivity extends BaseActivity implements AsyncResult, Vie
             e.printStackTrace();
         }
         try {
-//            bitmap=getBitmapFromUri(data.getData());
             imgUri = getImageUri(this, bitmap);
-            mImagePath = getPath(imgUri);
+            mImagePath = FileUtils.getPath(this,imgUri);
             imageFile = new File(mImagePath);
             bitmap = Compressor.getDefault(this).compressToBitmap(imageFile);
 
@@ -459,23 +444,6 @@ public class CreatePostActivity extends BaseActivity implements AsyncResult, Vie
         }
         return bitmap;
 
-    }
-
-    /**
-     * get path from uri
-     *
-     * @param uri
-     * @return
-     */
-    public String getPath(Uri uri) {
-        String[] projection = {MediaStore.Images.Media.DATA};
-        Cursor cursor = getContentResolver().query(uri, projection, null, null, null);
-        if (cursor == null) return null;
-        int column_index = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
-        cursor.moveToFirst();
-        String s = cursor.getString(column_index);
-        cursor.close();
-        return s;
     }
 
     private void onCaptureImageResult(Intent data) {
@@ -515,8 +483,6 @@ public class CreatePostActivity extends BaseActivity implements AsyncResult, Vie
                 contentPart = new ByteArrayBody(bos.toByteArray(), contentType, "Image.jpg");
             }
             MultipartEntity reqEntity = new MultipartEntity(HttpMultipartMode.BROWSER_COMPATIBLE);
-//            MultipartEntity reqEntity = new MultipartEntity(HttpMultipartMode.BROWSER_COMPATIBLE);
-//            MultipartEntity reqEntity = new MultipartEntity();
             reqEntity.addPart("fileToUpload", contentPart);
 
             if (Utility.isInternetConnection(CreatePostActivity.this)) {
@@ -525,7 +491,6 @@ public class CreatePostActivity extends BaseActivity implements AsyncResult, Vie
                 // open dialog here
                 new Utility().showNoInternetDialog((Activity) CreatePostActivity.this);
             }
-
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -539,17 +504,20 @@ public class CreatePostActivity extends BaseActivity implements AsyncResult, Vie
             Log.e("response media uplaod", jsonObject.toString());
             JSONArray file = jsonObject.getJSONArray("files");
             JSONObject obj = file.getJSONObject(0);
-            videoUrl = obj.optString("url");
-            if (obj.optString("url").contains(".mp4")) {
+           // videoUrl = obj.optString("url");
+            fileType=obj.optString("type");
+            if(fileType.contains("video")){
                 mVideoMediaId = obj.optString("fileId");
-            } else {
+            }else{
                 mImageMediaId = obj.optString("fileId");
-                if (IsThumbNailUploaded) {
-                    uploadVideoToServer(mVideoUri);
-                }
-                IsThumbNailUploaded = false;
-
             }
+
+            if (IsThumbNailUploaded) {
+                mIvMediaPost.setVisibility(View.VISIBLE);
+                mIvMediaPost.setImageBitmap(mVideoThumbnail);
+                uploadVideoToServer(mVideoUri);
+            }
+            IsThumbNailUploaded = false;
             Log.e("Media Id ", "" + mImageMediaId);
         } catch (Exception e) {
 

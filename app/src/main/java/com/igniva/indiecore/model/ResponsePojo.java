@@ -24,6 +24,7 @@ public class ResponsePojo {
     private int totalMessages;
     private int totalPeoples;
     private int favourite;
+    private int flag;
     private String  relation;
     private String description;
     private String success;
@@ -47,6 +48,15 @@ public class ResponsePojo {
     private ArrayList<ChatPojo> messagesList;
     private ArrayList<PeoplesPojo> peoples;
 
+
+
+    public int getFlag() {
+        return flag;
+    }
+
+    public void setFlag(int flag) {
+        this.flag = flag;
+    }
     public String getPersonId() {
         return personId;
     }

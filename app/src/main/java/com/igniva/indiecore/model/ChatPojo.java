@@ -24,8 +24,7 @@ public class ChatPojo implements Parcelable {
     private String relation;
     private String badges;
     private String imagePath;
-
-
+    private boolean isVideoDownload;  // this field is only used for video.
 
 
     public String getImagePath() {
@@ -43,6 +42,7 @@ public class ChatPojo implements Parcelable {
     public void setStatus(int status) {
         this.status = status;
     }
+
     public String getThumb() {
         return thumb;
     }
@@ -155,6 +155,13 @@ public class ChatPojo implements Parcelable {
         this.badges = badges;
     }
 
+    public boolean isVideoDownload() {
+        return isVideoDownload;
+    }
+
+    public void setVideoDownload(boolean videoDownload) {
+        isVideoDownload = videoDownload;
+    }
 
     @Override
     public int describeContents() {

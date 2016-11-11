@@ -1189,5 +1189,9 @@
 
     <string name="title_activity_view_player">ViewPlayerActivity</string>
     <string name="select_picture">Select file</string>
+    <string name="remove_comment">Do you really want to delete this comment?</string>
+    <string name="remove_reply">Do you really want to delete this reply?</string>
+    <string name="flagged">Post flaged</string>
+    <string name="unflagged">Post unflagged</string>
 
 </resources>

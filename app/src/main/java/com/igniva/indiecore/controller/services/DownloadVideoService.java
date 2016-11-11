@@ -84,19 +84,23 @@ public class DownloadVideoService extends IntentService {
         //Update Local db
 
         Log.e("Download CompletedInService1");
-        BadgesDb badgesDb = new BadgesDb(this);
-        ChatPojo mChatPojo = new ChatPojo();
-        mChatPojo.setImagePath(newFile.getPath());
-        mChatPojo.setMessageId(messageId);
-        badgesDb.updateMediaPath(mChatPojo);
+        try {
+            BadgesDb badgesDb = new BadgesDb(this);
+            ChatPojo mChatPojo = new ChatPojo();
+            mChatPojo.setImagePath(newFile.getPath());
+            mChatPojo.setMessageId(messageId);
+            badgesDb.updateMediaPath(mChatPojo);
 
-        Log.e("Download CompletedInService2");
+            Log.e("Download CompletedInService2");
 
-        Bundle resultData = new Bundle();
-        resultData.putInt("progress", 100);
-        resultData.putParcelable("ChatPojo",mChatPojo);
-        resultData.putString(Constants.MESSAGE_ID,messageId);
-        receiver.send(UPDATE_PROGRESS, resultData);
-        Log.e("Download CompletedInService3");
+            Bundle resultData = new Bundle();
+            resultData.putInt("progress", 100);
+            resultData.putParcelable("ChatPojo",mChatPojo);
+            resultData.putString(Constants.MESSAGE_ID,messageId);
+            receiver.send(UPDATE_PROGRESS, resultData);
+            Log.e("Download CompletedInService3");
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 }

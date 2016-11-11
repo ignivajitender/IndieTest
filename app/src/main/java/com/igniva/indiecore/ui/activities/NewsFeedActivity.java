@@ -134,19 +134,16 @@ public class NewsFeedActivity extends BaseActivity implements View.OnClickListen
                     android.R.color.holo_red_light);
 
 
+            setDataInViewObjects();
+        } catch (
+                Exception e
+                )
 
-        setDataInViewObjects();
+        {
+            e.printStackTrace();
+        }
+
     }
-
-    catch(
-    Exception e
-    )
-
-    {
-        e.printStackTrace();
-    }
-
-}
 
 
     @Override
@@ -374,6 +371,7 @@ public class NewsFeedActivity extends BaseActivity implements View.OnClickListen
         AlertDialog alert11 = builder1.create();
         alert11.show();
     }
+
     /**
      * create payload to flag/remove a post
      */
@@ -477,7 +475,11 @@ public class NewsFeedActivity extends BaseActivity implements View.OnClickListen
                     if (result.getSuccess().equalsIgnoreCase("true")) {
 
                         mPostDelete.setVisibility(View.GONE);
-                        Utility.showToastMessageLong(NewsFeedActivity.this, "post reported");
+                        if (result.getFlag() == 1) {
+                            Utility.showToastMessageLong(NewsFeedActivity.this, getResources().getString(R.string.flagged));
+                        } else {
+                            Utility.showToastMessageLong(NewsFeedActivity.this, getResources().getString(R.string.unflagged));
+                        }
 
                     }
 
