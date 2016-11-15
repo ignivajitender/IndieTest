@@ -20,7 +20,6 @@ import com.igniva.indiecore.R;
 import com.igniva.indiecore.controller.OnReplyDeleteClickListner;
 import com.igniva.indiecore.controller.OnReplyDislikeClickListner;
 import com.igniva.indiecore.controller.OnReplyLikeClickListner;
-import com.igniva.indiecore.controller.OnReplyListItemClickListner;
 import com.igniva.indiecore.controller.OnReplyNeutralClickListner;
 import com.igniva.indiecore.controller.ResponseHandlerListener;
 import com.igniva.indiecore.controller.WebNotificationManager;
@@ -49,6 +48,7 @@ public class CommentsReplyActivity extends BaseActivity implements View.OnClickL
     private ImageView mIvPostReply;
     private RecyclerView mRvReplies;
     private CommentPojo selected_comment_data = null;
+    private int previousListPosition;
     private String commentId = "";
     private TextView mUserName, mUserComment;
     private ImageView mUserImg;
@@ -56,7 +56,7 @@ public class CommentsReplyActivity extends BaseActivity implements View.OnClickL
     public static final String mActionTypeDislike = "dislike";
     public static final String mActionTypeNeutral = "neutral";
     private int action = 0;
-    private int INDEX=0;
+    private int INDEX = 0;
     private String page = "1";
     private String limit = "10";
     private ArrayList<RepliesPojo> mRelpiesLIst;
@@ -86,7 +86,8 @@ public class CommentsReplyActivity extends BaseActivity implements View.OnClickL
             mToolbar.setNavigationOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    finish();
+                    //finish();
+                    onBackPressed();
                 }
             });
             TextView next = (TextView) mToolbar.findViewById(R.id.toolbar_next);
@@ -107,28 +108,29 @@ public class CommentsReplyActivity extends BaseActivity implements View.OnClickL
             Intent intent = this.getIntent();
             Bundle bundle = intent.getExtras();
             selected_comment_data = (CommentPojo) bundle.getSerializable("COMMENT");
+            previousListPosition=bundle.getInt("pos");
             commentId = selected_comment_data.getCommentId();
 
-            mUserName=(TextView) findViewById(R.id.tv_user_name_comment_reply_activity);
-            mUserComment=(TextView) findViewById(R.id.tv_comment_text_comment_reply_activity);
-            mUserImg=(ImageView) findViewById(R.id.iv_user_img_comment_reply_activity);
-              mIvPostReply =(ImageView) findViewById(R.id.iv_post_reply);
+            mUserName = (TextView) findViewById(R.id.tv_user_name_comment_reply_activity);
+            mUserComment = (TextView) findViewById(R.id.tv_comment_text_comment_reply_activity);
+            mUserImg = (ImageView) findViewById(R.id.iv_user_img_comment_reply_activity);
+            mIvPostReply = (ImageView) findViewById(R.id.iv_post_reply);
             mIvPostReply.setOnClickListener(this);
-            mEtReplyText=(EditText) findViewById(R.id.et_reply_txt);
-            mRvReplies=(RecyclerView) findViewById(R.id.rv_replies);
+            mEtReplyText = (EditText) findViewById(R.id.et_reply_txt);
+            mRvReplies = (RecyclerView) findViewById(R.id.rv_replies);
 
 
-            mTvCommentLike=(TextView) findViewById(R.id.tv_like_comment_reply);
+            mTvCommentLike = (TextView) findViewById(R.id.tv_like_comment_reply);
             mTvCommentLike.setOnClickListener(this);
-            mTvCommentDislike=(TextView) findViewById(R.id.tv_dislike_comment_reply);
+            mTvCommentDislike = (TextView) findViewById(R.id.tv_dislike_comment_reply);
             mTvCommentDislike.setOnClickListener(this);
-            mTvCommentNeutral=(TextView) findViewById(R.id.tv_neutral_comment_reply);
+            mTvCommentNeutral = (TextView) findViewById(R.id.tv_neutral_comment_reply);
             mTvCommentNeutral.setOnClickListener(this);
-            mTvCommentReply=(TextView) findViewById(R.id.tv_reply_comment_reply);
+            mTvCommentReply = (TextView) findViewById(R.id.tv_reply_comment_reply);
             mTvCommentReply.setOnClickListener(this);
 
 
-            mTvCommentTime =(TextView) findViewById(R.id.tv_post_time_comment_reply_activity);
+            mTvCommentTime = (TextView) findViewById(R.id.tv_post_time_comment_reply_activity);
 
             final LinearLayoutManager layoutManager = new LinearLayoutManager(this);
             layoutManager.setOrientation(LinearLayoutManager.VERTICAL);
@@ -161,12 +163,12 @@ public class CommentsReplyActivity extends BaseActivity implements View.OnClickL
                 mUserImg.setImageResource(R.drawable.default_user);
             }
 
-            mTvCommentLike.setText(selected_comment_data.getLike()+"");
-            mTvCommentDislike.setText(selected_comment_data.getDislike()+"");
-            mTvCommentNeutral.setText(selected_comment_data.getNeutral()+"");
-            mTvCommentReply.setText(selected_comment_data.getReplie()+"");
+            mTvCommentLike.setText(selected_comment_data.getLike() + "");
+            mTvCommentDislike.setText(selected_comment_data.getDislike() + "");
+            mTvCommentNeutral.setText(selected_comment_data.getNeutral() + "");
+            mTvCommentReply.setText(selected_comment_data.getReplie() + "");
 
-            mTvCommentTime.setText(selected_comment_data.getDate_created().substring(0,10));
+            mTvCommentTime.setText(selected_comment_data.getDate_created().substring(0, 10));
 
             if (selected_comment_data.getAction() != null) {
                 if (selected_comment_data.getAction().equalsIgnoreCase(Constants.LIKE)) {
@@ -194,7 +196,7 @@ public class CommentsReplyActivity extends BaseActivity implements View.OnClickL
                     mTvCommentDislike.setEnabled(false);
                     mTvCommentNeutral.setEnabled(true);
 
-                }else {
+                } else {
 
 
                     mTvCommentLike.setCompoundDrawablesWithIntrinsicBounds(R.drawable.like_grey_icon, 0, 0, 0);
@@ -222,7 +224,6 @@ public class CommentsReplyActivity extends BaseActivity implements View.OnClickL
             viewAllReplies(commentId, page, limit);
 
 
-
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -232,7 +233,7 @@ public class CommentsReplyActivity extends BaseActivity implements View.OnClickL
     @Override
 
     public void onClick(View v) {
-        switch (v.getId()){
+        switch (v.getId()) {
 
             case R.id.iv_post_reply:
 
@@ -332,9 +333,9 @@ public class CommentsReplyActivity extends BaseActivity implements View.OnClickL
                     if (result.getSuccess().equalsIgnoreCase("true")) {
 
                         mEtReplyText.setText("");
-                        String reply_count=mTvCommentReply.getText().toString();
-                        int count=Integer.parseInt(reply_count.trim());
-                        mTvCommentReply.setText(count+1+"");
+                        String reply_count = mTvCommentReply.getText().toString();
+                        int count = Integer.parseInt(reply_count.trim());
+                        mTvCommentReply.setText(count + 1 + "");
                         viewAllReplies(commentId, page, limit);
 
                     } else {
@@ -406,8 +407,10 @@ public class CommentsReplyActivity extends BaseActivity implements View.OnClickL
                 mRelpiesLIst = new ArrayList<RepliesPojo>();
                 mRelpiesLIst.addAll(result.getRepliesList());
 
+                mTvCommentReply.setText(mRelpiesLIst.size() + "");
+
                 mAdapter = null;
-                mAdapter = new CommentReplyAdapter(CommentsReplyActivity.this, mRelpiesLIst, onReplyLikeClickListner,onReplyDislikeClickListner,onReplyNeutralClickListner,onReplyDeleteClickListner);
+                mAdapter = new CommentReplyAdapter(CommentsReplyActivity.this, mRelpiesLIst, onReplyLikeClickListner, onReplyDislikeClickListner, onReplyNeutralClickListner, onReplyDeleteClickListner);
                 mRvReplies.setAdapter(mAdapter);
 
 
@@ -498,6 +501,7 @@ public class CommentsReplyActivity extends BaseActivity implements View.OnClickL
                                 mTvCommentLike.setEnabled(true);
                                 mTvCommentDislike.setEnabled(false);
                                 mTvCommentNeutral.setEnabled(false);
+                                selected_comment_data.setLike(1);
 
                             } else {
                                 if (a > 0) {
@@ -509,9 +513,10 @@ public class CommentsReplyActivity extends BaseActivity implements View.OnClickL
                                 mTvCommentLike.setEnabled(true);
                                 mTvCommentDislike.setEnabled(true);
                                 mTvCommentNeutral.setEnabled(true);
-
+                                selected_comment_data.setLike(0);
 
                             }
+
 
                         } else if (action == 2) {
                             //                        dislike
@@ -529,6 +534,7 @@ public class CommentsReplyActivity extends BaseActivity implements View.OnClickL
                                 mTvCommentLike.setEnabled(false);
                                 mTvCommentDislike.setEnabled(true);
                                 mTvCommentNeutral.setEnabled(false);
+                                selected_comment_data.setDislike(1);
 
                             } else {
                                 if (b > 0) {
@@ -540,6 +546,7 @@ public class CommentsReplyActivity extends BaseActivity implements View.OnClickL
                                 mTvCommentLike.setEnabled(true);
                                 mTvCommentDislike.setEnabled(true);
                                 mTvCommentNeutral.setEnabled(true);
+                                selected_comment_data.setDislike(0);
 
                             }
 
@@ -558,6 +565,7 @@ public class CommentsReplyActivity extends BaseActivity implements View.OnClickL
                                 mTvCommentLike.setEnabled(false);
                                 mTvCommentDislike.setEnabled(false);
                                 mTvCommentNeutral.setEnabled(true);
+                                selected_comment_data.setNeutral(1);
 
                             } else {
                                 if (c > 0) {
@@ -570,7 +578,7 @@ public class CommentsReplyActivity extends BaseActivity implements View.OnClickL
                                 mTvCommentLike.setEnabled(true);
                                 mTvCommentDislike.setEnabled(true);
                                 mTvCommentNeutral.setEnabled(true);
-
+                                selected_comment_data.setNeutral(0);
 
 
                             }
@@ -646,9 +654,9 @@ public class CommentsReplyActivity extends BaseActivity implements View.OnClickL
 
                 if (result.getSuccess().equalsIgnoreCase("true")) {
                     Utility.showToastMessageLong(CommentsReplyActivity.this, "reply deleted");
-                    String reply_Count=mTvCommentReply.getText().toString();
-                    int count=Integer.parseInt(reply_Count.trim());
-                    mTvCommentReply.setText(count-1+"");
+                    String reply_Count = mTvCommentReply.getText().toString();
+                    int count = Integer.parseInt(reply_Count.trim());
+                    mTvCommentReply.setText(count - 1 + "");
                     mRelpiesLIst.remove(POSTION);
                     mAdapter.notifyDataSetChanged();
 
@@ -720,7 +728,7 @@ public class CommentsReplyActivity extends BaseActivity implements View.OnClickL
 
 
                 try {
-                    if(result.getSuccess().equalsIgnoreCase("true")){
+                    if (result.getSuccess().equalsIgnoreCase("true")) {
 
                         if (INDEX == 1) {
                             //                        like
@@ -730,22 +738,22 @@ public class CommentsReplyActivity extends BaseActivity implements View.OnClickL
                             if (result.getLike() == 1) {
 
                                 mRelpiesLIst.get(POSTION).setAction(Constants.LIKE);
-                                mRelpiesLIst.get(POSTION).setLike(a+1);
-    //                            mHolder.mReplyLike.setText(a + 1 + "");
-    //                            mHolder.mReplyLike.setCompoundDrawablesWithIntrinsicBounds(R.drawable.like_icon, 0, 0, 0);
-    //                            mHolder.mReplyLike.setEnabled(true);
-    //                            mHolder.mReplyDislike.setEnabled(false);
-    //                            mHolder.mReplyNeutral.setEnabled(false);
+                                mRelpiesLIst.get(POSTION).setLike(a + 1);
+                                //                            mHolder.mReplyLike.setText(a + 1 + "");
+                                //                            mHolder.mReplyLike.setCompoundDrawablesWithIntrinsicBounds(R.drawable.like_icon, 0, 0, 0);
+                                //                            mHolder.mReplyLike.setEnabled(true);
+                                //                            mHolder.mReplyDislike.setEnabled(false);
+                                //                            mHolder.mReplyNeutral.setEnabled(false);
 
-                            } else if(result.getLike()==0) {
+                            } else if (result.getLike() == 0) {
                                 mRelpiesLIst.get(POSTION).setAction(null);
                                 if (a > 0) {
-                                    mRelpiesLIst.get(POSTION).setLike(a-1);
+                                    mRelpiesLIst.get(POSTION).setLike(a - 1);
                                 }
-    //                            mHolder.mReplyLike.setCompoundDrawablesWithIntrinsicBounds(R.drawable.like_grey_icon, 0, 0, 0);
-    //                            mHolder.mReplyLike.setEnabled(true);
-    //                           mHolder.mReplyDislike.setEnabled(true);
-    //                            mHolder.mReplyNeutral.setEnabled(true);
+                                //                            mHolder.mReplyLike.setCompoundDrawablesWithIntrinsicBounds(R.drawable.like_grey_icon, 0, 0, 0);
+                                //                            mHolder.mReplyLike.setEnabled(true);
+                                //                           mHolder.mReplyDislike.setEnabled(true);
+                                //                            mHolder.mReplyNeutral.setEnabled(true);
 
 
                             }
@@ -757,27 +765,27 @@ public class CommentsReplyActivity extends BaseActivity implements View.OnClickL
                             b = dislikes_count;
                             if (result.getDislike() == 1) {
                                 mRelpiesLIst.get(POSTION).setAction(Constants.DISLIKE);
-                                mRelpiesLIst.get(POSTION).setDislike(b+1);
-    //                            mHolder.mReplyDislike.setText(b + 1 + "");
-    //                            mHolder.mReplyDislike.setCompoundDrawablesWithIntrinsicBounds(R.drawable.dislike_icon_without_circle, 0, 0, 0);
-    //                            mHolder.mReplyLike.setEnabled(false);
-    //                            mHolder.mReplyDislike.setEnabled(true);
-    //                            mHolder.mReplyNeutral.setEnabled(false);
+                                mRelpiesLIst.get(POSTION).setDislike(b + 1);
+                                //                            mHolder.mReplyDislike.setText(b + 1 + "");
+                                //                            mHolder.mReplyDislike.setCompoundDrawablesWithIntrinsicBounds(R.drawable.dislike_icon_without_circle, 0, 0, 0);
+                                //                            mHolder.mReplyLike.setEnabled(false);
+                                //                            mHolder.mReplyDislike.setEnabled(true);
+                                //                            mHolder.mReplyNeutral.setEnabled(false);
 
-                            } else if(result.getDislike()==0){
+                            } else if (result.getDislike() == 0) {
                                 mRelpiesLIst.get(POSTION).setAction(null);
 
                                 if (b > 0) {
-                                    mRelpiesLIst.get(POSTION).setDislike(b-1);
+                                    mRelpiesLIst.get(POSTION).setDislike(b - 1);
                                 }
-    //                            mHolder.mReplyDislike.setCompoundDrawablesWithIntrinsicBounds(R.drawable.dislike_icon_grey, 0, 0, 0);
-    //                            mHolder.mReplyLike.setEnabled(true);
-    //                            mHolder.mReplyDislike.setEnabled(true);
-    //                            mHolder.mReplyNeutral.setEnabled(true);
+                                //                            mHolder.mReplyDislike.setCompoundDrawablesWithIntrinsicBounds(R.drawable.dislike_icon_grey, 0, 0, 0);
+                                //                            mHolder.mReplyLike.setEnabled(true);
+                                //                            mHolder.mReplyDislike.setEnabled(true);
+                                //                            mHolder.mReplyNeutral.setEnabled(true);
 
                             }
 
-                        } else if(INDEX==3){
+                        } else if (INDEX == 3) {
 
                             //                        neutral
 
@@ -786,31 +794,31 @@ public class CommentsReplyActivity extends BaseActivity implements View.OnClickL
                             c = neutral_count;
                             if (result.getNeutral() == 1) {
                                 mRelpiesLIst.get(POSTION).setAction(Constants.NEUTRAL);
-                                mRelpiesLIst.get(POSTION).setNeutral(c+1);
-    //                            mHolder.mReplyNeutral.setText(c + 1 + "");
-    //                            mHolder.mReplyNeutral.setCompoundDrawablesWithIntrinsicBounds(R.drawable.hand_icon, 0, 0, 0);
-    //                            mHolder.mReplyLike.setEnabled(false);
-    //                            mHolder.mReplyDislike.setEnabled(false);
-    //                            mHolder.mReplyNeutral.setEnabled(true);
+                                mRelpiesLIst.get(POSTION).setNeutral(c + 1);
+                                //                            mHolder.mReplyNeutral.setText(c + 1 + "");
+                                //                            mHolder.mReplyNeutral.setCompoundDrawablesWithIntrinsicBounds(R.drawable.hand_icon, 0, 0, 0);
+                                //                            mHolder.mReplyLike.setEnabled(false);
+                                //                            mHolder.mReplyDislike.setEnabled(false);
+                                //                            mHolder.mReplyNeutral.setEnabled(true);
 
-                            } else if(result.getNeutral()==0){
+                            } else if (result.getNeutral() == 0) {
                                 mRelpiesLIst.get(POSTION).setAction(null);
 
                                 if (c > 0) {
-                                    mRelpiesLIst.get(POSTION).setNeutral(c-1);
+                                    mRelpiesLIst.get(POSTION).setNeutral(c - 1);
 
                                 }
-    //                            mHolder.mReplyNeutral.setCompoundDrawablesWithIntrinsicBounds(R.drawable.hand_icon_grey, 0, 0, 0);
-    //                            mHolder.mReplyLike.setEnabled(true);
-    //                            mHolder.mReplyDislike.setEnabled(true);
-    //                            mHolder.mReplyNeutral.setEnabled(true);
+                                //                            mHolder.mReplyNeutral.setCompoundDrawablesWithIntrinsicBounds(R.drawable.hand_icon_grey, 0, 0, 0);
+                                //                            mHolder.mReplyLike.setEnabled(true);
+                                //                            mHolder.mReplyDislike.setEnabled(true);
+                                //                            mHolder.mReplyNeutral.setEnabled(true);
 
 
                             }
                             mAdapter.notifyDataSetChanged();
                         }
 
-                     mAdapter.notifyDataSetChanged();
+                        mAdapter.notifyDataSetChanged();
 
                     }
                 } catch (Exception e) {
@@ -829,37 +837,37 @@ public class CommentsReplyActivity extends BaseActivity implements View.OnClickL
     };
 
 
-    OnReplyLikeClickListner onReplyLikeClickListner=new OnReplyLikeClickListner() {
+    OnReplyLikeClickListner onReplyLikeClickListner = new OnReplyLikeClickListner() {
         @Override
         public void onReplyLikeClicked(TextView like, int position, String replyId, String type) {
-            POSTION=position;
-            INDEX=1;
+            POSTION = position;
+            INDEX = 1;
             actionOnReply(replyId, mActionTypeLike);
         }
     };
 
-    OnReplyDislikeClickListner onReplyDislikeClickListner=new OnReplyDislikeClickListner() {
+    OnReplyDislikeClickListner onReplyDislikeClickListner = new OnReplyDislikeClickListner() {
         @Override
         public void onReplyDislikeClicked(TextView dislike, int position, String replyId, String type) {
-            POSTION=position;
-            INDEX=2;
+            POSTION = position;
+            INDEX = 2;
             actionOnReply(replyId, mActionTypeDislike);
         }
     };
 
-    OnReplyNeutralClickListner onReplyNeutralClickListner=new OnReplyNeutralClickListner() {
+    OnReplyNeutralClickListner onReplyNeutralClickListner = new OnReplyNeutralClickListner() {
         @Override
         public void onReplyNeutralClicked(TextView neutral, int position, String replyId, String type) {
-            POSTION=position;
-            INDEX=3;
+            POSTION = position;
+            INDEX = 3;
             actionOnReply(replyId, mActionTypeNeutral);
         }
     };
 
-    OnReplyDeleteClickListner onReplyDeleteClickListner=new OnReplyDeleteClickListner() {
+    OnReplyDeleteClickListner onReplyDeleteClickListner = new OnReplyDeleteClickListner() {
         @Override
         public void onReplyDeleteClicked(ImageView delete, int position, String replyId, String type) {
-            POSTION=position;
+            POSTION = position;
             removeReply(replyId);
         }
     };
@@ -909,4 +917,13 @@ public class CommentsReplyActivity extends BaseActivity implements View.OnClickL
 //    };
 
 
+    @Override
+    public void onBackPressed() {
+        selected_comment_data.setReplie(mRelpiesLIst.size());
+        Intent returnIntent = new Intent();
+        returnIntent.putExtra(Constants.RESULT_FROM_ACTIVITY ,selected_comment_data);
+        returnIntent.putExtra("pos",previousListPosition);
+        setResult(Activity.RESULT_OK, returnIntent);
+        super.onBackPressed();
+    }
 }

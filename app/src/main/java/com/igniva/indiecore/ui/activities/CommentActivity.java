@@ -1036,10 +1036,11 @@ public class CommentActivity extends BaseActivity implements View.OnClickListene
         public void onCommentreplyClicked(TextView reply, int position, String commentId, String type) {
             Bundle bundle = new Bundle();
             bundle.putSerializable("COMMENT", mCommentList.get(position));
+            bundle.putInt("pos", position);
 
             Intent intent = new Intent(CommentActivity.this, CommentsReplyActivity.class);
             intent.putExtras(bundle);
-            startActivity(intent);
+            startActivityForResult(intent, Constants.STARTACTIVITYFORRESULTFORCOMMENTACTIVITY);
 
         }
     };
@@ -1062,5 +1063,18 @@ public class CommentActivity extends BaseActivity implements View.OnClickListene
         alert11.show();
     }
 
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == Constants.STARTACTIVITYFORRESULTFORCOMMENTACTIVITY && resultCode == RESULT_OK) {
+            CommentPojo commentPojo = (CommentPojo) data.getSerializableExtra(Constants.RESULT_FROM_ACTIVITY);
+            int position = data.getIntExtra("pos", 0);
+            mCommentList.get(position).setLike(commentPojo.getLike());
+            mCommentList.get(position).setDislike(commentPojo.getDislike());
+            mCommentList.get(position).setNeutral(commentPojo.getNeutral());
+            mCommentList.get(position).setReplie(commentPojo.getReplie());
+            mCommentAdapter.notifyDataSetChanged();
+        }
 
+    }
 }

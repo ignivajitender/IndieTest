@@ -9,6 +9,8 @@ public class Constants {
 
     public static final int STARTACTIVITYFORRESULTFORCHAT = 302;
     public static final int STARTACTIVITYFORRESULTFORVIDEOVIEW = 303;
+    public static final int STARTACTIVITYFORRESULTFORCOMMENTACTIVITY = 304;
+    public static final String RESULT_FROM_ACTIVITY="resultFromActivity";
 
     public static final String FROM_CLASS="fromClass";
 
