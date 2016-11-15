@@ -56,29 +56,56 @@ import id.zelory.compressor.Compressor;
  */
 public class CreatePostActivity extends BaseActivity implements AsyncResult, View.OnClickListener {
 
+    public static final int REQUEST_CAMERA = 100;
+    public static final int SELECT_FILE = 200;
+    public static final String TAG = "CreatePostActivity";
     private static final int MEDIA_TYPE_VIDEO = 2;
+    private static final int CAPTURE_VIDEO_ACTIVITY_REQUEST_CODE = 300;
+    private final String BUSINESS = "business";
+    private final String PROFILE = "profile";
+    private final String TIMELINE = "timeline";
+    String mBusinessId = "";
+    ResponseHandlerListener responseHandler = new ResponseHandlerListener() {
+        @Override
+        public void onComplete(ResponsePojo result, WebServiceClient.WebError error, ProgressDialog mProgressDialog) {
+
+            WebNotificationManager.unRegisterResponseListener(responseHandler);
+            if (error == null) {
+                if (result.getSuccess().equalsIgnoreCase("true")) {
+
+                    Utility.showToastMessageLong(CreatePostActivity.this, "Posted successfully");
+                    finish();
+
+                } else {
+                    Utility.showToastMessageLong(CreatePostActivity.this, getResources().getString(R.string.some_unknown_error));
+
+                }
+
+            } else {
+                Utility.showToastMessageLong(CreatePostActivity.this, getResources().getString(R.string.some_unknown_error));
+            }
+            // Always close the progressdialog
+            if (mProgressDialog != null && mProgressDialog.isShowing()) {
+                mProgressDialog.dismiss();
+            }
+
+
+        }
+    };
     private TextView mCamera, mGallery, mUserName, mVideoRecord;
     private EditText mPostText;
     private String mImageMediaId = "";
     private String mVideoMediaId = "";
     private String mContextName;
     private ImageView mIvMediaPost, mUserImage;
-    public static final int REQUEST_CAMERA = 100;
-    public static final int SELECT_FILE = 200;
-    private static final int CAPTURE_VIDEO_ACTIVITY_REQUEST_CODE = 300;
     //private String videoUrl = "";
     private String fileType="";
     private Uri mVideoUri;
     private boolean IsThumbNailUploaded = false;
     private Toolbar mToolbar;
     private String mImagePath;
-    private final String BUSINESS = "business";
-    private final String PROFILE = "profile";
-    private final String TIMELINE = "timeline";
     private Uri fileUri;
-    String mBusinessId = "";
     private Bitmap mVideoThumbnail = null;
-    public static final String TAG = "CreatePostActivity";
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -155,7 +182,6 @@ public class CreatePostActivity extends BaseActivity implements AsyncResult, Vie
         }
 
     }
-
 
     void initToolbar() {
         try {
@@ -266,35 +292,6 @@ public class CreatePostActivity extends BaseActivity implements AsyncResult, Vie
             e.printStackTrace();
         }
     }
-
-
-    ResponseHandlerListener responseHandler = new ResponseHandlerListener() {
-        @Override
-        public void onComplete(ResponsePojo result, WebServiceClient.WebError error, ProgressDialog mProgressDialog) {
-
-            WebNotificationManager.unRegisterResponseListener(responseHandler);
-            if (error == null) {
-                if (result.getSuccess().equalsIgnoreCase("true")) {
-
-                    Utility.showToastMessageLong(CreatePostActivity.this, "Posted successfully");
-                    finish();
-
-                } else {
-                    Utility.showToastMessageLong(CreatePostActivity.this, getResources().getString(R.string.some_unknown_error));
-
-                }
-
-            } else {
-                Utility.showToastMessageLong(CreatePostActivity.this, getResources().getString(R.string.some_unknown_error));
-            }
-            // Always close the progressdialog
-            if (mProgressDialog != null && mProgressDialog.isShowing()) {
-                mProgressDialog.dismiss();
-            }
-
-
-        }
-    };
 
     /**
      * pic media from gallery
@@ -520,7 +517,7 @@ public class CreatePostActivity extends BaseActivity implements AsyncResult, Vie
             Log.e("response media uplaod", jsonObject.toString());
             JSONArray file = jsonObject.getJSONArray("files");
             JSONObject obj = file.getJSONObject(0);
-           // videoUrl = obj.optString("url");
+            // videoUrl = obj.optString("url");
             fileType=obj.optString("type");
             if(fileType.contains("video")){
                 mVideoMediaId = obj.optString("fileId");
