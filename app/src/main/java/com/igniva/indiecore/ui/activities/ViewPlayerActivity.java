@@ -335,7 +335,7 @@ public class ViewPlayerActivity extends BaseActivity {
         try {
             if (vvPlayer != null) {
                 vvPlayer.seekTo(stopPosition);
-                vvPlayer.start();
+                 vvPlayer.start();
                 //vvPlayer.resume();
                 if (mProgressbar != null) {
                     mProgressbar.setVisibility(View.VISIBLE);

@@ -225,14 +225,15 @@ public class CreatePostActivity extends BaseActivity implements AsyncResult, Vie
                         payload.put(Constants.MEDIA, mImageMediaId);
                     }
 
+                }
+
 
                /* if (videoUrl.contains(".mp4")) {
                     payload.put(Constants.MEDIA, mVideoMediaId);
                     payload.put(Constants.THUMBNAIL, mImageMediaId);
                 } else {
                     payload.put(Constants.MEDIA, mImageMediaId);
-               }*/
-                }
+                }*/
             } catch (JSONException e) {
                 e.printStackTrace();
             }
