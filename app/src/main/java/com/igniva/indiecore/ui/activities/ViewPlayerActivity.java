@@ -15,17 +15,17 @@ import com.igniva.indiecore.utils.Utility;
 
 public class ViewPlayerActivity extends BaseActivity {
 
+    //private MediaPlayer mMediaPlayer;
+    /* int position;
+     String messageId;
+     boolean localPath;*/
+    public static final String LOG_TAG = "ViewPlayerActivity";
     VideoView vvPlayer;
     //String mediaId;
     String mediaPath;
     String fromClass;
     ProgressBar mProgressbar;
     private int stopPosition;
-    //private MediaPlayer mMediaPlayer;
-    /* int position;
-     String messageId;
-     boolean localPath;*/
-    public static final String LOG_TAG = "ViewPlayerActivity";
     // ChatPojo mChatPojo;
 
     /*String outFilePath = "";
@@ -116,10 +116,11 @@ public class ViewPlayerActivity extends BaseActivity {
         }
 
     }
-        @Override
-        public void onConfigurationChanged (Configuration newConfig){
-            super.onConfigurationChanged(newConfig);
-        }
+
+    @Override
+    public void onConfigurationChanged(Configuration newConfig) {
+        super.onConfigurationChanged(newConfig);
+    }
 
    /* AsyncResultDownload asyncResultDownload = new AsyncResultDownload() {
         @Override
@@ -335,7 +336,7 @@ public class ViewPlayerActivity extends BaseActivity {
         try {
             if (vvPlayer != null) {
                 vvPlayer.seekTo(stopPosition);
-                 vvPlayer.start();
+                vvPlayer.start();
                 //vvPlayer.resume();
                 if (mProgressbar != null) {
                     mProgressbar.setVisibility(View.VISIBLE);
