@@ -47,8 +47,11 @@ public class ViewPlayerActivity extends BaseActivity {
 
     @Override
     protected void setDataInViewObjects() {
-        mediaPath = getIntent().getStringExtra(Constants.MEDIA_PATH);
-        fromClass = getIntent().getStringExtra(Constants.FROM_CLASS);
+        try {
+            mediaPath = getIntent().getStringExtra(Constants.MEDIA_PATH);
+            fromClass = getIntent().getStringExtra(Constants.FROM_CLASS);
+
+
       /*  position = getIntent().getIntExtra(Constants.POSITION, 0);
         messageId = getIntent().getStringExtra(Constants.MESSAGE_ID);
         localPath = getIntent().getBooleanExtra(Constants.LOCALE, true);*/
@@ -59,44 +62,50 @@ public class ViewPlayerActivity extends BaseActivity {
             mediaPath = mediaId;
         }*/
 
-        if (fromClass != null && fromClass.equalsIgnoreCase("WallPostAdapter")) {
-            mediaPath = WebServiceClient.HTTP_STAGING + mediaPath;
-        }
+            if (fromClass != null && fromClass.equalsIgnoreCase("WallPostAdapter")) {
+                mediaPath = WebServiceClient.HTTP_STAGING + mediaPath;
+            }
 
-        if (mediaPath != null) {
 
-            mProgressbar.setVisibility(View.VISIBLE);
+            if (mediaPath != null) {
 
-            MediaController mediaController = new MediaController(this);
-
-            //mediaController.setAnchorView(vvPlayer);
-            mediaController.setMediaPlayer(vvPlayer);
-            vvPlayer.setVideoPath(mediaPath);
-            vvPlayer.setMediaController(mediaController);
-            vvPlayer.requestFocus();
-            //vvPlayer.start();
-            mediaController.show();
-
-           /* vvPlayer.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
-                @Override
-                public void onCompletion(MediaPlayer mediaPlayer) {
-                    finish();
+                if (fromClass != null && fromClass.equalsIgnoreCase("WallPostAdapter")) {
+                    mediaPath = WebServiceClient.HTTP_STAGING + mediaPath;
                 }
-            });*/
+                mProgressbar.setVisibility(View.VISIBLE);
 
-            vvPlayer.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
-                // Close the progress bar and play the video
-                public void onPrepared(MediaPlayer mp) {
-                    //mMediaPlayer = mp;
-                    mProgressbar.setVisibility(View.GONE);
-                    vvPlayer.start();
-                }
-            });
+                MediaController mediaController = new MediaController(this);
+                mediaController.setMediaPlayer(vvPlayer);
+                vvPlayer.setVideoPath(mediaPath);
+                vvPlayer.setMediaController(mediaController);
+                vvPlayer.requestFocus();
+                mediaController.show();
+
+               /* vvPlayer.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
+                    @Override
+                    public void onCompletion(MediaPlayer mediaPlayer) {
+                        finish();
+                    }
+                });*/
+
+                vvPlayer.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
+                    // Close the progress bar and play the video
+                    public void onPrepared(MediaPlayer mp) {
+                        //mMediaPlayer = mp;
+                        mProgressbar.setVisibility(View.GONE);
+                        vvPlayer.start();
+                    }
+                });
 
 
-        } else {
-            new Utility().showOkAndFinish("Sorry This Video is not available.", this);
-        }
+            } else {
+                new Utility().showOkAndFinish(getResources().getString(R.string.media_not_available), this);
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+
+
 
         /*if (messageId != null) {
             // DownloadFromUrl(mediaPath, "DownloadedFileVide");
@@ -104,12 +113,13 @@ public class ViewPlayerActivity extends BaseActivity {
             // new VideoDownloader().execute(mediaPath);
             new ProgressBack().execute();
         }*/
-    }
+        }
 
-    @Override
-    public void onConfigurationChanged(Configuration newConfig) {
-        super.onConfigurationChanged(newConfig);
     }
+        @Override
+        public void onConfigurationChanged (Configuration newConfig){
+            super.onConfigurationChanged(newConfig);
+        }
 
    /* AsyncResultDownload asyncResultDownload = new AsyncResultDownload() {
         @Override
@@ -120,13 +130,11 @@ public class ViewPlayerActivity extends BaseActivity {
                 mChatPojo.setImagePath(result.toString());
                 mChatPojo.setMessageId(messageId.toString());
                 //updateMediaPath(mChatPojo);
-
             } catch (Exception e) {
                 e.printStackTrace();
             }
         }
     };
-
     @Override
     public void onBackPressed() {
         Intent intent = new Intent();
@@ -137,17 +145,11 @@ public class ViewPlayerActivity extends BaseActivity {
         } else {
             setResult(RESULT_CANCELED, intent);
         }
-
         super.onBackPressed();
     }
-
-
     class VideoDownloader extends AsyncTask<String, Integer, Void> {
-
         @Override
         protected Void doInBackground(String... params) {
-
-
             outFile = new File(outFilePath);
             FileOutputStream out = null;
             BufferedInputStream input = null;
@@ -157,7 +159,6 @@ public class ViewPlayerActivity extends BaseActivity {
                 } catch (FileNotFoundException e) {
                     e.printStackTrace();
                 }
-
                 try {
                     URL url = null;
                     try {
@@ -165,7 +166,6 @@ public class ViewPlayerActivity extends BaseActivity {
                     } catch (MalformedURLException e) {
                         e.printStackTrace();
                     }
-
                     HttpURLConnection connection = (HttpURLConnection) url.openConnection();
                     try {
                         connection.connect();
@@ -176,7 +176,6 @@ public class ViewPlayerActivity extends BaseActivity {
                         throw new RuntimeException("response is not http_ok");
                     }
                     int fileLength = connection.getContentLength();
-
                     input = new BufferedInputStream(connection.getInputStream());
                     byte data[] = new byte[2048];
                     long readBytes = 0;
@@ -197,8 +196,6 @@ public class ViewPlayerActivity extends BaseActivity {
 *//*
                         Log.w("download", (readBytes / 1024) + "kb of " + (fileLength / 1024) + "kb");
                     }
-
-
                 } catch (MalformedURLException e) {
                     e.printStackTrace();
                 } catch (IOException e) {
@@ -213,50 +210,38 @@ public class ViewPlayerActivity extends BaseActivity {
             } catch (IOException e) {
                 e.printStackTrace();
             }
-
             return null;
         }
-
         @Override
         protected void onPostExecute(Void aVoid) {
             super.onPostExecute(aVoid);
             Log.w("download", "Done" + outFile.getAbsolutePath());
         }
     }
-
     private class ProgressBack extends AsyncTask<String, String, String> {
         ProgressDialog PD;
-
         @Override
         protected void onPreExecute() {
             PD = ProgressDialog.show(ViewPlayerActivity.this, null, "Please Wait ...", true);
             PD.setCancelable(true);
         }
-
         @Override
         protected String doInBackground(String... arg0) {
             DownloadFromUrl(mediaPath, "DownloadedFileVide");
             return null;
         }
-
         protected void onPostExecute(String result) {
             PD.dismiss();
-
         }
-
     }
-
-
     public void DownloadFromUrl(String imageURL, String fileName) {  //this is the downloader method
         try {
             URL url = new URL(imageURL);   //you can write here any link
-
             File direct = new File(Constants.direct);
             if (!direct.exists()) {
                 File wallpaperDirectory = new File(String.valueOf(direct));
                 wallpaperDirectory.mkdirs();
             }
-
             File file = new File(direct, fileName + ".mp4");
             if (!file.exists()) {
                 try {
@@ -265,22 +250,18 @@ public class ViewPlayerActivity extends BaseActivity {
                     e.printStackTrace();
                 }
             }
-
             //File file = new File(fileName);
-
             long startTime = System.currentTimeMillis();
             Log.d("ImageManager", "download begining");
             Log.d("ImageManager", "download url:" + url);
             Log.d("ImageManager", "downloaded file name:" + fileName);
                         *//* Open a connection to that URL. *//*
             URLConnection ucon = url.openConnection();
-
                         *//*
                          * Define InputStreams to read from the URLConnection.
                          *//*
             InputStream is = ucon.getInputStream();
             BufferedInputStream bis = new BufferedInputStream(is);
-
                         *//*
                          * Read bytes to the Buffer until there is nothing more to read(-1).
                          *//*
@@ -289,7 +270,6 @@ public class ViewPlayerActivity extends BaseActivity {
             while ((current = bis.read()) != -1) {
                 baf.append((byte) current);
             }
-
                         *//* Convert the Bytes read to a String. *//*
             FileOutputStream fos = new FileOutputStream(file);
             fos.write(baf.toByteArray());
@@ -297,12 +277,33 @@ public class ViewPlayerActivity extends BaseActivity {
             Log.d("ImageManager", "download ready in"
                     + ((System.currentTimeMillis() - startTime) / 1000)
                     + " sec");
-
         } catch (IOException e) {
             Log.d("ImageManager", "Error: " + e);
         }
-
     }*/
+
+   /* @Override
+    public void onPause() {
+        super.onPause();
+        stopPosition = vvPlayer.getCurrentPosition(); //stopPosition is an int
+        if(mMediaPlayer.isPlaying()){
+            mMediaPlayer.pause();
+        }
+        *//*if (vvPlayer.isPlaying())
+            vvPlayer.pause();*//*
+    }
+    @Override
+    public void onResume() {
+        super.onResume();
+        if (mMediaPlayer != null) {
+            mMediaPlayer.start();
+        }
+        // mMediaPlayer.seekTo(stopPosition);
+       *//* if (vvPlayer != null) {
+            vvPlayer.seekTo(stopPosition);
+        }*//*
+    }*/
+
 
    /* @Override
     public void onPause() {
@@ -334,7 +335,7 @@ public class ViewPlayerActivity extends BaseActivity {
         try {
             if (vvPlayer != null) {
                 vvPlayer.seekTo(stopPosition);
-                 vvPlayer.start();
+                vvPlayer.start();
                 //vvPlayer.resume();
                 if (mProgressbar != null) {
                     mProgressbar.setVisibility(View.VISIBLE);

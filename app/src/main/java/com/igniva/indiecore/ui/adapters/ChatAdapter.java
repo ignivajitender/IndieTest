@@ -293,29 +293,36 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.RecyclerViewHo
                         intent.putExtra(Constants.MEDIA_PATH, mChatList.get(position).getImagePath());
                         context.startActivity(intent);
                     } else {
-                        if (mChatList.get(position).getType().equalsIgnoreCase("video")) {
+                          /*  Intent intent = new Intent(context, ViewPlayerActivity.class);
+                            intent.putExtra(Constants.MEDIA_PATH, mChatList.get(position).getMedia());
+                            intent.putExtra(Constants.POSITION, position);
+                            intent.putExtra(Constants.MESSAGE_ID, mChatList.get(position).getMessageId());
+                            intent.putExtra(Constants.LOCALE, false);
+                            ((ChatActivity) context).startActivityForResult(intent, Constants.STARTACTIVITYFORRESULTFORVIDEOVIEW);*/
+                            if (mChatList.get(position).getType().equalsIgnoreCase("video")) {
 
-                            // isVideoDownload true means - downloading already started show progress bar and false means - start service to download video
-                            if (!mChatList.get(position).isVideoDownload()) {
+                                // isVideoDownload true means - downloading already started show progress bar and false means - start service to download video
+                                if (!mChatList.get(position).isVideoDownload()) {
+                                    //Is_Clicked = true;
+                                    holder.mIvDownloadOther.setVisibility(View.GONE);
+                                    holder.mProgressBar.setVisibility(View.VISIBLE);
+
+                                    //update messageList video is downloading and show only progress bar
+                                    ((ChatActivity) context).updateMessageList(mChatList.get(position).getMessageId());
+
+                                    Intent intent = new Intent(context, DownloadVideoService.class);
+                                    intent.putExtra(Constants.MEDIA_PATH, WebServiceClient.HTTP_DOWNLOAD_IMAGE + mChatList.get(position).getMedia());
+                                    intent.putExtra(Constants.POSITION, position);
+                                    intent.putExtra(Constants.MESSAGE_ID, mChatList.get(position).getMessageId());
+                                    intent.putExtra(Constants.RESULT_RECEIVER, ((ChatActivity) context).callDownloadReceiver());
+                                    context.startService(intent);
+                                }
+                            } else {
                                 //Is_Clicked = true;
                                 holder.mIvDownloadOther.setVisibility(View.GONE);
-                                holder.mProgressBar.setVisibility(View.VISIBLE);
-
-                                //update messageList video is downloading and show only progress bar
-                                ((ChatActivity) context).updateMessageList(mChatList.get(position).getMessageId());
-
-                                Intent intent = new Intent(context, DownloadVideoService.class);
-                                intent.putExtra(Constants.MEDIA_PATH, WebServiceClient.HTTP_DOWNLOAD_IMAGE + mChatList.get(position).getMedia());
-                                intent.putExtra(Constants.POSITION, position);
-                                intent.putExtra(Constants.MESSAGE_ID, mChatList.get(position).getMessageId());
-                                intent.putExtra(Constants.RESULT_RECEIVER, ((ChatActivity) context).callDownloadReceiver());
-                                context.startService(intent);
+                                mOnImageDownload.onDownloadClick(holder.mProgressBar, position, mChatList.get(position).getMedia(), mChatList.get(position).getMessageId(), Is_downloaded);
                             }
-                        } else {
-                            //Is_Clicked = true;
-                            holder.mIvDownloadOther.setVisibility(View.GONE);
-                            mOnImageDownload.onDownloadClick(holder.mProgressBar, position, mChatList.get(position).getMedia(), mChatList.get(position).getMessageId(), Is_downloaded);
-                        }
+
                     }
                 }
             });

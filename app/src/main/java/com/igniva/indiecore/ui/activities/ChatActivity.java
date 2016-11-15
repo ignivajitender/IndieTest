@@ -1,5 +1,6 @@
 package com.igniva.indiecore.ui.activities;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.ContentResolver;
@@ -358,9 +359,9 @@ public class ChatActivity extends BaseActivity implements OnChatMsgReceiveListen
     }
 
     private void onVideoRecord(Intent data) {
-
-        Utility.showToastMessageShort(this, "" + data);
-        Log.e("VideoPathChatActivity", "" + data.getData());
+        uploadVideoToServer(fileUri);
+//        Utility.showToastMessageShort(this, "" + data);
+//        Log.e("VideoPathChatActivity", "" + data.getData());
 
     }
 
@@ -875,9 +876,7 @@ public class ChatActivity extends BaseActivity implements OnChatMsgReceiveListen
                 // Video captured and saved to fileUri specified in the Intent
 
                 Bitmap mVideoThumbnail = ThumbnailUtils.createVideoThumbnail(video_path, MediaStore.Video.Thumbnails.MINI_KIND);
-
-                base64EncodedVideo = Utility.encodeTobase64(mVideoThumbnail);
-
+                  base64EncodedVideo = Utility.encodeTobase64(mVideoThumbnail);
                 //mIvMediaPost.setImageBitmap(mVideoThumbnail);
                 MultipartEntity reqEntity = new MultipartEntity(HttpMultipartMode.BROWSER_COMPATIBLE);
                 reqEntity.addPart("fileToUpload", file_body_Video);
@@ -983,6 +982,7 @@ public class ChatActivity extends BaseActivity implements OnChatMsgReceiveListen
         return new DownloadReceiver(new Handler());
     }
 
+    @SuppressLint("ParcelCreator")
     public class DownloadReceiver extends ResultReceiver {
         public DownloadReceiver(Handler handler) {
             super(handler);

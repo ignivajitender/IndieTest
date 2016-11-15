@@ -1,11 +1,13 @@
 package com.igniva.indiecore.ui.activities;
 
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.widget.SwipeRefreshLayout;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
@@ -61,6 +63,7 @@ public class NewsFeedActivity extends BaseActivity implements View.OnClickListen
     private static int PAGE = 1, LIMIT = 20;
     private String PROFILE = "profile";
     private String TIMELINE = "timeline";
+    private String REMOVE = "remove";
     private int POSITION = -1;
     private int action = 0;
 
@@ -131,19 +134,16 @@ public class NewsFeedActivity extends BaseActivity implements View.OnClickListen
                     android.R.color.holo_red_light);
 
 
+            setDataInViewObjects();
+        } catch (
+                Exception e
+                )
 
-        setDataInViewObjects();
+        {
+            e.printStackTrace();
+        }
+
     }
-
-    catch(
-    Exception e
-    )
-
-    {
-        e.printStackTrace();
-    }
-
-}
 
 
     @Override
@@ -326,11 +326,19 @@ public class NewsFeedActivity extends BaseActivity implements View.OnClickListen
 
     OnDeletePostClickListner onDeletePostClickListner = new OnDeletePostClickListner() {
         @Override
-        public void ondeletePostClicked(ImageView delete, int position, String postId, String type) {
+        public void ondeletePostClicked(ImageView delete, int position, String postId, String ACTION) {
             try {
                 mPostDelete = delete;
                 POSITION = position;
-                removePost(postId);
+                if (ACTION.equalsIgnoreCase("DELETE")) {
+//TODO
+                    showRemovePostAlertDialog(getResources().getString(R.string.delete_post), NewsFeedActivity.this, postId, REMOVE);
+//                    removePost(BoardActivity.this, postId);
+
+                } else if (ACTION.equalsIgnoreCase("REPORT")) {
+
+                    flagPost(postId);
+                }
 
             } catch (Exception e) {
                 e.printStackTrace();
@@ -338,6 +346,31 @@ public class NewsFeedActivity extends BaseActivity implements View.OnClickListen
         }
     };
 
+
+    public void showRemovePostAlertDialog(String message, final Context context, final String Id, final String method) {
+        AlertDialog.Builder builder1 = new AlertDialog.Builder(context);
+        builder1.setMessage(message);
+        builder1.setCancelable(true);
+        builder1.setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int id) {
+                if (method.equalsIgnoreCase(REMOVE)) {
+                    removePost(Id);
+                }
+            }
+        });
+        builder1.setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int id) {
+                dialog.dismiss();
+                try {
+                    mPostDelete.setVisibility(View.GONE);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+        AlertDialog alert11 = builder1.create();
+        alert11.show();
+    }
 
     /**
      * create payload to flag/remove a post
@@ -413,6 +446,55 @@ public class NewsFeedActivity extends BaseActivity implements View.OnClickListen
         }
     };
 
+    /**
+     * flag post call
+     */
+    public void flagPost(String postId) {
+
+        String payload = genratePayload(postId);
+        if (payload != null) {
+
+            WebNotificationManager.registerResponseListener(responseFlagPost);
+            WebServiceClient.flag_a_post(NewsFeedActivity.this, payload, responseFlagPost);
+
+        }
+
+    }
+
+
+    /**
+     * response flag post
+     */
+    ResponseHandlerListener responseFlagPost = new ResponseHandlerListener() {
+        @Override
+        public void onComplete(ResponsePojo result, WebServiceClient.WebError error, ProgressDialog mProgressDialog) {
+            WebNotificationManager.unRegisterResponseListener(responseFlagPost);
+            try {
+
+                if (error == null) {
+                    if (result.getSuccess().equalsIgnoreCase("true")) {
+
+                        mPostDelete.setVisibility(View.GONE);
+                        if (result.getFlag() == 1) {
+                            Utility.showToastMessageLong(NewsFeedActivity.this, getResources().getString(R.string.flagged));
+                        } else {
+                            Utility.showToastMessageLong(NewsFeedActivity.this, getResources().getString(R.string.unflagged));
+                        }
+
+                    }
+
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+
+
+            //            finish the dialog
+            if (mProgressDialog != null && mProgressDialog.isShowing()) {
+                mProgressDialog.dismiss();
+            }
+        }
+    };
 
     /**
      * // create payload to like unlike a post

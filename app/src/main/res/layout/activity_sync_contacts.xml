@@ -23,7 +23,7 @@
             android:gravity="center"
             android:maxLines="1"
             android:text="@string/it_is_recommended_to_choose_a"
-            android:textSize="20sp" />
+            android:textSize="18sp" />
 
         <TextView
             android:layout_width="match_parent"
@@ -33,7 +33,7 @@
             android:layout_marginTop="5dp"
             android:maxLines="1"
             android:text="@string/it_is_recommended_to_choose_b"
-            android:textSize="20sp" />
+            android:textSize="18sp" />
 
         <TextView
             android:layout_width="match_parent"
@@ -43,7 +43,7 @@
             android:layout_marginTop="5dp"
             android:maxLines="1"
             android:text="@string/it_is_recommended_to_choose_c"
-            android:textSize="20sp" />
+            android:textSize="18sp" />
 
         <ImageView
         android:padding="2dp"
@@ -90,7 +90,7 @@
             android:layout_gravity="center"
             android:layout_marginTop="20dp"
             android:text="Start Syncing"
-            android:textSize="22sp" />
+            android:textSize="20sp" />
 
     </LinearLayout>
 

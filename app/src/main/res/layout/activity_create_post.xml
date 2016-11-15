@@ -88,7 +88,7 @@
                             android:background="@color/white"
                             android:gravity="start"
                             android:hint="Create a post"
-                            android:minHeight="200dp"
+                            android:minHeight="70dp"
                             android:paddingTop="15dp" />
 
                         <ImageView

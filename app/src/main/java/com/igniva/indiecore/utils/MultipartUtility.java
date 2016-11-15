@@ -121,7 +121,11 @@ public class MultipartUtility {
      * @throws IOException
      */
     public String finish() throws IOException {
+<<<<<<< HEAD
+        StringBuilder responseBuilder=new StringBuilder();
+=======
         StringBuilder responseBuilder = new StringBuilder();
+>>>>>>> origin/master
         writer.append(LINE_FEED).flush();
         writer.append("--" + boundary + "--").append(LINE_FEED);
         writer.close();
@@ -129,7 +133,11 @@ public class MultipartUtility {
         // checks server's status code first
         int status = httpConn.getResponseCode();
         if (status == HttpURLConnection.HTTP_OK) {
+<<<<<<< HEAD
+            BufferedReader reader = new BufferedReader(new InputStreamReader(
+=======
             BufferedReader reader=new BufferedReader(new InputStreamReader(
+>>>>>>> origin/master
                     httpConn.getInputStream()));
             String line = null;
             while ((line = reader.readLine()) != null) {
