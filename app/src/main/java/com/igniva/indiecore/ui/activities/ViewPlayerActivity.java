@@ -47,11 +47,43 @@ public class ViewPlayerActivity extends BaseActivity {
 
     @Override
     protected void setDataInViewObjects() {
+<<<<<<< HEAD
         try {
             mediaPath = getIntent().getStringExtra(Constants.MEDIA_PATH);
             fromClass = getIntent().getStringExtra(Constants.FROM_CLASS);
 
             if (mediaPath != null) {
+=======
+        mediaPath = getIntent().getStringExtra(Constants.MEDIA_PATH);
+        fromClass = getIntent().getStringExtra(Constants.FROM_CLASS);
+      /*  position = getIntent().getIntExtra(Constants.POSITION, 0);
+        messageId = getIntent().getStringExtra(Constants.MESSAGE_ID);
+        localPath = getIntent().getBooleanExtra(Constants.LOCALE, true);*/
+
+       /* if (!localPath) {
+            mediaPath = WebServiceClient.HTTP_DOWNLOAD_IMAGE + mediaId;
+        } else {
+            mediaPath = mediaId;
+        }*/
+
+        if (fromClass != null && fromClass.equalsIgnoreCase("WallPostAdapter")) {
+            mediaPath = WebServiceClient.HTTP_STAGING + mediaPath;
+        }
+
+        if (mediaPath != null) {
+
+            mProgressbar.setVisibility(View.VISIBLE);
+
+            MediaController mediaController = new MediaController(this);
+
+            //mediaController.setAnchorView(vvPlayer);
+            mediaController.setMediaPlayer(vvPlayer);
+            vvPlayer.setVideoPath(mediaPath);
+            vvPlayer.setMediaController(mediaController);
+            vvPlayer.requestFocus();
+            //vvPlayer.start();
+            mediaController.show();
+>>>>>>> origin/master
 
                 if (fromClass!=null && fromClass.equalsIgnoreCase("WallPostAdapter")) {
                     mediaPath = WebServiceClient.HTTP_STAGING + mediaPath;
@@ -81,12 +113,27 @@ public class ViewPlayerActivity extends BaseActivity {
                     }
                 });
 
+<<<<<<< HEAD
 
             } else {
                 new Utility().showOkAndFinish(getResources().getString(R.string.media_not_available), this);
             }
         } catch (Exception e) {
             e.printStackTrace();
+=======
+            vvPlayer.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
+                // Close the progress bar and play the video
+                public void onPrepared(MediaPlayer mp) {
+                    //mMediaPlayer = mp;
+                    mProgressbar.setVisibility(View.GONE);
+                    vvPlayer.start();
+                }
+            });
+
+
+        } else {
+            new Utility().showOkAndFinish("Sorry This Video is not available.", this);
+>>>>>>> origin/master
         }
 
         /*if (messageId != null) {
@@ -312,4 +359,60 @@ public class ViewPlayerActivity extends BaseActivity {
         }*//*
     }*/
 
+<<<<<<< HEAD
 }
+=======
+   /* @Override
+    public void onPause() {
+        super.onPause();
+        stopPosition = vvPlayer.getCurrentPosition(); //stopPosition is an int
+        if(mMediaPlayer.isPlaying()){
+            mMediaPlayer.pause();
+        }
+        *//*if (vvPlayer.isPlaying())
+            vvPlayer.pause();*//*
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        if (mMediaPlayer != null) {
+            mMediaPlayer.start();
+        }
+        // mMediaPlayer.seekTo(stopPosition);
+       *//* if (vvPlayer != null) {
+            vvPlayer.seekTo(stopPosition);
+        }*//*
+    }*/
+
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        try {
+            if (vvPlayer != null) {
+                vvPlayer.seekTo(stopPosition);
+                 vvPlayer.start();
+                //vvPlayer.resume();
+                if (mProgressbar != null) {
+                    mProgressbar.setVisibility(View.VISIBLE);
+                }
+            }
+        } catch (Exception e) {
+        }
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        try {
+            if (vvPlayer != null) {
+                stopPosition = vvPlayer.getCurrentPosition();
+                vvPlayer.pause();
+            }
+        } catch (Exception e) {
+        }
+    }
+
+}
+>>>>>>> origin/master

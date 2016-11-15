@@ -159,6 +159,7 @@ public class CommentActivity extends BaseActivity implements View.OnClickListene
             String Name = ((selected_post_data.getFirstName()) + " " + (selected_post_data.getLastName()).charAt(0) + ".");
             mUserName.setText(Name);
             try {
+<<<<<<< HEAD
                 if(selected_post_data.getProfile_pic()!=null) {
                     if (!selected_post_data.getProfile_pic().isEmpty()) {
                         Glide.with(this).load(WebServiceClient.HTTP_STAGING + selected_post_data.getProfile_pic())
@@ -169,12 +170,23 @@ public class CommentActivity extends BaseActivity implements View.OnClickListene
                     }else {
                         mUserImage.setImageResource(R.drawable.default_user);
                     }
+=======
+                if (!selected_post_data.getProfile_pic().isEmpty() && selected_post_data.getProfile_pic() != null) {
+                    Glide.with(this).load(WebServiceClient.HTTP_STAGING + selected_post_data.getProfile_pic())
+                            .thumbnail(1f)
+                            .crossFade()
+                            .diskCacheStrategy(DiskCacheStrategy.ALL)
+                            .into(mUserImage);
+                } else {
+                    mUserImage.setImageResource(R.drawable.default_user);
+>>>>>>> origin/master
                 }
             } catch (Exception e) {
                 e.printStackTrace();
             }
 
             try {
+<<<<<<< HEAD
                 if(!selected_post_data.getMediaType().equalsIgnoreCase("text")) {
                     if (!selected_post_data.getMediaUrl().isEmpty()) {
 
@@ -194,6 +206,25 @@ public class CommentActivity extends BaseActivity implements View.OnClickListene
                                 .diskCacheStrategy(DiskCacheStrategy.ALL)
                                 .into(mPostMedia);
                     }
+=======
+                if (!selected_post_data.getMediaUrl().isEmpty()) {
+
+                    String mediaUrl;
+                    mRlMedia.setVisibility(View.VISIBLE);
+                    if (selected_post_data.getMediaType().equalsIgnoreCase("photo")) {
+                        mediaUrl = WebServiceClient.HTTP_STAGING + selected_post_data.getMediaUrl();
+                        mImgPlay.setVisibility(View.GONE);
+                    } else {
+                        mediaUrl = WebServiceClient.HTTP_STAGING + selected_post_data.getThumbUrl();
+                        mImgPlay.setVisibility(View.VISIBLE);
+                    }
+
+                    Glide.with(this).load(mediaUrl)
+                            .thumbnail(1f)
+                            .crossFade()
+                            .diskCacheStrategy(DiskCacheStrategy.ALL)
+                            .into(mPostMedia);
+>>>>>>> origin/master
                 }
             } catch (Exception e) {
                 e.printStackTrace();
@@ -1074,6 +1105,7 @@ public class CommentActivity extends BaseActivity implements View.OnClickListene
         }
     };
 
+<<<<<<< HEAD
     private  void showRemovePostAlertDialog(String message, final Context context, final String postId, final String type){
         try {
             AlertDialog.Builder builder1 = new AlertDialog.Builder(context);
@@ -1098,6 +1130,24 @@ public class CommentActivity extends BaseActivity implements View.OnClickListene
         } catch (Exception e) {
             e.printStackTrace();
         }
+=======
+    private void showRemovePostAlertDialog(String message, final Context context, final String postId) {
+        AlertDialog.Builder builder1 = new AlertDialog.Builder(context);
+        builder1.setMessage(message);
+        builder1.setCancelable(true);
+        builder1.setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int id) {
+                removePost(postId);
+            }
+        });
+        builder1.setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int id) {
+                dialog.dismiss();
+            }
+        });
+        AlertDialog alert11 = builder1.create();
+        alert11.show();
+>>>>>>> origin/master
     }
 
 
