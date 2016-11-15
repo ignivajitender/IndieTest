@@ -47,15 +47,13 @@ public class ViewPlayerActivity extends BaseActivity {
 
     @Override
     protected void setDataInViewObjects() {
-<<<<<<< HEAD
         try {
             mediaPath = getIntent().getStringExtra(Constants.MEDIA_PATH);
             fromClass = getIntent().getStringExtra(Constants.FROM_CLASS);
 
             if (mediaPath != null) {
-=======
-        mediaPath = getIntent().getStringExtra(Constants.MEDIA_PATH);
-        fromClass = getIntent().getStringExtra(Constants.FROM_CLASS);
+                mediaPath = getIntent().getStringExtra(Constants.MEDIA_PATH);
+                fromClass = getIntent().getStringExtra(Constants.FROM_CLASS);
       /*  position = getIntent().getIntExtra(Constants.POSITION, 0);
         messageId = getIntent().getStringExtra(Constants.MESSAGE_ID);
         localPath = getIntent().getBooleanExtra(Constants.LOCALE, true);*/
@@ -66,36 +64,35 @@ public class ViewPlayerActivity extends BaseActivity {
             mediaPath = mediaId;
         }*/
 
-        if (fromClass != null && fromClass.equalsIgnoreCase("WallPostAdapter")) {
-            mediaPath = WebServiceClient.HTTP_STAGING + mediaPath;
-        }
-
-        if (mediaPath != null) {
-
-            mProgressbar.setVisibility(View.VISIBLE);
-
-            MediaController mediaController = new MediaController(this);
-
-            //mediaController.setAnchorView(vvPlayer);
-            mediaController.setMediaPlayer(vvPlayer);
-            vvPlayer.setVideoPath(mediaPath);
-            vvPlayer.setMediaController(mediaController);
-            vvPlayer.requestFocus();
-            //vvPlayer.start();
-            mediaController.show();
->>>>>>> origin/master
-
-                if (fromClass!=null && fromClass.equalsIgnoreCase("WallPostAdapter")) {
+                if (fromClass != null && fromClass.equalsIgnoreCase("WallPostAdapter")) {
                     mediaPath = WebServiceClient.HTTP_STAGING + mediaPath;
                 }
-                mProgressbar.setVisibility(View.VISIBLE);
 
-                MediaController mediaController = new MediaController(this);
-                mediaController.setMediaPlayer(vvPlayer);
-                vvPlayer.setVideoPath(mediaPath);
-                vvPlayer.setMediaController(mediaController);
-                vvPlayer.requestFocus();
-                mediaController.show();
+                if (mediaPath != null) {
+
+                    mProgressbar.setVisibility(View.VISIBLE);
+
+                    MediaController mediaController = new MediaController(this);
+
+                    //mediaController.setAnchorView(vvPlayer);
+                    mediaController.setMediaPlayer(vvPlayer);
+                    vvPlayer.setVideoPath(mediaPath);
+                    vvPlayer.setMediaController(mediaController);
+                    vvPlayer.requestFocus();
+                    //vvPlayer.start();
+                    mediaController.show();
+
+//                if (fromClass!=null && fromClass.equalsIgnoreCase("WallPostAdapter")) {
+//                    mediaPath = WebServiceClient.HTTP_STAGING + mediaPath;
+//                }
+//                mProgressbar.setVisibility(View.VISIBLE);
+//
+//                MediaController mediaController = new MediaController(this);
+//                mediaController.setMediaPlayer(vvPlayer);
+//                vvPlayer.setVideoPath(mediaPath);
+//                vvPlayer.setMediaController(mediaController);
+//                vvPlayer.requestFocus();
+//                mediaController.show();
 
                /* vvPlayer.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
                     @Override
@@ -104,23 +101,23 @@ public class ViewPlayerActivity extends BaseActivity {
                     }
                 });*/
 
-                vvPlayer.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
-                    // Close the progress bar and play the video
-                    public void onPrepared(MediaPlayer mp) {
-                        //mMediaPlayer = mp;
-                        mProgressbar.setVisibility(View.GONE);
-                        vvPlayer.start();
-                    }
-                });
+                    vvPlayer.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
+                        // Close the progress bar and play the video
+                        public void onPrepared(MediaPlayer mp) {
+                            //mMediaPlayer = mp;
+                            mProgressbar.setVisibility(View.GONE);
+                            vvPlayer.start();
+                        }
+                    });
 
-<<<<<<< HEAD
 
-            } else {
-                new Utility().showOkAndFinish(getResources().getString(R.string.media_not_available), this);
+                } else {
+                    new Utility().showOkAndFinish(getResources().getString(R.string.media_not_available), this);
+                }
             }
+
         } catch (Exception e) {
             e.printStackTrace();
-=======
             vvPlayer.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
                 // Close the progress bar and play the video
                 public void onPrepared(MediaPlayer mp) {
@@ -129,12 +126,8 @@ public class ViewPlayerActivity extends BaseActivity {
                     vvPlayer.start();
                 }
             });
-
-
-        } else {
-            new Utility().showOkAndFinish("Sorry This Video is not available.", this);
->>>>>>> origin/master
         }
+
 
         /*if (messageId != null) {
             // DownloadFromUrl(mediaPath, "DownloadedFileVide");
@@ -145,36 +138,36 @@ public class ViewPlayerActivity extends BaseActivity {
     }
 
 
-    @Override
-    protected void onResume() {
-        super.onResume();
-        try {
-            if (vvPlayer != null) {
-                vvPlayer.seekTo(stopPosition);
-                vvPlayer.start();
-//vvPlayer.resume();
-                if (mProgressbar != null) {
-                    mProgressbar.setVisibility(View.VISIBLE);
-                }
-            }
-        } catch (Exception e) {
-        }
-    }
-    @Override
-    protected void onPause() {
-        super.onPause();
-        try {
-            if (vvPlayer != null) {
-                stopPosition = vvPlayer.getCurrentPosition();
-                vvPlayer.pause();
-            }
-        } catch (Exception e) {
-        }
-    }
-    @Override
-    public void onConfigurationChanged(Configuration newConfig) {
-        super.onConfigurationChanged(newConfig);
-    }
+//    @Override
+//    protected void onResume() {
+//        super.onResume();
+//        try {
+//            if (vvPlayer != null) {
+//                vvPlayer.seekTo(stopPosition);
+//                vvPlayer.start();
+////vvPlayer.resume();
+//                if (mProgressbar != null) {
+//                    mProgressbar.setVisibility(View.VISIBLE);
+//                }
+//            }
+//        } catch (Exception e) {
+//        }
+//    }
+//    @Override
+//    protected void onPause() {
+//        super.onPause();
+//        try {
+//            if (vvPlayer != null) {
+//                stopPosition = vvPlayer.getCurrentPosition();
+//                vvPlayer.pause();
+//            }
+//        } catch (Exception e) {
+//        }
+//    }
+//    @Override
+//    public void onConfigurationChanged(Configuration newConfig) {
+//        super.onConfigurationChanged(newConfig);
+//    }
 
    /* AsyncResultDownload asyncResultDownload = new AsyncResultDownload() {
         @Override
@@ -359,9 +352,6 @@ public class ViewPlayerActivity extends BaseActivity {
         }*//*
     }*/
 
-<<<<<<< HEAD
-}
-=======
    /* @Override
     public void onPause() {
         super.onPause();
@@ -415,4 +405,3 @@ public class ViewPlayerActivity extends BaseActivity {
     }
 
 }
->>>>>>> origin/master

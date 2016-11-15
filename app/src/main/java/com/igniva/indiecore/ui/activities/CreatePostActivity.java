@@ -215,7 +215,6 @@ public class CreatePostActivity extends BaseActivity implements AsyncResult, Vie
                 payload.put(Constants.TEXT, mPostText.getText().toString());
             }
             try {
-<<<<<<< HEAD
                 if(!mImageMediaId.isEmpty()) {
                     if (fileType.contains("video")) {
                         payload.put(Constants.MEDIA, mVideoMediaId);
@@ -223,13 +222,7 @@ public class CreatePostActivity extends BaseActivity implements AsyncResult, Vie
                     } else {
                         payload.put(Constants.MEDIA, mImageMediaId);
                     }
-=======
-                if(fileType.contains("video")){
-                    payload.put(Constants.MEDIA, mVideoMediaId);
-                    payload.put(Constants.THUMBNAIL, mImageMediaId);
-                }else{
-                    payload.put(Constants.MEDIA, mImageMediaId);
->>>>>>> origin/master
+
                 }
 
 
@@ -391,14 +384,11 @@ public class CreatePostActivity extends BaseActivity implements AsyncResult, Vie
         try {
 //            Charset utf8 = Charset.forName("utf-8");
             String video_path = FileUtils.getPath(this, uri);
-<<<<<<< HEAD
-=======
             if (mVideoThumbnail != null) {
                 mIvMediaPost.setVisibility(View.VISIBLE);
                 mIvMediaPost.setImageBitmap(mVideoThumbnail);
             }
 
->>>>>>> origin/master
             if (Utility.isInternetConnection(CreatePostActivity.this)) {
                 new WebServiceClientUploadImage(CreatePostActivity.this, this, WebServiceClient.HTTP_UPLOAD_IMAGE, video_path, 3, Constants.UPLOAD_VIDEO).execute();
             } else {
@@ -531,8 +521,6 @@ public class CreatePostActivity extends BaseActivity implements AsyncResult, Vie
            // videoUrl = obj.optString("url");
             fileType=obj.optString("type");
             if(fileType.contains("video")){
-<<<<<<< HEAD
-=======
                 mVideoMediaId = obj.optString("fileId");
             }else{
                 mImageMediaId = obj.optString("fileId");
@@ -542,24 +530,6 @@ public class CreatePostActivity extends BaseActivity implements AsyncResult, Vie
                 uploadVideoToServer(mVideoUri);
             }
             IsThumbNailUploaded = false;
-
-            /*if (obj.optString("url").contains(".mp4")) {
->>>>>>> origin/master
-                mVideoMediaId = obj.optString("fileId");
-            }else{
-                mImageMediaId = obj.optString("fileId");
-            }
-
-<<<<<<< HEAD
-            if (IsThumbNailUploaded) {
-                mIvMediaPost.setVisibility(View.VISIBLE);
-                mIvMediaPost.setImageBitmap(mVideoThumbnail);
-                uploadVideoToServer(mVideoUri);
-            }
-            IsThumbNailUploaded = false;
-=======
-            }*/
->>>>>>> origin/master
             Log.e("Media Id ", "" + mImageMediaId);
         } catch (Exception e) {
 
