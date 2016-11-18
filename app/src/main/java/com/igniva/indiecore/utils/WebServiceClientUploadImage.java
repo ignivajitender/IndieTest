@@ -75,6 +75,14 @@ public class WebServiceClientUploadImage extends
         this.mMessageId = messageId;
     }
 
+    public WebServiceClientUploadImage(ProgressBar progressBar, Context mContext, AsyncResult mCallBack, String urlString, String taskName) {
+        this.mUrl = urlString;
+        this.mContext = mContext;
+        this.mCallBack = mCallBack;
+        this.mTaskName = taskName;
+        this.mProgressBar = progressBar;
+    }
+
     @Override
     protected void onPreExecute() {
         super.onPreExecute();
@@ -82,6 +90,10 @@ public class WebServiceClientUploadImage extends
             if (mTaskName.equalsIgnoreCase(Constants.DOWNLOAD)) {
                 if (mProgressBar != null) {
                     mProgressBar.setVisibility(View.VISIBLE);
+                } else {
+                    progressDialog = ProgressDialog.show(mContext, "", mContext
+                                    .getResources().getString(R.string.please_wait), true,
+                            false);
                 }
             } else {
                 if (mTaskName.equalsIgnoreCase(Constants.DOWNLOAD)) {

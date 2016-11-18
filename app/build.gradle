@@ -14,6 +14,7 @@ apply plugin: 'io.fabric'
 repositories {
     maven { url 'https://maven.fabric.io/public' }
     maven { url "https://jitpack.io" }
+    mavenCentral()
 }
 
 android {
@@ -23,7 +24,7 @@ android {
 
     defaultConfig {
         applicationId "com.igniva.indiecore"
-        minSdkVersion 14
+        minSdkVersion 15
         targetSdkVersion 22
         versionCode 13
         versionName "2.0"
@@ -39,6 +40,7 @@ android {
 }
 
 apply plugin: 'com.google.gms.google-services'
+
 
 dependencies {
     compile fileTree(include: ['*.jar'], dir: 'libs')
@@ -56,6 +58,7 @@ dependencies {
     compile 'com.github.delight-im:Android-DDP:v3.1.2'
     compile 'com.github.jorgecastilloprz:fabprogresscircle:1.01@aar'
     compile 'id.zelory:compressor:1.0.3'
+    compile 'com.facebook.android:facebook-android-sdk:[4,5)'
     compile 'org.apache.httpcomponents:httpcore:4.4.4'
     compile('org.apache.httpcomponents:httpmime:4.3.6') {
         exclude module: 'httpclient'
@@ -76,6 +79,13 @@ dependencies {
     compile('com.crashlytics.sdk.android:crashlytics:2.6.2@aar') {
         transitive = true;
     }
+    /* compile('com.twitter.sdk.android:twitter:2.2.0@aar') {
+            transitive = true;
+        }*/
+    compile('com.twitter.sdk.android:tweet-composer:2.2.0@aar') {
+        transitive = true;
+    }
+    compile files('libs/twitter4j-core-4.0.4.jar')
 }
 
 

@@ -1,16 +1,15 @@
 package com.igniva.indiecore.controller;
 
 import android.content.Context;
-import android.content.Intent;
 import android.text.format.DateFormat;
 import android.util.Log;
 
 import com.google.gson.Gson;
 import com.igniva.indiecore.controller.services.CustomMeteorService;
 import com.igniva.indiecore.db.BadgesDb;
+import com.igniva.indiecore.model.ChatListPojo;
 import com.igniva.indiecore.model.ChatPojo;
 import com.igniva.indiecore.model.InstantChatPojo;
-import com.igniva.indiecore.model.UpdateMessagePojo;
 import com.igniva.indiecore.ui.activities.ChatActivity;
 import com.igniva.indiecore.utils.Constants;
 import com.igniva.indiecore.utils.PreferenceHandler;
@@ -21,7 +20,6 @@ import org.json.JSONObject;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.HashMap;
 
 import im.delight.android.ddp.Meteor;
 import im.delight.android.ddp.MeteorCallback;
@@ -29,7 +27,6 @@ import im.delight.android.ddp.ResultListener;
 import im.delight.android.ddp.db.memory.InMemoryDatabase;
 
 import static com.igniva.indiecore.controller.services.CustomMeteorService.mMeteorCommonClass;
-import static com.igniva.indiecore.ui.activities.ChatActivity.CHAT_ACTIVITY;
 import static com.igniva.indiecore.ui.activities.ChatActivity.isInChatActivity;
 import static com.igniva.indiecore.ui.activities.ChatActivity.mCurrentRoomId;
 import static com.igniva.indiecore.ui.fragments.MessagesFragment.isMessageFragmenVisible;
@@ -52,12 +49,12 @@ public class MeteorCommonClass implements MeteorCallback {
 //    [3:41:19 PM] Lancy Goyal: these are the methods.
 //            [3:41:37 PM] Lancy Goyal: Team, could u please test.
 
-    private Meteor mMeteor;
     public static final String LOG_TAG = "MeteorCommonClass";
+    Context context;
+    private Meteor mMeteor;
     private String USER_ID_1;
     private String TOKEN;
-    Context context;
-    public static HashMap<String, InstantChatPojo> recentChatHashMap = new HashMap<String, InstantChatPojo>();
+    //public static HashMap<String, InstantChatPojo> recentChatHashMap = new HashMap<String, InstantChatPojo>();
     private OnChatMsgReceiveListener onChatMsgReceiveListener;
     private OnRecentChatListener onRecentChatListener;
     private OnChatMsgStatusListener onChatMsgStatusListener;
@@ -76,6 +73,19 @@ public class MeteorCommonClass implements MeteorCallback {
         mMeteor.addCallback(this);
     }
 
+    public static MeteorCommonClass getInstance(CustomMeteorService context) {
+
+        if (mMeteorCommonClass == null) {
+            mMeteorCommonClass = new MeteorCommonClass(context);
+        }
+        return mMeteorCommonClass;
+
+    }
+
+    public static String convertDate(String dateInMilliseconds, String dateFormat) {
+        return DateFormat.format(dateFormat, Long.parseLong(dateInMilliseconds)).toString();
+    }
+
     //For chatActivity for dedicated chat screen
     public void setOnChatMsgReceiveListener(OnChatMsgReceiveListener onChatMsgReceiveListener1) {
         this.onChatMsgReceiveListener = onChatMsgReceiveListener1;
@@ -91,15 +101,6 @@ public class MeteorCommonClass implements MeteorCallback {
         this.onChatMsgStatusListener = onChatMsgStatusListener1;
     }
 
-    public static MeteorCommonClass getInstance(CustomMeteorService context) {
-
-        if (mMeteorCommonClass == null) {
-            mMeteorCommonClass = new MeteorCommonClass(context);
-        }
-        return mMeteorCommonClass;
-
-    }
-
     public void connectMeteor() {
         // establish the connection
         mMeteor.connect();
@@ -113,10 +114,14 @@ public class MeteorCommonClass implements MeteorCallback {
         }
     }
 
+    public boolean isConnected() {
+        return mMeteor.isConnected();
+    }
+
     @Override
     public void onConnect(boolean signedInAutomatically) {
         try {
-            Log.e(LOG_TAG + "connection", "onConnect");
+            Log.e(LOG_TAG, "onConnect");
             mMeteor.subscribe(Constants.SUBSCRIBECHATS, new Object[]{TOKEN, USER_ID_1});
             mMeteor.subscribe(Constants.SUBSCRIBEMESSAGES, new Object[]{TOKEN, USER_ID_1});
         } catch (Exception e) {
@@ -133,7 +138,7 @@ public class MeteorCommonClass implements MeteorCallback {
 
     @Override
     public void onDisconnect() {
-        Log.e(LOG_TAG + "connection", "onDisconnect");
+        Log.e(LOG_TAG, "onDisconnect");
     }
 
     @Override
@@ -243,15 +248,10 @@ public class MeteorCommonClass implements MeteorCallback {
         mMeteor.call(Constants.MARK_MESSAGE_READ, new Object[]{TOKEN, USER_ID_1, msgId});
     }
 
-
     public void processMsg(String collectionName, InstantChatPojo instantChatPojo) {
         try {
             ChatPojo mChatPojo = new ChatPojo();
-            long timeInMillis = System.currentTimeMillis();
-            Calendar cal1 = Calendar.getInstance();
-            cal1.setTimeInMillis(timeInMillis);
-            SimpleDateFormat dateFormat = new SimpleDateFormat("hh:mm a");
-            String date = dateFormat.format(cal1.getTime());
+
             if (collectionName.equalsIgnoreCase("message")) {
                 if (instantChatPojo.getType().equalsIgnoreCase("Text")) {
                     mChatPojo.setIcon(instantChatPojo.getIcon());
@@ -261,7 +261,7 @@ public class MeteorCommonClass implements MeteorCallback {
                     mChatPojo.setRoomId(instantChatPojo.getRoomId());
                     mChatPojo.setMessageId(instantChatPojo.getMessageId());
                     mChatPojo.setRelation(instantChatPojo.getRelation());
-                    mChatPojo.setDate_updated(date);
+                    mChatPojo.setDate_updated(getInstantTime());
                     mChatPojo.setStatus(instantChatPojo.getStatus());
                     mChatPojo.setBadges(instantChatPojo.getBadges());
                     mChatPojo.setType(instantChatPojo.getType());
@@ -280,10 +280,12 @@ public class MeteorCommonClass implements MeteorCallback {
                         onChatMsgReceiveListener.onChatMsgRecieved(mChatPojo);
 
                     }
-                    recentChatHashMap.put(instantChatPojo.getRoomId(), instantChatPojo);
+                    //recentChatHashMap.put(instantChatPojo.getRoomId(), instantChatPojo);
+                    insertRecentMessage(instantChatPojo);
                     if (isMessageFragmenVisible && !instantChatPojo.getRelation().equalsIgnoreCase("self")) {
                         //sendReceivedRecentChat(recentChatHashMap);
-                        onRecentChatListener.onRecentChat(recentChatHashMap);
+                        //onRecentChatListener.onRecentChat(recentChatHashMap);
+                        onRecentChatListener.onRecentChat();
                     }
 
                 } else if (instantChatPojo.getType().equalsIgnoreCase("Photo")) {
@@ -296,7 +298,7 @@ public class MeteorCommonClass implements MeteorCallback {
                     mChatPojo.setRoomId(instantChatPojo.getRoomId());
                     mChatPojo.setMessageId(instantChatPojo.getMessageId());
                     mChatPojo.setRelation(instantChatPojo.getRelation());
-                    mChatPojo.setDate_updated(date);
+                    mChatPojo.setDate_updated(getInstantTime());
                     mChatPojo.setStatus(instantChatPojo.getStatus());
                     mChatPojo.setImagePath(ChatActivity.imagePath);
                     mChatPojo.setBadges(instantChatPojo.getBadges());
@@ -326,10 +328,12 @@ public class MeteorCommonClass implements MeteorCallback {
                         //sendReceivedChat(mChatPojo);
                         onChatMsgReceiveListener.onChatMsgRecieved(mChatPojo);
                     }
-                    recentChatHashMap.put(instantChatPojo.getRoomId(), instantChatPojo);
+                    //recentChatHashMap.put(instantChatPojo.getRoomId(), instantChatPojo);
+                    insertRecentMessage(instantChatPojo);
                     if (isMessageFragmenVisible && !instantChatPojo.getRelation().equalsIgnoreCase("self")) {
                         //sendReceivedRecentChat(recentChatHashMap);
-                        onRecentChatListener.onRecentChat(recentChatHashMap);
+                        //onRecentChatListener.onRecentChat(recentChatHashMap);
+                        onRecentChatListener.onRecentChat();
                     }
                 } else if (instantChatPojo.getType().equalsIgnoreCase("Video")) {
                     mChatPojo.setIcon(instantChatPojo.getIcon());
@@ -341,7 +345,7 @@ public class MeteorCommonClass implements MeteorCallback {
                     mChatPojo.setRoomId(instantChatPojo.getRoomId());
                     mChatPojo.setMessageId(instantChatPojo.getMessageId());
                     mChatPojo.setRelation(instantChatPojo.getRelation());
-                    mChatPojo.setDate_updated(date);
+                    mChatPojo.setDate_updated(getInstantTime());
                     mChatPojo.setStatus(instantChatPojo.getStatus());
                     mChatPojo.setImagePath(ChatActivity.mVideoPath);
                     mChatPojo.setBadges(instantChatPojo.getBadges());
@@ -371,10 +375,12 @@ public class MeteorCommonClass implements MeteorCallback {
                         //sendReceivedChat(mChatPojo);
                         onChatMsgReceiveListener.onChatMsgRecieved(mChatPojo);
                     }
-                    recentChatHashMap.put(instantChatPojo.getRoomId(), instantChatPojo);
+                    //recentChatHashMap.put(instantChatPojo.getRoomId(), instantChatPojo);
+                    insertRecentMessage(instantChatPojo);
                     if (isMessageFragmenVisible && !instantChatPojo.getRelation().equalsIgnoreCase("self")) {
                         //sendReceivedRecentChat(recentChatHashMap);
-                        onRecentChatListener.onRecentChat(recentChatHashMap);
+                        // onRecentChatListener.onRecentChat(recentChatHashMap);
+                        onRecentChatListener.onRecentChat();
                     }
                 }
 
@@ -393,10 +399,14 @@ public class MeteorCommonClass implements MeteorCallback {
 
     }
 
-    public static String convertDate(String dateInMilliseconds, String dateFormat) {
-        return DateFormat.format(dateFormat, Long.parseLong(dateInMilliseconds)).toString();
+    private String getInstantTime() {
+        long timeInMillis = System.currentTimeMillis();
+        Calendar cal1 = Calendar.getInstance();
+        cal1.setTimeInMillis(timeInMillis);
+        SimpleDateFormat dateFormat = new SimpleDateFormat("hh:mm a");
+        String date = dateFormat.format(cal1.getTime());
+        return date;
     }
-
 
     public void insertAllMessages(ArrayList<ChatPojo> userMessages) {
         try {
@@ -416,6 +426,28 @@ public class MeteorCommonClass implements MeteorCallback {
             e.printStackTrace();
         }
 
+    }
+
+    public void insertRecentMessage(InstantChatPojo instantChatPojo) {
+        try {
+            ChatListPojo chatListPojo = new ChatListPojo();
+            chatListPojo.setIcon(instantChatPojo.getIcon());
+            chatListPojo.setName(instantChatPojo.getName());
+            chatListPojo.setUserId(instantChatPojo.getUserId());
+            chatListPojo.setLast_message_type(instantChatPojo.getType());
+            chatListPojo.setLast_message(instantChatPojo.getText());
+            chatListPojo.setRoomId(instantChatPojo.getRoomId());
+            chatListPojo.setLast_message_Id(instantChatPojo.getMessageId());
+            chatListPojo.setRelation(instantChatPojo.getRelation());
+            chatListPojo.setDate_updated(getInstantTime());
+            chatListPojo.setBadges(instantChatPojo.getBadges());
+            //chatListPojo.setType(instantChatPojo.getType());
+
+            BadgesDb dbBadges = new BadgesDb(context);
+            dbBadges.insertRecenChatList(chatListPojo);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     /*//Send to chatpojo msg to ChatActivity (dedicated Chat)

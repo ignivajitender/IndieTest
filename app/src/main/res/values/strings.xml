@@ -1194,4 +1194,7 @@
     <string name="flagged">Post flaged</string>
     <string name="unflagged">Post unflagged</string>
 
+    //facebook
+    <string name="facebook_app_id">1611404862489214</string>
+
 </resources>

@@ -14,11 +14,11 @@ import android.widget.TextView;
 
 import com.aurelhubert.ahbottomnavigation.AHBottomNavigation;
 import com.aurelhubert.ahbottomnavigation.AHBottomNavigationItem;
-import com.igniva.indiecore.MyApplication;
 import com.igniva.indiecore.R;
 import com.igniva.indiecore.controller.OnRecentChatListener;
 import com.igniva.indiecore.controller.services.CustomMeteorService;
-import com.igniva.indiecore.model.InstantChatPojo;
+import com.igniva.indiecore.db.BadgesDb;
+import com.igniva.indiecore.model.ChatListPojo;
 import com.igniva.indiecore.ui.fragments.ChatsFragment;
 import com.igniva.indiecore.ui.fragments.CheckInFragment;
 import com.igniva.indiecore.ui.fragments.ContactsFragment;
@@ -26,7 +26,8 @@ import com.igniva.indiecore.ui.fragments.MessagesFragment;
 import com.igniva.indiecore.ui.fragments.SettingsFragment;
 import com.igniva.indiecore.utils.Constants;
 
-import java.util.HashMap;
+import java.util.ArrayList;
+import java.util.Collections;
 
 /**
  * Created by igniva-andriod-05 on 29/6/16.
@@ -34,9 +35,9 @@ import java.util.HashMap;
 public class DashBoardActivity extends BaseActivity implements OnRecentChatListener {
 
     public static AHBottomNavigation bottomNavigation;
+    public static String businessId = "";
     Toolbar mToolbar;
     TextView mTvTitle;
-    public static String businessId="";
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -181,12 +182,16 @@ public class DashBoardActivity extends BaseActivity implements OnRecentChatListe
         }
     }
 
-    public void addRecentMsg(HashMap<String, InstantChatPojo> recentChatHashMap) {
+    public void addRecentMsg() {
         try {
             Fragment fragment = getSupportFragmentManager().findFragmentById(R.id.fl_fragment_container);
             if (fragment instanceof MessagesFragment) {
                 MessagesFragment messagesFragment = (MessagesFragment) fragment;
-                messagesFragment.addRecentMsg(recentChatHashMap);
+                //messagesFragment.addRecentMsg(recentChatHashMap);
+                BadgesDb badgesDb = new BadgesDb(this);
+                ArrayList<ChatListPojo> recentChatList1 = badgesDb.getAllRecenChatMsg();
+                Collections.reverse(recentChatList1);
+                messagesFragment.getRecentChatList(recentChatList1, false);
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -226,15 +231,16 @@ public class DashBoardActivity extends BaseActivity implements OnRecentChatListe
 //    }
 
     @Override
-    public void onRecentChat(HashMap<String, InstantChatPojo> recentChatHashMap) {
-        addRecentMsg(recentChatHashMap);
+    public void onRecentChat() {
+        addRecentMsg();
     }
     //    Call Back method  to get the Message form other Activity
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == Constants.STARTACTIVITYFORRESULTFORCHAT && resultCode == RESULT_OK) {
-            addRecentMsg( CustomMeteorService.mMeteorCommonClass.recentChatHashMap);
+            //addRecentMsg( CustomMeteorService.mMeteorCommonClass.recentChatHashMap);
+            addRecentMsg();
         }
     }
 }

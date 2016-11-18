@@ -64,6 +64,7 @@ import java.io.File;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collections;
 
 import static com.bumptech.glide.load.resource.bitmap.TransformationUtils.rotateImage;
 import static com.igniva.indiecore.controller.services.CustomMeteorService.mMeteorCommonClass;
@@ -74,23 +75,29 @@ import static com.igniva.indiecore.ui.fragments.MessagesFragment.isMessageFragme
  */
 public class ChatActivity extends BaseActivity implements OnChatMsgReceiveListener, OnChatMsgStatusListener, AsyncResult {
 
-    Toolbar mToolbar;
     public static final String CHAT_ACTIVITY = "CHAT_ACTIVITY";
     public static final String PHOTO = "Photo";
     public static final String VIDEO = "Video";
     public static final String TEXT = "Text";
     public static final int SELECT_FILE = 500;
     public static final int REQUEST_CAMERA = 600;
-    private static final int CAPTURE_VIDEO_ACTIVITY_REQUEST_CODE = 300;
-    final CharSequence[] items = {"Take Photo", "Choose from Gallery", "Record Video",
-            "Cancel"};
-    private static final int MEDIA_TYPE_VIDEO = 2;
-    private Uri fileUri;
     public static final String LOG_TAG = "ChatActivity";
-    private BadgesDb dbBadges;
+    public static final long VIDEOLIMIT = 12;  // 12 Mb limit of video chat
+    private static final int CAPTURE_VIDEO_ACTIVITY_REQUEST_CODE = 300;
+    private static final int MEDIA_TYPE_VIDEO = 2;
     public static boolean isInChatActivity;
     public static String imagePath;
     public static String mVideoPath;
+    public static String mCurrentRoomId = null;
+    final CharSequence[] items = {"Take Photo", "Choose from Gallery", "Record Video",
+            "Cancel"};
+    Toolbar mToolbar;
+    ChatPojo mChatPojo;
+    ArrayList<ChatPojo> messageList = new ArrayList<>();
+    ChatAdapter mChatAdapter = null;
+    ProgressBar mProgressBar = null;
+    private Uri fileUri;
+    private BadgesDb dbBadges;
     private LinearLayout mLlsendMessage, mLlOpenMedia;
     private EditText mEtMessageText;
     private TextView mTitle, mTvLoadMore;
@@ -102,9 +109,7 @@ public class ChatActivity extends BaseActivity implements OnChatMsgReceiveListen
     private String USER_ID_2;
     private String mImagePath;
     private String base64Encoded;
-
     private String base64EncodedVideo;
-
     private String STATUS = "status";
     private String MESSAGE = "Message";
     private int NOT_SENT = 0;
@@ -112,7 +117,6 @@ public class ChatActivity extends BaseActivity implements OnChatMsgReceiveListen
     private int DELIVERED = 2;
     private int READ = 3;
     private int PAGE = 1;
-    private int LIMIT = 60;
     //private Uri imgUri;
     private Bitmap bitmap = null;
     private File imageFile;
@@ -121,15 +125,180 @@ public class ChatActivity extends BaseActivity implements OnChatMsgReceiveListen
     private String mUserName = "";
     private String mMessageId = "";
     private String mDownloadedImagePath = null;
+    AsyncResultDownload asyncResultDownload = new AsyncResultDownload() {
+        @Override
+        public void onDownloadTaskResponse(Object result, int urlResponseNo, Object messageId, Object mediaId) {
+            try {
+                Log.e(LOG_TAG, result.toString());
+                mProgressBar.setVisibility(View.GONE);
+                mChatPojo = new ChatPojo();
+                mChatPojo.setImagePath(result.toString());
+                mDownloadedImagePath = result.toString();
+                mChatPojo.setMessageId(messageId.toString());
+                updateMediaPath(mChatPojo);
+                updateMediaAfterDownload(mChatPojo, messageId);
+                mDownloadedImagePath = null;
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+    };
+    OnImageDownloadClick onImageDownload = new OnImageDownloadClick() {
+        @Override
+        public void onDownloadClick(ProgressBar progressBar, int position, String mediaID, String messageId, boolean IsDownloaded) {
+            try {
+                if (mDownloadedImagePath == null) {
+                    mMediaId = mediaID;
+                    new WebServiceClientUploadImage(progressBar, ChatActivity.this, asyncResultDownload, mediaID, Constants.DOWNLOAD, 77, messageId).execute();
+                    mProgressBar = progressBar;
+                } else {
+                    Intent intent = new Intent(ChatActivity.this, ViewMediaActivity.class);
+                    intent.putExtra(Constants.MEDIA_PATH, mDownloadedImagePath);
+                    startActivity(intent);
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+    };
     private String myImage;
     private int mTotalMessages = 0;
     private int mIndex = 0;
-    ChatPojo mChatPojo;
-    ArrayList<ChatPojo> messageList = new ArrayList<>();
-    ChatAdapter mChatAdapter = null;
-    ProgressBar mProgressBar = null;
-    public static String mCurrentRoomId = null;
-    public static final long VIDEOLIMIT = 12;  // 12 Mb
+    //for chat history
+    private int offset = 0;
+    private int LIMIT = 60;
+    private int lastId = 0;
+    ResponseHandlerListener responseHandler = new ResponseHandlerListener() {
+        @Override
+        public void onComplete(ResponsePojo result, WebServiceClient.WebError error, ProgressDialog mProgressDialog) {
+
+            try {
+                WebNotificationManager.unRegisterResponseListener(responseHandler);
+                if (error == null) {
+                    if (result.getSuccess().equalsIgnoreCase("true")) {
+                        mTotalMessages = result.getTotalMessages();
+                        // clear previous list
+                        if (messageList != null) {
+                            messageList.clear();
+                        }
+                        messageList.addAll(result.getMessagesList());
+                        if (messageList.size() > 0) {
+                            try {
+                                insertAllMessages(messageList);
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                            }
+                            setDataInViewObjects();
+
+                        }
+                    }
+                }
+
+                if (mProgressDialog != null && mProgressDialog.isShowing()) {
+                    mProgressDialog.dismiss();
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+                if (mProgressDialog != null && mProgressDialog.isShowing()) {
+                    mProgressDialog.dismiss();
+                }
+            }
+        }
+    };
+    private int totalChatCount = 0;
+    private int proxyChatId = 0;
+    private int theresholdCount = 3;
+    private int scrollCount = 0;
+    private int lastVisibleItemPosition = 0;  //when user load history and going down this value will increase and if this value is greater than LIMIT it means user is scrolling in between the limit and bottom so recycler view will scroll and show message
+    private int currentTotalItem = 0;
+    AsyncResult asyncResult = new AsyncResult() {
+        @Override
+        public void onTaskResponse(Object result, int urlResponseNo) {
+            {
+                try {
+                    JSONObject jsonObject = new JSONObject(result.toString());
+                    JSONArray file = jsonObject.getJSONArray("files");
+                    JSONObject obj = file.getJSONObject(0);
+                    String mMediaPostId = obj.optString("fileId");
+                    try {
+                        if (!mMediaPostId.isEmpty()) {
+                            final String messageId = mRoomId + Utility.randomString();
+                            //send Msg
+                            Object[] object = new Object[]{TOKEN, messageId, mRoomId, USER_ID_1, PHOTO, "", mMediaPostId, base64Encoded};
+                            mMeteorCommonClass.sendMsgMeteor(object, new ChatResultListener() {
+                                @Override
+                                public void onSuccess(String result) {
+                                    mMessageId = result;
+                                    long timeInMillis = System.currentTimeMillis();
+                                    Calendar cal1 = Calendar.getInstance();
+                                    cal1.setTimeInMillis(timeInMillis);
+                                    SimpleDateFormat dateFormat = new SimpleDateFormat("hh:mm a");
+                                    String date = dateFormat.format(cal1.getTime());
+                                    ChatPojo chatPojo = new ChatPojo();
+                                    chatPojo.setIcon(myImage);
+                                    chatPojo.setUserId(USER_ID_1);
+                                    chatPojo.setText("");
+                                    chatPojo.setThumb(base64Encoded);
+                                    chatPojo.setRoomId(mRoomId);
+                                    chatPojo.setMessageId(messageId);
+                                    chatPojo.setRelation("self");
+                                    chatPojo.setDate_updated(date);
+                                    chatPojo.setStatus(SENT);
+                                    chatPojo.setImagePath(ChatActivity.imagePath);
+                                    chatPojo.setType(PHOTO);
+                                    addNewMsgToList(chatPojo, true); //isSendMsg is true sending msg
+                                }
+
+                                @Override
+                                public void onError(String error, String reason, String details) {
+                                    Log.d(LOG_TAG, " error is " + error + " reason is " + reason + " details" + details);
+                                }
+                            });
+
+                        }
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+    };
+    RecyclerView.OnScrollListener onScrollListener = new RecyclerView.OnScrollListener() {
+        @Override
+        public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
+            super.onScrollStateChanged(recyclerView, newState);
+        }
+
+        @Override
+        public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+            super.onScrolled(recyclerView, dx, dy);
+
+            int currentFirstVisible = mLlManager.findFirstVisibleItemPosition();
+            lastVisibleItemPosition = mLlManager.findLastCompletelyVisibleItemPosition();
+            currentTotalItem = mLlManager.getItemCount();
+
+            Log.e(LOG_TAG, currentFirstVisible + " " + currentTotalItem + " " + lastVisibleItemPosition);
+            if (dy > 0) {
+                //Going downside
+                Log.i("RecyclerView scrolled: ", "scroll up!");
+                if (currentFirstVisible >= theresholdCount) {
+                    mTvLoadMore.setVisibility(View.GONE);
+                }
+            } else {
+                //Going upside
+                Log.i("RecyclerView scrolled: ", "scroll down!");
+                if (currentFirstVisible <= theresholdCount && messageList.size() <= (totalChatCount - theresholdCount)) {
+                    mTvLoadMore.setVisibility(View.VISIBLE);
+                }
+            }
+        }
+    };
+
+    public static String convertDate(String dateInMilliseconds, String dateFormat) {
+        return DateFormat.format(dateFormat, Long.parseLong(dateInMilliseconds)).toString();
+    }
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -142,7 +311,6 @@ public class ChatActivity extends BaseActivity implements OnChatMsgReceiveListen
         mMeteorCommonClass.setOnChatMsgReceiveListener(this);
         mMeteorCommonClass.setOnChatMsgStatusListener(this);
     }
-
 
     private void initToolbar() {
         try {
@@ -169,7 +337,9 @@ public class ChatActivity extends BaseActivity implements OnChatMsgReceiveListen
     }
 
     private void makeOrGetRoomIdMeteor() {
-        mMeteorCommonClass.makeRoomMeteor(mRoomId);
+        if (mRoomId != null) {
+            mMeteorCommonClass.makeRoomMeteor(mRoomId);
+        }
         if (mIndex == 44) {
             mMeteorCommonClass.getRoomIdMeteor(USER_ID_2, new ChatResultListener() {
                 @Override
@@ -261,7 +431,7 @@ public class ChatActivity extends BaseActivity implements OnChatMsgReceiveListen
                                     chatPojo.setRelation("self");
                                     chatPojo.setIcon(myImage);
                                     chatPojo.setStatus(SENT);
-                                    addNewMsgToList(chatPojo);
+                                    addNewMsgToList(chatPojo, true); //isSendMsg is true sending msg
                                     Log.d(LOG_TAG, result);
                                 }
 
@@ -279,14 +449,33 @@ public class ChatActivity extends BaseActivity implements OnChatMsgReceiveListen
                 }
             });
 
+            // for chat history
+            mTvLoadMore.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    mTvLoadMore.setVisibility(View.GONE);
+                    offset += LIMIT;
+                    loadMessages(mRoomId);
+                }
+            });
+
             USER_ID_1 = PreferenceHandler.readString(this, PreferenceHandler.PREF_KEY_USER_ID, "");
             TOKEN = PreferenceHandler.readString(this, PreferenceHandler.PREF_KEY_USER_TOKEN, "");
             myImage = PreferenceHandler.readString(this, PreferenceHandler.PROFILE_PIC_URL, "");
+
+            //for chat history
+            dbBadges = new BadgesDb(this);
+            totalChatCount = dbBadges.getParticularChatCount(mRoomId);
+            proxyChatId = lastId + 5; // proxy chat is added 5 more lastid so that it will not conflict
+            Log.e(LOG_TAG, proxyChatId + "");
+
+            mRvChatMessages.addOnScrollListener(onScrollListener);
+
+
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
-
 
     /**
      * pic media from gallery
@@ -335,7 +524,6 @@ public class ChatActivity extends BaseActivity implements OnChatMsgReceiveListen
         }
     }
 
-
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -357,6 +545,12 @@ public class ChatActivity extends BaseActivity implements OnChatMsgReceiveListen
             e.printStackTrace();
         }
     }
+//    public static Bitmap rotateImage(Bitmap source, float angle) {
+//        Matrix matrix = new Matrix();
+//        matrix.postRotate(angle);
+//        return Bitmap.createBitmap(source, 0, 0, source.getWidth(), source.getHeight(), matrix,
+//                true);
+//    }
 
     private void onVideoRecord(Intent data) {
         uploadVideoToServer(fileUri);
@@ -364,6 +558,27 @@ public class ChatActivity extends BaseActivity implements OnChatMsgReceiveListen
 //        Log.e("VideoPathChatActivity", "" + data.getData());
 
     }
+
+
+    /*private void loadMessages(String mRoomId) {
+        try {
+            if (!mRoomId.isEmpty()) {
+                dbBadges = new BadgesDb(this);
+                messageList = dbBadges.retrieveUserChat(mRoomId, this);
+//                Collections.reverse(messageList);
+                if (messageList.size() > 0) {
+                    mChatAdapter = new ChatAdapter(ChatActivity.this, messageList, CHAT_ACTIVITY, mMessageId, onImageDownload, MESSAGE, -1);
+
+                    mRvChatMessages.setAdapter(mChatAdapter);
+                    mRvChatMessages.smoothScrollToPosition(messageList.size() - 1);
+                } else {
+                    getRecentMessages(mRoomId, PAGE, LIMIT);
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }*/
 
     private void onCaptureImageResult(Intent data) {
         Bitmap bm;
@@ -376,7 +591,6 @@ public class ChatActivity extends BaseActivity implements OnChatMsgReceiveListen
             }
         }
     }
-
 
     private void onSelectFromGalleryResult(Intent data) {
         try {
@@ -435,63 +649,6 @@ public class ChatActivity extends BaseActivity implements OnChatMsgReceiveListen
             e.printStackTrace();
         }
     }
-
-
-    AsyncResult asyncResult = new AsyncResult() {
-        @Override
-        public void onTaskResponse(Object result, int urlResponseNo) {
-            {
-                try {
-                    JSONObject jsonObject = new JSONObject(result.toString());
-                    JSONArray file = jsonObject.getJSONArray("files");
-                    JSONObject obj = file.getJSONObject(0);
-                    String mMediaPostId = obj.optString("fileId");
-                    try {
-                        if (!mMediaPostId.isEmpty()) {
-                            final String messageId = mRoomId + Utility.randomString();
-                            //send Msg
-                            Object[] object = new Object[]{TOKEN, messageId, mRoomId, USER_ID_1, PHOTO, "", mMediaPostId, base64Encoded};
-                            mMeteorCommonClass.sendMsgMeteor(object, new ChatResultListener() {
-                                @Override
-                                public void onSuccess(String result) {
-                                    mMessageId = result;
-                                    long timeInMillis = System.currentTimeMillis();
-                                    Calendar cal1 = Calendar.getInstance();
-                                    cal1.setTimeInMillis(timeInMillis);
-                                    SimpleDateFormat dateFormat = new SimpleDateFormat("hh:mm a");
-                                    String date = dateFormat.format(cal1.getTime());
-                                    ChatPojo ChatPojo = new ChatPojo();
-                                    ChatPojo.setIcon(myImage);
-                                    ChatPojo.setUserId(USER_ID_1);
-                                    ChatPojo.setText("");
-                                    ChatPojo.setThumb(base64Encoded);
-                                    ChatPojo.setRoomId(mRoomId);
-                                    ChatPojo.setMessageId(messageId);
-                                    ChatPojo.setRelation("self");
-                                    ChatPojo.setDate_updated(date);
-                                    ChatPojo.setStatus(SENT);
-                                    ChatPojo.setImagePath(ChatActivity.imagePath);
-                                    ChatPojo.setType(PHOTO);
-                                    addNewMsgToList(ChatPojo);
-                                }
-
-                                @Override
-                                public void onError(String error, String reason, String details) {
-                                    Log.d(LOG_TAG, " error is " + error + " reason is " + reason + " details" + details);
-                                }
-                            });
-
-                        }
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-            }
-        }
-    };
-
 
     /**
      * get image bitmap from data
@@ -559,24 +716,34 @@ public class ChatActivity extends BaseActivity implements OnChatMsgReceiveListen
         return bitmap;
 
     }
-//    public static Bitmap rotateImage(Bitmap source, float angle) {
-//        Matrix matrix = new Matrix();
-//        matrix.postRotate(angle);
-//        return Bitmap.createBitmap(source, 0, 0, source.getWidth(), source.getHeight(), matrix,
-//                true);
-//    }
 
     private void loadMessages(String mRoomId) {
         try {
             if (!mRoomId.isEmpty()) {
                 dbBadges = new BadgesDb(this);
-                messageList = dbBadges.retrieveUserChat(mRoomId, this);
+                // messageList = dbBadges.retrieveUserChat(mRoomId, this);
 //                Collections.reverse(messageList);
-                if (messageList.size() > 0) {
-                    mChatAdapter = new ChatAdapter(ChatActivity.this, messageList, CHAT_ACTIVITY, mMessageId, onImageDownload, MESSAGE, -1);
 
-                    mRvChatMessages.setAdapter(mChatAdapter);
-                    mRvChatMessages.smoothScrollToPosition(messageList.size() - 1);
+                ArrayList<ChatPojo> messageListNew = dbBadges.retrieveUserChat(mRoomId, LIMIT, offset, lastId);
+                if (messageListNew.size() > 0 && offset == 0) {
+                    lastId = messageListNew.get(0).getId_chat();
+                }
+                scrollCount = messageListNew.size();
+                messageList.addAll(messageListNew);
+                //sort messageList
+                Collections.sort(messageList);
+
+                if (messageList.size() > 0) {
+                    if (mChatAdapter == null) {
+                        mChatAdapter = new ChatAdapter(ChatActivity.this, messageList, CHAT_ACTIVITY, mMessageId, onImageDownload, MESSAGE, -1);
+                        mRvChatMessages.setAdapter(mChatAdapter);
+                        //mRvChatMessages.smoothScrollToPosition(messageList.size() - 1);
+                    } else {
+                        mChatAdapter.notifyDataSetChanged();
+                        mRvChatMessages.smoothScrollToPosition(scrollCount);
+                        // mRvChatMessages.smoothScrollToPosition(scrollCount + mLlManager.findLastCompletelyVisibleItemPosition() - 1);
+                        //mRvChatMessages.smoothScrollToPosition(messageList.size() - 1);
+                    }
                 } else {
                     getRecentMessages(mRoomId, PAGE, LIMIT);
                 }
@@ -585,46 +752,6 @@ public class ChatActivity extends BaseActivity implements OnChatMsgReceiveListen
             e.printStackTrace();
         }
     }
-
-
-    OnImageDownloadClick onImageDownload = new OnImageDownloadClick() {
-        @Override
-        public void onDownloadClick(ProgressBar progressBar, int position, String mediaID, String messageId, boolean IsDownloaded) {
-            try {
-                if (mDownloadedImagePath == null) {
-                    mMediaId = mediaID;
-                    new WebServiceClientUploadImage(progressBar, ChatActivity.this, asyncResultDownload, mediaID, Constants.DOWNLOAD, 77, messageId).execute();
-                    mProgressBar = progressBar;
-                } else {
-                    Intent intent = new Intent(ChatActivity.this, ViewMediaActivity.class);
-                    intent.putExtra(Constants.MEDIA_PATH, mDownloadedImagePath);
-                    startActivity(intent);
-                }
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        }
-    };
-
-
-    AsyncResultDownload asyncResultDownload = new AsyncResultDownload() {
-        @Override
-        public void onDownloadTaskResponse(Object result, int urlResponseNo, Object messageId, Object mediaId) {
-            try {
-                Log.e(LOG_TAG, result.toString());
-                mProgressBar.setVisibility(View.GONE);
-                mChatPojo = new ChatPojo();
-                mChatPojo.setImagePath(result.toString());
-                mDownloadedImagePath = result.toString();
-                mChatPojo.setMessageId(messageId.toString());
-                updateMediaPath(mChatPojo);
-                updateMediaAfterDownload(mChatPojo, messageId);
-                mDownloadedImagePath = null;
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        }
-    };
 
     public void updateMediaAfterDownload(ChatPojo mChatPojo, Object messageId) {
         for (int i = messageList.size() - 1; i > 0; i--) {
@@ -665,58 +792,8 @@ public class ChatActivity extends BaseActivity implements OnChatMsgReceiveListen
         }
     }
 
-    ResponseHandlerListener responseHandler = new ResponseHandlerListener() {
-        @Override
-        public void onComplete(ResponsePojo result, WebServiceClient.WebError error, ProgressDialog mProgressDialog) {
 
-            try {
-                WebNotificationManager.unRegisterResponseListener(responseHandler);
-                if (error == null) {
-                    if (result.getSuccess().equalsIgnoreCase("true")) {
-                        mTotalMessages = result.getTotalMessages();
-                        // clear previous list
-                        if (messageList != null) {
-                            messageList.clear();
-                        }
-                        messageList.addAll(result.getMessagesList());
-                        if (messageList.size() > 0) {
-                            try {
-                                insertAllMessages(messageList);
-                            } catch (Exception e) {
-                                e.printStackTrace();
-                            }
-                            setDataInViewObjects();
-
-                        }
-                    }
-                }
-
-                if (mProgressDialog != null && mProgressDialog.isShowing()) {
-                    mProgressDialog.dismiss();
-                }
-            } catch (Exception e) {
-                e.printStackTrace();
-                if (mProgressDialog != null && mProgressDialog.isShowing()) {
-                    mProgressDialog.dismiss();
-                }
-            }
-        }
-    };
-
-    @Override
-    public void onResume() {
-        super.onResume();
-        try {
-            isInChatActivity = true;
-            isMessageFragmenVisible = false;
-            mCurrentRoomId = mRoomId;
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-
-
-    @Override
+   /* @Override
     protected void setDataInViewObjects() {
         try {
             dbBadges = new BadgesDb(this);
@@ -733,13 +810,43 @@ public class ChatActivity extends BaseActivity implements OnChatMsgReceiveListen
             e.printStackTrace();
         }
 
+    }*/
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        try {
+            isInChatActivity = true;
+            isMessageFragmenVisible = false;
+            mCurrentRoomId = mRoomId;
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
+    @Override
+    protected void setDataInViewObjects() {
 
-    public static String convertDate(String dateInMilliseconds, String dateFormat) {
-        return DateFormat.format(dateFormat, Long.parseLong(dateInMilliseconds)).toString();
+        try {
+            dbBadges = new BadgesDb(this);
+            messageList.clear();
+            //messageList = dbBadges.retrieveUserChat(mRoomId,this);
+//            Collections.reverse(messageList);
+
+            messageList = dbBadges.retrieveUserChat(mRoomId, LIMIT, offset, lastId);
+            lastId = messageList.get(0).getId_chat();
+
+            if (messageList.size() > 0) {
+                mChatAdapter = new ChatAdapter(ChatActivity.this, messageList, CHAT_ACTIVITY, mMessageId, onImageDownload, MESSAGE, -1);
+                mRvChatMessages.setAdapter(mChatAdapter);
+                //mRvChatMessages.smoothScrollToPosition(messageList.size() - 1);
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
     }
-
 
     public void insertAllMessages(ArrayList<ChatPojo> userMessages) {
         try {
@@ -749,7 +856,6 @@ public class ChatActivity extends BaseActivity implements OnChatMsgReceiveListen
             e.printStackTrace();
         }
     }
-
 
     public void insertSingleMessage(ChatPojo userMessages) {
         try {
@@ -770,7 +876,6 @@ public class ChatActivity extends BaseActivity implements OnChatMsgReceiveListen
         }
 
     }
-
 
     private void selectImage() {
         AlertDialog.Builder builder = new AlertDialog.Builder(ChatActivity.this);
@@ -793,12 +898,36 @@ public class ChatActivity extends BaseActivity implements OnChatMsgReceiveListen
         builder.show();
     }
 
-    public void addNewMsgToList(ChatPojo mChatPojo1) {
+   /* public void addNewMsgToList(ChatPojo mChatPojo1) {
         messageList.add(mChatPojo1);
         if (mChatAdapter != null) {
             mChatAdapter.notifyDataSetChanged();
             mEtMessageText.setText("");
             mRvChatMessages.smoothScrollToPosition(messageList.size() - 1);
+        } else {
+            mChatAdapter = new ChatAdapter(ChatActivity.this, messageList, CHAT_ACTIVITY, mMessageId, onImageDownload, MESSAGE, -1);
+            mRvChatMessages.setAdapter(mChatAdapter);
+        }
+    }*/
+
+    public void addNewMsgToList(ChatPojo mChatPojo1, boolean isSendMsg) {
+        // in case of receive msg set id_chat proxy so that sorting can done
+        //if (!isSendMsg) {
+        proxyChatId++;
+        mChatPojo1.setId_chat(proxyChatId);
+        //}
+        messageList.add(mChatPojo1);
+        if (mChatAdapter != null) {
+            mEtMessageText.setText("");
+            mChatAdapter.notifyDataSetChanged();
+            if (isSendMsg) {
+                mRvChatMessages.smoothScrollToPosition(messageList.size() - 1);
+            } else {
+                //currentTotalItem-lastVisibleItemPosition<LIMIT
+                if (offset == 0 || lastVisibleItemPosition > currentTotalItem - LIMIT) {
+                    mRvChatMessages.smoothScrollToPosition(messageList.size() - 1);
+                }
+            }
         } else {
             mChatAdapter = new ChatAdapter(ChatActivity.this, messageList, CHAT_ACTIVITY, mMessageId, onImageDownload, MESSAGE, -1);
             mRvChatMessages.setAdapter(mChatAdapter);
@@ -846,9 +975,8 @@ public class ChatActivity extends BaseActivity implements OnChatMsgReceiveListen
 
     @Override
     public void onChatMsgRecieved(ChatPojo chatPojo) {
-        addNewMsgToList(chatPojo);
+        addNewMsgToList(chatPojo, false);
     }
-
 
     @Override
     public void onChatMsgStatus(String messageId, String methodName) {
@@ -876,7 +1004,7 @@ public class ChatActivity extends BaseActivity implements OnChatMsgReceiveListen
                 // Video captured and saved to fileUri specified in the Intent
 
                 Bitmap mVideoThumbnail = ThumbnailUtils.createVideoThumbnail(video_path, MediaStore.Video.Thumbnails.MINI_KIND);
-                  base64EncodedVideo = Utility.encodeTobase64(mVideoThumbnail);
+                base64EncodedVideo = Utility.encodeTobase64(mVideoThumbnail);
                 //mIvMediaPost.setImageBitmap(mVideoThumbnail);
                 MultipartEntity reqEntity = new MultipartEntity(HttpMultipartMode.BROWSER_COMPATIBLE);
                 reqEntity.addPart("fileToUpload", file_body_Video);
@@ -921,19 +1049,19 @@ public class ChatActivity extends BaseActivity implements OnChatMsgReceiveListen
                             cal1.setTimeInMillis(timeInMillis);
                             SimpleDateFormat dateFormat = new SimpleDateFormat("hh:mm a");
                             String date = dateFormat.format(cal1.getTime());
-                            ChatPojo ChatPojo = new ChatPojo();
-                            ChatPojo.setIcon(myImage);
-                            ChatPojo.setUserId(USER_ID_1);
-                            ChatPojo.setText("");
-                            ChatPojo.setThumb(base64EncodedVideo);
-                            ChatPojo.setRoomId(mRoomId);
-                            ChatPojo.setMessageId(messageId);
-                            ChatPojo.setRelation("self");
-                            ChatPojo.setDate_updated(date);
-                            ChatPojo.setStatus(SENT);
-                            ChatPojo.setImagePath(ChatActivity.mVideoPath);
-                            ChatPojo.setType(VIDEO);
-                            addNewMsgToList(ChatPojo);
+                            ChatPojo chatPojo = new ChatPojo();
+                            chatPojo.setIcon(myImage);
+                            chatPojo.setUserId(USER_ID_1);
+                            chatPojo.setText("");
+                            chatPojo.setThumb(base64EncodedVideo);
+                            chatPojo.setRoomId(mRoomId);
+                            chatPojo.setMessageId(messageId);
+                            chatPojo.setRelation("self");
+                            chatPojo.setDate_updated(date);
+                            chatPojo.setStatus(SENT);
+                            chatPojo.setImagePath(ChatActivity.mVideoPath);
+                            chatPojo.setType(VIDEO);
+                            addNewMsgToList(chatPojo, true); //isSendMsg is true sending msg
                         }
 
                         @Override

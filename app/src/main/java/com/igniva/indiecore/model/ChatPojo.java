@@ -6,8 +6,21 @@ import android.os.Parcelable;
 /**
  * Created by igniva-andriod-05 on 27/9/16.
  */
-public class ChatPojo implements Parcelable {
+public class ChatPojo implements Parcelable, Comparable<ChatPojo> {
 
+
+    public static final Parcelable.Creator<ChatPojo> CREATOR = new Parcelable.Creator<ChatPojo>() {
+        @Override
+        public ChatPojo createFromParcel(Parcel source) {
+            return new ChatPojo(source);
+        }
+
+        @Override
+        public ChatPojo[] newArray(int size) {
+            return new ChatPojo[size];
+        }
+    };
+    private int id_chat;
     private String _id;
     private String roomId;
     private String userId;
@@ -26,6 +39,36 @@ public class ChatPojo implements Parcelable {
     private String imagePath;
     private boolean isVideoDownload;  // this field is only used for video.
 
+    public ChatPojo() {
+    }
+
+    protected ChatPojo(Parcel in) {
+        this.id_chat = in.readInt();
+        this._id = in.readString();
+        this.roomId = in.readString();
+        this.userId = in.readString();
+        this.type = in.readString();
+        this.text = in.readString();
+        this.media = in.readString();
+        this.thumb = in.readString();
+        this.status = in.readInt();
+        this.created_at = in.readString();
+        this.date_updated = in.readString();
+        this.messageId = in.readString();
+        this.name = in.readString();
+        this.icon = in.readString();
+        this.relation = in.readString();
+        this.badges = in.readString();
+        this.imagePath = in.readString();
+    }
+
+    public int getId_chat() {
+        return id_chat;
+    }
+
+    public void setId_chat(int id_chat) {
+        this.id_chat = id_chat;
+    }
 
     public String getImagePath() {
         return imagePath;
@@ -170,6 +213,7 @@ public class ChatPojo implements Parcelable {
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
+        dest.writeInt(this.id_chat);
         dest.writeString(this._id);
         dest.writeString(this.roomId);
         dest.writeString(this.userId);
@@ -188,37 +232,14 @@ public class ChatPojo implements Parcelable {
         dest.writeString(this.imagePath);
     }
 
-    public ChatPojo() {
-    }
-
-    protected ChatPojo(Parcel in) {
-        this._id = in.readString();
-        this.roomId = in.readString();
-        this.userId = in.readString();
-        this.type = in.readString();
-        this.text = in.readString();
-        this.media = in.readString();
-        this.thumb = in.readString();
-        this.status = in.readInt();
-        this.created_at = in.readString();
-        this.date_updated = in.readString();
-        this.messageId = in.readString();
-        this.name = in.readString();
-        this.icon = in.readString();
-        this.relation = in.readString();
-        this.badges = in.readString();
-        this.imagePath = in.readString();
-    }
-
-    public static final Parcelable.Creator<ChatPojo> CREATOR = new Parcelable.Creator<ChatPojo>() {
-        @Override
-        public ChatPojo createFromParcel(Parcel source) {
-            return new ChatPojo(source);
+    @Override
+    public int compareTo(ChatPojo chatPojo) {
+        if (id_chat > chatPojo.getId_chat()) {
+            return 1;
+        } else if (id_chat < chatPojo.getId_chat()) {
+            return -1;
+        } else {
+            return 0;
         }
-
-        @Override
-        public ChatPojo[] newArray(int size) {
-            return new ChatPojo[size];
-        }
-    };
+    }
 }

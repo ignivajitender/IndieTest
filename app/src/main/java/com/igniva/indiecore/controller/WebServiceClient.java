@@ -1,5 +1,19 @@
 package com.igniva.indiecore.controller;
 
+import android.app.Activity;
+import android.app.ProgressDialog;
+import android.content.Context;
+import android.os.AsyncTask;
+import android.os.StrictMode;
+
+import com.google.gson.Gson;
+import com.igniva.indiecore.R;
+import com.igniva.indiecore.model.ResponsePojo;
+import com.igniva.indiecore.utils.Log;
+import com.igniva.indiecore.utils.Utility;
+
+import org.apache.http.entity.mime.MultipartEntity;
+
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.IOException;
@@ -10,32 +24,8 @@ import java.io.OutputStreamWriter;
 import java.net.HttpURLConnection;
 import java.net.URL;
 
-import com.igniva.indiecore.R;
-import com.igniva.indiecore.ui.activities.EnterMobileActivity;
-import com.igniva.indiecore.utils.Utility;
-import android.app.Activity;
-import android.app.ProgressDialog;
-import android.content.Context;
-import android.content.Intent;
-import android.os.AsyncTask;
-import android.os.StrictMode;
-import com.google.gson.Gson;
-import org.apache.http.entity.mime.MultipartEntity;
-
-import com.igniva.indiecore.utils.Log;
-import com.igniva.indiecore.model.ResponsePojo;
-
 public class WebServiceClient {
 
-    // Global variables
-    Context mContext;
-    private static final String LOG_TAG = "WebServiceClient";
-    private static String url;
-    private static String payload;
-    private static HttpMethod method;
-    private static ProgressDialog progressDialog;
-    private static ResponseHandlerListener mResponseHandlerListener;
-    private static boolean isImageUpload=false;
     /**
      * Webservice Urls
      */
@@ -79,20 +69,16 @@ public class WebServiceClient {
     public static  final String HTTP_RECENT_CHAT=HTTP_PROTOCOL+HTTP_HOST_IP+"chat/pull/rooms";
     public static  final String HTTP_RECENT_MESSAGES=HTTP_PROTOCOL+HTTP_HOST_IP+"chat/pull/conversation";
     public static  final String HTTP_GET_PEOPLE_IN_BUSINESS=HTTP_PROTOCOL+HTTP_HOST_IP+"business/peoples";
-
-
+    private static final String LOG_TAG = "WebServiceClient";
     private final static String CONTENT_TYPE = "application/json";
-
-    private enum HttpMethod {
-        HTTP_GET, HTTP_POST, HTTP_PUT
-    }
-
-    public enum WebError {
-        INVALID_CREDENTIALS, UNAUTHORIZED, PASSWORD_FORMAT_ERROR,
-        CURRENT_PASSWORD_INVALID, INVALID_JSON, INCOMPLETE_JSON,
-        NO_CREDENTIALS_STORED, CONNECTION_ERROR, EMAIL_NOT_FOUND_FOR_RESET_PASSWORD,
-        SAVE_FILE_ERROR, UNKNOWN, USER_ALREADY_EXISTS, NOT_FOUND
-    }
+    private static String url;
+    private static String payload;
+    private static HttpMethod method;
+    private static ProgressDialog progressDialog;
+    private static ResponseHandlerListener mResponseHandlerListener;
+    private static boolean isImageUpload = false;
+    // Global variables
+    Context mContext;
 
     public WebServiceClient(Context context) {
         mContext = context;
@@ -175,14 +161,12 @@ public class WebServiceClient {
         checkNetworkState(url,payload,method,context);
     }
 
-
     public static void create_a_post(final Context context,String payload,ResponseHandlerListener responseHandlerListener){
         url=HTTP_CREATE_POST;
         method=HttpMethod.HTTP_POST;
         mResponseHandlerListener=responseHandlerListener;
         checkNetworkState(url,payload,method,context);
     }
-
 
     public static void view_all_posts(final Context context,String payload,ResponseHandlerListener responseHandlerListener){
         url=HTTP_VIEW_ALL_POST;
@@ -226,14 +210,12 @@ public class WebServiceClient {
         checkNetworkState(url,payload,method,context);
     }
 
-
     public static void flag_a_post(final Context context,String payload,ResponseHandlerListener responseHandlerListener){
         url=HTTP_FLAG_POST;
         method=HttpMethod.HTTP_POST;
         mResponseHandlerListener=responseHandlerListener;
         checkNetworkState(url,payload,method,context);
     }
-
 
     public static void like_unlike_a_comment(final Context context,String payload,ResponseHandlerListener responseHandlerListener){
         url=HTTP_LIKE_UNLIKE_COMMENT;
@@ -249,15 +231,12 @@ public class WebServiceClient {
         checkNetworkState(url,payload,method,context);
     }
 
-
     public static void reply_to_comment(final Context context,String payload,ResponseHandlerListener responseHandlerListener){
         url=HTTP_MAKE_A_REPLY;
         method=HttpMethod.HTTP_POST;
         mResponseHandlerListener=responseHandlerListener;
         checkNetworkState(url,payload,method,context);
     }
-
-
 
     public static void view_all_replies(final Context context,String payload,ResponseHandlerListener responseHandlerListener){
         url=HTTP_VIEW_ALL_REPLY;
@@ -272,8 +251,6 @@ public class WebServiceClient {
         mResponseHandlerListener=responseHandlerListener;
         checkNetworkState(url,payload,method,context);
     }
-
-
 
     public static void remove_a_reply(final Context context,String payload,ResponseHandlerListener responseHandlerListener){
         url= HTTP_REMOVE_REPLY;
@@ -295,36 +272,44 @@ public class WebServiceClient {
         mResponseHandlerListener=responseHandlerListener;
         checkNetworkState(url,payload,method,context);
     }
+
     public static void get_favourite_list(final Context context,String payload,ResponseHandlerListener responseHandlerListener){
         url= HTTP_FETCH_FAVOURITE;
         method=HttpMethod.HTTP_POST;
         mResponseHandlerListener=responseHandlerListener;
         checkNetworkState(url,payload,method,context);
     }
+
     public static void block_a_user(final Context context,String payload,ResponseHandlerListener responseHandlerListener){
         url= HTTP_BLOCK_USER;
         method=HttpMethod.HTTP_POST;
         mResponseHandlerListener=responseHandlerListener;
         checkNetworkState(url,payload,method,context);
     }
+
     public static void get_blocked_userlist(final Context context,String payload,ResponseHandlerListener responseHandlerListener){
         url= HTTP_BLOCKED_USER_LIST;
         method=HttpMethod.HTTP_POST;
         mResponseHandlerListener=responseHandlerListener;
         checkNetworkState(url,payload,method,context);
     }
+
     public static void buy_a_badge_slot(final Context context,String payload,ResponseHandlerListener responseHandlerListener){
         url= HTTP_BUY_A_SLOT;
         method=HttpMethod.HTTP_POST;
         mResponseHandlerListener=responseHandlerListener;
         checkNetworkState(url,payload,method,context);
     }
+
     public static void get_recent_chats(final Context context,String payload,ResponseHandlerListener responseHandlerListener){
         url= HTTP_RECENT_CHAT;
         method=HttpMethod.HTTP_POST;
         mResponseHandlerListener=responseHandlerListener;
-        checkNetworkState(url,payload,method,context);
+        new CallWebserviceTask(url, payload, method, null, context).execute();
+        // Don't check network state before calling webservice
+        //checkNetworkState(url,payload,method,context);
     }
+
     public static void get_recent_messages(final Context context,String payload,ResponseHandlerListener responseHandlerListener){
         url= HTTP_RECENT_MESSAGES;
         method=HttpMethod.HTTP_POST;
@@ -346,6 +331,7 @@ public class WebServiceClient {
         mResponseHandlerListener = responseHandlerListener;
         checkNetworkStateImageUpload(url, reqEntity, method, mContext);
     }
+
     /**
      * Check Available Network connection and make http call only if network is
      * available else show no network available
@@ -386,6 +372,17 @@ public class WebServiceClient {
             new Utility().showNoInternetDialog((Activity) context);
 
         }
+    }
+
+    private enum HttpMethod {
+        HTTP_GET, HTTP_POST, HTTP_PUT
+    }
+
+    public enum WebError {
+        INVALID_CREDENTIALS, UNAUTHORIZED, PASSWORD_FORMAT_ERROR,
+        CURRENT_PASSWORD_INVALID, INVALID_JSON, INCOMPLETE_JSON,
+        NO_CREDENTIALS_STORED, CONNECTION_ERROR, EMAIL_NOT_FOUND_FOR_RESET_PASSWORD,
+        SAVE_FILE_ERROR, UNKNOWN, USER_ALREADY_EXISTS, NOT_FOUND
     }
 
     /**
@@ -627,10 +624,10 @@ public class WebServiceClient {
             AsyncTask<Void, Void, Object[]> {
 
         private final String mUrl;
-        private  boolean isDisplayDialog=true;
-        private Context mContext;
         MultipartEntity mReqEntity;
         StringBuilder builder;
+        private boolean isDisplayDialog = true;
+        private Context mContext;
         //
         public UploadImgaeWTask(Context mContext,String urlString, MultipartEntity reqEntity) {
             this.mUrl=urlString;

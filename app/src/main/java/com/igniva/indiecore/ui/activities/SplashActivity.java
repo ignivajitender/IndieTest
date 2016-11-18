@@ -1,22 +1,12 @@
 package com.igniva.indiecore.ui.activities;
 
-import android.app.ActivityManager;
 import android.content.BroadcastReceiver;
-import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
-import android.preference.PreferenceManager;
 import android.support.v4.content.LocalBroadcastManager;
-import android.support.v7.app.AppCompatActivity;
-
-import com.igniva.indiecore.controller.MeteorCommonClass;
-import com.igniva.indiecore.controller.services.CustomMeteorService;
-import com.igniva.indiecore.utils.Log;
 import android.view.View;
-import android.view.Window;
 import android.view.animation.Animation;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -24,7 +14,11 @@ import android.widget.LinearLayout;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
 import com.igniva.indiecore.R;
+import com.igniva.indiecore.controller.MeteorCommonClass;
+import com.igniva.indiecore.controller.services.CustomMeteorService;
+import com.igniva.indiecore.utils.Log;
 import com.igniva.indiecore.utils.PreferenceHandler;
+import com.igniva.indiecore.utils.Utility;
 import com.igniva.indiecore.utils.gcm.RegistrationIntentService;
 
 /**
@@ -32,14 +26,14 @@ import com.igniva.indiecore.utils.gcm.RegistrationIntentService;
  */
 public class SplashActivity extends BaseActivity
 {
+    private static final int PLAY_SERVICES_RESOLUTION_REQUEST = 9000;
+    LinearLayout mLlNext;
     private ImageView appLogo;
     private ImageView mGetStarted;
     private Animation animFadein;
     private boolean isReceiverRegistered;
     private String TAG="SplashActivity";
-    LinearLayout mLlNext;
     private BroadcastReceiver mRegistrationBroadcastReceiver;
-    private static final int PLAY_SERVICES_RESOLUTION_REQUEST = 9000;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -51,7 +45,7 @@ public class SplashActivity extends BaseActivity
 
 
         // If user already login then start service
-        if (!PreferenceHandler.readString(this, PreferenceHandler.PREF_KEY_USER_TOKEN, "").isEmpty() && !PreferenceHandler.readString(this, PreferenceHandler.PREF_KEY_USER_ID, "").isEmpty() && !isMyServiceRunning(MeteorCommonClass.class)) {
+        if (!PreferenceHandler.readString(this, PreferenceHandler.PREF_KEY_USER_TOKEN, "").isEmpty() && !PreferenceHandler.readString(this, PreferenceHandler.PREF_KEY_USER_ID, "").isEmpty() && !Utility.isMyServiceRunning(SplashActivity.this, MeteorCommonClass.class)) {
             Intent serviceIntent = new Intent(this, CustomMeteorService.class);
             startService(serviceIntent);
         }
@@ -189,14 +183,5 @@ public class SplashActivity extends BaseActivity
        }catch (Exception e){
            e.printStackTrace();
        }
-    }
-    private boolean isMyServiceRunning(Class<?> serviceClass) {
-        ActivityManager manager = (ActivityManager) getSystemService(Context.ACTIVITY_SERVICE);
-        for (ActivityManager.RunningServiceInfo service : manager.getRunningServices(Integer.MAX_VALUE)) {
-            if (serviceClass.getName().equals(service.service.getClassName())) {
-                return true;
-            }
-        }
-        return false;
     }
 }

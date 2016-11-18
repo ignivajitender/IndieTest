@@ -1,5 +1,6 @@
 package com.igniva.indiecore.ui.adapters;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -22,10 +23,12 @@ import com.igniva.indiecore.controller.OnMediaPostClickListner;
 import com.igniva.indiecore.controller.OnNeutralClickListner;
 import com.igniva.indiecore.controller.WebServiceClient;
 import com.igniva.indiecore.model.PostPojo;
+import com.igniva.indiecore.ui.activities.NewsFeedActivity;
 import com.igniva.indiecore.ui.activities.UserProfileActivity;
 import com.igniva.indiecore.ui.activities.ViewPlayerActivity;
 import com.igniva.indiecore.utils.Constants;
 import com.igniva.indiecore.utils.PreferenceHandler;
+import com.igniva.indiecore.utils.Utility;
 
 import java.util.ArrayList;
 
@@ -34,12 +37,7 @@ import java.util.ArrayList;
  */
 public class WallPostAdapter extends RecyclerView.Adapter<WallPostAdapter.RecyclerViewHolders> {
 
-    private ArrayList<PostPojo> wallItemsList;
-    private Context mContext;
     public ImageView mDeletePostOld;
-    private boolean deletePostVisible = false;
-    private String ACTION = "";
-    private String ACTIVITY_NAME = "";
     String LOG_TAG = "WallPostAdapter";
     OnLikeClickListner mOnLikeClickListner;
     OnDisLikeClickListner mOnDisLikeClickListner;
@@ -47,6 +45,11 @@ public class WallPostAdapter extends RecyclerView.Adapter<WallPostAdapter.Recycl
     OnCommentClickListner mOnCommentClickListner;
     OnMediaPostClickListner mOnMediaPostClickListner;
     OnDeletePostClickListner mOnDeletePostClickListner;
+    private ArrayList<PostPojo> wallItemsList;
+    private Context mContext;
+    private boolean deletePostVisible = false;
+    private String ACTION = "";
+    private String ACTIVITY_NAME = "";
 
 
     public WallPostAdapter(Context context, ArrayList<PostPojo> wallItemsList, String contextName, OnLikeClickListner onLikeClickListner, OnDisLikeClickListner OnDisLikeAdapter, OnNeutralClickListner onNeutralClickListner, OnCommentClickListner onCommentClickListner, OnMediaPostClickListner onMediaPostClickListner, OnDeletePostClickListner onDeletePostClickListner) {
@@ -174,6 +177,7 @@ public class WallPostAdapter extends RecyclerView.Adapter<WallPostAdapter.Recycl
 
             }
 
+
             holder.like.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -207,68 +211,110 @@ public class WallPostAdapter extends RecyclerView.Adapter<WallPostAdapter.Recycl
                 }
             });
 
+            holder.mTvShare.setOnClickListener(new View.OnClickListener() {
+                                                   @Override
+                                                   public void onClick(View view) {
+                                                       if (Utility.isInternetConnection(mContext)) {
+                                                           if (wallItemsList.get(position).getMediaType() == null) {
+                                                               ((NewsFeedActivity) mContext).selectSharingType(wallItemsList.get(position).getText(), null, null);
+                                                           } else if (wallItemsList.get(position).getMediaType().equalsIgnoreCase("photo")) {
+                                                               ((NewsFeedActivity) mContext).selectSharingType(wallItemsList.get(position).getText(), wallItemsList.get(position).getMediaUrl(), null);
+                                                           } else {
+                                                               ((NewsFeedActivity) mContext).selectSharingType(wallItemsList.get(position).getText(), null, wallItemsList.get(position).getMediaUrl());
+                                                           }
+                                                       } else {
+                                                           new Utility().showNoInternetDialog((Activity) mContext);
+                                                       }
+                                                   }
+                                               }
 
-            holder.mMediaPost.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    if (wallItemsList.get(position).getMediaType().equalsIgnoreCase("photo")) {
-                        mOnMediaPostClickListner.onMediaPostClicked(holder.mMediaPost, position, wallItemsList.get(position).getPostId(), Constants.MEDIA);
-                    } else {
-                        Intent intent = new Intent(mContext, ViewPlayerActivity.class);
-                        intent.putExtra(Constants.MEDIA_PATH, wallItemsList.get(position).getMediaUrl());
-                        intent.putExtra(Constants.FROM_CLASS, "WallPostAdapter");
-                        mContext.startActivity(intent);
-                    }
-                }
-            });
-
-            holder.mImgPlay.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    Intent intent = new Intent(mContext, ViewPlayerActivity.class);
-                    intent.putExtra(Constants.MEDIA_PATH, wallItemsList.get(position).getMediaUrl());
-                    intent.putExtra(Constants.FROM_CLASS, "WallPostAdapter");
-                    mContext.startActivity(intent);
-                }
-            });
-
-            holder.mDeletePost.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    mOnDeletePostClickListner.ondeletePostClicked(holder.mDeletePost, position, wallItemsList.get(position).getPostId(), ACTION);
-
-                }
-            });
+            );
 
 
-            if (ACTIVITY_NAME.equals(Constants.USERPROFILEACTIVITY)) {
+            holder.mMediaPost.setOnClickListener(new View.OnClickListener()
+
+                                                 {
+                                                     @Override
+                                                     public void onClick(View v) {
+                                                         if (wallItemsList.get(position).getMediaType().equalsIgnoreCase("photo")) {
+                                                             mOnMediaPostClickListner.onMediaPostClicked(holder.mMediaPost, position, wallItemsList.get(position).getPostId(), Constants.MEDIA);
+                                                         } else {
+                                                             Intent intent = new Intent(mContext, ViewPlayerActivity.class);
+                                                             intent.putExtra(Constants.MEDIA_PATH, wallItemsList.get(position).getMediaUrl());
+                                                             intent.putExtra(Constants.FROM_CLASS, "WallPostAdapter");
+                                                             mContext.startActivity(intent);
+                                                         }
+                                                     }
+                                                 }
+
+            );
+
+            holder.mImgPlay.setOnClickListener(new View.OnClickListener()
+
+                                               {
+                                                   @Override
+                                                   public void onClick(View view) {
+                                                       Intent intent = new Intent(mContext, ViewPlayerActivity.class);
+                                                       intent.putExtra(Constants.MEDIA_PATH, wallItemsList.get(position).getMediaUrl());
+                                                       intent.putExtra(Constants.FROM_CLASS, "WallPostAdapter");
+                                                       mContext.startActivity(intent);
+                                                   }
+                                               }
+
+            );
+
+            holder.mDeletePost.setOnClickListener(new View.OnClickListener()
+
+                                                  {
+                                                      @Override
+                                                      public void onClick(View v) {
+                                                          mOnDeletePostClickListner.ondeletePostClicked(holder.mDeletePost, position, wallItemsList.get(position).getPostId(), ACTION);
+
+                                                      }
+                                                  }
+
+            );
+
+
+            if (ACTIVITY_NAME.equals(Constants.USERPROFILEACTIVITY))
+
+            {
                 holder.mUserIcon.setEnabled(false);
             }
-            if (ACTIVITY_NAME.equalsIgnoreCase(Constants.MYPROFILEACTIVITY) || ACTIVITY_NAME.equalsIgnoreCase(Constants.NEWSFEEDACTIVITY)) {
+
+            if (ACTIVITY_NAME.equalsIgnoreCase(Constants.MYPROFILEACTIVITY) || ACTIVITY_NAME.equalsIgnoreCase(Constants.NEWSFEEDACTIVITY))
+
+            {
                 holder.mRlMutualBadgeTxtBg.setVisibility(View.GONE);
                 holder.mUserIcon.setEnabled(false);
 
             }
 
-            holder.mUserIcon.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
+            holder.mUserIcon.setOnClickListener(new View.OnClickListener()
 
-                    try {
-                        Bundle bundle = new Bundle();
-                        Intent intent = new Intent(mContext, UserProfileActivity.class);
-                        bundle.putString(Constants.USERID, wallItemsList.get(position).getUserId());
-                        bundle.putString(Constants.BUSINESS_ID, wallItemsList.get(position).getRoomId());
-                        bundle.putInt(Constants.INDEX, 11);
-                        intent.putExtras(bundle);
-                        mContext.startActivity(intent);
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
-                }
-            });
+                                                {
+                                                    @Override
+                                                    public void onClick(View v) {
 
-            try {
+                                                        try {
+                                                            Bundle bundle = new Bundle();
+                                                            Intent intent = new Intent(mContext, UserProfileActivity.class);
+                                                            bundle.putString(Constants.USERID, wallItemsList.get(position).getUserId());
+                                                            bundle.putString(Constants.BUSINESS_ID, wallItemsList.get(position).getRoomId());
+                                                            bundle.putInt(Constants.INDEX, 11);
+                                                            intent.putExtras(bundle);
+                                                            mContext.startActivity(intent);
+                                                        } catch (Exception e) {
+                                                            e.printStackTrace();
+                                                        }
+                                                    }
+                                                }
+
+            );
+
+            try
+
+            {
                 if (wallItemsList.get(position).getBadges().equalsIgnoreCase("OFF")) {
                     holder.mRlMutualBadgeTxtBg.setBackgroundResource(R.drawable.badge_off);
                     holder.mMutualBadgeCount.setText("");
@@ -277,47 +323,55 @@ public class WallPostAdapter extends RecyclerView.Adapter<WallPostAdapter.Recycl
                     holder.mRlMutualBadgeTxtBg.setBackgroundResource(R.drawable.blank_badge);
                     holder.mMutualBadgeCount.setText(Integer.parseInt(in) + "");
                 }
-            } catch (NumberFormatException e) {
+            } catch (
+                    NumberFormatException e
+                    )
+
+            {
                 e.printStackTrace();
             }
 
 
-            holder.dropDownOptions.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    try {
-                        if (deletePostVisible == false) {
-                            // Remove previously opened view
-                            try {
-                                mDeletePostOld.setVisibility(View.GONE);
-                            } catch (Exception e) {
-                                e.printStackTrace();
-                            }
-                            //
-                            holder.mDeletePost.setVisibility(View.VISIBLE);
+            holder.dropDownOptions.setOnClickListener(new View.OnClickListener()
 
-                            String userID = PreferenceHandler.readString(mContext, PreferenceHandler.PREF_KEY_USER_ID, "");
-                            if (wallItemsList.get(position).getUserId().equalsIgnoreCase(userID)) {
-                                holder.mDeletePost.setImageResource(R.drawable.delete_button);
-                                ACTION = "DELETE";
-                            } else {
-                                holder.mDeletePost.setImageResource(R.drawable.report_abuse);
-                                ACTION = "REPORT";
+                                                      {
+                                                          @Override
+                                                          public void onClick(View v) {
+                                                              try {
+                                                                  if (deletePostVisible == false) {
+                                                                      // Remove previously opened view
+                                                                      try {
+                                                                          mDeletePostOld.setVisibility(View.GONE);
+                                                                      } catch (Exception e) {
+                                                                          e.printStackTrace();
+                                                                      }
+                                                                      //
+                                                                      holder.mDeletePost.setVisibility(View.VISIBLE);
 
-                            }
-                            deletePostVisible = true;
-                            mDeletePostOld = holder.mDeletePost;
-                        } else if (deletePostVisible == true) {
-                            holder.mDeletePost.setVisibility(View.GONE);
-                            deletePostVisible = false;
+                                                                      String userID = PreferenceHandler.readString(mContext, PreferenceHandler.PREF_KEY_USER_ID, "");
+                                                                      if (wallItemsList.get(position).getUserId().equalsIgnoreCase(userID)) {
+                                                                          holder.mDeletePost.setImageResource(R.drawable.delete_button);
+                                                                          ACTION = "DELETE";
+                                                                      } else {
+                                                                          holder.mDeletePost.setImageResource(R.drawable.report_abuse);
+                                                                          ACTION = "REPORT";
 
-                        }
+                                                                      }
+                                                                      deletePostVisible = true;
+                                                                      mDeletePostOld = holder.mDeletePost;
+                                                                  } else if (deletePostVisible == true) {
+                                                                      holder.mDeletePost.setVisibility(View.GONE);
+                                                                      deletePostVisible = false;
 
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
-                }
-            });
+                                                                  }
+
+                                                              } catch (Exception e) {
+                                                                  e.printStackTrace();
+                                                              }
+                                                          }
+                                                      }
+
+            );
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -348,6 +402,7 @@ public class WallPostAdapter extends RecyclerView.Adapter<WallPostAdapter.Recycl
         public ImageView mDeletePost;
         public RelativeLayout mRlMutualBadgeTxtBg;
         public TextView mMutualBadgeCount;
+        public TextView mTvShare;
 
         public RecyclerViewHolders(final View itemView) {
             super(itemView);
@@ -374,8 +429,10 @@ public class WallPostAdapter extends RecyclerView.Adapter<WallPostAdapter.Recycl
 
             dropDownOptions = (ImageView) itemView.findViewById(R.id.iv_drop_down_options);
             mDeletePost = (ImageView) itemView.findViewById(R.id.iv_delete_post);
+            mTvShare = (TextView) itemView.findViewById(R.id.tv_share);
 
         }
 
     }
+
 }

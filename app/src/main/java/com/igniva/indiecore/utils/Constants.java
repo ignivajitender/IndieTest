@@ -7,9 +7,20 @@ import android.os.Environment;
  */
 public class Constants {
 
+    // Note: Your consumer key and secret should be obfuscated in your source code before shipping.
+    //Twitter
+    public static final String TWITTER_KEY = "iwSRytw9n49pWN7KsAparQT5Z";
+    public static final String TWITTER_SECRET = "upa02Lpa5JMQvVj0U1IrgAOg6i6GI7G5ax7aD9mR9nWHUfTQh3";
+    public static final String PREF_KEY_OAUTH_TOKEN = "oauth_token";
+    public static final String PREF_KEY_OAUTH_SECRET = "oauth_token_secret";
+
     public static final int STARTACTIVITYFORRESULTFORCHAT = 302;
     public static final int STARTACTIVITYFORRESULTFORVIDEOVIEW = 303;
     public static final int STARTACTIVITYFORRESULTFORCOMMENTACTIVITY = 304;
+    public static final int STARTACTIVITYFORRESULTFOR_TWITTER = 305;
+    public static final int STARTACTIVITYFORRESULTFOR_TWITTER_BY4J = 306;
+
+
     public static final String RESULT_FROM_ACTIVITY="resultFromActivity";
 
     public static final String FROM_CLASS="fromClass";
@@ -81,6 +92,7 @@ public class Constants {
     public static final String DISLIKE = "dislike";
     public static final String NEUTRAL = "neutral";
     public static final String COMMENT = "COMMENT";
+    public static final String SHARE = "share";
     public static final String DELETE = "DELETE";
     public static final String REPLY = "REPLY";
     public static final String DOWNLOAD = "downlaod";

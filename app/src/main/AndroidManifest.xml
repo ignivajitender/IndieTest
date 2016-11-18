@@ -277,8 +277,21 @@
 
         <service
             android:name=".controller.services.DownloadVideoService"
-            android:exported="true"
-            android:enabled="true"></service>
+            android:enabled="true"
+            android:exported="true"></service>
+
+
+        <!--facebook-->
+        <meta-data
+            android:name="com.facebook.sdk.ApplicationId"
+            android:value="@string/facebook_app_id" />
+
+        <provider
+            android:name="com.facebook.FacebookContentProvider"
+            android:authorities="com.facebook.app.FacebookContentProvider1611404862489214"
+            android:exported="true" />
+
+
     </application>
 
 </manifest>
